@@ -16,9 +16,16 @@ public class Plate extends Food {
 
     public Plate() {
         super();
-        this.ingredients =new ArrayList<String>();
+        this.ingredients = new ArrayList<String>();
         this.vegan = false;
         this.glutenFree = false;
+    }
+
+    public Plate(String name, float price, String imageUri, boolean vegan, boolean glutenFree) {
+        super(name, price, imageUri);
+        this.vegan = vegan;
+        this.glutenFree = glutenFree;
+        this.ingredients = new ArrayList<String>();
     }
 
     public void addIngredient(String ingredient) {
