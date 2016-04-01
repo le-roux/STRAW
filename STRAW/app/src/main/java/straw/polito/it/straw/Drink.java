@@ -21,4 +21,10 @@ public class Drink extends Food {
     public float getVolume() {
         return this.volume;
     }
+
+    @Override
+    public String getDescription() {
+        String description = String.valueOf(this.volume) + "L";
+        return description;
+    }
 }

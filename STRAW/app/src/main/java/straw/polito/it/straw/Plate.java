@@ -45,4 +45,17 @@ public class Plate extends Food {
         return this.glutenFree;
     }
 
+    @Override
+    public String getDescription() {
+        String description = "";
+        for (String ingredient : this.ingredients) {
+            description += ingredient;
+            description += " ";
+        }
+        if (this.isGlutenFree())
+            description += "GLUTEN FREE ";
+        if (this.isVegan())
+            description += "VEGAN ";
+        return description;
+    }
 }
