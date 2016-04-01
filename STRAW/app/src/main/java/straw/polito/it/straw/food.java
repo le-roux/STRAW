@@ -3,7 +3,7 @@ package straw.polito.it.straw;
 /**
  * Created by Sylvain on 01/04/2016.
  */
-public abstract class Food {
+abstract class Food {
     private String name;
     private float price;
     private String imageURI;

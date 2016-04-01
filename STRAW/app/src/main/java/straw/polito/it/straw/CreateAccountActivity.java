@@ -4,7 +4,10 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
 import android.widget.Adapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -12,11 +15,13 @@ import android.widget.ListView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CreateAccount extends AppCompatActivity {
+public class CreateAccountActivity extends AppCompatActivity {
 
     ListView data_ListView;
     ImageView photo;
-     Bitmap bitmap;
+    Bitmap bitmap;
+    Button c_acc_button;
+    private String TAG = "CreateAccountActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +31,16 @@ public class CreateAccount extends AppCompatActivity {
         initialize();
         setDataList();
         setPhoto();
+
+        c_acc_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ListAdapter adapter=data_ListView.getAdapter();
+
+               // Log.v(TAG, );
+
+            }
+        });
 
     }
 
@@ -53,5 +68,6 @@ public class CreateAccount extends AppCompatActivity {
     private void initialize() {
         data_ListView=(ListView)findViewById(R.id.data_listView);
         photo=(ImageView)findViewById(R.id.photo_imageView);
+        c_acc_button=(Button)findViewById(R.id.c_button);
     }
 }
