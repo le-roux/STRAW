@@ -24,11 +24,23 @@ public class Food {
         this.name = name;
     }
 
+    public String getName() {
+        return this.name;
+    }
+
     public void setPrice(float price) {
         this.price = price;
     }
 
+    public float getPrice() {
+        return this.price;
+    }
+
     public void setImageURI(String imageURI) {
         this.imageURI = imageURI;
+    }
+
+    public String getImageURI() {
+        return this.imageURI;
     }
 }
