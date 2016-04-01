@@ -53,6 +53,7 @@ public class FoodAdapter extends BaseAdapter {
         TextView description = (TextView)convertView.findViewById(R.id.PlateDescription);
         TextView price = (TextView)convertView.findViewById(R.id.PlatePrice);
 
+
         imageView.setImageURI(Uri.parse(this.goods.get(position).getImageURI()));
         title.setText(this.goods.get(position).getName());
         description.setText(this.goods.get(position).getDescription());
