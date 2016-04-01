@@ -17,7 +17,8 @@
         </activity>
         <activity android:name=".CreateAccountActivity" />
         <activity android:name=".CreateMenu" />
-        <activity android:name=".AddDrink"></activity>
+        <activity android:name=".AddDrink" />
+        <activity android:name=".AddPlate"></activity>
     </application>
 
 </manifest>
