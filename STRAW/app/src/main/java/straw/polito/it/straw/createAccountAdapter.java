@@ -1,6 +1,9 @@
 package straw.polito.it.straw;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,11 +22,14 @@ import java.util.List;
 public class CreateAccountAdapter extends BaseAdapter {
     Context context;
     List<String> data;
+    SharedPreferences mShared;
+
     private static LayoutInflater inflater = null;
 
     public CreateAccountAdapter(Context context, List<String> data) {
         this.context = context;
         this.data = data;
+        mShared= context.getSharedPreferences("MyPrefs",Context.MODE_PRIVATE);
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
@@ -48,12 +54,28 @@ public class CreateAccountAdapter extends BaseAdapter {
         if (vi == null)
             vi = inflater.inflate(R.layout.row, null);
         TextView text = (TextView) vi.findViewById(R.id.text_textView);
-        EditText edit_text = (EditText) vi.findViewById(R.id.text_editText);
+        final EditText edit_text = (EditText) vi.findViewById(R.id.text_editText);
         Spinner sp= (Spinner)vi.findViewById(R.id.r_type_spinner);
+
+        TextWatcher watcher= new TextWatcher() {
+            public void afterTextChanged(Editable s) {
+                if (!edit_text.getText().toString().equals("")) {
+                   // mShared.edit().commit()
+                }
+
+            }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                //Do something or nothing.
+            }
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                //Do something or nothing
+            }
+        };
 
         text.setVisibility(View.INVISIBLE);
         edit_text.setVisibility(View.INVISIBLE);
         sp.setVisibility(View.INVISIBLE);
+
         if(data.get(position).equals(context.getString(R.string.r_type))){
             text.setVisibility(View.VISIBLE);
             sp.setVisibility(View.VISIBLE);
