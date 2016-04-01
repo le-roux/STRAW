@@ -21,4 +21,17 @@
     <string name="canteen">Canteen</string>
     <string name="ta">Take Away</string>
     <string name="c_acc">Create Account</string>
+    <string name="Add_plate">Add Plate</string>
+    <string name="Add_drink">Add Drink</string>
+    <string name="Name">Name</string>
+    <string name="Price">Price</string>
+    <string name="Vegan">Vegan</string>
+    <string name="Gluten_free">Gluten Free</string>
+    <string name="Choose_photo">Choose photo</string>
+    <string name="Take_photo">Take photo</string>
+    <string name="Ingredients">Ingredients</string>
+    <string name="Volume">Volume</string>
+    <string name="Add">Add</string>
+    <string name="Currency">€</string>
+    <string name="Volume_unit">L</string>
 </resources>
