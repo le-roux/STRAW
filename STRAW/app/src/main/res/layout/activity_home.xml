@@ -8,9 +8,120 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="straw.polito.it.straw.HomeActivity">
+    <RelativeLayout
+        android:layout_width="match_parent" android:layout_height="300sp"
+        android:orientation="vertical" android:padding="20dp"
+        android:id="@+id/id_relativeLayout"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="@string/user_n"
+            android:id="@+id/user_textView"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="@string/pwd"
+            android:id="@+id/pwd_textView"
+            android:layout_alignTop="@+id/pwd_editText"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/user_name_editText"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@+id/user_textView"
+            android:layout_alignRight="@+id/pwd_editText"
+            android:layout_alignEnd="@+id/pwd_editText" />
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"
+            android:ems="10"
+            android:id="@+id/pwd_editText"
+            android:layout_above="@+id/log_in_button"
+            android:layout_toRightOf="@+id/user_textView"
+            android:layout_toEndOf="@+id/user_textView"
+            android:layout_marginBottom="27dp" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/log_in"
+            android:id="@+id/log_in_button"
+            android:layout_above="@+id/textView"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="34dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/forgot"
+            android:id="@+id/textView"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true" />
+    </RelativeLayout>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!" />
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="@string/notyet"
+        android:id="@+id/notyet_textView"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="24dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="@string/ident"
+        android:id="@+id/id_textView"
+        android:layout_above="@+id/id_relativeLayout"
+        android:layout_centerHorizontal="true" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="200sp"
+        android:id="@+id/create_relativeLayout"
+        android:layout_above="@+id/id_textView"
+        android:layout_below="@+id/notyet_textView">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/c_user"
+            android:id="@+id/c_user_button"
+            android:layout_below="@+id/notyet_textView"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginLeft="46dp"
+            android:layout_marginStart="46dp"
+            android:layout_marginTop="32dp" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/c_man"
+            android:id="@+id/c_man_button"
+            android:layout_alignBottom="@+id/c_user_button"
+            android:layout_toRightOf="@+id/c_user_button"
+            android:layout_toEndOf="@+id/c_user_button"
+            android:layout_marginLeft="27dp"
+            android:layout_marginStart="27dp" />
+    </RelativeLayout>
+
 </RelativeLayout>
