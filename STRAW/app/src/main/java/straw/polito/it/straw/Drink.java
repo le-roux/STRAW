@@ -1,5 +1,10 @@
 package straw.polito.it.straw;
 
+import android.content.SharedPreferences;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /**
  * Created by Sylvain on 01/04/2016.
  */
@@ -23,7 +28,8 @@ public class Drink extends Food {
         this.volume = volume;
     }
 
-    public float getVolume() {
+    public float getVolume()
+    {
         return this.volume;
     }
 
@@ -31,5 +37,21 @@ public class Drink extends Food {
     public String getDescription() {
         String description = String.valueOf(this.volume) + "L";
         return description;
+    }
+
+    @Override
+    public void save(SharedPreferences.Editor editor, int id) {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.putOpt("TYPE", "DRINK");
+            jsonObject.putOpt("NAME", this.getName());
+            jsonObject.put("PRICE", this.getPrice());
+            jsonObject.putOpt("IMAGE_URI", this.getImageURI());
+            jsonObject.put("VOLUME", this.getVolume());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        editor.putString(String.valueOf(id), jsonObject.toString());
+        editor.commit();
     }
 }

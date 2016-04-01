@@ -1,5 +1,10 @@
 package straw.polito.it.straw;
 
+import android.content.SharedPreferences;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 /**
@@ -64,5 +69,24 @@ public class Plate extends Food {
         if (this.isVegan())
             description += "VEGAN ";
         return description;
+    }
+
+    @Override
+    public void save (SharedPreferences.Editor editor, int id) {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.putOpt("TYPE", "PLATE");
+            jsonObject.putOpt("NAME", this.getName());
+            jsonObject.put("PRICE", this.getPrice());
+            jsonObject.putOpt("IMAGE_URI", this.getImageURI());
+            jsonObject.put("VEGAN", this.isVegan());
+            jsonObject.put("GLUTEN_FREE", this.isGlutenFree());
+            for (int i = 0; i < this.ingredients.size(); i++) {
+                jsonObject.putOpt(String.valueOf(i), this.ingredients.get(i));
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        editor.commit();
     }
 }

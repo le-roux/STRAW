@@ -1,9 +1,11 @@
 package straw.polito.it.straw;
 
+import android.content.SharedPreferences;
+
 /**
  * Created by Sylvain on 01/04/2016.
  */
-abstract class Food {
+public abstract class Food {
     private String name;
     private float price;
     private String imageURI;
@@ -45,4 +47,6 @@ abstract class Food {
     }
 
     public abstract String getDescription();
+
+    public abstract void save(SharedPreferences.Editor editor, int id);
 }
