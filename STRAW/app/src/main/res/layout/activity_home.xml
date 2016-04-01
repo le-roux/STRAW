@@ -87,6 +87,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+<<<<<<< HEAD
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="@string/ident"
         android:id="@+id/id_textView"
@@ -123,5 +124,9 @@
             android:layout_marginLeft="27dp"
             android:layout_marginStart="27dp" />
     </RelativeLayout>
+=======
+        android:text="Hello World!"
+        android:id="@+id/textView" />
+>>>>>>> 8d2348324d55d09f2164c6aa4fa9fa971d849498
 
 </RelativeLayout>
