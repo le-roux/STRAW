@@ -55,8 +55,7 @@ public class FoodAdapter extends BaseAdapter {
 
         imageView.setImageURI(Uri.parse(this.goods.get(position).getImageURI()));
         title.setText(this.goods.get(position).getName());
-        //TO DO : fill description field
-        description.setText("");
+        description.setText(this.goods.get(position).getDescription());
         price.setText(String.valueOf(this.goods.get(position).getPrice()) + " €");
         return convertView;
     }
