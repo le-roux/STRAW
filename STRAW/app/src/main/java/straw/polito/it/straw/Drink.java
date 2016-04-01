@@ -12,23 +12,25 @@ public class Drink extends Food {
     /**
      * The volume (in Liter) of the drink
      */
-    private float volume;
+    private double volume;
+    public static final String DRINK = "DRINK";
+    public static final String VOLUME = "VOLUME";
 
     public Drink() {
         super();
         this.volume = 1f;
     }
 
-    public Drink(String name, float price, String imageUri, float Volume) {
+    public Drink(String name, double price, String imageUri, double Volume) {
         super(name, price, imageUri);
         this.volume = volume;
     }
 
-    public void setVolume(float volume) {
+    public void setVolume(double volume) {
         this.volume = volume;
     }
 
-    public float getVolume()
+    public double getVolume()
     {
         return this.volume;
     }
@@ -43,15 +45,26 @@ public class Drink extends Food {
     public void save(SharedPreferences.Editor editor, int id) {
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.putOpt("TYPE", "DRINK");
-            jsonObject.putOpt("NAME", this.getName());
-            jsonObject.put("PRICE", this.getPrice());
-            jsonObject.putOpt("IMAGE_URI", this.getImageURI());
-            jsonObject.put("VOLUME", this.getVolume());
+            jsonObject.putOpt(Food.TYPE, DRINK);
+            jsonObject.putOpt(Food.NAME, this.getName());
+            jsonObject.put(Food.PRICE, this.getPrice());
+            jsonObject.putOpt(Food.IMAGE_URI, this.getImageURI());
+            jsonObject.put(VOLUME, this.getVolume());
         } catch (JSONException e) {
             e.printStackTrace();
         }
         editor.putString(String.valueOf(id), jsonObject.toString());
         editor.commit();
+    }
+
+    public static Drink create(JSONObject jsonObject) {
+        Drink drink = new Drink();
+        try {
+            drink.setVolume(jsonObject.getDouble(VOLUME));
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return drink;
     }
 }

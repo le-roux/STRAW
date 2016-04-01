@@ -18,6 +18,11 @@ public class Plate extends Food {
     private ArrayList<String> ingredients;
     private boolean vegan;
     private boolean glutenFree;
+    public static final String PLATE = "PLATE";
+    public static final String VEGAN = "VEGAN";
+    public static final String GLUTEN_FREE = "GLUTEN_FREE";
+    public static final String INGREDIENTS = "INGREDIENTS";
+    private static final int FIELDS_NB = 6;
 
     public Plate() {
         super();
@@ -88,5 +93,20 @@ public class Plate extends Food {
             e.printStackTrace();
         }
         editor.commit();
+    }
+
+    public static Plate create(JSONObject jsonObject) {
+        Plate plate = new Plate();
+        try {
+            plate.setGlutenFree(jsonObject.getBoolean(GLUTEN_FREE));
+            plate.setVegan(jsonObject.getBoolean(VEGAN));
+            for (int i = 0; i < jsonObject.length() - FIELDS_NB; i++) {
+                plate.ingredients.add(jsonObject.getString(String.valueOf(i)));
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return plate;
     }
 }
