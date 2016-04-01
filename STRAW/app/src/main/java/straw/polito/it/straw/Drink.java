@@ -14,6 +14,11 @@ public class Drink extends Food {
         this.volume = 1f;
     }
 
+    public Drink(String name, float price, String imageUri, float Volume) {
+        super(name, price, imageUri);
+        this.volume = volume;
+    }
+
     public void setVolume(float volume) {
         this.volume = volume;
     }
