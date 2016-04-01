@@ -1,0 +1,14 @@
+# Gradle generated
+.gradle
+build
+
+# MacOSX specific
+.DS_Store
+
+# IntelliJ Specific Folders
+.idea
+/local.properties
+*.iml
+
+# Android specific
+*.apk
