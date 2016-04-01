@@ -15,7 +15,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+<<<<<<< HEAD
+        <activity android:name=".CreateAccount"></activity>
+=======
         <activity android:name=".CreateMenu"></activity>
+>>>>>>> 8d2348324d55d09f2164c6aa4fa9fa971d849498
     </application>
 
 </manifest>

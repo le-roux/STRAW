@@ -1,3 +1,24 @@
 <resources>
     <string name="app_name">STRAW</string>
+    <string name="ident">Identification</string>
+    <string name="notyet">Not yet a member?</string>
+    <string name="user_n">User Name</string>
+    <string name="pwd">Password</string>
+    <string name="log_in">Log in</string>
+    <string name="forgot">Forgot your password?</string>
+    <string name="c_user">Create user</string>
+    <string name="c_man">Create manager</string>
+    <string name="email">Email</string>
+    <string name="c_pwd">New Password</string>
+    <string name="cc_pwd">Confirm Password</string>
+    <string name="addr">Address</string>
+    <string name="tel">Telephone</string>
+    <string name="r_name">Restaurant Name</string>
+    <string name="r_type">Restaurant Type</string>
+    <string name="seats">Number of seats</string>
+    <string name="bar">Bar</string>
+    <string name="restaurant">Restaurant</string>
+    <string name="canteen">Canteen</string>
+    <string name="ta">Take Away</string>
+    <string name="c_acc">Create Account</string>
 </resources>
