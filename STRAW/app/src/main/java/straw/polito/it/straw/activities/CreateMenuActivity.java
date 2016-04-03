@@ -1,4 +1,4 @@
-package straw.polito.it.straw;
+package straw.polito.it.straw.activities;
 
 import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
@@ -8,7 +8,12 @@ import android.widget.ListView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CreateMenu extends AppCompatActivity {
+import straw.polito.it.straw.data.Food;
+import straw.polito.it.straw.adapter.FoodAdapter;
+import straw.polito.it.straw.data.Plate;
+import straw.polito.it.straw.R;
+
+public class CreateMenuActivity extends AppCompatActivity {
 
 
 

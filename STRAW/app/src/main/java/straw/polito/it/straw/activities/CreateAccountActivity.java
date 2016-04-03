@@ -1,4 +1,4 @@
-package straw.polito.it.straw;
+package straw.polito.it.straw.activities;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -17,23 +17,22 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.Spinner;
-
-import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import straw.polito.it.straw.data.Manager;
+import straw.polito.it.straw.R;
 
 public class CreateAccountActivity extends AppCompatActivity {
 
@@ -152,10 +151,10 @@ public class CreateAccountActivity extends AppCompatActivity {
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
 
-                        if(ex){
+                        if (ex) {
 
                             finish();
-                        }else{
+                        } else {
                             dialog.dismiss();
                         }
                     }

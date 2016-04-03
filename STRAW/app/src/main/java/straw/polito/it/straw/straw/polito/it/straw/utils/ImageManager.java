@@ -1,4 +1,4 @@
-package straw.polito.it.straw;
+package straw.polito.it.straw.straw.polito.it.straw.utils;
 
 import android.content.Context;
 import android.graphics.Bitmap;

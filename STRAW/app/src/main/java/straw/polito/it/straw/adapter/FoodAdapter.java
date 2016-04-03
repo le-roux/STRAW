@@ -1,4 +1,4 @@
-package straw.polito.it.straw;
+package straw.polito.it.straw.adapter;
 
 import android.content.Context;
 import android.net.Uri;
@@ -10,6 +10,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+
+import straw.polito.it.straw.R;
+import straw.polito.it.straw.data.Food;
 
 /**
  * Created by Sylvain on 01/04/2016.

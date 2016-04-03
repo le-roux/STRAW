@@ -1,9 +1,8 @@
-package straw.polito.it.straw;
+package straw.polito.it.straw.activities;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
@@ -11,31 +10,34 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.net.Uri;
 
-public class AddPlate extends AppCompatActivity {
+import straw.polito.it.straw.data.Drink;
+import straw.polito.it.straw.data.Food;
+import straw.polito.it.straw.straw.polito.it.straw.utils.ImageManager;
+import straw.polito.it.straw.R;
+
+public class AddDrinkActivity extends AppCompatActivity {
 
     private EditText name_field;
     private EditText price_field;
-    private EditText ingredients_field;
+    private EditText volume_field;
     private Button take_photo_button;
     private Button choose_photo_button;
     private Button add_button;
-    private CheckBox vegan_checkbox;
-    private CheckBox glutenfree_checkbox;
     private ImageView image;
     private Uri fileUri = null;
     private Context context;
-    private Plate plate;
+    private Drink drink;
     private SharedPreferences sharedPreferences;
 
     private static final int TAKE_PICTURE_REQUEST_CODE = 1;
     private static final int CHOOSE_PICTURE_REQUEST_CODE = 2;
 
     private static final String TAG = "FoodApp";
-    private static final String PLATE = "Plate";
+    private static final String DRINK = "Drink";
 
 
     @Override
@@ -44,18 +46,16 @@ public class AddPlate extends AppCompatActivity {
         setContentView(R.layout.activity_add_drink);
         this.name_field = (EditText)findViewById(R.id.name_field);
         this.price_field = (EditText)findViewById(R.id.price_field);
-        this.ingredients_field = (EditText)findViewById(R.id.ingredients_field);
-        this.vegan_checkbox = (CheckBox)findViewById(R.id.vegan_checkbox);
-        this.glutenfree_checkbox = (CheckBox)findViewById(R.id.glutenfree_checkbox);
+        this.volume_field = (EditText)findViewById(R.id.volume_field);
         this.take_photo_button = (Button)findViewById(R.id.take_photo_button);
         this.choose_photo_button =(Button)findViewById(R.id.choose_photo_button);
         this.add_button = (Button)findViewById(R.id.confirm_button);
         this.context = getApplicationContext();
         this.sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.context);
         if (savedInstanceState != null)
-            restoreValues(savedInstanceState.getString(PLATE));
+            restoreValues(savedInstanceState.getString(DRINK));
         else
-            this.plate = new Plate();
+            this.drink = new Drink();
 
         //Add a listener on the button to take a photo
         take_photo_button.setOnClickListener(new View.OnClickListener() {
@@ -80,11 +80,11 @@ public class AddPlate extends AppCompatActivity {
             }
         }); //End of listener
 
-        //Add a listener on the "Add" button
+        //Add a listener on the Add button
         add_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                sharedPreferences.edit().putString(plate.getName(), plate.toString());
+                sharedPreferences.edit().putString(drink.getName(), drink.toString());
                 //TO DO : switch activity
             }
         });
@@ -106,22 +106,20 @@ public class AddPlate extends AppCompatActivity {
     @Override
     public void onSaveInstanceState(Bundle b) {
         update();
-        b.putString(PLATE, this.plate.toString());
+        b.putString(DRINK, this.drink.toString());
     }
 
     @Override
     public void onRestoreInstanceState(Bundle b) {
-        restoreValues(b.getString(PLATE));
+        restoreValues(b.getString(DRINK));
     }
 
     private void restoreValues(String drink_descriptor) {
-        this.plate = (Plate)Food.create(drink_descriptor);
-        this.name_field.setText(this.plate.getName());
-        this.price_field.setText(String.valueOf(this.plate.getPrice()));
-        this.ingredients_field.setText(String.valueOf(this.plate.getIngredients()));
-        this.vegan_checkbox.setActivated(this.plate.isVegan());
-        this.glutenfree_checkbox.setActivated(this.plate.isGlutenFree());
-        String uri = this.plate.getImageURI();
+        this.drink = (Drink) Food.create(drink_descriptor);
+        this.name_field.setText(this.drink.getName());
+        this.price_field.setText(String.valueOf(this.drink.getPrice()));
+        this.volume_field.setText(String.valueOf(this.drink.getVolume()));
+        String uri = this.drink.getImageURI();
         if (uri != null)
             this.fileUri = Uri.parse(uri);
         else {
@@ -130,11 +128,10 @@ public class AddPlate extends AppCompatActivity {
         }
     }
 
-    private void update() {
-        this.plate.setName(this.name_field.getText().toString());
-        this.plate.setPrice(Double.parseDouble(this.price_field.getText().toString()));
-        this.plate.setVegan(this.vegan_checkbox.isActivated());
-        this.plate.setGlutenFree(this.glutenfree_checkbox.isActivated());
-        //TO DO : update ingredients
+    public void update() {
+        this.drink.setName(this.name_field.getText().toString());
+        this.drink.setPrice(Double.parseDouble(this.price_field.getText().toString()));
+        this.drink.setVolume(Double.parseDouble(this.volume_field.getText().toString()));
+        this.drink.setImageURI(this.fileUri.toString());
     }
 }

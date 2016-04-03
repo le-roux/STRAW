@@ -1,4 +1,4 @@
-package straw.polito.it.straw;
+package straw.polito.it.straw.data;
 
 import android.util.Log;
 
