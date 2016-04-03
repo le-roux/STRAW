@@ -46,6 +46,14 @@ public class Plate extends Food {
         this.ingredients.remove(ingredient);
     }
 
+    public String getIngredients() {
+        String ingredients = "";
+        for (String ingredient : this.ingredients) {
+            ingredients += ingredient;
+        }
+        return ingredients;
+    }
+
     public void setVegan(boolean vegan) {
         this.vegan = vegan;
     }

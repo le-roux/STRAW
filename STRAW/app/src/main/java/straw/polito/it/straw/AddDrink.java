@@ -28,10 +28,6 @@ public class AddDrink extends AppCompatActivity {
     private static final int CHOOSE_PICTURE_REQUEST_CODE = 2;
 
     private static final String TAG = "FoodApp";
-    private static final String NAME = "Name";
-    private static final String PRICE = "Price";
-    private static final String VOLUME = "Volume";
-    private static final String IMAGE_URI = "ImageUri";
     private static final String DRINK = "Drink";
 
 
@@ -89,6 +85,7 @@ public class AddDrink extends AppCompatActivity {
 
     @Override
     public void onSaveInstanceState(Bundle b) {
+        update();
         b.putString(DRINK, this.drink.toString());
     }
 
@@ -109,5 +106,12 @@ public class AddDrink extends AppCompatActivity {
             this.fileUri = null;
             ImageManager.setImage(this.context, this.image, this.fileUri);
         }
+    }
+
+    public void update() {
+        this.drink.setName(this.name_field.getText().toString());
+        this.drink.setPrice(Double.parseDouble(this.price_field.getText().toString()));
+        this.drink.setVolume(Double.parseDouble(this.volume_field.getText().toString()));
+        this.drink.setImageURI(this.fileUri.toString());
     }
 }
