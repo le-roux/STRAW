@@ -46,6 +46,14 @@ public class Plate extends food {
         this.ingredients.remove(ingredient);
     }
 
+    public String getIngredients() {
+        String ingredients = "";
+        for (String ingredient : this.ingredients) {
+            ingredients += ingredient;
+        }
+        return ingredients;
+    }
+
     public void setVegan(boolean vegan) {
         this.vegan = vegan;
     }
@@ -77,7 +85,13 @@ public class Plate extends food {
     }
 
     @Override
-    public void save (SharedPreferences.Editor editor, int id) {
+    public void save (SharedPreferences.Editor editor, String id) {
+        editor.putString(id, this.toString());
+        editor.commit();
+    }
+
+    @Override
+    public String toString() {
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.putOpt("TYPE", "PLATE");
@@ -92,7 +106,7 @@ public class Plate extends food {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        editor.commit();
+        return jsonObject.toString();
     }
 
     public static Plate create(JSONObject jsonObject) {
