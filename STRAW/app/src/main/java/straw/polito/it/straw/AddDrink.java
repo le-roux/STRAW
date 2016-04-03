@@ -2,6 +2,8 @@ package straw.polito.it.straw;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -19,10 +21,12 @@ public class AddDrink extends AppCompatActivity {
     private EditText volume_field;
     private Button take_photo_button;
     private Button choose_photo_button;
+    private Button add_button;
     private ImageView image;
     private Uri fileUri = null;
     private Context context;
     private Drink drink;
+    private SharedPreferences sharedPreferences;
 
     private static final int TAKE_PICTURE_REQUEST_CODE = 1;
     private static final int CHOOSE_PICTURE_REQUEST_CODE = 2;
@@ -40,7 +44,9 @@ public class AddDrink extends AppCompatActivity {
         this.volume_field = (EditText)findViewById(R.id.volume_field);
         this.take_photo_button = (Button)findViewById(R.id.take_photo_button);
         this.choose_photo_button =(Button)findViewById(R.id.choose_photo_button);
+        this.add_button = (Button)findViewById(R.id.confirm_button);
         this.context = getApplicationContext();
+        this.sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.context);
         if (savedInstanceState != null)
             restoreValues(savedInstanceState.getString(DRINK));
         else
@@ -68,6 +74,15 @@ public class AddDrink extends AppCompatActivity {
                 startActivityForResult(choosePictureIntent, CHOOSE_PICTURE_REQUEST_CODE);
             }
         }); //End of listener
+
+        //Add a listener on the Add button
+        add_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                sharedPreferences.edit().putString(drink.getName(), drink.toString());
+                //TO DO : switch activity
+            }
+        });
     }
 
     @Override

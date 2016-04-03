@@ -2,7 +2,9 @@ package straw.polito.it.straw;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -20,12 +22,14 @@ public class AddPlate extends AppCompatActivity {
     private EditText ingredients_field;
     private Button take_photo_button;
     private Button choose_photo_button;
+    private Button add_button;
     private CheckBox vegan_checkbox;
     private CheckBox glutenfree_checkbox;
     private ImageView image;
     private Uri fileUri = null;
     private Context context;
     private Plate plate;
+    private SharedPreferences sharedPreferences;
 
     private static final int TAKE_PICTURE_REQUEST_CODE = 1;
     private static final int CHOOSE_PICTURE_REQUEST_CODE = 2;
@@ -45,7 +49,9 @@ public class AddPlate extends AppCompatActivity {
         this.glutenfree_checkbox = (CheckBox)findViewById(R.id.glutenfree_checkbox);
         this.take_photo_button = (Button)findViewById(R.id.take_photo_button);
         this.choose_photo_button =(Button)findViewById(R.id.choose_photo_button);
+        this.add_button = (Button)findViewById(R.id.confirm_button);
         this.context = getApplicationContext();
+        this.sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.context);
         if (savedInstanceState != null)
             restoreValues(savedInstanceState.getString(PLATE));
         else
@@ -73,6 +79,15 @@ public class AddPlate extends AppCompatActivity {
                 startActivityForResult(choosePictureIntent, CHOOSE_PICTURE_REQUEST_CODE);
             }
         }); //End of listener
+
+        //Add a listener on the "Add" button
+        add_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                sharedPreferences.edit().putString(plate.getName(), plate.toString());
+                //TO DO : switch activity
+            }
+        });
     }
 
     @Override
