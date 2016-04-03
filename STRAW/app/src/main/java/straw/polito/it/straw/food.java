@@ -8,7 +8,7 @@ import org.json.JSONObject;
 /**
  * Created by Sylvain on 01/04/2016.
  */
-public abstract class Food {
+public abstract class food {
     private String name;
     private double price;
     private String imageURI;
@@ -17,13 +17,13 @@ public abstract class Food {
     public static final String PRICE = "PRICE";
     public static final String IMAGE_URI = "IMAGE_URI";
 
-    public Food(String name, double price, String imageURI) {
+    public food(String name, double price, String imageURI) {
         this.name = name;
         this.price = price;
         this.imageURI = imageURI;
     }
 
-    public Food() {
+    public food() {
         this.name = "Default";
         this.price = 0d;
         this.imageURI = null;
@@ -57,14 +57,14 @@ public abstract class Food {
 
     public abstract void save(SharedPreferences.Editor editor, int id);
 
-    public static Food create(JSONObject jsonObject) {
+    public static food create(JSONObject jsonObject) {
         String type = null;
         try {
             type = jsonObject.getString(TYPE);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        Food food;
+        food food;
         if (type.equals(Drink.DRINK)) {
             food = Drink.create(jsonObject);
         } else if(type.equals(Plate.PLATE)) {

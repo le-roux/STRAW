@@ -1,7 +1,9 @@
 package straw.polito.it.straw;
 
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,6 +24,7 @@ public class CreateAccountActivity extends AppCompatActivity {
     Bitmap bitmap;
     Button c_acc_button;
     private String TAG = "CreateAccountActivity";
+    private SharedPreferences mShared;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,12 +35,11 @@ public class CreateAccountActivity extends AppCompatActivity {
         setDataList();
         setPhoto();
 
+        mShared= PreferenceManager.getDefaultSharedPreferences(this);
         c_acc_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ListAdapter adapter=data_ListView.getAdapter();
-
-               // Log.v(TAG, );
+                Log.v(TAG,"Input data "+((CreateAccountAdapter)data_ListView.getAdapter()).getInput().size());
 
             }
         });

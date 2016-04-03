@@ -1,9 +1,7 @@
 package straw.polito.it.straw;
 
 import android.content.Context;
-import android.media.Image;
 import android.net.Uri;
-import android.support.annotation.StringRes;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,11 +16,11 @@ import java.util.ArrayList;
  */
 public class FoodAdapter extends BaseAdapter {
 
-    private ArrayList<Food> goods;
+    private ArrayList<food> goods;
     private Context context;
 
     public FoodAdapter(Context context) {
-        this.goods = new ArrayList<Food>();
+        this.goods = new ArrayList<food>();
         this.context = context;
     }
 

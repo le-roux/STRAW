@@ -10,7 +10,7 @@ import java.util.ArrayList;
 /**
  * Created by Sylvain on 01/04/2016.
  */
-public class Plate extends Food {
+public class Plate extends food {
 
     /**
         List of the ingredients present in the plate

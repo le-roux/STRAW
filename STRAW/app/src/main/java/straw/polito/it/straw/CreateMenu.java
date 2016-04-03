@@ -19,7 +19,7 @@ public class CreateMenu extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_menu);
         ctx=this;
-        List<Food> liste_plate= new ArrayList<Food>();
+        List<food> liste_plate= new ArrayList<food>();
         liste_plate.add(new Plate());
 
 
