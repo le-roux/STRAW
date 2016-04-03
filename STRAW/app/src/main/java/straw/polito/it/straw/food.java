@@ -55,7 +55,7 @@ public abstract class Food {
 
     public abstract String getDescription();
 
-    public abstract void save(SharedPreferences.Editor editor, int id);
+    public abstract void save(SharedPreferences.Editor editor, String id);
 
     public static Food create(JSONObject jsonObject) {
         String type = null;
@@ -83,6 +83,15 @@ public abstract class Food {
             }
             return food;
         } else {
+            return null;
+        }
+    }
+
+    public static Food create(String food_descriptor) {
+        try {
+            return (Food.create(new JSONObject(food_descriptor)));
+        } catch (JSONException e) {
+            e.printStackTrace();
             return null;
         }
     }

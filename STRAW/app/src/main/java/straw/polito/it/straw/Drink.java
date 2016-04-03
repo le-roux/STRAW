@@ -42,7 +42,13 @@ public class Drink extends Food {
     }
 
     @Override
-    public void save(SharedPreferences.Editor editor, int id) {
+    public void save(SharedPreferences.Editor editor, String id) {
+        editor.putString(id, this.toString());
+        editor.commit();
+    }
+
+    @Override
+    public String toString() {
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.putOpt(Food.TYPE, DRINK);
@@ -53,8 +59,7 @@ public class Drink extends Food {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        editor.putString(String.valueOf(id), jsonObject.toString());
-        editor.commit();
+        return jsonObject.toString();
     }
 
     public static Drink create(JSONObject jsonObject) {

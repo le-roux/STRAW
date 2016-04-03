@@ -17,15 +17,22 @@ public class AddDrink extends AppCompatActivity {
     private EditText name_field;
     private EditText price_field;
     private EditText volume_field;
-    private Button take_photo;
-    private Button choose_photo;
+    private Button take_photo_button;
+    private Button choose_photo_button;
     private ImageView image;
-    private Uri fileUri;
+    private Uri fileUri = null;
     private Context context;
+    private Drink drink;
 
     private static final int TAKE_PICTURE_REQUEST_CODE = 1;
     private static final int CHOOSE_PICTURE_REQUEST_CODE = 2;
+
     private static final String TAG = "FoodApp";
+    private static final String NAME = "Name";
+    private static final String PRICE = "Price";
+    private static final String VOLUME = "Volume";
+    private static final String IMAGE_URI = "ImageUri";
+    private static final String DRINK = "Drink";
 
 
     @Override
@@ -35,12 +42,16 @@ public class AddDrink extends AppCompatActivity {
         this.name_field = (EditText)findViewById(R.id.name_field);
         this.price_field = (EditText)findViewById(R.id.price_field);
         this.volume_field = (EditText)findViewById(R.id.volume_field);
-        this.take_photo = (Button)findViewById(R.id.take_photo_button);
-        this.choose_photo =(Button)findViewById(R.id.choose_photo_button);
+        this.take_photo_button = (Button)findViewById(R.id.take_photo_button);
+        this.choose_photo_button =(Button)findViewById(R.id.choose_photo_button);
         this.context = getApplicationContext();
+        if (savedInstanceState != null)
+            restoreValues(savedInstanceState.getString(DRINK));
+        else
+            this.drink = new Drink();
 
         //Add a listener on the button to take a photo
-        take_photo.setOnClickListener(new View.OnClickListener() {
+        take_photo_button.setOnClickListener(new View.OnClickListener() {
             private Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
             @Override
@@ -50,6 +61,17 @@ public class AddDrink extends AppCompatActivity {
                 startActivityForResult(intent, TAKE_PICTURE_REQUEST_CODE); //Launch the camera app
             }
         }); //End of the listener
+
+        //Add a listener on the button to choose a picture
+        choose_photo_button.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                Intent choosePictureIntent = new Intent(Intent.ACTION_GET_CONTENT);
+                choosePictureIntent.setType("image/*");
+                startActivityForResult(choosePictureIntent, CHOOSE_PICTURE_REQUEST_CODE);
+            }
+        }); //End of listener
     }
 
     @Override
@@ -58,10 +80,34 @@ public class AddDrink extends AppCompatActivity {
             if (requestCode == CHOOSE_PICTURE_REQUEST_CODE) {
                 fileUri = data.getData();
             }
+            //In case of "Select picture", the fileUri is already set
             ImageManager.setImage(context, image, fileUri);
         } else if(resultCode == RESULT_CANCELED) {
             Log.d(TAG, "result canceled");
         }
+    }
 
+    @Override
+    public void onSaveInstanceState(Bundle b) {
+        b.putString(DRINK, this.drink.toString());
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle b) {
+        restoreValues(b.getString(DRINK));
+    }
+
+    private void restoreValues(String drink_descriptor) {
+        this.drink = (Drink)Food.create(drink_descriptor);
+        this.name_field.setText(this.drink.getName());
+        this.price_field.setText(String.valueOf(this.drink.getPrice()));
+        this.volume_field.setText(String.valueOf(this.drink.getVolume()));
+        String uri = this.drink.getImageURI();
+        if (uri != null)
+            this.fileUri = Uri.parse(uri);
+        else {
+            this.fileUri = null;
+            ImageManager.setImage(this.context, this.image, this.fileUri);
+        }
     }
 }
