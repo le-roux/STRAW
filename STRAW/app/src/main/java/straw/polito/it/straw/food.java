@@ -8,7 +8,7 @@ import org.json.JSONObject;
 /**
  * Created by Sylvain on 01/04/2016.
  */
-public abstract class food {
+public abstract class Food {
     private String name;
     private double price;
     private String imageURI;
@@ -17,13 +17,13 @@ public abstract class food {
     public static final String PRICE = "PRICE";
     public static final String IMAGE_URI = "IMAGE_URI";
 
-    public food(String name, double price, String imageURI) {
+    public Food(String name, double price, String imageURI) {
         this.name = name;
         this.price = price;
         this.imageURI = imageURI;
     }
 
-    public food() {
+    public Food() {
         this.name = "Default";
         this.price = 0d;
         this.imageURI = null;
@@ -57,31 +57,31 @@ public abstract class food {
 
     public abstract void save(SharedPreferences.Editor editor, String id);
 
-    public static food create(JSONObject jsonObject) {
+    public static Food create(JSONObject jsonObject) {
         String type = null;
         try {
             type = jsonObject.getString(TYPE);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        food food;
+        Food Food;
         if (type.equals(Drink.DRINK)) {
-            food = Drink.create(jsonObject);
+            Food = Drink.create(jsonObject);
         } else if(type.equals(Plate.PLATE)) {
-            food = Plate.create(jsonObject);
+            Food = Plate.create(jsonObject);
         } else {
             return null;
         }
-        if(food != null) {
+        if(Food != null) {
             try {
-                food.setName(jsonObject.getString(NAME));
-                food.setPrice(jsonObject.getDouble(PRICE));
-                food.setImageURI(jsonObject.getString(IMAGE_URI));
+                Food.setName(jsonObject.getString(NAME));
+                Food.setPrice(jsonObject.getDouble(PRICE));
+                Food.setImageURI(jsonObject.getString(IMAGE_URI));
             } catch (JSONException e) {
                 e.printStackTrace();
                 return null;
             }
-            return food;
+            return Food;
         } else {
             return null;
         }

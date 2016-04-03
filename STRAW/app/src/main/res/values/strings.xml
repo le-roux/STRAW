@@ -34,4 +34,16 @@
     <string name="Add">Add</string>
     <string name="Currency">€</string>
     <string name="Volume_unit">L</string>
+    <string name="select_photo">Select photo</string>
+    <string name="take_photo">Take photo</string>
+    <string name="error">Error!</string>
+    <string name="m_succ">Success!</string>
+    <string name="m_c">Account Created!</string>
+    <string name="m_user_n">Write a valid user name</string>
+    <string name="m_pwd">Passwords are not the same</string>
+    <string name="m_tel">Write a valid telephone number</string>
+    <string name="m_r_n">Write a valid restaurant name</string>
+    <string name="m_addr">Write a valid address name</string>
+    <string name="m_seats">Number of seats must be greater than 1</string>
+
 </resources>

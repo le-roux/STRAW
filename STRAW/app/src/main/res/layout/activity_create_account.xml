@@ -1,40 +1,194 @@
 <?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ScrollView01"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".CreateAccountActivity">
+    <RelativeLayout
+        android:id="@+id/RelativeLayout01"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" >
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/c_acc"
-        android:id="@+id/c_button"
-        android:layout_alignBottom="@+id/photo_imageView"
-        android:layout_alignRight="@+id/data_listView"
-        android:layout_alignEnd="@+id/data_listView" />
+        <RelativeLayout
+            android:id="@+id/LinearLayout01"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="vertical"
+            android:weightSum="1">
 
-    <ImageView
-        android:layout_width="150sp"
-        android:layout_height="150sp"
-        android:id="@+id/photo_imageView"
-        android:layout_alignParentTop="true"
-        android:layout_toLeftOf="@+id/c_button"
-        android:layout_toStartOf="@+id/c_button" />
+            <ImageView
+                android:layout_width="160sp"
+                android:layout_height="160sp"
+                android:id="@+id/photo_imageView"
+                android:layout_gravity="center_horizontal"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true" />
 
-    <ListView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/data_listView"
-        android:choiceMode="multipleChoice"
-        android:layout_below="@+id/photo_imageView"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="42dp" />
+            <TextView
+                android:id="@+id/user_name_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dip"
+                android:text="@string/user_n"
+                android:layout_below="@+id/photo_imageView">
+            </TextView>
+            <TextView
+                android:id="@+id/pwd_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dip"
+                android:text="@string/c_pwd"
+                android:layout_below="@+id/user_name_textView">
+            </TextView>
 
-</RelativeLayout>
+            <TextView
+                android:id="@+id/cc_pwd_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dip"
+                android:text="@string/cc_pwd"
+                android:layout_below="@+id/pwd_textView">
+            </TextView>
+
+            <TextView
+                android:id="@+id/tel_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dip"
+                android:text="@string/tel"
+                android:layout_below="@+id/cc_pwd_textView">
+            </TextView>
+
+            <TextView
+                android:id="@+id/res_n_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dip"
+                android:text="@string/r_name"
+                android:layout_below="@+id/tel_textView">
+            </TextView>
+
+            <TextView
+                android:id="@+id/res_t_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dip"
+                android:text="@string/r_type"
+                android:layout_below="@+id/res_n_textView">
+            </TextView>
+            <TextView
+                android:id="@+id/addr_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dip"
+                android:text="@string/addr"
+                android:layout_below="@+id/res_t_textView">
+            </TextView>
+
+            <TextView
+                android:id="@+id/seats_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dip"
+                android:text="@string/seats"
+                android:layout_below="@+id/addr_textView">
+            </TextView>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/c_acc"
+                android:id="@+id/create_button"
+                android:layout_gravity="center_horizontal"
+                android:layout_below="@+id/seats_textView"
+                android:layout_alignLeft="@+id/photo_imageView"
+                android:layout_alignStart="@+id/photo_imageView" />
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/user_n_editText"
+                android:layout_alignBottom="@+id/user_name_textView"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_toEndOf="@+id/res_n_textView"
+                android:layout_toRightOf="@+id/res_n_textView" />
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"
+                android:ems="10"
+                android:id="@+id/cc_pwd_editText"
+                android:layout_alignBottom="@+id/cc_pwd_textView"
+                android:layout_toRightOf="@+id/res_n_textView"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true" />
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"
+                android:ems="10"
+                android:id="@+id/c_pwd_editText"
+                android:layout_alignBottom="@+id/pwd_textView"
+                android:layout_toRightOf="@+id/res_n_textView"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true" />
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="phone"
+                android:ems="10"
+                android:id="@+id/tel_editText"
+                android:layout_alignBottom="@+id/tel_textView"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignLeft="@+id/cc_pwd_editText"
+                android:layout_alignStart="@+id/cc_pwd_editText" />
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/r_n_editText"
+                android:layout_alignBottom="@+id/res_n_textView"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignLeft="@+id/tel_editText"
+                android:layout_alignStart="@+id/tel_editText" />
+
+            <Spinner
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/r_t_spinner"
+                android:layout_above="@+id/addr_textView"
+                android:layout_toEndOf="@+id/res_n_textView"
+                android:layout_toRightOf="@+id/res_n_textView"
+                android:spinnerMode="dropdown" />
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/addr_editText"
+                android:layout_below="@+id/r_t_spinner"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignLeft="@+id/r_t_spinner"
+                android:layout_alignStart="@+id/r_t_spinner" />
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="phone"
+                android:ems="10"
+                android:id="@+id/seats_editText"
+                android:layout_alignBottom="@+id/seats_textView"
+                android:layout_toRightOf="@+id/res_n_textView"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true" />
+
+        </RelativeLayout>
+    </RelativeLayout>
+
+</ScrollView>

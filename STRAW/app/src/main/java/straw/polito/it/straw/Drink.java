@@ -8,7 +8,7 @@ import org.json.JSONObject;
 /**
  * Created by Sylvain on 01/04/2016.
  */
-public class Drink extends food {
+public class Drink extends Food {
     /**
      * The volume (in Liter) of the drink
      */
@@ -51,10 +51,10 @@ public class Drink extends food {
     public String toString() {
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.putOpt(food.TYPE, DRINK);
-            jsonObject.putOpt(food.NAME, this.getName());
-            jsonObject.put(food.PRICE, this.getPrice());
-            jsonObject.putOpt(food.IMAGE_URI, this.getImageURI());
+            jsonObject.putOpt(Food.TYPE, DRINK);
+            jsonObject.putOpt(Food.NAME, this.getName());
+            jsonObject.put(Food.PRICE, this.getPrice());
+            jsonObject.putOpt(Food.IMAGE_URI, this.getImageURI());
             jsonObject.put(VOLUME, this.getVolume());
         } catch (JSONException e) {
             e.printStackTrace();

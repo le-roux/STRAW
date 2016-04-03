@@ -110,7 +110,7 @@ public class AddDrink extends AppCompatActivity {
     }
 
     private void restoreValues(String drink_descriptor) {
-        this.drink = (Drink)Food.create(drink_descriptor);
+        this.drink = (Drink) Food.create(drink_descriptor);
         this.name_field.setText(this.drink.getName());
         this.price_field.setText(String.valueOf(this.drink.getPrice()));
         this.volume_field.setText(String.valueOf(this.drink.getVolume()));

@@ -16,11 +16,11 @@ import java.util.ArrayList;
  */
 public class FoodAdapter extends BaseAdapter {
 
-    private ArrayList<food> goods;
+    private ArrayList<Food> goods;
     private Context context;
 
     public FoodAdapter(Context context) {
-        this.goods = new ArrayList<food>();
+        this.goods = new ArrayList<Food>();
         this.context = context;
     }
 
