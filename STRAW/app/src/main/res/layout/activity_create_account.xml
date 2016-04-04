@@ -119,7 +119,8 @@
                     android:layout_gravity="center_horizontal"
                     android:layout_below="@+id/seats_textView"
                     android:layout_alignLeft="@+id/photo_imageView"
-                    android:layout_alignStart="@+id/photo_imageView" />
+                    android:layout_alignStart="@+id/photo_imageView"
+                    android:background="@drawable/customborder_buttons"/>
 
                 <EditText
                     android:layout_width="wrap_content"

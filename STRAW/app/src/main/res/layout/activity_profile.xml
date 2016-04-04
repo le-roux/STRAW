@@ -80,5 +80,6 @@
         android:text="@string/edit_prof"
         android:id="@+id/edit_button"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/customborder_buttons"/>
 </RelativeLayout>
