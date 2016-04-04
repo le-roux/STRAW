@@ -5,6 +5,8 @@ import android.util.Log;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.StringTokenizer;
+
 /**
  * Created by Andres Camilo Jimenez on 03/04/2016.
  */
@@ -18,8 +20,35 @@ public class Manager {
     private String res_type;
     private int seats;
     private String image;
+    private String email;
 
     public Manager() {
+    }
+
+    public Manager(String man) {
+
+        try {
+            JSONObject oj=new JSONObject(man);
+            name= (String) oj.get("user_n");
+            pwd= (String) oj.get("pwd");
+            telephone= (int)oj.get("tel");
+            address=(String)oj.get("addr");
+            res_name=(String)oj.get("r_n");
+            res_type=(String)oj.get("r_t");
+            seats=(int)oj.get("seats");
+            image=(String)oj.get("photo");
+            email=(String)oj.get("email");
+        } catch (JSONException e) {
+            Log.v("Manager", "Error creating the manager");
+        }
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getImage() {
@@ -96,6 +125,7 @@ public class Manager {
             oj.put("r_t",res_type);
             oj.put("seats",seats);
             oj.put("photo",image);
+            oj.put("email",email);
             return oj.toString();
         } catch (JSONException e) {
             Log.v("Manager", "Error creating the manager");

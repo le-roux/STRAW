@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="straw.polito.it.straw">
 
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -18,7 +20,8 @@
         <activity android:name=".activities.CreateAccountActivity" />
         <activity android:name=".activities.CreateMenuActivity" />
         <activity android:name=".activities.AddDrinkActivity" />
-        <activity android:name=".activities.AddPlateActivity"></activity>
+        <activity android:name=".activities.AddPlateActivity" />
+        <activity android:name=".activities.ProfileActivity"></activity>
     </application>
 
 </manifest>

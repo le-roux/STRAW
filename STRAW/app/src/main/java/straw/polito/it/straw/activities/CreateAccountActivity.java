@@ -26,6 +26,9 @@ import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.Spinner;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -41,6 +44,7 @@ public class CreateAccountActivity extends AppCompatActivity {
     EditText c_pwd;
     EditText cc_pwd;
     EditText tel;
+    EditText email;
     EditText r_n;
     Spinner r_t;
     EditText addr;
@@ -49,6 +53,8 @@ public class CreateAccountActivity extends AppCompatActivity {
     PopupWindow popUp;
 
     Bitmap bitmap;
+
+    Uri photo_uri;
 
     List<String> types;
     private String TAG = "CreateAccountActivity";
@@ -61,20 +67,43 @@ public class CreateAccountActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_account);
-        man=new Manager();
+        mShared= PreferenceManager.getDefaultSharedPreferences(this);
+        initialize();
+
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         types=new ArrayList<>();
         types.add(getString(R.string.bar));
         types.add(getString(R.string.restaurant));
         types.add(getString(R.string.canteen));
         types.add(getString(R.string.ta));
-
-        initialize();
-        setPhoto();
         setListeners();
+        if(getIntent().hasExtra("manager")){
+            Log.v(TAG,getIntent().getExtras().getString("manager"));
+            man=new Manager(getIntent().getExtras().getString("manager"));
+            loadPrevInfo(man);
+        }else{
+            man=new Manager();
+            setPhoto();
+        }
 
-        mShared= PreferenceManager.getDefaultSharedPreferences(this);
+    }
 
+    private void loadPrevInfo(Manager man) {
+        try {
+            photo.setImageBitmap( MediaStore.Images.Media.getBitmap(getContentResolver(),Uri.parse(man.getImage())));
+            photo_uri=Uri.parse(man.getImage());
+        } catch (IOException e) {
+            Log.v(TAG, "Error on loading the photo! " + e.getMessage());
+        }
+        user_n.setText(man.getName());
+        c_pwd.setText(man.getPwd());
+        tel.setText(String.valueOf(man.getTelephone()));
+        email.setText(man.getEmail());
+        r_n.setText(man.getRes_name());
+        r_t.setSelection(types.indexOf(man.getRes_type()));
+        addr.setText(man.getAddress());
+        seats.setText(String.valueOf(man.getSeats()));
+        c_acc_button.setText(getString(R.string.save));
     }
 
     private void setListeners() {
@@ -96,6 +125,12 @@ public class CreateAccountActivity extends AppCompatActivity {
                     man.setName(user_n.getText().toString());
                 } else {
                     showAlert(getString(R.string.m_user_n), getString(R.string.error), false);
+                    sw = true;
+                }
+                if (!email.getText().toString().equals("")) {
+                    man.setEmail(email.getText().toString());
+                } else {
+                    showAlert(getString(R.string.m_email), getString(R.string.error), false);
                     sw = true;
                 }
                 if (!c_pwd.getText().toString().equals("") && c_pwd.getText().toString().equals(cc_pwd.getText().toString())) {
@@ -124,16 +159,20 @@ public class CreateAccountActivity extends AppCompatActivity {
                     sw = true;
                 }
                 if (!seats.getText().toString().equals("") && Integer.parseInt(seats.getText().toString()) > 0) {
-                    man.setName(user_n.getText().toString());
+                    man.setSeats(Integer.parseInt(seats.getText().toString()));
                 } else {
                     showAlert(getString(R.string.m_seats), getString(R.string.error), false);
                     sw = true;
                 }
-                man.setImage(BitMapToString(bitmap));
+                man.setImage( photo_uri.toString());
                 if (!sw) {
                     String oj = man.toJSONObject();
                     mShared.edit().putString("Manager", oj).commit();
-                    showAlert(getString(R.string.m_c), getString(R.string.m_succ), true);
+                    if(getIntent().hasExtra("manager")) {
+                        showAlert(getString(R.string.m_save), getString(R.string.m_succ), true);
+                    }else{
+                        showAlert(getString(R.string.m_c), getString(R.string.m_succ), true);
+                    }
                 } else {
                     return;
                 }
@@ -178,6 +217,7 @@ public class CreateAccountActivity extends AppCompatActivity {
         r_t=(Spinner)findViewById(R.id.r_t_spinner);
         addr=(EditText)findViewById(R.id.addr_editText);
         seats=(EditText)findViewById(R.id.seats_editText);
+        email=(EditText)findViewById(R.id.email_editText);
         c_acc_button=(Button)findViewById(R.id.create_button);
         setUpPopUpWindow();
     }
@@ -217,6 +257,7 @@ public class CreateAccountActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if( data!=null && resultCode==RESULT_OK && requestCode== IMAGE_REQ){
             Uri image =data.getData();
+            photo_uri=data.getData();
             try{
                 bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(),image);
                 bitmap=Bitmap.createScaledBitmap(bitmap,photo.getHeight(),photo.getWidth(),true);
@@ -224,32 +265,6 @@ public class CreateAccountActivity extends AppCompatActivity {
             }catch(IOException e){
                 Log.v(TAG,"Error on Activity result! "+e.getMessage());
             }
-        }
-        if( data!=null && resultCode==RESULT_OK && requestCode== CAMERA_REQ){
-            try{
-                bitmap = (Bitmap) data.getExtras().get("data");
-                photo.setImageBitmap(bitmap);
-            }catch(Exception e){
-                Log.v(TAG,"Error on Activity result! "+e.getMessage());
-            }
-        }
-    }
-
-    public String BitMapToString(Bitmap bitmap){
-        ByteArrayOutputStream baos=new  ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
-        byte [] b=baos.toByteArray();
-        String temp= Base64.encodeToString(b, Base64.DEFAULT);
-        return temp;
-    }
-    public Bitmap StringToBitMap(String encodedString){
-        try {
-            byte [] encodeByte=Base64.decode(encodedString,Base64.DEFAULT);
-            Bitmap bitmap=BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
-            return bitmap;
-        } catch(Exception e) {
-            e.getMessage();
-            return null;
         }
     }
 }

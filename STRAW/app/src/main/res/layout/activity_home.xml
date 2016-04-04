@@ -13,36 +13,18 @@
         android:orientation="vertical" android:padding="20dp"
         android:id="@+id/id_relativeLayout"
         android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="@string/user_n"
-            android:id="@+id/user_textView"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="@string/pwd"
-            android:id="@+id/pwd_textView"
-            android:layout_alignTop="@+id/pwd_editText"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/customborder">
 
         <EditText
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/user_name_editText"
             android:layout_alignParentTop="true"
-            android:layout_toRightOf="@+id/user_textView"
             android:layout_alignRight="@+id/pwd_editText"
-            android:layout_alignEnd="@+id/pwd_editText" />
+            android:layout_alignEnd="@+id/pwd_editText"
+            android:layout_alignLeft="@+id/pwd_editText"
+            android:layout_alignStart="@+id/pwd_editText" />
 
         <EditText
             android:layout_width="wrap_content"
@@ -51,9 +33,9 @@
             android:ems="10"
             android:id="@+id/pwd_editText"
             android:layout_above="@+id/log_in_button"
-            android:layout_toRightOf="@+id/user_textView"
-            android:layout_toEndOf="@+id/user_textView"
-            android:layout_marginBottom="27dp" />
+            android:layout_marginBottom="27dp"
+            android:layout_alignLeft="@+id/log_in_button"
+            android:layout_alignStart="@+id/log_in_button" />
 
         <Button
             android:layout_width="wrap_content"
@@ -72,6 +54,26 @@
             android:id="@+id/textView"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/user_n"
+            android:id="@+id/user_n_textView"
+            android:layout_alignBottom="@+id/user_name_editText"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/pwd"
+            android:id="@+id/pwd_textView"
+            android:layout_alignBottom="@+id/pwd_editText"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
     </RelativeLayout>
 
     <TextView
@@ -82,7 +84,9 @@
         android:id="@+id/notyet_textView"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="24dp" />
+        android:layout_marginTop="24dp"
+        android:background="@drawable/customborder_red"
+        />
 
     <TextView
         android:layout_width="wrap_content"
@@ -91,26 +95,27 @@
         android:text="@string/ident"
         android:id="@+id/id_textView"
         android:layout_above="@+id/id_relativeLayout"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/customborder_red"/>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="200sp"
         android:id="@+id/create_relativeLayout"
         android:layout_above="@+id/id_textView"
-        android:layout_below="@+id/notyet_textView">
+        android:layout_below="@+id/notyet_textView"
+        android:background="@drawable/customborder">
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/c_user"
             android:id="@+id/c_user_button"
-            android:layout_below="@+id/notyet_textView"
+            android:layout_marginLeft="42dp"
+            android:layout_marginStart="42dp"
+            android:layout_centerVertical="true"
             android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_marginLeft="46dp"
-            android:layout_marginStart="46dp"
-            android:layout_marginTop="32dp" />
+            android:layout_alignParentStart="true" />
 
         <Button
             android:layout_width="wrap_content"
