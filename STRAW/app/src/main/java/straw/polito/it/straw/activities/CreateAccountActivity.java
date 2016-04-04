@@ -204,6 +204,7 @@ public class CreateAccountActivity extends AppCompatActivity {
     private void setPhoto() {
         bitmap=BitmapFactory.decodeResource(getResources(), R.drawable.no_image);
         photo.setImageBitmap(bitmap);
+        photo_uri=Uri.parse("android.resource://straw.polito.it.straw/drawable/no_image");
     }
 
 
