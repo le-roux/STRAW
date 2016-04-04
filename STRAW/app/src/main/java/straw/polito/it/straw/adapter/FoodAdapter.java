@@ -27,6 +27,15 @@ public class FoodAdapter extends BaseAdapter {
         this.context = context;
     }
 
+    public FoodAdapter(Context context, ArrayList<Food> goods) {
+        this.goods = goods;
+        this.context = context;
+    }
+
+    public void add(Food food) {
+        this.goods.add(food);
+    }
+
     @Override
     public int getCount() {
         return this.goods.size();

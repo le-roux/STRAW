@@ -55,7 +55,7 @@ public abstract class Food {
 
     public abstract String getDescription();
 
-    public abstract void save(SharedPreferences.Editor editor, String id);
+    public abstract void save(SharedPreferences.Editor editor);
 
     public static Food create(JSONObject jsonObject) {
         String type = null;
@@ -64,24 +64,24 @@ public abstract class Food {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        Food Food;
+        Food food;
         if (type.equals(Drink.DRINK)) {
-            Food = Drink.create(jsonObject);
+            food = Drink.create(jsonObject);
         } else if(type.equals(Plate.PLATE)) {
-            Food = Plate.create(jsonObject);
+            food = Plate.create(jsonObject);
         } else {
             return null;
         }
-        if(Food != null) {
+        if(food != null) {
             try {
-                Food.setName(jsonObject.getString(NAME));
-                Food.setPrice(jsonObject.getDouble(PRICE));
-                Food.setImageURI(jsonObject.getString(IMAGE_URI));
+                food.setName(jsonObject.getString(NAME));
+                food.setPrice(jsonObject.getDouble(PRICE));
+                food.setImageURI(jsonObject.getString(IMAGE_URI));
             } catch (JSONException e) {
                 e.printStackTrace();
                 return null;
             }
-            return Food;
+            return food;
         } else {
             return null;
         }

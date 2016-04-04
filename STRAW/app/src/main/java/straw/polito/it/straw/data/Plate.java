@@ -15,18 +15,17 @@ public class Plate extends Food {
     /**
         List of the ingredients present in the plate
      */
-    private ArrayList<String> ingredients;
+    private String ingredients;
     private boolean vegan;
     private boolean glutenFree;
     public static final String PLATE = "PLATE";
     public static final String VEGAN = "VEGAN";
     public static final String GLUTEN_FREE = "GLUTEN_FREE";
     public static final String INGREDIENTS = "INGREDIENTS";
-    private static final int FIELDS_NB = 6;
 
     public Plate() {
         super();
-        this.ingredients = new ArrayList<String>();
+        this.ingredients = "";
         this.vegan = false;
         this.glutenFree = false;
     }
@@ -35,23 +34,15 @@ public class Plate extends Food {
         super(name, price, imageUri);
         this.vegan = vegan;
         this.glutenFree = glutenFree;
-        this.ingredients = new ArrayList<String>();
+        this.ingredients = "";
     }
 
-    public void addIngredient(String ingredient) {
-        this.ingredients.add(ingredient);
-    }
-
-    public void removeIngredient(String ingredient) {
-        this.ingredients.remove(ingredient);
+        public void setIngredients(String ingredients) {
+        this.ingredients = ingredients;
     }
 
     public String getIngredients() {
-        String ingredients = "";
-        for (String ingredient : this.ingredients) {
-            ingredients += ingredient;
-        }
-        return ingredients;
+        return this.ingredients;
     }
 
     public void setVegan(boolean vegan) {
@@ -72,21 +63,17 @@ public class Plate extends Food {
 
     @Override
     public String getDescription() {
-        String description = "";
-        for (String ingredient : this.ingredients) {
-            description += ingredient;
-            description += " ";
-        }
+        String description = this.ingredients;
         if (this.isGlutenFree())
-            description += "GLUTEN FREE ";
+            description += " GLUTEN FREE ";
         if (this.isVegan())
-            description += "VEGAN ";
+            description += "VEGAN";
         return description;
     }
 
     @Override
-    public void save (SharedPreferences.Editor editor, String id) {
-        editor.putString(id, this.toString());
+    public void save (SharedPreferences.Editor editor) {
+        editor.putString(this.getName(), this.toString());
         editor.commit();
     }
 
@@ -94,15 +81,13 @@ public class Plate extends Food {
     public String toString() {
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.putOpt("TYPE", "PLATE");
-            jsonObject.putOpt("NAME", this.getName());
-            jsonObject.put("PRICE", this.getPrice());
-            jsonObject.putOpt("IMAGE_URI", this.getImageURI());
-            jsonObject.put("VEGAN", this.isVegan());
-            jsonObject.put("GLUTEN_FREE", this.isGlutenFree());
-            for (int i = 0; i < this.ingredients.size(); i++) {
-                jsonObject.putOpt(String.valueOf(i), this.ingredients.get(i));
-            }
+            jsonObject.putOpt(Food.TYPE, PLATE);
+            jsonObject.putOpt(Food.NAME, this.getName());
+            jsonObject.put(Food.PRICE, this.getPrice());
+            jsonObject.putOpt(Food.IMAGE_URI, this.getImageURI());
+            jsonObject.put(VEGAN, this.isVegan());
+            jsonObject.put(GLUTEN_FREE, this.isGlutenFree());
+            jsonObject.putOpt(INGREDIENTS, this.ingredients);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -114,9 +99,7 @@ public class Plate extends Food {
         try {
             plate.setGlutenFree(jsonObject.getBoolean(GLUTEN_FREE));
             plate.setVegan(jsonObject.getBoolean(VEGAN));
-            for (int i = 0; i < jsonObject.length() - FIELDS_NB; i++) {
-                plate.ingredients.add(jsonObject.getString(String.valueOf(i)));
-            }
+            plate.setIngredients(jsonObject.getString(INGREDIENTS));
         } catch (JSONException e) {
             e.printStackTrace();
             return null;
