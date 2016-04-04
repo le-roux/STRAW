@@ -3,16 +3,26 @@ package straw.polito.it.straw.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.net.Uri;
+import android.widget.ListView;
+import android.widget.PopupMenu;
+import android.widget.PopupWindow;
+
+import java.util.ArrayList;
 
 import straw.polito.it.straw.data.Drink;
 import straw.polito.it.straw.data.Food;
@@ -32,6 +42,8 @@ public class AddDrinkActivity extends AppCompatActivity {
     private Context context;
     private Drink drink;
     private SharedPreferences sharedPreferences;
+    private PopupWindow popupWindow;
+    private ListView listView;
 
     private static final int TAKE_PICTURE_REQUEST_CODE = 1;
     private static final int CHOOSE_PICTURE_REQUEST_CODE = 2;
@@ -44,12 +56,14 @@ public class AddDrinkActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_drink);
+        setPopupWindow();
         this.name_field = (EditText)findViewById(R.id.name_field);
         this.price_field = (EditText)findViewById(R.id.price_field);
         this.volume_field = (EditText)findViewById(R.id.volume_field);
         this.take_photo_button = (Button)findViewById(R.id.take_photo_button);
         this.choose_photo_button =(Button)findViewById(R.id.choose_photo_button);
         this.add_button = (Button)findViewById(R.id.confirm_button);
+        this.image = (ImageView)findViewById(R.id.photo_imageView);
         this.context = getApplicationContext();
         this.sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.context);
         if (savedInstanceState != null)
@@ -57,35 +71,12 @@ public class AddDrinkActivity extends AppCompatActivity {
         else
             this.drink = new Drink();
 
-        //Add a listener on the button to take a photo
-        take_photo_button.setOnClickListener(new View.OnClickListener() {
-            private Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-
+        //Add a listener to the imageView which displays the popup window
+        this.image.setFocusable(true);
+        this.image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                fileUri = ImageManager.getOutputMediaFileUri(context, name_field.getText().toString()); //Create a file to store the photo
-                intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri); //Set the image file name
-                startActivityForResult(intent, TAKE_PICTURE_REQUEST_CODE); //Launch the camera app
-            }
-        }); //End of the listener
-
-        //Add a listener on the button to choose a picture
-        choose_photo_button.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View view) {
-                Intent choosePictureIntent = new Intent(Intent.ACTION_GET_CONTENT);
-                choosePictureIntent.setType("image/*");
-                startActivityForResult(choosePictureIntent, CHOOSE_PICTURE_REQUEST_CODE);
-            }
-        }); //End of listener
-
-        //Add a listener on the Add button
-        add_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                sharedPreferences.edit().putString(drink.getName(), drink.toString());
-                //TO DO : switch activity
+                popupWindow.showAsDropDown(view, 0, 0);
             }
         });
     }
@@ -133,5 +124,38 @@ public class AddDrinkActivity extends AppCompatActivity {
         this.drink.setPrice(Double.parseDouble(this.price_field.getText().toString()));
         this.drink.setVolume(Double.parseDouble(this.volume_field.getText().toString()));
         this.drink.setImageURI(this.fileUri.toString());
+    }
+
+    private void setPopupWindow() {
+        this.popupWindow = new PopupWindow(this.getApplicationContext());
+        ArrayList<String> content = new ArrayList<String>();
+        content.add(getString(R.string.Choose_photo));
+        content.add(getString(R.string.take_photo));
+        ArrayAdapter<String> popupAdapter = new ArrayAdapter<String>(this.getApplicationContext(), android.R.layout.simple_list_item_1, content);
+        this.listView = new ListView(this.getApplicationContext());
+        listView.setAdapter(popupAdapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (position == 0) {
+                    //Choose photo
+                    Intent choosePictureIntent = new Intent(Intent.ACTION_GET_CONTENT);
+                    choosePictureIntent.setType("image/*");
+                    startActivityForResult(choosePictureIntent, CHOOSE_PICTURE_REQUEST_CODE);
+                } else {
+                    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    //Take photo
+                    fileUri = ImageManager.getOutputMediaFileUri(context, name_field.getText().toString()); //Create a file to store the photo
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri); //Set the image file name
+                    startActivityForResult(intent, TAKE_PICTURE_REQUEST_CODE); //Launch the camera app
+                }
+            }
+        });
+        popupWindow.setFocusable(true);
+        popupWindow.setWidth(500);
+        popupWindow.setHeight(WindowManager.LayoutParams.WRAP_CONTENT);
+        popupWindow.setContentView(listView);
+        popupWindow.setBackgroundDrawable(new ColorDrawable(Color.WHITE));
+
     }
 }
