@@ -1,5 +1,6 @@
 package straw.polito.it.straw.activities;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -19,9 +20,11 @@ import straw.polito.it.straw.R;
 public class CreateMenuActivity extends AppCompatActivity {
 
     private static final int EDIT_FOOD = 1;
-    public static final String ELEMENT = "Element";
+    public static final String ELEMENT = "it.polito.straw.Element";
+    public static final String ID = "it.polito.straw.Id";
 
     private ListView listViewPlate;
+    private ArrayList<Food> list_plate;
     private Context context;
 
     @Override
@@ -29,7 +32,7 @@ public class CreateMenuActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_menu);
         this.context = this;
-        final ArrayList<Food> list_plate= new ArrayList<Food>();
+        list_plate = new ArrayList<Food>();
         list_plate.add(new Plate());
 
 
@@ -41,11 +44,13 @@ public class CreateMenuActivity extends AppCompatActivity {
                 Intent detail = null;
                 Bundle data = new Bundle();
                 data.putString(ELEMENT, list_plate.get(position).toString());
+                data.putInt(ID, position);
                 if(list_plate.get(position).getClass() == Drink.class) {
                     detail = new Intent(getApplicationContext(), Drink.class);
                 } else if (list_plate.get(position).getClass() == Plate.class) {
                     detail = new Intent(getApplicationContext(), Plate.class);
                 }
+                detail.putExtras(data);
                 startActivityForResult(detail, EDIT_FOOD);
             }
         });
@@ -55,8 +60,11 @@ public class CreateMenuActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent result) {
-        if(requestCode == this.EDIT_FOOD) {
-
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == this.EDIT_FOOD) {
+                this.list_plate.set(result.getIntExtra(ID, 0), Food.create(result.getStringExtra(ELEMENT)));
+                ((FoodAdapter)this.listViewPlate.getAdapter()).notifyDataSetChanged();
+            }
         }
     }
 }

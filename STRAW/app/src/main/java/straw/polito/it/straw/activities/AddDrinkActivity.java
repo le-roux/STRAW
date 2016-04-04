@@ -1,5 +1,6 @@
 package straw.polito.it.straw.activities;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -44,6 +45,7 @@ public class AddDrinkActivity extends AppCompatActivity {
     private SharedPreferences sharedPreferences;
     private PopupWindow popupWindow;
     private ListView listView;
+    private Intent intent;
 
     private static final int TAKE_PICTURE_REQUEST_CODE = 1;
     private static final int CHOOSE_PICTURE_REQUEST_CODE = 2;
@@ -56,6 +58,7 @@ public class AddDrinkActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_drink);
+        this.intent = getIntent();
         setPopupWindow();
         this.name_field = (EditText)findViewById(R.id.name_field);
         this.price_field = (EditText)findViewById(R.id.price_field);
@@ -68,8 +71,10 @@ public class AddDrinkActivity extends AppCompatActivity {
         this.sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.context);
         if (savedInstanceState != null)
             restoreValues(savedInstanceState.getString(DRINK));
-        else
-            this.drink = new Drink();
+        else {
+            String description = this.intent.getStringExtra(CreateMenuActivity.ELEMENT);
+            this.drink = (Drink)Food.create(description);
+        }
 
         //Add a listener to the imageView which displays the popup window
         this.image.setFocusable(true);
@@ -77,6 +82,19 @@ public class AddDrinkActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 popupWindow.showAsDropDown(view, 0, 0);
+            }
+        });
+        this.add_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                sharedPreferences.edit().putString(drink.getName(), drink.toString());
+                Intent result = new Intent(getApplicationContext(), CreateMenuActivity.class);
+                Bundle data = new Bundle();
+                data.putString(CreateMenuActivity.ID, intent.getStringExtra(CreateMenuActivity.ID));
+                data.putString(CreateMenuActivity.ELEMENT, drink.toString());
+                result.putExtras(data);
+                setResult(Activity.RESULT_OK, result);
+                finish();
             }
         });
     }

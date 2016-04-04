@@ -173,6 +173,8 @@ public class CreateAccountActivity extends AppCompatActivity {
                     }else{
                         showAlert(getString(R.string.m_c), getString(R.string.m_succ), true);
                     }
+                    Intent intent = new Intent(getApplicationContext(), CreateMenuActivity.class);
+                    startActivity(intent);
                 } else {
                     return;
                 }

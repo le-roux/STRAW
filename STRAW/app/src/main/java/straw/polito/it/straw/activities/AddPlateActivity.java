@@ -1,5 +1,6 @@
 package straw.polito.it.straw.activities;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -35,6 +36,7 @@ public class AddPlateActivity extends AppCompatActivity {
     private Context context;
     private Plate plate;
     private SharedPreferences sharedPreferences;
+    private Intent intent;
 
     private static final int TAKE_PICTURE_REQUEST_CODE = 1;
     private static final int CHOOSE_PICTURE_REQUEST_CODE = 2;
@@ -46,7 +48,8 @@ public class AddPlateActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_drink);
+        setContentView(R.layout.activity_add_plate);
+        this.intent = getIntent();
         this.name_field = (EditText)findViewById(R.id.name_field);
         this.price_field = (EditText)findViewById(R.id.price_field);
         this.ingredients_field = (EditText)findViewById(R.id.ingredients_field);
@@ -59,8 +62,10 @@ public class AddPlateActivity extends AppCompatActivity {
         this.sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.context);
         if (savedInstanceState != null)
             restoreValues(savedInstanceState.getString(PLATE));
-        else
-            this.plate = new Plate();
+        else {
+            String description = this.intent.getStringExtra(CreateMenuActivity.ELEMENT);
+            this.plate = (Plate)Food.create(description);
+        }
 
         //Add a listener on the button to take a photo
         take_photo_button.setOnClickListener(new View.OnClickListener() {
@@ -90,7 +95,13 @@ public class AddPlateActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 sharedPreferences.edit().putString(plate.getName(), plate.toString());
-                //TO DO : switch activity
+                Intent result = new Intent(getApplicationContext(), CreateMenuActivity.class);
+                Bundle data = new Bundle();
+                data.putString(CreateMenuActivity.ID, intent.getStringExtra(CreateMenuActivity.ID));
+                data.putString(CreateMenuActivity.ELEMENT, plate.toString());
+                result.putExtras(data);
+                setResult(Activity.RESULT_OK, result);
+                finish();
             }
         });
     }
