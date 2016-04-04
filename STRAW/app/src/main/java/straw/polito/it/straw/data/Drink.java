@@ -42,8 +42,8 @@ public class Drink extends Food {
     }
 
     @Override
-    public void save(SharedPreferences.Editor editor, String id) {
-        editor.putString(id, this.toString());
+    public void save(SharedPreferences.Editor editor) {
+        editor.putString(this.getName(), this.toString());
         editor.commit();
     }
 

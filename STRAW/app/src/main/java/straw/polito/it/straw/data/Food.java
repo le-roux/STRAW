@@ -55,7 +55,7 @@ public abstract class Food {
 
     public abstract String getDescription();
 
-    public abstract void save(SharedPreferences.Editor editor, String id);
+    public abstract void save(SharedPreferences.Editor editor);
 
     public static Food create(JSONObject jsonObject) {
         String type = null;
