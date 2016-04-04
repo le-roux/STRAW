@@ -7,6 +7,10 @@ import org.json.JSONObject;
 
 /**
  * Created by Sylvain on 01/04/2016.
+ *
+ * This class describes the features common to all the types of food.
+ *
+ * Known subclasses : Drink, Plate
  */
 public abstract class Food {
     private String name;
@@ -53,10 +57,23 @@ public abstract class Food {
         return this.imageURI;
     }
 
+    /**
+     * Returns a description of the food element, to use in the ListView
+     * @return A string describing the content of the food element
+     */
     public abstract String getDescription();
 
+    /**
+     * Store the data describing the food element in the shared preferences
+     * @param editor The SharedPreferences editor in which to store the data
+     */
     public abstract void save(SharedPreferences.Editor editor);
 
+    /**
+     * Create a food object using the data provided
+     * @param jsonObject The data to use to create the object
+     * @return The food object created
+     */
     public static Food create(JSONObject jsonObject) {
         String type = null;
         try {
@@ -87,6 +104,11 @@ public abstract class Food {
         }
     }
 
+    /**
+     * Create a food object using the data provided
+     * @param food_descriptor
+     * @return
+     */
     public static Food create(String food_descriptor) {
         try {
             return (Food.create(new JSONObject(food_descriptor)));
