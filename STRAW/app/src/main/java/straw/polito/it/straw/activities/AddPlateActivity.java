@@ -190,7 +190,7 @@ public class AddPlateActivity extends AppCompatActivity {
                     choosePictureIntent.setType("image/*");
                     startActivityForResult(choosePictureIntent, CHOOSE_PICTURE_REQUEST_CODE);
                 } else {
-                    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
                     //Take photo
                     fileUri = ImageManager.getOutputMediaFileUri(context, name_field.getText().toString()); //Create a file to store the photo
                     intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri); //Set the image file name

@@ -19,14 +19,12 @@ import java.util.Date;
  */
 public class ImageManager {
 
-    private static final String TAG = "FoodApp";
-
     private static File getOutputMediaFile(Context context, String fileName) {
         File mediaStorageDir = new File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), fileName);
 
         if(!mediaStorageDir.exists()) {
             if (!mediaStorageDir.mkdirs()) {
-                Log.d(TAG, "failed to create directory");
+                Logger.d( "failed to create directory");
                 return null;
             }
         }
@@ -41,7 +39,7 @@ public class ImageManager {
     }
 
     public static void setImage(Context context, ImageView imageView, Uri uri) {
-        Log.d(TAG, "uri = " + uri);
+        Logger.d( "setImage uri = " + uri);
         Bitmap bitmap = null;
         try {
             bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), uri);
@@ -49,14 +47,10 @@ public class ImageManager {
             e.printStackTrace();
         }
         if (bitmap == null)
-            Log.d(TAG, "bitmap null");
+            Logger.d("bitmap null");
         else {
-            Matrix matrix = new Matrix();
-            matrix.postRotate(90);
-            Bitmap small = Bitmap.createScaledBitmap(bitmap, 800, 600, false);
-            Bitmap rotated = Bitmap.createBitmap(small, 0, 0, small.getWidth(), small.getHeight(), matrix, true);
-            imageView.setImageBitmap(rotated);
-            Log.d(TAG, "image set");
+            Bitmap small = Bitmap.createScaledBitmap(bitmap, 600, 800, false);
+            imageView.setImageBitmap(small);
         }
     }
 }

@@ -14,6 +14,7 @@ import java.util.ArrayList;
 
 import straw.polito.it.straw.R;
 import straw.polito.it.straw.data.Food;
+import straw.polito.it.straw.straw.polito.it.straw.utils.ImageManager;
 import straw.polito.it.straw.straw.polito.it.straw.utils.Logger;
 
 /**
@@ -85,8 +86,9 @@ public class FoodAdapter extends BaseAdapter {
         //Fill the View with the proper data
         if (position < this.goods.size()) {
             String uri = this.goods.get(position).getImageURI();
+            Logger.d("uri = " + uri);
             if(uri != null)
-                imageView.setImageURI(Uri.parse(uri));
+                ImageManager.setImage(this.context, imageView, Uri.parse(uri));
             title.setText(this.goods.get(position).getName());
             description.setText(this.goods.get(position).getDescription());
             price.setText(String.valueOf(this.goods.get(position).getPrice()) + " €");

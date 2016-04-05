@@ -26,9 +26,9 @@ public class CreateMenuActivity extends AppCompatActivity {
     private static final int ADD_FOOD = 2;
     public static final String ELEMENT = "it.polito.straw.Element";
     public static final String ID = "it.polito.straw.Id";
-    public static final String ACTION = "Action";
-    public static final String ADD_ELEMENT = "Add";
-    public static final String EDIT_ELEMENT = "Edit";
+    public static final String ACTION = "it.polito.straw.Action";
+    public static final String ADD_ELEMENT = "it.polito.straw.Add";
+    public static final String EDIT_ELEMENT = "it.polito.straw.Edit";
 
     private ListView food_listView;
     private ArrayList<Food> list_plate;
