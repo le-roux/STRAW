@@ -67,9 +67,9 @@ public class AddPlateActivity extends AppCompatActivity {
             restoreValues(savedInstanceState.getString(PLATE));
         else {
             String action = this.intent.getStringExtra(CreateMenuActivity.ACTION);
-            if (action == CreateMenuActivity.ADD_ELEMENT) {
+            if (action.equals(CreateMenuActivity.ADD_ELEMENT)) {
                 this.plate = new Plate();
-            } else if(action == CreateMenuActivity.EDIT_ELEMENT) {
+            } else if(action.equals(CreateMenuActivity.EDIT_ELEMENT)) {
                 String description = this.intent.getStringExtra(CreateMenuActivity.ELEMENT);
                 this.plate = (Plate) Food.create(description);
                 this.title.setText(getText(R.string.Edit_plate));
@@ -103,6 +103,7 @@ public class AddPlateActivity extends AppCompatActivity {
         add_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                update();
                 sharedPreferences.edit().putString(plate.getName(), plate.toString());
                 Intent result = new Intent(getApplicationContext(), CreateMenuActivity.class);
                 Bundle data = new Bundle();

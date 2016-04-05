@@ -52,5 +52,6 @@
     <string name="save">Save</string>
     <string name="edit_prof">Edit profile</string>
     <string name="Remove">Remove</string>
+    <string name="Default">Default</string>
 
 </resources>

@@ -30,6 +30,7 @@ import straw.polito.it.straw.data.Drink;
 import straw.polito.it.straw.data.Food;
 import straw.polito.it.straw.straw.polito.it.straw.utils.ImageManager;
 import straw.polito.it.straw.R;
+import straw.polito.it.straw.straw.polito.it.straw.utils.Logger;
 
 public class AddDrinkActivity extends AppCompatActivity {
 
@@ -46,6 +47,7 @@ public class AddDrinkActivity extends AppCompatActivity {
     private PopupWindow popupWindow;
     private ListView listView;
     private Intent intent;
+    private String action;
 
     private static final int TAKE_PICTURE_REQUEST_CODE = 1;
     private static final int CHOOSE_PICTURE_REQUEST_CODE = 2;
@@ -71,10 +73,10 @@ public class AddDrinkActivity extends AppCompatActivity {
         if (savedInstanceState != null)
             restoreValues(savedInstanceState.getString(DRINK));
         else {
-            String action = this.intent.getStringExtra(CreateMenuActivity.ACTION);
-            if(action == CreateMenuActivity.ADD_ELEMENT) {
+            action = this.intent.getStringExtra(CreateMenuActivity.ACTION);
+            if(action.equals(CreateMenuActivity.ADD_ELEMENT)) {
                 this.drink = new Drink();
-            } else if (action == CreateMenuActivity.EDIT_ELEMENT) {
+            } else if (action.equals(CreateMenuActivity.EDIT_ELEMENT)) {
                 String description = this.intent.getStringExtra(CreateMenuActivity.ELEMENT);
                 this.drink = (Drink) Food.create(description);
                 this.title.setText(getText(R.string.Edit_drink));
@@ -89,16 +91,24 @@ public class AddDrinkActivity extends AppCompatActivity {
                 popupWindow.showAsDropDown(view, 0, 0);
             }
         });
+
         this.add_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                update();
+                Logger.d("name = " + drink.getName());
                 sharedPreferences.edit().putString(drink.getName(), drink.toString());
                 Intent result = new Intent(getApplicationContext(), CreateMenuActivity.class);
                 Bundle data = new Bundle();
-                data.putString(CreateMenuActivity.ID, intent.getStringExtra(CreateMenuActivity.ID));
+                data.putString(CreateMenuActivity.ACTION, action);
+                if (action == CreateMenuActivity.EDIT_ELEMENT) {
+                    data.putString(CreateMenuActivity.ID, intent.getStringExtra(CreateMenuActivity.ID));
+                }
                 data.putString(CreateMenuActivity.ELEMENT, drink.toString());
+                Logger.d("drink stored");
                 result.putExtras(data);
                 setResult(Activity.RESULT_OK, result);
+                Logger.d("result set");
                 finish();
             }
         });
@@ -142,11 +152,31 @@ public class AddDrinkActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Update the values in the Drink object according to the fields of the display
+     */
     public void update() {
-        this.drink.setName(this.name_field.getText().toString());
-        this.drink.setPrice(Double.parseDouble(this.price_field.getText().toString()));
-        this.drink.setVolume(Double.parseDouble(this.volume_field.getText().toString()));
-        this.drink.setImageURI(this.fileUri.toString());
+        Logger.d("update");
+        String name = this.name_field.getText().toString();
+        if (name != null)
+            this.drink.setName(name);
+        else
+            this.drink.setName(getText(R.string.Default).toString());
+        String price = this.price_field.getText().toString();
+        if (price != null)
+            this.drink.setPrice(Double.parseDouble(price));
+        else
+            this.drink.setPrice(0d);
+        String volume = this.volume_field.getText().toString();
+        if (volume != null)
+            this.drink.setVolume(Double.parseDouble(volume));
+        else
+            this.drink.setVolume(0d);
+        if(this.fileUri != null)
+            this.drink.setImageURI(this.fileUri.toString());
+        else
+            this.drink.setImageURI(null);
+        Logger.d("end update");
     }
 
     private void setPopupWindow() {

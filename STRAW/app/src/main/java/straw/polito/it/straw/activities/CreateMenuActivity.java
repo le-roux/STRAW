@@ -29,7 +29,7 @@ public class CreateMenuActivity extends AppCompatActivity {
     public static final String ADD_ELEMENT = "Add";
     public static final String EDIT_ELEMENT = "Edit";
 
-    private ListView listViewPlate;
+    private ListView food_listView;
     private ArrayList<Food> list_plate;
     private Context context;
     private Button add_plate_button;
@@ -40,6 +40,8 @@ public class CreateMenuActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_menu);
         this.context = this;
+
+        //Listener for the "Add plate" button
         this.add_plate_button = (Button)findViewById(R.id.add_plate_button);
         this.add_plate_button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -49,13 +51,24 @@ public class CreateMenuActivity extends AppCompatActivity {
                 startActivityForResult(intent, ADD_FOOD);
             }
         });
-        list_plate = new ArrayList<Food>();
-        list_plate.add(new Plate());
 
+        //Listener for the "Add drink" button
+        this.add_drink_button = (Button)findViewById(R.id.add_drink_button);
+        this.add_drink_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), AddDrinkActivity.class);
+                intent.putExtra(ACTION, ADD_ELEMENT);
+                startActivityForResult(intent, ADD_FOOD);
+            }
+        });
 
+        this.init_list();
 
-        listViewPlate = (ListView) findViewById( R.id.Plate_list);
-        listViewPlate.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        //Initialisation of the listView
+        food_listView = (ListView) findViewById( R.id.Plate_list);
+        //Listener for the ListView
+        food_listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Logger.d("onItem click");
@@ -63,26 +76,34 @@ public class CreateMenuActivity extends AppCompatActivity {
                 Bundle data = new Bundle();
                 data.putString(ELEMENT, list_plate.get(position).toString());
                 data.putInt(ID, position);
-                if(list_plate.get(position).getClass() == Drink.class) {
+                if (list_plate.get(position).getClass().equals(Drink.class)) {
                     detail = new Intent(getApplicationContext(), Drink.class);
-                } else if (list_plate.get(position).getClass() == Plate.class) {
+                } else if (list_plate.get(position).getClass().equals(Plate.class)) {
                     detail = new Intent(getApplicationContext(), Plate.class);
                 }
                 detail.putExtras(data);
                 startActivityForResult(detail, EDIT_FOOD);
             }
         });
-        listViewPlate.setAdapter(new FoodAdapter(context, list_plate));
-        Logger.d("create menu onCreate finished");
+        food_listView.setAdapter(new FoodAdapter(context, list_plate));
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent result) {
+        Logger.d("onActivityResult");
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == this.EDIT_FOOD) {
                 this.list_plate.set(result.getIntExtra(ID, 0), Food.create(result.getStringExtra(ELEMENT)));
-                ((FoodAdapter)this.listViewPlate.getAdapter()).notifyDataSetChanged();
+                ((FoodAdapter)this.food_listView.getAdapter()).notifyDataSetChanged();
+            } else if(requestCode == this.ADD_FOOD) {
+                this.list_plate.add(Food.create(result.getStringExtra(ELEMENT)));
+                ((FoodAdapter)this.food_listView.getAdapter()).notifyDataSetChanged();
             }
         }
+    }
+
+    private void init_list() {
+        this.list_plate = new ArrayList<Food>();
+        this.list_plate.add(new Plate());
     }
 }
