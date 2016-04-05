@@ -79,10 +79,11 @@ public class CreateMenuActivity extends AppCompatActivity {
                 Bundle data = new Bundle();
                 data.putString(ELEMENT, list_plate.get(position).toString());
                 data.putInt(ID, position);
+                data.putString(ACTION, EDIT_ELEMENT);
                 if (list_plate.get(position).getClass().equals(Drink.class)) {
-                    detail = new Intent(getApplicationContext(), Drink.class);
+                    detail = new Intent(getApplicationContext(), AddDrinkActivity.class);
                 } else if (list_plate.get(position).getClass().equals(Plate.class)) {
-                    detail = new Intent(getApplicationContext(), Plate.class);
+                    detail = new Intent(getApplicationContext(), AddPlateActivity.class);
                 }
                 detail.putExtras(data);
                 startActivityForResult(detail, EDIT_FOOD);

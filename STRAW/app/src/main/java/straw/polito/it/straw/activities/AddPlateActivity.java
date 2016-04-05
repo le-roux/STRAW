@@ -58,6 +58,7 @@ public class AddPlateActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Logger.d("plate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_plate);
         setPopupWindow();
@@ -72,7 +73,6 @@ public class AddPlateActivity extends AppCompatActivity {
         this.image = (ImageView)findViewById(R.id.photo_imageView);
         this.context = getApplicationContext();
         this.sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.context);
-
         if (savedInstanceState != null)
             restoreValues(savedInstanceState.getString(PLATE));
         else {
@@ -81,7 +81,7 @@ public class AddPlateActivity extends AppCompatActivity {
                 this.plate = new Plate();
             } else if(action.equals(CreateMenuActivity.EDIT_ELEMENT)) {
                 String description = this.intent.getStringExtra(CreateMenuActivity.ELEMENT);
-                this.plate = (Plate) Food.create(description);
+                restoreValues(description);
                 this.title.setText(getText(R.string.Edit_plate));
             }
     }
@@ -144,11 +144,12 @@ public class AddPlateActivity extends AppCompatActivity {
         this.vegan_checkbox.setActivated(this.plate.isVegan());
         this.glutenfree_checkbox.setActivated(this.plate.isGlutenFree());
         String uri = this.plate.getImageURI();
-        if (uri != null)
+        if (uri != null) {
             this.fileUri = Uri.parse(uri);
+            ImageManager.setImage(this.context, this.image, this.fileUri);
+        }
         else {
             this.fileUri = null;
-            ImageManager.setImage(this.context, this.image, this.fileUri);
         }
     }
 

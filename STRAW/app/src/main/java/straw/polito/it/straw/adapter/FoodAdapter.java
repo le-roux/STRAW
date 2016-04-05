@@ -66,11 +66,16 @@ public class FoodAdapter extends BaseAdapter {
                     FoodAdapter.this.notifyDataSetChanged();
                 }
             });
+            remove_button.setFocusable(false);
         }
         ImageView imageView = (ImageView)convertView.findViewById(R.id.PlateImage);
+        imageView.setFocusable(false);
         TextView title = (TextView)convertView.findViewById(R.id.PlateName);
+        title.setFocusable(false);
         TextView description = (TextView)convertView.findViewById(R.id.PlateDescription);
+        description.setFocusable(false);
         TextView price = (TextView)convertView.findViewById(R.id.PlatePrice);
+        price.setFocusable(false);
 
         if (position < this.goods.size()) {
             String uri = this.goods.get(position).getImageURI();
