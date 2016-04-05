@@ -38,8 +38,6 @@ public class AddPlateActivity extends AppCompatActivity {
     private EditText name_field;
     private EditText price_field;
     private EditText ingredients_field;
-    private Button take_photo_button;
-    private Button choose_photo_button;
     private Button add_button;
     private CheckBox vegan_checkbox;
     private CheckBox glutenfree_checkbox;
@@ -70,8 +68,6 @@ public class AddPlateActivity extends AppCompatActivity {
         this.ingredients_field = (EditText)findViewById(R.id.ingredients_field);
         this.vegan_checkbox = (CheckBox)findViewById(R.id.vegan_checkbox);
         this.glutenfree_checkbox = (CheckBox)findViewById(R.id.glutenfree_checkbox);
-        this.take_photo_button = (Button)findViewById(R.id.take_photo_button);
-        this.choose_photo_button =(Button)findViewById(R.id.choose_photo_button);
         this.add_button = (Button)findViewById(R.id.confirm_button);
         this.image = (ImageView)findViewById(R.id.photo_imageView);
         this.context = getApplicationContext();
@@ -167,8 +163,8 @@ public class AddPlateActivity extends AppCompatActivity {
             this.plate.setPrice(0d);
         else
             this.plate.setPrice(Double.parseDouble(price));
-        this.plate.setVegan(this.vegan_checkbox.isActivated());
-        this.plate.setGlutenFree(this.glutenfree_checkbox.isActivated());
+        this.plate.setVegan(this.vegan_checkbox.isChecked());
+        this.plate.setGlutenFree(this.glutenfree_checkbox.isChecked());
         this.plate.setIngredients(this.ingredients_field.getText().toString());
         if(this.fileUri != null)
             this.plate.setImageURI(this.fileUri.toString());

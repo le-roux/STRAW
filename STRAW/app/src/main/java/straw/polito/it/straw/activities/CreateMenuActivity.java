@@ -93,7 +93,6 @@ public class CreateMenuActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent result) {
-        Logger.d("onActivityResult");
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == this.EDIT_FOOD) {
                 this.list_plate.set(result.getIntExtra(ID, 0), Food.create(result.getStringExtra(ELEMENT)));
