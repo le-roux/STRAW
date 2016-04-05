@@ -58,28 +58,25 @@ public class AddPlateActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Logger.d("plate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_plate);
-        setPopupWindow();
+        this.setPopupWindow();
+        this.getViews();
         this.intent = getIntent();
-        this.title = (TextView)findViewById(R.id.title);
-        this.name_field = (EditText)findViewById(R.id.name_field);
-        this.price_field = (EditText)findViewById(R.id.price_field);
-        this.ingredients_field = (EditText)findViewById(R.id.ingredients_field);
-        this.vegan_checkbox = (CheckBox)findViewById(R.id.vegan_checkbox);
-        this.glutenfree_checkbox = (CheckBox)findViewById(R.id.glutenfree_checkbox);
-        this.add_button = (Button)findViewById(R.id.confirm_button);
-        this.image = (ImageView)findViewById(R.id.photo_imageView);
         this.context = getApplicationContext();
+
+        //If needed, restore the values saved
         this.sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.context);
         if (savedInstanceState != null)
             restoreValues(savedInstanceState.getString(PLATE));
         else {
+            //Init the values with the one provided by the calling activity
             String action = this.intent.getStringExtra(CreateMenuActivity.ACTION);
             if (action.equals(CreateMenuActivity.ADD_ELEMENT)) {
+                //New plate
                 this.plate = new Plate();
             } else if(action.equals(CreateMenuActivity.EDIT_ELEMENT)) {
+                //Modification of an existing plate
                 String description = this.intent.getStringExtra(CreateMenuActivity.ELEMENT);
                 restoreValues(description);
                 this.title.setText(getText(R.string.Edit_plate));
@@ -136,13 +133,20 @@ public class AddPlateActivity extends AppCompatActivity {
         restoreValues(b.getString(PLATE));
     }
 
+    /**
+     * Decode the string provided as a JSON object describing a plate and use these infos to
+     * set the proper values of the different fields
+     * @param drink_descriptor a string representation of a JSON object describing a plate
+     */
     private void restoreValues(String drink_descriptor) {
         this.plate = (Plate) Food.create(drink_descriptor);
+
         this.name_field.setText(this.plate.getName());
         this.price_field.setText(String.valueOf(this.plate.getPrice()));
         this.ingredients_field.setText(String.valueOf(this.plate.getIngredients()));
         this.vegan_checkbox.setActivated(this.plate.isVegan());
         this.glutenfree_checkbox.setActivated(this.plate.isGlutenFree());
+
         String uri = this.plate.getImageURI();
         if (uri != null) {
             this.fileUri = Uri.parse(uri);
@@ -153,20 +157,32 @@ public class AddPlateActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Update the plate object according to the values in the different fields of the page
+     */
     private void update() {
+        //Name
         String name = this.name_field.getText().toString();
         if(name.equals(""))
             this.plate.setName(getText(R.string.Default).toString());
         else
             this.plate.setName(name);
+
+        //Price
         String price = this.price_field.getText().toString();
         if(price.equals(""))
             this.plate.setPrice(0d);
         else
             this.plate.setPrice(Double.parseDouble(price));
+
+        //Vegan & gluten_free
         this.plate.setVegan(this.vegan_checkbox.isChecked());
         this.plate.setGlutenFree(this.glutenfree_checkbox.isChecked());
+
+        //Ingredients
         this.plate.setIngredients(this.ingredients_field.getText().toString());
+
+        //Image URI
         if(this.fileUri != null)
             this.plate.setImageURI(this.fileUri.toString());
         else
@@ -175,12 +191,19 @@ public class AddPlateActivity extends AppCompatActivity {
 
     private void setPopupWindow() {
         this.popupWindow = new PopupWindow(this.getApplicationContext());
+
+        //Content
         ArrayList<String> content = new ArrayList<String>();
         content.add(getString(R.string.Choose_photo));
         content.add(getString(R.string.take_photo));
-        ArrayAdapter<String> popupAdapter = new ArrayAdapter<String>(this.getApplicationContext(), android.R.layout.simple_list_item_1, content);
+
+        //Adapter
+        ArrayAdapter<String> popupAdapter = new ArrayAdapter<String>(this.getApplicationContext(),
+                android.R.layout.simple_list_item_1, content);
         this.listView = new ListView(this.getApplicationContext());
         listView.setAdapter(popupAdapter);
+
+        //Listener for the popup window
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -190,20 +213,36 @@ public class AddPlateActivity extends AppCompatActivity {
                     choosePictureIntent.setType("image/*");
                     startActivityForResult(choosePictureIntent, CHOOSE_PICTURE_REQUEST_CODE);
                 } else {
-                    Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
                     //Take photo
-                    fileUri = ImageManager.getOutputMediaFileUri(context, name_field.getText().toString()); //Create a file to store the photo
+                    Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                    fileUri = ImageManager.getOutputMediaFileUri(context,
+                            name_field.getText().toString()); //Create a file to store the photo
                     intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri); //Set the image file name
                     startActivityForResult(intent, TAKE_PICTURE_REQUEST_CODE); //Launch the camera app
                 }
                 popupWindow.dismiss();
             }
         });
+
+        //Settings
         popupWindow.setFocusable(true);
         popupWindow.setWidth(500);
         popupWindow.setHeight(WindowManager.LayoutParams.WRAP_CONTENT);
         popupWindow.setContentView(listView);
         popupWindow.setBackgroundDrawable(new ColorDrawable(Color.WHITE));
+    }
 
+    /**
+     * Get the java representation of the different views of the activity
+     */
+    private void getViews() {
+        this.title = (TextView)findViewById(R.id.title);
+        this.name_field = (EditText)findViewById(R.id.name_field);
+        this.price_field = (EditText)findViewById(R.id.price_field);
+        this.ingredients_field = (EditText)findViewById(R.id.ingredients_field);
+        this.vegan_checkbox = (CheckBox)findViewById(R.id.vegan_checkbox);
+        this.glutenfree_checkbox = (CheckBox)findViewById(R.id.glutenfree_checkbox);
+        this.add_button = (Button)findViewById(R.id.confirm_button);
+        this.image = (ImageView)findViewById(R.id.photo_imageView);
     }
 }
