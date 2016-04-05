@@ -64,12 +64,12 @@
 
     <Button
         android:id="@+id/ButtonModify"
-        android:layout_width="70dp"
-        android:layout_height="30dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_marginRight="5dp"
         android:layout_centerVertical="true"
-        android:text="Modify"
+        android:text="@string/Remove"
         android:textSize="10dp"
         />
 

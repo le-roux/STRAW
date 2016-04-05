@@ -23,6 +23,8 @@
     <string name="c_acc">Create Account</string>
     <string name="Add_plate">Add Plate</string>
     <string name="Add_drink">Add Drink</string>
+    <string name="Edit_plate">Edit Plate</string>
+    <string name="Edit_drink">Edit Drink</string>
     <string name="Name">Name</string>
     <string name="Price">Price</string>
     <string name="Vegan">Vegan</string>
@@ -49,5 +51,6 @@
     <string name="m_save">Profile saved!</string>
     <string name="save">Save</string>
     <string name="edit_prof">Edit profile</string>
+    <string name="Remove">Remove</string>
 
 </resources>

@@ -22,6 +22,7 @@ import android.net.Uri;
 import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.PopupWindow;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -32,11 +33,10 @@ import straw.polito.it.straw.R;
 
 public class AddDrinkActivity extends AppCompatActivity {
 
+    private TextView title;
     private EditText name_field;
     private EditText price_field;
     private EditText volume_field;
-    private Button take_photo_button;
-    private Button choose_photo_button;
     private Button add_button;
     private ImageView image;
     private Uri fileUri = null;
@@ -60,11 +60,10 @@ public class AddDrinkActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_drink);
         this.intent = getIntent();
         setPopupWindow();
+        this.title = (TextView)findViewById(R.id.title);
         this.name_field = (EditText)findViewById(R.id.name_field);
         this.price_field = (EditText)findViewById(R.id.price_field);
         this.volume_field = (EditText)findViewById(R.id.volume_field);
-        this.take_photo_button = (Button)findViewById(R.id.take_photo_button);
-        this.choose_photo_button =(Button)findViewById(R.id.choose_photo_button);
         this.add_button = (Button)findViewById(R.id.confirm_button);
         this.image = (ImageView)findViewById(R.id.photo_imageView);
         this.context = getApplicationContext();
@@ -72,8 +71,14 @@ public class AddDrinkActivity extends AppCompatActivity {
         if (savedInstanceState != null)
             restoreValues(savedInstanceState.getString(DRINK));
         else {
-            String description = this.intent.getStringExtra(CreateMenuActivity.ELEMENT);
-            this.drink = (Drink)Food.create(description);
+            String action = this.intent.getStringExtra(CreateMenuActivity.ACTION);
+            if(action == CreateMenuActivity.ADD_ELEMENT) {
+                this.drink = new Drink();
+            } else if (action == CreateMenuActivity.EDIT_ELEMENT) {
+                String description = this.intent.getStringExtra(CreateMenuActivity.ELEMENT);
+                this.drink = (Drink) Food.create(description);
+                this.title.setText(getText(R.string.Edit_drink));
+            }
         }
 
         //Add a listener to the imageView which displays the popup window

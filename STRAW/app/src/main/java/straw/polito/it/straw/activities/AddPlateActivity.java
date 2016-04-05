@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import straw.polito.it.straw.data.Food;
 import straw.polito.it.straw.straw.polito.it.straw.utils.ImageManager;
@@ -23,6 +24,7 @@ import straw.polito.it.straw.R;
 
 public class AddPlateActivity extends AppCompatActivity {
 
+    private TextView title;
     private EditText name_field;
     private EditText price_field;
     private EditText ingredients_field;
@@ -50,6 +52,7 @@ public class AddPlateActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_plate);
         this.intent = getIntent();
+        this.title = (TextView)findViewById(R.id.title);
         this.name_field = (EditText)findViewById(R.id.name_field);
         this.price_field = (EditText)findViewById(R.id.price_field);
         this.ingredients_field = (EditText)findViewById(R.id.ingredients_field);
@@ -63,9 +66,15 @@ public class AddPlateActivity extends AppCompatActivity {
         if (savedInstanceState != null)
             restoreValues(savedInstanceState.getString(PLATE));
         else {
-            String description = this.intent.getStringExtra(CreateMenuActivity.ELEMENT);
-            this.plate = (Plate)Food.create(description);
-        }
+            String action = this.intent.getStringExtra(CreateMenuActivity.ACTION);
+            if (action == CreateMenuActivity.ADD_ELEMENT) {
+                this.plate = new Plate();
+            } else if(action == CreateMenuActivity.EDIT_ELEMENT) {
+                String description = this.intent.getStringExtra(CreateMenuActivity.ELEMENT);
+                this.plate = (Plate) Food.create(description);
+                this.title.setText(getText(R.string.Edit_plate));
+            }
+    }
 
         //Add a listener on the button to take a photo
         take_photo_button.setOnClickListener(new View.OnClickListener() {

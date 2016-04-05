@@ -14,6 +14,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import straw.polito.it.straw.R;
+import straw.polito.it.straw.straw.polito.it.straw.utils.Logger;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -23,6 +24,7 @@ public class HomeActivity extends AppCompatActivity {
     EditText pwd_editText;
     Button log_in_button;
     Button create_man_button;
+    Button create_user_button;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +55,17 @@ public class HomeActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent i= new Intent(getBaseContext(),CreateAccountActivity.class);
                 startActivity(i);
+            }
+        });
+
+        this.create_user_button = (Button)findViewById(R.id.c_user_button);
+        this.create_user_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Logger.d("Launch menu");
+                Intent intent = new Intent(getApplicationContext(), CreateMenuActivity.class);
+                Logger.d("Intent created");
+                startActivity(intent);
             }
         });
 
