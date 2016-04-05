@@ -55,5 +55,7 @@
     <string name="Default">Default</string>
     <string name="Menu">- Menu</string>
     <string name="Reservation">- Reservation</string>
+    <string name="Time">Time</string>
+    <string name="NbPeople">Number of people</string>
 
 </resources>

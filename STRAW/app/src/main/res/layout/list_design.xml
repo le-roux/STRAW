@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/list_selector"
+    android:background="@color/cyan_light"
     android:orientation="horizontal"
     android:padding="5dip" >
 
@@ -71,6 +71,7 @@
         android:layout_centerVertical="true"
         android:text="@string/Remove"
         android:textSize="10dp"
+        android:background="@drawable/customborder_buttons"
         />
 
 </RelativeLayout>
