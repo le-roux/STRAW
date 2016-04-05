@@ -49,5 +49,6 @@
     <string name="m_save">Profile saved!</string>
     <string name="save">Save</string>
     <string name="edit_prof">Edit profile</string>
+    <string name="remember">Remember me</string>
 
 </resources>

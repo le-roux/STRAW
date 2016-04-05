@@ -9,7 +9,7 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".activities.HomeActivity">
     <RelativeLayout
-        android:layout_width="match_parent" android:layout_height="300sp"
+        android:layout_width="match_parent" android:layout_height="250sp"
         android:orientation="vertical" android:padding="20dp"
         android:id="@+id/id_relativeLayout"
         android:layout_centerHorizontal="true"
@@ -20,11 +20,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/user_name_editText"
-            android:layout_alignParentTop="true"
-            android:layout_alignRight="@+id/pwd_editText"
-            android:layout_alignEnd="@+id/pwd_editText"
-            android:layout_alignLeft="@+id/pwd_editText"
-            android:layout_alignStart="@+id/pwd_editText" />
+            android:layout_alignBottom="@+id/user_n_textView"
+            android:layout_toRightOf="@+id/user_n_textView"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
 
         <EditText
             android:layout_width="wrap_content"
@@ -32,20 +31,18 @@
             android:inputType="textPassword"
             android:ems="10"
             android:id="@+id/pwd_editText"
-            android:layout_above="@+id/log_in_button"
-            android:layout_marginBottom="27dp"
-            android:layout_alignLeft="@+id/log_in_button"
-            android:layout_alignStart="@+id/log_in_button" />
+            android:layout_below="@+id/user_name_editText"
+            android:layout_alignLeft="@+id/remember_checkBox"
+            android:layout_alignStart="@+id/remember_checkBox" />
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/log_in"
             android:id="@+id/log_in_button"
-            android:layout_above="@+id/textView"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="34dp"
-            android:background="@drawable/customborder_buttons"/>
+            android:background="@drawable/customborder_buttons"
+            android:layout_above="@+id/remember_checkBox"
+            android:layout_centerHorizontal="true" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -62,7 +59,8 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="@string/user_n"
             android:id="@+id/user_n_textView"
-            android:layout_alignBottom="@+id/user_name_editText"
+            android:layout_marginTop="29dp"
+            android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true" />
 
@@ -73,8 +71,18 @@
             android:text="@string/pwd"
             android:id="@+id/pwd_textView"
             android:layout_alignBottom="@+id/pwd_editText"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
+            android:layout_alignLeft="@+id/user_n_textView"
+            android:layout_alignStart="@+id/user_n_textView" />
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/remember"
+            android:id="@+id/remember_checkBox"
+            android:checked="false"
+            android:layout_above="@+id/textView"
+            android:layout_toRightOf="@+id/user_n_textView"
+            android:layout_toEndOf="@+id/user_n_textView" />
     </RelativeLayout>
 
     <TextView
