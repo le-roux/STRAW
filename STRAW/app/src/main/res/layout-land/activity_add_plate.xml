@@ -64,7 +64,7 @@
         android:layout_below="@id/price_field"
         android:layout_alignParentLeft="true"
         android:layout_toLeftOf="@id/center"
-        android:inputType="numberDecimal"
+        android:inputType="text"
         android:hint="@string/Ingredients"/>
 
     <CheckBox

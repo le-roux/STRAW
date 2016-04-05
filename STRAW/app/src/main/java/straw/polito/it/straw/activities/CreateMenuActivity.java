@@ -64,7 +64,9 @@ public class CreateMenuActivity extends AppCompatActivity {
             }
         });
 
-        this.init_list();
+        this.list_plate = new ArrayList<Food>();
+        if (savedInstanceState == null)
+            this.init_list();
 
         //Initialisation of the listView
         food_listView = (ListView)findViewById(R.id.Plate_list);
@@ -106,7 +108,20 @@ public class CreateMenuActivity extends AppCompatActivity {
     }
 
     private void init_list() {
-        this.list_plate = new ArrayList<Food>();
         this.list_plate.add(new Plate());
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle bundle) {
+        for (int i = 0; i < this.list_plate.size(); i++) {
+            bundle.putString(String.valueOf(i), this.list_plate.get(i).toString());
+        }
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle bundle) {
+        for (int i = 0; i < bundle.size(); i++) {
+            this.list_plate.add(Food.create(bundle.getString(String.valueOf(i))));
+        }
     }
 }

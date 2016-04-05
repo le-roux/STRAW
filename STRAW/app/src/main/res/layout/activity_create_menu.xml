@@ -38,7 +38,7 @@
         android:layout_height="0dp"
         android:layout_alignParentTop="true"
         android:layout_above="@id/add_plate_button"
-        android:paddingTop="5dp" >
+        android:paddingTop="5dp">
     </ListView>
 
 
