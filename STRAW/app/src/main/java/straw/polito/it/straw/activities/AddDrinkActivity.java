@@ -10,6 +10,7 @@ import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -156,27 +157,25 @@ public class AddDrinkActivity extends AppCompatActivity {
      * Update the values in the Drink object according to the fields of the display
      */
     public void update() {
-        Logger.d("update");
         String name = this.name_field.getText().toString();
-        if (name != null)
-            this.drink.setName(name);
-        else
+        if (name.equals(""))
             this.drink.setName(getText(R.string.Default).toString());
+        else
+            this.drink.setName(name);
         String price = this.price_field.getText().toString();
-        if (price != null)
-            this.drink.setPrice(Double.parseDouble(price));
-        else
+        if (price.equals(""))
             this.drink.setPrice(0d);
-        String volume = this.volume_field.getText().toString();
-        if (volume != null)
-            this.drink.setVolume(Double.parseDouble(volume));
         else
+            this.drink.setPrice(Double.parseDouble(price));
+        String volume = this.volume_field.getText().toString();
+        if (volume.equals(""))
             this.drink.setVolume(0d);
+        else
+            this.drink.setVolume(Double.parseDouble(volume));
         if(this.fileUri != null)
             this.drink.setImageURI(this.fileUri.toString());
         else
             this.drink.setImageURI(null);
-        Logger.d("end update");
     }
 
     private void setPopupWindow() {

@@ -157,10 +157,22 @@ public class AddPlateActivity extends AppCompatActivity {
     }
 
     private void update() {
-        this.plate.setName(this.name_field.getText().toString());
-        this.plate.setPrice(Double.parseDouble(this.price_field.getText().toString()));
+        String name = this.name_field.getText().toString();
+        if(name.equals(""))
+            this.plate.setName(getText(R.string.Default).toString());
+        else
+            this.plate.setName(name);
+        String price = this.price_field.getText().toString();
+        if(price.equals(""))
+            this.plate.setPrice(0d);
+        else
+            this.plate.setPrice(Double.parseDouble(price));
         this.plate.setVegan(this.vegan_checkbox.isActivated());
         this.plate.setGlutenFree(this.glutenfree_checkbox.isActivated());
-        //TO DO : update ingredients
+        this.plate.setIngredients(this.ingredients_field.getText().toString());
+        if(this.fileUri != null)
+            this.plate.setImageURI(this.fileUri.toString());
+        else
+            this.plate.setImageURI(null);
     }
 }

@@ -5,6 +5,8 @@ import android.content.SharedPreferences;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import straw.polito.it.straw.straw.polito.it.straw.utils.Logger;
+
 /**
  * Created by Sylvain on 01/04/2016.
  *
@@ -92,11 +94,18 @@ public abstract class Food {
         if(food != null) {
             try {
                 food.setName(jsonObject.getString(NAME));
+            } catch (JSONException e) {
+                food.setName("Default");
+            }
+            try {
                 food.setPrice(jsonObject.getDouble(PRICE));
+            } catch (JSONException e) {
+                food.setPrice(0d);
+            }
+            try {
                 food.setImageURI(jsonObject.getString(IMAGE_URI));
             } catch (JSONException e) {
-                e.printStackTrace();
-                return null;
+                food.setImageURI(null);
             }
             return food;
         } else {

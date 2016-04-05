@@ -5,6 +5,8 @@ import android.content.SharedPreferences;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import straw.polito.it.straw.straw.polito.it.straw.utils.Logger;
+
 /**
  * Created by Sylvain on 01/04/2016.
  */

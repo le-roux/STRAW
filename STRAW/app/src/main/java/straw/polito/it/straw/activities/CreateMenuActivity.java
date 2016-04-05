@@ -96,7 +96,9 @@ public class CreateMenuActivity extends AppCompatActivity {
                 this.list_plate.set(result.getIntExtra(ID, 0), Food.create(result.getStringExtra(ELEMENT)));
                 ((FoodAdapter)this.food_listView.getAdapter()).notifyDataSetChanged();
             } else if(requestCode == this.ADD_FOOD) {
-                this.list_plate.add(Food.create(result.getStringExtra(ELEMENT)));
+                Food element = Food.create(result.getStringExtra(ELEMENT));
+                if (element != null)
+                    this.list_plate.add(element);
                 ((FoodAdapter)this.food_listView.getAdapter()).notifyDataSetChanged();
             }
         }
