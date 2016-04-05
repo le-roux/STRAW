@@ -89,7 +89,7 @@ public class AddDrinkActivity extends AppCompatActivity {
         this.image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                popupWindow.showAsDropDown(view, 0, 0);
+                popupWindow.showAsDropDown(view, 0, -100);
             }
         });
 
@@ -97,7 +97,6 @@ public class AddDrinkActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 update();
-                Logger.d("name = " + drink.getName());
                 sharedPreferences.edit().putString(drink.getName(), drink.toString());
                 Intent result = new Intent(getApplicationContext(), CreateMenuActivity.class);
                 Bundle data = new Bundle();
@@ -201,6 +200,7 @@ public class AddDrinkActivity extends AppCompatActivity {
                     intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri); //Set the image file name
                     startActivityForResult(intent, TAKE_PICTURE_REQUEST_CODE); //Launch the camera app
                 }
+                popupWindow.dismiss();
             }
         });
         popupWindow.setFocusable(true);

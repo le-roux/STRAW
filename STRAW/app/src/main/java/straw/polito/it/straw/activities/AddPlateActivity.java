@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
@@ -11,16 +13,24 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.PopupWindow;
 import android.widget.TextView;
+
+import java.util.ArrayList;
 
 import straw.polito.it.straw.data.Food;
 import straw.polito.it.straw.straw.polito.it.straw.utils.ImageManager;
 import straw.polito.it.straw.data.Plate;
 import straw.polito.it.straw.R;
+import straw.polito.it.straw.straw.polito.it.straw.utils.Logger;
 
 public class AddPlateActivity extends AppCompatActivity {
 
@@ -39,11 +49,12 @@ public class AddPlateActivity extends AppCompatActivity {
     private Plate plate;
     private SharedPreferences sharedPreferences;
     private Intent intent;
+    private ListView listView;
+    private PopupWindow popupWindow;
 
     private static final int TAKE_PICTURE_REQUEST_CODE = 1;
     private static final int CHOOSE_PICTURE_REQUEST_CODE = 2;
 
-    private static final String TAG = "FoodApp";
     private static final String PLATE = "Plate";
 
 
@@ -51,6 +62,7 @@ public class AddPlateActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_plate);
+        setPopupWindow();
         this.intent = getIntent();
         this.title = (TextView)findViewById(R.id.title);
         this.name_field = (EditText)findViewById(R.id.name_field);
@@ -61,8 +73,10 @@ public class AddPlateActivity extends AppCompatActivity {
         this.take_photo_button = (Button)findViewById(R.id.take_photo_button);
         this.choose_photo_button =(Button)findViewById(R.id.choose_photo_button);
         this.add_button = (Button)findViewById(R.id.confirm_button);
+        this.image = (ImageView)findViewById(R.id.photo_imageView);
         this.context = getApplicationContext();
         this.sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.context);
+
         if (savedInstanceState != null)
             restoreValues(savedInstanceState.getString(PLATE));
         else {
@@ -76,28 +90,14 @@ public class AddPlateActivity extends AppCompatActivity {
             }
     }
 
-        //Add a listener on the button to take a photo
-        take_photo_button.setOnClickListener(new View.OnClickListener() {
-            private Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-
+        //Add a listener to the imageView which displays the popup window
+        this.image.setFocusable(true);
+        this.image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                fileUri = ImageManager.getOutputMediaFileUri(context, name_field.getText().toString()); //Create a file to store the photo
-                intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri); //Set the image file name
-                startActivityForResult(intent, TAKE_PICTURE_REQUEST_CODE); //Launch the camera app
+                popupWindow.showAsDropDown(view, 0, -100);
             }
-        }); //End of the listener
-
-        //Add a listener on the button to choose a picture
-        choose_photo_button.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View view) {
-                Intent choosePictureIntent = new Intent(Intent.ACTION_GET_CONTENT);
-                choosePictureIntent.setType("image/*");
-                startActivityForResult(choosePictureIntent, CHOOSE_PICTURE_REQUEST_CODE);
-            }
-        }); //End of listener
+        });
 
         //Add a listener on the "Add" button
         add_button.setOnClickListener(new View.OnClickListener() {
@@ -125,7 +125,7 @@ public class AddPlateActivity extends AppCompatActivity {
             //In case of "Select picture", the fileUri is already set
             ImageManager.setImage(context, image, fileUri);
         } else if(resultCode == RESULT_CANCELED) {
-            Log.d(TAG, "result canceled");
+            Logger.d("result cancelled");
         }
     }
 
@@ -174,5 +174,39 @@ public class AddPlateActivity extends AppCompatActivity {
             this.plate.setImageURI(this.fileUri.toString());
         else
             this.plate.setImageURI(null);
+    }
+
+    private void setPopupWindow() {
+        this.popupWindow = new PopupWindow(this.getApplicationContext());
+        ArrayList<String> content = new ArrayList<String>();
+        content.add(getString(R.string.Choose_photo));
+        content.add(getString(R.string.take_photo));
+        ArrayAdapter<String> popupAdapter = new ArrayAdapter<String>(this.getApplicationContext(), android.R.layout.simple_list_item_1, content);
+        this.listView = new ListView(this.getApplicationContext());
+        listView.setAdapter(popupAdapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (position == 0) {
+                    //Choose photo
+                    Intent choosePictureIntent = new Intent(Intent.ACTION_GET_CONTENT);
+                    choosePictureIntent.setType("image/*");
+                    startActivityForResult(choosePictureIntent, CHOOSE_PICTURE_REQUEST_CODE);
+                } else {
+                    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    //Take photo
+                    fileUri = ImageManager.getOutputMediaFileUri(context, name_field.getText().toString()); //Create a file to store the photo
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri); //Set the image file name
+                    startActivityForResult(intent, TAKE_PICTURE_REQUEST_CODE); //Launch the camera app
+                }
+                popupWindow.dismiss();
+            }
+        });
+        popupWindow.setFocusable(true);
+        popupWindow.setWidth(500);
+        popupWindow.setHeight(WindowManager.LayoutParams.WRAP_CONTENT);
+        popupWindow.setContentView(listView);
+        popupWindow.setBackgroundDrawable(new ColorDrawable(Color.WHITE));
+
     }
 }

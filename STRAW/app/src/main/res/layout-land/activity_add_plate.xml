@@ -127,6 +127,7 @@
         android:background="@drawable/customborder_buttons"/>
 
     <ImageView
+        android:id="@+id/photo_imageView"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_above="@id/confirm_button"
