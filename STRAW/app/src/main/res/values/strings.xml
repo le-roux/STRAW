@@ -53,5 +53,7 @@
     <string name="edit_prof">Edit profile</string>
     <string name="Remove">Remove</string>
     <string name="Default">Default</string>
+    <string name="Menu">- Menu</string>
+    <string name="Reservation">- Reservation</string>
 
 </resources>
