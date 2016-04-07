@@ -48,8 +48,21 @@ public class Reservation {
         this.plates = plates;
     }
 
-    public String getTime() {
-        return this.time.toString();
+    public GregorianCalendar getTime() {
+        return this.time;
+    }
+
+    public String getTimeString() {
+        String time = "";
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(this.time.get(Calendar.DAY_OF_MONTH))
+                .append("/")
+                .append(this.time.get(Calendar.MONTH))
+                .append("  ")
+                .append(this.time.get(Calendar.HOUR_OF_DAY))
+                .append(":")
+                .append(this.time.get(Calendar.MINUTE));
+        return stringBuilder.toString();
     }
 
     public void setTime(GregorianCalendar gregorianCalendar) {

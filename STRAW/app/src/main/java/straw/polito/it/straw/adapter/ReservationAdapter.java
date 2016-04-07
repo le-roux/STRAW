@@ -57,8 +57,9 @@ public class ReservationAdapter extends BaseAdapter {
         TextView plates = (TextView)convertView.findViewById(R.id.plates);
 
         //Fill them with appropriate values
-        numberPeople.setText(this.reservationList.get(position).getNumberPeople() + context.getString(R.string.Persons));
-        time.setText(this.reservationList.get(position).getTime());
+        numberPeople.setText(this.reservationList.get(position).getNumberPeople() + " " +
+                context.getString(R.string.Persons));
+        time.setText(this.reservationList.get(position).getTimeString());
         plates.setText(this.reservationList.get(position).getPlates());
 
         return convertView;

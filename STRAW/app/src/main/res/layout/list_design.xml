@@ -31,7 +31,7 @@
         android:layout_alignTop="@+id/thumbnail"
         android:layout_toRightOf="@+id/thumbnail"
         android:text="Pizza"
-        android:textColor="#040404"
+        android:textColor="@color/text_list"
         android:typeface="sans"
         android:textSize="15dp"
         android:textStyle="bold"/>
