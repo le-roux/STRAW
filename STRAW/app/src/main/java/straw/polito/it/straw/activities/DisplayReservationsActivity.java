@@ -1,12 +1,16 @@
 package straw.polito.it.straw.activities;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -24,6 +28,8 @@ public class DisplayReservationsActivity extends AppCompatActivity {
     public static final String RESERVATION_ID = "Reservation_id";
 
     public static final int MANAGE_RESERVATION_REQUEST_CODE = 1;
+
+    //private DisplayReservationsActivity parentActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,4 +76,7 @@ public class DisplayReservationsActivity extends AppCompatActivity {
             this.reservationList.add(Reservation.create(b.getString(String.valueOf(i))));
         }
     }
+
+
+
 }

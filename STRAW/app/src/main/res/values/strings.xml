@@ -56,8 +56,9 @@
     <string name="Menu">- Menu</string>
     <string name="Reservation">- Reservation</string>
     <string name="Time">Time</string>
-    <string name="NbPeople">Number of people</string>
+    <string name="NbPeople">Number</string>
     <string name="Plates">Plates</string>
     <string name="Persons">persons</string>
+    <string name="Handle">Handle</string>
 
 </resources>
