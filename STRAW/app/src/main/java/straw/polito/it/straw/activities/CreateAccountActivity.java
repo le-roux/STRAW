@@ -36,6 +36,7 @@ import java.util.List;
 
 import straw.polito.it.straw.data.Manager;
 import straw.polito.it.straw.R;
+import straw.polito.it.straw.straw.polito.it.straw.utils.Logger;
 
 public class CreateAccountActivity extends AppCompatActivity {
 
@@ -173,6 +174,8 @@ public class CreateAccountActivity extends AppCompatActivity {
                     }else{
                         showAlert(getString(R.string.m_c), getString(R.string.m_succ), true);
                     }
+                    Intent intent = new Intent(getApplicationContext(), CreateMenuActivity.class);
+                    startActivity(intent);
                 } else {
                     return;
                 }

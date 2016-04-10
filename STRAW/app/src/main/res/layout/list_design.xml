@@ -57,19 +57,19 @@
         android:textSize="15dp"
         android:text="4.99€"
         android:layout_alignTop="@+id/PlateDescription"
-        android:layout_toLeftOf="@+id/ButtonModify"
-        android:layout_toStartOf="@+id/ButtonModify"
+        android:layout_toLeftOf="@+id/RemoveButton"
+        android:layout_toStartOf="@+id/RemoveButton"
         android:textStyle="bold"
         />
 
     <Button
-        android:id="@+id/ButtonModify"
-        android:layout_width="70dp"
-        android:layout_height="30dp"
+        android:id="@+id/RemoveButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_marginRight="5dp"
         android:layout_centerVertical="true"
-        android:text="Modify"
+        android:text="@string/Remove"
         android:textSize="10dp"
         />
 

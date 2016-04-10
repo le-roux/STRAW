@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -13,6 +14,7 @@ import java.util.ArrayList;
 
 import straw.polito.it.straw.R;
 import straw.polito.it.straw.data.Food;
+import straw.polito.it.straw.straw.polito.it.straw.utils.Logger;
 
 /**
  * Created by Sylvain on 01/04/2016.
@@ -52,22 +54,32 @@ public class FoodAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         if(convertView == null) {
             LayoutInflater layoutInflater = (LayoutInflater)this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = layoutInflater.inflate(R.layout.list_design, null);
+            Button remove_button = (Button)convertView.findViewById(R.id.RemoveButton);
+            remove_button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    goods.remove(position);
+                    FoodAdapter.this.notifyDataSetChanged();
+                }
+            });
         }
-
         ImageView imageView = (ImageView)convertView.findViewById(R.id.PlateImage);
         TextView title = (TextView)convertView.findViewById(R.id.PlateName);
         TextView description = (TextView)convertView.findViewById(R.id.PlateDescription);
         TextView price = (TextView)convertView.findViewById(R.id.PlatePrice);
 
-
-        imageView.setImageURI(Uri.parse(this.goods.get(position).getImageURI()));
-        title.setText(this.goods.get(position).getName());
-        description.setText(this.goods.get(position).getDescription());
-        price.setText(String.valueOf(this.goods.get(position).getPrice()) + " €");
+        if (position < this.goods.size()) {
+            String uri = this.goods.get(position).getImageURI();
+            if(uri != null)
+                imageView.setImageURI(Uri.parse(uri));
+            title.setText(this.goods.get(position).getName());
+            description.setText(this.goods.get(position).getDescription());
+            price.setText(String.valueOf(this.goods.get(position).getPrice()) + " €");
+        }
         return convertView;
     }
 }
