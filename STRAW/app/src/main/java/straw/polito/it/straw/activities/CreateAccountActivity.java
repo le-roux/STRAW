@@ -9,11 +9,10 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -26,17 +25,12 @@ import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.Spinner;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import straw.polito.it.straw.data.Manager;
 import straw.polito.it.straw.R;
-import straw.polito.it.straw.straw.polito.it.straw.utils.Logger;
+import straw.polito.it.straw.data.Manager;
 
 public class CreateAccountActivity extends AppCompatActivity {
 

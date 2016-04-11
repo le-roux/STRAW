@@ -3,21 +3,22 @@ package straw.polito.it.straw.activities;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.ListView;
 
 import java.util.ArrayList;
 
+import straw.polito.it.straw.R;
+import straw.polito.it.straw.adapter.FoodAdapter;
 import straw.polito.it.straw.data.Drink;
 import straw.polito.it.straw.data.Food;
-import straw.polito.it.straw.adapter.FoodAdapter;
 import straw.polito.it.straw.data.Plate;
-import straw.polito.it.straw.R;
 import straw.polito.it.straw.straw.polito.it.straw.utils.Logger;
 
 public class CreateMenuActivity extends AppCompatActivity {
@@ -29,18 +30,21 @@ public class CreateMenuActivity extends AppCompatActivity {
     public static final String ACTION = "it.polito.straw.Action";
     public static final String ADD_ELEMENT = "it.polito.straw.Add";
     public static final String EDIT_ELEMENT = "it.polito.straw.Edit";
+    public static final String NUMBER_OF_ELEMENTS = "ElementsNb";
 
     private ListView food_listView;
     private ArrayList<Food> list_plate;
     private Context context;
     private Button add_plate_button;
     private Button add_drink_button;
+    private SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_menu);
-        this.context = this;
+        this.context = getApplicationContext();
+        this.sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
         //Listener for the "Add plate" button
         this.add_plate_button = (Button)findViewById(R.id.add_plate_button);
@@ -65,8 +69,14 @@ public class CreateMenuActivity extends AppCompatActivity {
         });
 
         this.list_plate = new ArrayList<Food>();
-        if (savedInstanceState == null)
-            this.init_list();
+        if (savedInstanceState == null) {
+            int elementsNb = sharedPreferences.getInt(NUMBER_OF_ELEMENTS, 0);
+            for (int i = 0; i < elementsNb; i++) {
+                this.list_plate.add(Food.create(sharedPreferences.getString(String.valueOf(i), "")));
+            }
+            if (elementsNb == 0)
+                this.init_list();
+        }
 
         //Initialisation of the listView
         food_listView = (ListView)findViewById(R.id.Plate_list);
@@ -123,5 +133,16 @@ public class CreateMenuActivity extends AppCompatActivity {
         for (int i = 0; i < bundle.size(); i++) {
             this.list_plate.add(Food.create(bundle.getString(String.valueOf(i))));
         }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        SharedPreferences.Editor editor = this.sharedPreferences.edit();
+        for (int i = 0; i < this.list_plate.size(); i++) {
+            editor.putString(String.valueOf(i), this.list_plate.get(i).toString());
+        }
+        editor.putInt(NUMBER_OF_ELEMENTS, this.list_plate.size());
+        editor.commit();
     }
 }
