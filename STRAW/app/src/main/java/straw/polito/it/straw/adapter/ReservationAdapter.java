@@ -27,6 +27,7 @@ import straw.polito.it.straw.R;
 import straw.polito.it.straw.activities.DisplayReservationsActivity;
 import straw.polito.it.straw.activities.HomeActivity;
 import straw.polito.it.straw.data.Reservation;
+import straw.polito.it.straw.straw.polito.it.straw.utils.Logger;
 
 /**
  * Created by Sylvain on 07/04/2016.
@@ -73,76 +74,96 @@ public class ReservationAdapter extends BaseAdapter {
             convertView = layoutInflater.inflate(R.layout.reservation, null);
         }
         final Reservation dataModel = reservationList.get(position);
+
         //Get the views of the item
         TextView numberPeople = (TextView) convertView.findViewById(R.id.number_people);
         TextView time = (TextView) convertView.findViewById(R.id.time);
         TextView plates = (TextView) convertView.findViewById(R.id.plates);
+        TextView moreOptions = (TextView) convertView.findViewById(R.id.moreOptionsLink);
 
-        Button handle_button = (Button) convertView.findViewById(R.id.HandleButton);
-        handle_button.setOnClickListener(new View.OnClickListener() {
+        moreOptions.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(view.getRootView().getContext());
+                Logger.d("more options clicked");
+                final Context context = view.getRootView().getContext();
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
-                builder.setTitle("Handle this order");
-                final CharSequence[] options = {"Accept", "Refuse", "Cancel"};
+                builder.setTitle(context.getString(R.string.MoreOptions));
+                //When modifying this array, don't forget to modify also the following identifiers
+                final CharSequence[] options = {context.getString(R.string.Discard),
+                        context.getString(R.string.ChangeTime),
+                        context.getString(R.string.Cancel)};
+
+                final int DISCARD_RESERVATION = 0;
+                final int CHANGE_TIME = 1;
+                final int CANCEL = 2;
+                Logger.d("step 1");
+
                 builder.setItems(options, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int item) {
-                        if (options[item].equals("Accept")) {
-                            AlertDialog.Builder builder_accept = new AlertDialog.Builder(view.getRootView().getContext());
-                            builder_accept.setTitle("Accept this order?");
-                            final CharSequence[] options = {"Yes", "Cancel"};
-                            builder_accept.setItems(options, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int item) {
-                                    if (options[item].equals("Yes")) {
-                                        Toast.makeText(context, "This order is confirmed \n A notification has been sent to the customer",
-                                                Toast.LENGTH_LONG).show();
-                                        return;
+                        if (item == DISCARD_RESERVATION) {
+                            AlertDialog.Builder builder_refuse = new AlertDialog.Builder(context);
+                            builder_refuse.setTitle(context.getString(R.string.RefuseOrder));
+                            final CharSequence[] options = {context.getString(R.string.Yes),
+                                    context.getString(R.string.Cancel)};
 
-                                    } else if (options[item].equals("Cancel")) {
-                                        dialog.dismiss();
-                                    }
-                                }
-                            });
-                            builder_accept.show();
-
-                        } else if (options[item].equals("Refuse")) {
-                            AlertDialog.Builder builder_refuse = new AlertDialog.Builder(view.getRootView().getContext());
-                            builder_refuse.setTitle("Refuse this order?");
-                            final CharSequence[] options = {"Yes", "Cancel"};
                             builder_refuse.setItems(options, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int item) {
-                                    if (options[item].equals("Yes")) {
+                                    if (options[item].equals(context.getString(R.string.Yes))) {
                                         reservationList.remove(position);
                                         ReservationAdapter.this.notifyDataSetChanged();
-                                        Toast.makeText(context, "This order is refused \n A notification has been sent to the customer",
+                                        Toast.makeText(context, context.getString(R.string.OrderRefusedToast),
                                                 Toast.LENGTH_LONG).show();
                                         return;
 
-                                    } else if (options[item].equals("Cancel")) {
+                                    } else if (options[item].equals(context.getString(R.string.Cancel))) {
                                         dialog.dismiss();
                                     }
                                 }
                             });
                             builder_refuse.show();
 
-                        } else if (options[item].equals("Cancel")) {
+                        } else if (item == CHANGE_TIME) {
+                            //TO DO : offer change time option
+                        } else if (item == CANCEL) {
                             dialog.dismiss();
                         }
                     }
                 });
-
-
-
-
                 builder.show();
-
+                Logger.d("step 2");
             }
         });
-        handle_button.setFocusable(false);
+
+        Button accept_button = (Button) convertView.findViewById(R.id.AcceptButton);
+        accept_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder builder_accept = new AlertDialog.Builder(view.getRootView().getContext());
+                builder_accept.setTitle(context.getString(R.string.AcceptOrder));
+                final CharSequence[] options = {context.getString(R.string.Yes),
+                        context.getString(R.string.Cancel)};
+
+                builder_accept.setItems(options, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int item) {
+                        if (options[item].equals(context.getString(R.string.Yes))) {
+                            reservationList.remove(position);
+                            ReservationAdapter.this.notifyDataSetChanged();
+                            Toast.makeText(context, context.getString(R.string.OrderAcceptedToast),
+                                    Toast.LENGTH_LONG).show();
+                            return;
+
+                        } else if (options[item].equals(context.getString(R.string.Cancel))) {
+                            dialog.dismiss();
+                        }
+                    }
+                });
+                builder_accept.show();
+            }
+        });
 
         //Fill them with appropriate values
         numberPeople.setText(this.reservationList.get(position).getNumberPeople() + " " +

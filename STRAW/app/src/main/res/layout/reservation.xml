@@ -10,7 +10,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/NbPeople"
-        android:textSize="22dp"
+        android:textSize="@dimen/Medium_size"
         android:textColor="@color/text_list"
         android:focusable="false"/>
 
@@ -18,11 +18,10 @@
         android:id="@+id/time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/number_people"
+        android:layout_below="@id/number_people"
         android:text="@string/Time"
         android:textSize="22dp"
         android:textColor="@color/text_list"
-        android:layout_marginLeft="@dimen/activity_horizontal_margin"
         android:focusable="false"
         />
 
@@ -33,19 +32,29 @@
         android:text="@string/Plates"
         android:textSize="@dimen/Content_size"
         android:textColor="@color/text_list"
-        android:layout_below="@id/number_people"
+        android:layout_below="@id/time"
         android:focusable="false"
         />
 
+    <TextView
+        android:id="@+id/moreOptionsLink"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/plates"
+        android:textColor="@color/link_color"
+        android:textSize="@dimen/Content_size"
+        android:text="@string/MoreOptions"
+        android:focusable="true"/>
+
     <Button
-        android:id="@+id/HandleButton"
+        android:id="@+id/AcceptButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_marginRight="5dp"
         android:layout_centerVertical="true"
-        android:text="@string/Handle"
-        android:textSize="10dp"
+        android:text="@string/Accept"
+        android:textSize="@dimen/Content_size"
         android:background="@drawable/customborder_buttons"
         />
 
