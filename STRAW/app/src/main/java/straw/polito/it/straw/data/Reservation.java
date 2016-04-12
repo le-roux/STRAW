@@ -81,6 +81,13 @@ public class Reservation {
         this.time = gregorianCalendar;
     }
 
+    public void setTime(int hour, int minute) {
+        int year = this.time.get(Calendar.YEAR);
+        int month = this.time.get(Calendar.MONTH);
+        int day = this.time.get(Calendar.DAY_OF_MONTH);
+        this.time.set(year, month, day, hour, minute);
+    }
+
     public JSONObject save() {
         JSONObject jsonObject = new JSONObject();
         try {

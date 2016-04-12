@@ -1,16 +1,12 @@
 package straw.polito.it.straw.activities;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -23,13 +19,10 @@ public class DisplayReservationsActivity extends AppCompatActivity {
     private ListView reservationList_View;
     private ArrayList<Reservation> reservationList;
 
-    public static final String MANAGE_RESERVATION = "Manage";
     public static final String RESERVATION = "Reservation";
     public static final String RESERVATION_ID = "Reservation_id";
 
     public static final int MANAGE_RESERVATION_REQUEST_CODE = 1;
-
-    //private DisplayReservationsActivity parentActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,8 +30,11 @@ public class DisplayReservationsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_display_reservations);
 
         this.reservationList = new ArrayList<Reservation>();
-        if (savedInstanceState == null)
+        if (savedInstanceState == null) {
             this.reservationList.add(new Reservation(2, "pasta"));
+            this.reservationList.add(new Reservation(4, "pasta, pizza"));
+            this.reservationList.add(new Reservation(2, "gnocchis, mineral water"));
+        }
 
         this.reservationList_View = (ListView)findViewById(R.id.reservations_list);
         this.reservationList_View.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -50,7 +46,7 @@ public class DisplayReservationsActivity extends AppCompatActivity {
                 startActivityForResult(intent, MANAGE_RESERVATION_REQUEST_CODE);
             }
         });
-        this.reservationList_View.setAdapter(new ReservationAdapter(getApplicationContext(), this.reservationList));
+        this.reservationList_View.setAdapter(new ReservationAdapter(getApplicationContext(), this.reservationList, this));
     }
 
     @Override
@@ -76,7 +72,4 @@ public class DisplayReservationsActivity extends AppCompatActivity {
             this.reservationList.add(Reservation.create(b.getString(String.valueOf(i))));
         }
     }
-
-
-
 }

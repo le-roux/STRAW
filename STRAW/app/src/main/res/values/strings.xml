@@ -70,5 +70,7 @@
  A notification has been sent to the customer</string>
     <string name="OrderAcceptedToast">This order is confirmed
  A notification has been sent to the customer</string>
+    <string name="HourChangedToast">The time of this reservation is changed.
+    A message has been sent to the customer for confirmation</string>
     <string name="AcceptOrder">Accept this order?</string>
 </resources>

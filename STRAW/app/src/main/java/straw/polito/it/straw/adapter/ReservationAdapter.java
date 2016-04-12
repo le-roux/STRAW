@@ -2,11 +2,15 @@ package straw.polito.it.straw.adapter;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.DialogFragment;
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,28 +32,26 @@ import straw.polito.it.straw.activities.DisplayReservationsActivity;
 import straw.polito.it.straw.activities.HomeActivity;
 import straw.polito.it.straw.data.Reservation;
 import straw.polito.it.straw.straw.polito.it.straw.utils.Logger;
+import straw.polito.it.straw.straw.polito.it.straw.utils.TimePickerFragment;
 
 /**
  * Created by Sylvain on 07/04/2016.
  */
-
-
-
-
 public class ReservationAdapter extends BaseAdapter {
 
     private ArrayList<Reservation> reservationList;
     private static Context context;
     private DisplayReservationsActivity parentActivity;
 
-    public ReservationAdapter(Context context) {
+    public ReservationAdapter (Context context) {
         this.reservationList = new ArrayList<Reservation>();
         this.context = context;
     }
 
-    public ReservationAdapter(Context context, ArrayList<Reservation> reservationList) {
+    public ReservationAdapter(Context context, ArrayList<Reservation> reservationList, DisplayReservationsActivity activity) {
         this.reservationList = reservationList;
         this.context = context;
+        this.parentActivity = activity;
     }
 
     @Override
@@ -84,7 +86,6 @@ public class ReservationAdapter extends BaseAdapter {
         moreOptions.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
-                Logger.d("more options clicked");
                 final Context context = view.getRootView().getContext();
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
@@ -97,7 +98,6 @@ public class ReservationAdapter extends BaseAdapter {
                 final int DISCARD_RESERVATION = 0;
                 final int CHANGE_TIME = 1;
                 final int CANCEL = 2;
-                Logger.d("step 1");
 
                 builder.setItems(options, new DialogInterface.OnClickListener() {
                     @Override
@@ -126,14 +126,13 @@ public class ReservationAdapter extends BaseAdapter {
                             builder_refuse.show();
 
                         } else if (item == CHANGE_TIME) {
-                            //TO DO : offer change time option
+                            showTimePickerFragmentDialog(reservationList.get(position));
                         } else if (item == CANCEL) {
                             dialog.dismiss();
                         }
                     }
                 });
                 builder.show();
-                Logger.d("step 2");
             }
         });
 
@@ -181,6 +180,10 @@ public class ReservationAdapter extends BaseAdapter {
 
     }
 
+    public void showTimePickerFragmentDialog(Reservation reservation) {
+        DialogFragment fragment = new TimePickerFragment(context, reservation, ReservationAdapter.this);
+        fragment.show(this.parentActivity.getFragmentManager(), "timePicker");
+    }
 }
 
 

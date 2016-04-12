@@ -55,6 +55,7 @@
         android:layout_centerVertical="true"
         android:text="@string/Accept"
         android:textSize="@dimen/Content_size"
+        android:textColor="@color/text_list"
         android:background="@drawable/customborder_buttons"
         />
 
