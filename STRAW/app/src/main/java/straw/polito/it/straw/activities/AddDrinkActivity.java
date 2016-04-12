@@ -179,7 +179,7 @@ public class AddDrinkActivity extends AppCompatActivity {
         this.popupWindow = new PopupWindow(this.getApplicationContext());
         ArrayList<String> content = new ArrayList<String>();
         content.add(getString(R.string.Choose_photo));
-        content.add(getString(R.string.take_photo));
+        content.add(getString(R.string.Take_photo));
         ArrayAdapter<String> popupAdapter = new ArrayAdapter<String>(this.getApplicationContext(), android.R.layout.simple_list_item_1, content);
         this.listView = new ListView(this.getApplicationContext());
         listView.setAdapter(popupAdapter);

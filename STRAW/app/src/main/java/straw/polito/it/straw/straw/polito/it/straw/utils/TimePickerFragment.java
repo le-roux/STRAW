@@ -16,7 +16,7 @@ import straw.polito.it.straw.adapter.ReservationAdapter;
 import straw.polito.it.straw.data.Reservation;
 
 /**
- * Created by sylva on 12/04/2016.
+ * Created by sylvain on 12/04/2016.
  */
 public class TimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener{
     private Reservation reservation;

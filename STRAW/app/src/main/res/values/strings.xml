@@ -1,4 +1,5 @@
 <resources>
+    <!--Strings for the manager account management part-->
     <string name="app_name">STRAW</string>
     <string name="ident">Identification</string>
     <string name="notyet">Not yet a member?</string>
@@ -21,23 +22,6 @@
     <string name="canteen">Canteen</string>
     <string name="ta">Take Away</string>
     <string name="c_acc">Create Account</string>
-    <string name="Add_plate">Add Plate</string>
-    <string name="Add_drink">Add Drink</string>
-    <string name="Edit_plate">Edit Plate</string>
-    <string name="Edit_drink">Edit Drink</string>
-    <string name="Name">Name</string>
-    <string name="Price">Price</string>
-    <string name="Vegan">Vegan</string>
-    <string name="Gluten_free">Gluten Free</string>
-    <string name="Choose_photo">Choose photo</string>
-    <string name="Take_photo">Take photo</string>
-    <string name="Ingredients">Ingredients</string>
-    <string name="Volume">Volume</string>
-    <string name="Add">Add</string>
-    <string name="Currency">€</string>
-    <string name="Volume_unit">L</string>
-    <string name="select_photo">Select photo</string>
-    <string name="take_photo">Take photo</string>
     <string name="error">Error!</string>
     <string name="m_succ">Success!</string>
     <string name="m_c">Account Created!</string>
@@ -55,6 +39,25 @@
     <string name="Default">Default</string>
     <string name="Menu">- Menu</string>
     <string name="Reservation">- Reservation</string>
+
+    <!--Strings for the menu part -->
+    <string name="Add_plate">Add Plate</string>
+    <string name="Add_drink">Add Drink</string>
+    <string name="Edit_plate">Edit Plate</string>
+    <string name="Edit_drink">Edit Drink</string>
+    <string name="Name">Name</string>
+    <string name="Price">Price</string>
+    <string name="Vegan">Vegan</string>
+    <string name="Gluten_free">Gluten Free</string>
+    <string name="Choose_photo">Choose photo</string>
+    <string name="Take_photo">Take photo</string>
+    <string name="Ingredients">Ingredients</string>
+    <string name="Volume">Volume</string>
+    <string name="Add">Add</string>
+    <string name="Currency">€</string>
+    <string name="Volume_unit">L</string>
+
+    <!--Strings for the Manage Reservation part -->
     <string name="Time">Time</string>
     <string name="NbPeople">Number</string>
     <string name="Plates">Plates</string>

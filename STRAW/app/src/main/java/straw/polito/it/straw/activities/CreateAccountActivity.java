@@ -223,8 +223,8 @@ public class CreateAccountActivity extends AppCompatActivity {
     private void setUpPopUpWindow() {
         popUp = new PopupWindow(getBaseContext());
         final List<String> listOpt=new ArrayList<>();
-        listOpt.add(getString(R.string.select_photo));
-        listOpt.add(getString(R.string.take_photo));
+        listOpt.add(getString(R.string.Choose_photo));
+        listOpt.add(getString(R.string.Take_photo));
         ArrayAdapter<String> adapter = new ArrayAdapter<>(CreateAccountActivity.this, android.R.layout.simple_list_item_1, listOpt);
         final ListView opt_listView = new ListView(getBaseContext());
         opt_listView.setAdapter(adapter);
@@ -235,7 +235,7 @@ public class CreateAccountActivity extends AppCompatActivity {
                     Intent gallery = new Intent();
                     gallery.setType("image/*");
                     gallery.setAction(Intent.ACTION_GET_CONTENT);
-                    startActivityForResult(Intent.createChooser(gallery, getString(R.string.select_photo)), IMAGE_REQ);
+                    startActivityForResult(Intent.createChooser(gallery, getString(R.string.Choose_photo)), IMAGE_REQ);
                 }
                 if (position == 1){
                     Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);

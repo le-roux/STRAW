@@ -193,7 +193,7 @@ public class AddPlateActivity extends AppCompatActivity {
         //Content
         ArrayList<String> content = new ArrayList<String>();
         content.add(getString(R.string.Choose_photo));
-        content.add(getString(R.string.take_photo));
+        content.add(getString(R.string.Take_photo));
 
         //Adapter
         ArrayAdapter<String> popupAdapter = new ArrayAdapter<String>(this.getApplicationContext(),
