@@ -19,12 +19,14 @@ import straw.polito.it.straw.adapter.FoodAdapter;
 import straw.polito.it.straw.data.Drink;
 import straw.polito.it.straw.data.Food;
 import straw.polito.it.straw.data.Plate;
-import straw.polito.it.straw.straw.polito.it.straw.utils.Logger;
 
 public class CreateMenuActivity extends AppCompatActivity {
 
+    //Request code for the intents
     private static final int EDIT_FOOD = 1;
     private static final int ADD_FOOD = 2;
+
+    //Keys for storing and retrieving the data in bundles or sharedPreference
     public static final String ELEMENT = "it.polito.straw.Element";
     public static final String ID = "it.polito.straw.Id";
     public static final String ACTION = "it.polito.straw.Action";
@@ -70,11 +72,16 @@ public class CreateMenuActivity extends AppCompatActivity {
 
         this.list_plate = new ArrayList<Food>();
         if (savedInstanceState == null) {
+            //No data temporarily stored
+            //Get number of elements stored in sharedPreference
             int elementsNb = sharedPreferences.getInt(NUMBER_OF_ELEMENTS, 0);
+            //Retrieve element(s) from sharedPreference
             for (int i = 0; i < elementsNb; i++) {
                 this.list_plate.add(Food.create(sharedPreferences.getString(String.valueOf(i), "")));
             }
             if (elementsNb == 0)
+                //No data found in the sharedPreference --> default init
+                //TO DO : change default init for final version
                 this.init_list();
         }
 
@@ -84,7 +91,6 @@ public class CreateMenuActivity extends AppCompatActivity {
         food_listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Logger.d("onItem click");
                 Intent detail = null;
                 Bundle data = new Bundle();
                 data.putString(ELEMENT, list_plate.get(position).toString());
@@ -135,6 +141,9 @@ public class CreateMenuActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Save data (menu) in sharedPreference for permanent storage
+     */
     @Override
     public void onStop() {
         super.onStop();
