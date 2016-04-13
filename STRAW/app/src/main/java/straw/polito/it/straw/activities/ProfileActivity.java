@@ -95,7 +95,8 @@ public class ProfileActivity extends AppCompatActivity {
         this.reservations_link.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TO DO switch to the reservation page
+                Intent intent = new Intent(getApplicationContext(), DisplayReservationsActivity.class);
+                startActivity(intent);
             }
         });
         offerts_link.setOnClickListener(new View.OnClickListener() {
