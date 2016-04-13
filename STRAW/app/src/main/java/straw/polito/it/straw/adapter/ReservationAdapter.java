@@ -33,7 +33,8 @@ public class ReservationAdapter extends BaseAdapter {
         this.context = context;
     }
 
-    public ReservationAdapter(Context context, ArrayList<Reservation> reservationList, DisplayReservationsActivity activity) {
+    public ReservationAdapter(Context context, ArrayList<Reservation> reservationList,
+                              DisplayReservationsActivity activity) {
         this.reservationList = reservationList;
         this.context = context;
         this.parentActivity = activity;
@@ -60,7 +61,6 @@ public class ReservationAdapter extends BaseAdapter {
             LayoutInflater layoutInflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = layoutInflater.inflate(R.layout.reservation, null);
         }
-        final Reservation dataModel = reservationList.get(position);
 
         //Get the views of the item
         TextView numberPeople = (TextView) convertView.findViewById(R.id.number_people);
@@ -159,16 +159,18 @@ public class ReservationAdapter extends BaseAdapter {
     }
 
     public static void confirm_accept(View view) {
-
+        //TO DO : Send notification to the customer
     }
     public static void confirm_refuse() {
-
+        //TO DO :Send notification to the customer
     }
 
+    /**
+     * Display a time picker on top of the current activity
+     * @param reservation
+     */
     public void showTimePickerFragmentDialog(Reservation reservation) {
-        DialogFragment fragment = new TimePickerFragment(context, reservation, ReservationAdapter.this);
+        DialogFragment fragment = new TimePickerFragment(reservation, ReservationAdapter.this);
         fragment.show(this.parentActivity.getFragmentManager(), "timePicker");
     }
 }
-
-

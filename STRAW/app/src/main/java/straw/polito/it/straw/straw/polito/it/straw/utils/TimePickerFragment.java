@@ -3,7 +3,6 @@ package straw.polito.it.straw.straw.polito.it.straw.utils;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.TimePickerDialog;
-import android.content.Context;
 import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.widget.TimePicker;
@@ -21,17 +20,15 @@ import straw.polito.it.straw.data.Reservation;
 public class TimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener{
     private Reservation reservation;
     private ReservationAdapter reservationAdapter;
-    private Context context;
 
     public TimePickerFragment() {
         this.reservation = null;
     }
 
-    public TimePickerFragment(Context context, Reservation reservation, ReservationAdapter reservationAdapter) {
+    public TimePickerFragment(Reservation reservation, ReservationAdapter reservationAdapter) {
         super();
         this.reservation = reservation;
         this.reservationAdapter = reservationAdapter;
-        this.context = context;
     }
 
     @Override
@@ -47,8 +44,8 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
     @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
         this.reservation.setTime(hourOfDay, minute);
-        this.reservationAdapter.notifyDataSetChanged();
-        Toast.makeText(context, context.getString(R.string.HourChangedToast),
+        //this.reservationAdapter.notifyDataSetChanged();
+        Toast.makeText(getActivity(), getActivity().getString(R.string.HourChangedToast),
                 Toast.LENGTH_LONG).show();
     }
 }

@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import straw.polito.it.straw.R;
 import straw.polito.it.straw.adapter.ReservationAdapter;
 import straw.polito.it.straw.data.Reservation;
+import straw.polito.it.straw.straw.polito.it.straw.utils.Logger;
 
 public class DisplayReservationsActivity extends AppCompatActivity {
 
@@ -37,16 +38,8 @@ public class DisplayReservationsActivity extends AppCompatActivity {
         }
 
         this.reservationList_View = (ListView)findViewById(R.id.reservations_list);
-        this.reservationList_View.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(getApplicationContext(), AddDrinkActivity.class);//To change
-                intent.putExtra(RESERVATION, reservationList.get(position).toString());
-                intent.putExtra(RESERVATION_ID, position);
-                startActivityForResult(intent, MANAGE_RESERVATION_REQUEST_CODE);
-            }
-        });
-        this.reservationList_View.setAdapter(new ReservationAdapter(getApplicationContext(), this.reservationList, this));
+        this.reservationList_View.setAdapter(new ReservationAdapter(getApplicationContext(),
+                this.reservationList, this));
     }
 
     @Override
