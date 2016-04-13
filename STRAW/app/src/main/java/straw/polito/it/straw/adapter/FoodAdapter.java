@@ -14,6 +14,7 @@ import java.util.ArrayList;
 
 import straw.polito.it.straw.R;
 import straw.polito.it.straw.data.Food;
+import straw.polito.it.straw.straw.polito.it.straw.utils.ImageManager;
 import straw.polito.it.straw.straw.polito.it.straw.utils.Logger;
 
 /**
@@ -21,6 +22,9 @@ import straw.polito.it.straw.straw.polito.it.straw.utils.Logger;
  */
 public class FoodAdapter extends BaseAdapter {
 
+    /**
+     * List of the food elements managed by the Adapter
+     */
     private ArrayList<Food> goods;
     private Context context;
 
@@ -32,10 +36,6 @@ public class FoodAdapter extends BaseAdapter {
     public FoodAdapter(Context context, ArrayList<Food> goods) {
         this.goods = goods;
         this.context = context;
-    }
-
-    public void add(Food food) {
-        this.goods.add(food);
     }
 
     @Override
@@ -58,6 +58,8 @@ public class FoodAdapter extends BaseAdapter {
         if(convertView == null) {
             LayoutInflater layoutInflater = (LayoutInflater)this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = layoutInflater.inflate(R.layout.list_design, null);
+
+            //Listener of the 'remove' button of each item
             Button remove_button = (Button)convertView.findViewById(R.id.RemoveButton);
             remove_button.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -66,16 +68,27 @@ public class FoodAdapter extends BaseAdapter {
                     FoodAdapter.this.notifyDataSetChanged();
                 }
             });
+            //Necessary in order that the item can react (onItemClicked) when clicked somewhere
+            // else than on the button
+            remove_button.setFocusable(false);
         }
-        ImageView imageView = (ImageView)convertView.findViewById(R.id.PlateImage);
-        TextView title = (TextView)convertView.findViewById(R.id.PlateName);
-        TextView description = (TextView)convertView.findViewById(R.id.PlateDescription);
-        TextView price = (TextView)convertView.findViewById(R.id.PlatePrice);
 
+        //Get the different components of an item
+        ImageView imageView = (ImageView)convertView.findViewById(R.id.PlateImage);
+        imageView.setFocusable(false);
+        TextView title = (TextView)convertView.findViewById(R.id.PlateName);
+        title.setFocusable(false);
+        TextView description = (TextView)convertView.findViewById(R.id.PlateDescription);
+        description.setFocusable(false);
+        TextView price = (TextView)convertView.findViewById(R.id.PlatePrice);
+        price.setFocusable(false);
+
+        //Fill the View with the proper data
         if (position < this.goods.size()) {
             String uri = this.goods.get(position).getImageURI();
+            Logger.d("uri = " + uri);
             if(uri != null)
-                imageView.setImageURI(Uri.parse(uri));
+                ImageManager.setImage(this.context, imageView, Uri.parse(uri));
             title.setText(this.goods.get(position).getName());
             description.setText(this.goods.get(position).getDescription());
             price.setText(String.valueOf(this.goods.get(position).getPrice()) + " €");

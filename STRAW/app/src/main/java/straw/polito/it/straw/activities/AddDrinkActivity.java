@@ -97,7 +97,7 @@ public class AddDrinkActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 update();
-                sharedPreferences.edit().putString(drink.getName(), drink.toString());
+                sharedPreferences.edit().putString(drink.getName(), drink.toString()).commit();
                 Intent result = new Intent(getApplicationContext(), CreateMenuActivity.class);
                 Bundle data = new Bundle();
                 data.putString(CreateMenuActivity.ACTION, action);

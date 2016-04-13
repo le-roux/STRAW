@@ -51,11 +51,18 @@
     <string name="m_save">Profile saved!</string>
     <string name="save">Save</string>
     <string name="edit_prof">Edit profile</string>
-<<<<<<< HEAD
     <string name="remember">Remember me</string>
-=======
     <string name="Remove">Remove</string>
     <string name="Default">Default</string>
->>>>>>> 0358d3e8f5f87db9f70d8bd589724830c9681704
+    <string name="Menu">- Menu</string>
+    <string name="Reservation">- Reservation</string>
+    <string name="Time">Time</string>
+    <string name="NbPeople">Number</string>
+    <string name="Plates">Plates</string>
+    <string name="Persons">persons</string>
+    <string name="Handle">Handle</string>
+    <string name="offerts">- Offerts</string>
+    <string name="c_of">Create offert</string>
+    <string name="edit_of">Edit offert</string>
 
 </resources>

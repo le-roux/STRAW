@@ -3,14 +3,18 @@ package straw.polito.it.straw.activities;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import straw.polito.it.straw.data.Drink;
@@ -19,6 +23,7 @@ import straw.polito.it.straw.adapter.FoodAdapter;
 import straw.polito.it.straw.data.Plate;
 import straw.polito.it.straw.R;
 import straw.polito.it.straw.straw.polito.it.straw.utils.Logger;
+import straw.polito.it.straw.straw.polito.it.straw.utils.ObjectSerializer;
 
 public class CreateMenuActivity extends AppCompatActivity {
 
@@ -26,22 +31,23 @@ public class CreateMenuActivity extends AppCompatActivity {
     private static final int ADD_FOOD = 2;
     public static final String ELEMENT = "it.polito.straw.Element";
     public static final String ID = "it.polito.straw.Id";
-    public static final String ACTION = "Action";
-    public static final String ADD_ELEMENT = "Add";
-    public static final String EDIT_ELEMENT = "Edit";
+    public static final String ACTION = "it.polito.straw.Action";
+    public static final String ADD_ELEMENT = "it.polito.straw.Add";
+    public static final String EDIT_ELEMENT = "it.polito.straw.Edit";
 
     private ListView food_listView;
     private ArrayList<Food> list_plate;
     private Context context;
     private Button add_plate_button;
     private Button add_drink_button;
+    private SharedPreferences mShared;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_menu);
         this.context = this;
-
+        mShared= PreferenceManager.getDefaultSharedPreferences(this);
         //Listener for the "Add plate" button
         this.add_plate_button = (Button)findViewById(R.id.add_plate_button);
         this.add_plate_button.setOnClickListener(new View.OnClickListener() {
@@ -80,10 +86,11 @@ public class CreateMenuActivity extends AppCompatActivity {
                 Bundle data = new Bundle();
                 data.putString(ELEMENT, list_plate.get(position).toString());
                 data.putInt(ID, position);
+                data.putString(ACTION, EDIT_ELEMENT);
                 if (list_plate.get(position).getClass().equals(Drink.class)) {
-                    detail = new Intent(getApplicationContext(), Drink.class);
+                    detail = new Intent(getApplicationContext(), AddDrinkActivity.class);
                 } else if (list_plate.get(position).getClass().equals(Plate.class)) {
-                    detail = new Intent(getApplicationContext(), Plate.class);
+                    detail = new Intent(getApplicationContext(), AddPlateActivity.class);
                 }
                 detail.putExtras(data);
                 startActivityForResult(detail, EDIT_FOOD);
@@ -115,6 +122,11 @@ public class CreateMenuActivity extends AppCompatActivity {
     public void onSaveInstanceState(Bundle bundle) {
         for (int i = 0; i < this.list_plate.size(); i++) {
             bundle.putString(String.valueOf(i), this.list_plate.get(i).toString());
+        }
+        try {
+            mShared.edit().putString("Menu", ObjectSerializer.serialize(list_plate)).commit();
+        } catch (IOException e) {
+           Logger.d("Error serializing the menu");
         }
     }
 

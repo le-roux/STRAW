@@ -49,6 +49,9 @@ public class ProfileActivity extends AppCompatActivity {
     TextView r_n;
     TextView addr;
     TextView seats;
+    TextView menu_link;
+    TextView reservations_link;
+    TextView offerts_link;
     Button edit_button;
 
     Bitmap bitmap;
@@ -91,6 +94,28 @@ public class ProfileActivity extends AppCompatActivity {
                 startActivity(i);
             }
         });
+
+        this.menu_link.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), CreateMenuActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        this.reservations_link.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //TO DO switch to the reservation page
+            }
+        });
+        offerts_link.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i =new Intent(getBaseContext(),CreateOffertActivity.class);
+                startActivity(i);
+            }
+        });
     }
 
     private void initialize() {
@@ -101,6 +126,9 @@ public class ProfileActivity extends AppCompatActivity {
         addr=(TextView)findViewById(R.id.addr_editText);
         seats=(TextView)findViewById(R.id.seats_editText);
         edit_button=(Button)findViewById(R.id.edit_button);
+        this.menu_link = (TextView)findViewById(R.id.menu_link);
+        this.reservations_link = (TextView)findViewById(R.id.reservations_link);
+        offerts_link=(TextView)findViewById(R.id.offers_link_textView);
     }
     private void loadPrevInfo(Manager man) {
 
