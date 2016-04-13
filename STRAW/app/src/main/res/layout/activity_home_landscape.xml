@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:background="@color/grey"
+    tools:context=".activities.HomeActivity">
+
+    <RelativeLayout
+        android:layout_width="300sp"
+        android:layout_height="270sp"
+        android:id="@+id/create_relativeLayout"
+        android:background="@drawable/customborder"
+        android:layout_centerVertical="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/c_user"
+            android:id="@+id/c_user_button"
+            android:background="@drawable/customborder_buttons"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/c_man"
+            android:id="@+id/c_man_button"
+            android:layout_alignBottom="@+id/c_user_button"
+            android:layout_toRightOf="@+id/c_user_button"
+            android:layout_toEndOf="@+id/c_user_button"
+            android:layout_marginLeft="27dp"
+            android:layout_marginStart="27dp"
+            android:background="@drawable/customborder_buttons"/>
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textAlignment="center"
+        android:text="@string/notyet"
+        android:id="@+id/notyet_textView"
+        android:background="@drawable/customborder_dark"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_toLeftOf="@+id/id_relativeLayout"
+        android:layout_toStartOf="@+id/id_relativeLayout" />
+
+    <RelativeLayout
+        android:id="@+id/id_relativeLayout"
+        android:background="@drawable/customborder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignTop="@+id/create_relativeLayout"
+        android:layout_toRightOf="@+id/create_relativeLayout"
+        android:layout_toEndOf="@+id/create_relativeLayout"
+        android:layout_alignBottom="@+id/create_relativeLayout">
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/user_name_editText"
+            android:layout_alignBottom="@+id/user_n_textView"
+            android:layout_toRightOf="@+id/user_n_textView"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"
+            android:ems="10"
+            android:id="@+id/pwd_editText"
+            android:layout_below="@+id/user_name_editText"
+            android:layout_alignLeft="@+id/remember_checkBox"
+            android:layout_alignStart="@+id/remember_checkBox" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/log_in"
+            android:id="@+id/log_in_button"
+            android:background="@drawable/customborder_buttons"
+            android:layout_above="@+id/remember_checkBox"
+            android:layout_centerHorizontal="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/forgot"
+            android:id="@+id/textView"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/user_n"
+            android:id="@+id/user_n_textView"
+            android:layout_above="@+id/log_in_button"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginBottom="54dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/pwd"
+            android:id="@+id/pwd_textView"
+            android:layout_alignBottom="@+id/pwd_editText"
+            android:layout_alignLeft="@+id/user_n_textView"
+            android:layout_alignStart="@+id/user_n_textView" />
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/remember"
+            android:id="@+id/remember_checkBox"
+            android:checked="false"
+            android:layout_above="@+id/textView"
+            android:layout_toRightOf="@+id/user_n_textView"
+            android:layout_toEndOf="@+id/user_n_textView" />
+    </RelativeLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textAlignment="center"
+        android:text="@string/ident"
+        android:id="@+id/id_textView"
+        android:background="@drawable/customborder_dark"
+        android:layout_alignTop="@+id/notyet_textView"
+        android:layout_alignLeft="@+id/id_relativeLayout"
+        android:layout_alignStart="@+id/id_relativeLayout" />
+</RelativeLayout>

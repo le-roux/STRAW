@@ -33,7 +33,7 @@ public class FoodAdapter extends BaseAdapter {
         this.context = context;
     }
 
-    public FoodAdapter(Context context, ArrayList<Food> goods) {
+    public FoodAdapter(Context context,ArrayList<Food> goods) {
         this.goods = goods;
         this.context = context;
     }
@@ -60,7 +60,8 @@ public class FoodAdapter extends BaseAdapter {
             convertView = layoutInflater.inflate(R.layout.list_design, null);
 
             //Listener of the 'remove' button of each item
-            Button remove_button = (Button)convertView.findViewById(R.id.RemoveButton);
+            Button remove_button = (Button) convertView.findViewById(R.id.RemoveButton);
+
             remove_button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -71,6 +72,7 @@ public class FoodAdapter extends BaseAdapter {
             //Necessary in order that the item can react (onItemClicked) when clicked somewhere
             // else than on the button
             remove_button.setFocusable(false);
+
         }
 
         //Get the different components of an item
@@ -78,7 +80,7 @@ public class FoodAdapter extends BaseAdapter {
         imageView.setFocusable(false);
         TextView title = (TextView)convertView.findViewById(R.id.PlateName);
         title.setFocusable(false);
-        TextView description = (TextView)convertView.findViewById(R.id.PlateDescription);
+        TextView description = (TextView) convertView.findViewById(R.id.PlateDescription);
         description.setFocusable(false);
         TextView price = (TextView)convertView.findViewById(R.id.PlatePrice);
         price.setFocusable(false);

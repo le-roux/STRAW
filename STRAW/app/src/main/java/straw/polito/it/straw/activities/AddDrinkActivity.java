@@ -6,11 +6,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.text.Editable;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -19,18 +19,16 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.net.Uri;
 import android.widget.ListView;
-import android.widget.PopupMenu;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import straw.polito.it.straw.R;
 import straw.polito.it.straw.data.Drink;
 import straw.polito.it.straw.data.Food;
 import straw.polito.it.straw.straw.polito.it.straw.utils.ImageManager;
-import straw.polito.it.straw.R;
 import straw.polito.it.straw.straw.polito.it.straw.utils.Logger;
 
 public class AddDrinkActivity extends AppCompatActivity {
@@ -181,7 +179,7 @@ public class AddDrinkActivity extends AppCompatActivity {
         this.popupWindow = new PopupWindow(this.getApplicationContext());
         ArrayList<String> content = new ArrayList<String>();
         content.add(getString(R.string.Choose_photo));
-        content.add(getString(R.string.take_photo));
+        content.add(getString(R.string.Take_photo));
         ArrayAdapter<String> popupAdapter = new ArrayAdapter<String>(this.getApplicationContext(), android.R.layout.simple_list_item_1, content);
         this.listView = new ListView(this.getApplicationContext());
         listView.setAdapter(popupAdapter);

@@ -7,7 +7,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="straw.polito.it.straw.activities.CreateOffertActivity">
+    tools:context=".activities.OfferActivity">
    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
@@ -45,8 +45,17 @@
             android:layout_alignParentTop="true">
         </ListView>
 
+       <Button
+           android:layout_width="150sp"
+           android:layout_height="wrap_content"
+           android:text="@string/returnT"
+           android:id="@+id/return_button"
+           android:background="@drawable/customborder_buttons"
+           android:layout_alignTop="@+id/create_offert_button"
+           android:layout_toRightOf="@+id/center" />
 
-    </RelativeLayout>
+
+   </RelativeLayout>
 
 
 </RelativeLayout>

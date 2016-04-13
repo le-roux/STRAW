@@ -9,11 +9,11 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.os.Bundle;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -26,17 +26,15 @@ import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.Spinner;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
-import straw.polito.it.straw.data.Manager;
 import straw.polito.it.straw.R;
-import straw.polito.it.straw.straw.polito.it.straw.utils.Logger;
+import straw.polito.it.straw.data.Manager;
 
 public class CreateAccountActivity extends AppCompatActivity {
 
@@ -63,7 +61,7 @@ public class CreateAccountActivity extends AppCompatActivity {
     private static final int IMAGE_REQ = 1;
     private static final int CAMERA_REQ = 2;
     Manager man;
-
+    boolean sw;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,8 +89,9 @@ public class CreateAccountActivity extends AppCompatActivity {
 
     private void loadPrevInfo(Manager man) {
         try {
-            photo.setImageBitmap( MediaStore.Images.Media.getBitmap(getContentResolver(),Uri.parse(man.getImage())));
             photo_uri=Uri.parse(man.getImage());
+            bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), Uri.parse(man.getImage()));
+            photo.setImageBitmap(bitmap);
         } catch (IOException e) {
             Log.v(TAG, "Error on loading the photo! " + e.getMessage());
         }
@@ -224,13 +223,14 @@ public class CreateAccountActivity extends AppCompatActivity {
         email=(EditText)findViewById(R.id.email_editText);
         c_acc_button=(Button)findViewById(R.id.create_button);
         setUpPopUpWindow();
+        sw=false;
     }
 
     private void setUpPopUpWindow() {
         popUp = new PopupWindow(getBaseContext());
         final List<String> listOpt=new ArrayList<>();
-        listOpt.add(getString(R.string.select_photo));
-        listOpt.add(getString(R.string.take_photo));
+        listOpt.add(getString(R.string.Choose_photo));
+        listOpt.add(getString(R.string.Take_photo));
         ArrayAdapter<String> adapter = new ArrayAdapter<>(CreateAccountActivity.this, android.R.layout.simple_list_item_1, listOpt);
         final ListView opt_listView = new ListView(getBaseContext());
         opt_listView.setAdapter(adapter);
@@ -241,11 +241,23 @@ public class CreateAccountActivity extends AppCompatActivity {
                     Intent gallery = new Intent();
                     gallery.setType("image/*");
                     gallery.setAction(Intent.ACTION_GET_CONTENT);
-                    startActivityForResult(Intent.createChooser(gallery, getString(R.string.select_photo)), IMAGE_REQ);
+                    startActivityForResult(Intent.createChooser(gallery, getString(R.string.Choose_photo)), IMAGE_REQ);
                 }
                 if (position == 1){
-                    Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                    startActivityForResult(cameraIntent, CAMERA_REQ);
+                    //camera stuff
+                    Intent imageIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                    String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+
+
+                    File imagesFolder = new File(Environment.getExternalStorageDirectory(), "MyImages");
+                    imagesFolder.mkdirs();
+
+                    File image = new File(imagesFolder, "QR_" + timeStamp + ".png");
+                    Uri uriSavedImage = Uri.fromFile(image);
+                    photo_uri=uriSavedImage;
+                    imageIntent.putExtra(MediaStore.EXTRA_OUTPUT, uriSavedImage);
+                    startActivityForResult(imageIntent, CAMERA_REQ);
+
                 }
                 popUp.dismiss();
             }
@@ -259,7 +271,9 @@ public class CreateAccountActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        Log.v(TAG, "Photo selected! " + requestCode);
         if( data!=null && resultCode==RESULT_OK && requestCode== IMAGE_REQ){
+            sw=false;
             Uri image =data.getData();
             photo_uri=data.getData();
             try{
@@ -267,6 +281,16 @@ public class CreateAccountActivity extends AppCompatActivity {
                 bitmap=Bitmap.createScaledBitmap(bitmap,photo.getHeight(),photo.getWidth(),true);
                 photo.setImageBitmap(bitmap);
             }catch(IOException e){
+                Log.v(TAG,"Error on Activity result! "+e.getMessage());
+            }
+        }
+        if( requestCode== CAMERA_REQ){
+            sw=true;
+            try{
+                bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(),photo_uri);
+                bitmap=Bitmap.createScaledBitmap(bitmap,photo.getHeight(),photo.getWidth(),true);
+                photo.setImageBitmap(bitmap);
+            }catch(Exception e){
                 Log.v(TAG,"Error on Activity result! "+e.getMessage());
             }
         }

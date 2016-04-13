@@ -5,8 +5,6 @@ import android.content.SharedPreferences;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import straw.polito.it.straw.straw.polito.it.straw.utils.Logger;
-
 /**
  * Created by Sylvain on 01/04/2016.
  *
@@ -18,17 +16,32 @@ public abstract class Food {
     private String name;
     private double price;
     private String imageURI;
+
+    //Keys for storing and retrieving the data in any dictionary
     public static final String NAME = "NAME";
     public static final String TYPE = "TYPE";
     public static final String PRICE = "PRICE";
     public static final String IMAGE_URI = "IMAGE_URI";
 
+    //Default values
+    private static final String DEFAULT_NAME ="Default";
+    private static final double DEFAULT_PRICE = 0d;
+
+    /**
+     * Complete constructor
+     * @param name
+     * @param price
+     * @param imageURI
+     */
     public Food(String name, double price, String imageURI) {
         this.name = name;
         this.price = price;
         this.imageURI = imageURI;
     }
 
+    /**
+     * Default constructor
+     */
     public Food() {
         this.name = "Default";
         this.price = 0d;
@@ -95,12 +108,12 @@ public abstract class Food {
             try {
                 food.setName(jsonObject.getString(NAME));
             } catch (JSONException e) {
-                food.setName("Default");
+                food.setName(DEFAULT_NAME);
             }
             try {
                 food.setPrice(jsonObject.getDouble(PRICE));
             } catch (JSONException e) {
-                food.setPrice(0d);
+                food.setPrice(DEFAULT_PRICE);
             }
             try {
                 food.setImageURI(jsonObject.getString(IMAGE_URI));

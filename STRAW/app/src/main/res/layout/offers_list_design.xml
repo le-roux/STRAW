@@ -20,33 +20,23 @@
             android:id="@+id/PlateImage"
             android:layout_width="50dip"
             android:layout_height="50dip"
-            android:src="@drawable/pizza"
-            />
+            android:src="@drawable/basket_icon" />
     </LinearLayout>
 
     <TextView
         android:id="@+id/PlateName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/thumbnail"
-        android:layout_toRightOf="@+id/thumbnail"
         android:text="Pizza"
         android:textColor="@color/text_list"
         android:typeface="sans"
         android:textSize="15dp"
-        android:textStyle="bold"/>
-
-    <TextView
-        android:id="@+id/PlateDescription"
-        android:layout_width="160dp"
-        android:layout_height="wrap_content"
-        android:textColor="#343434"
-        android:textSize="10dp"
-        android:text="Description, description, ingrédient, ingrédient, ingrédient, ingrédient"
-
-        android:layout_below="@+id/PlateName"
+        android:textStyle="bold"
+        android:layout_alignTop="@+id/thumbnail"
         android:layout_toRightOf="@+id/thumbnail"
         android:layout_toEndOf="@+id/thumbnail" />
+
+
 
     <TextView
         android:id="@+id/PlatePrice"
@@ -55,22 +45,30 @@
         android:textColor="#343434"
         android:textSize="15dp"
         android:text="4.99€"
-        android:layout_alignTop="@+id/PlateDescription"
-        android:layout_toLeftOf="@+id/RemoveButton"
-        android:layout_toStartOf="@+id/RemoveButton"
         android:textStyle="bold"
-        />
-
-    <Button
-        android:id="@+id/RemoveButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="5dp"
         android:layout_centerVertical="true"
-        android:text="@string/Remove"
-        android:textSize="10dp"
-        android:background="@drawable/customborder_buttons"
-        />
+        android:layout_toRightOf="@+id/thumbnail"
+        android:layout_toEndOf="@+id/thumbnail" />
+
+    <ImageView
+        android:layout_width="40sp"
+        android:layout_height="match_parent"
+        android:id="@+id/imageView"
+        android:layout_alignParentTop="true"
+        android:src="@drawable/cancel_icon"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignBottom="@+id/thumbnail" />
+
+    ImageView
+        android:layout_width="40sp"
+        android:layout_height="match_parent"
+        android:id="@+id/imageView2"
+        android:src="@drawable/edit_icon"
+        android:layout_alignParentTop="true"
+        android:layout_toLeftOf="@+id/imageView"
+        android:layout_toStartOf="@+id/imageView"
+        android:layout_alignBottom="@+id/imageView" android:layout_margin="10dp"/>
+
 
 </RelativeLayout>

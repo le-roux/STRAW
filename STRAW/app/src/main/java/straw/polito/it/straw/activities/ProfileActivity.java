@@ -5,38 +5,23 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.util.Base64;
 import android.util.Log;
 import android.view.View;
-import android.view.WindowManager;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.PopupWindow;
-import android.widget.Spinner;
 import android.widget.TextView;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import straw.polito.it.straw.R;
 import straw.polito.it.straw.data.Manager;
@@ -63,7 +48,11 @@ public class ProfileActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile);
+        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
+            setContentView(R.layout.activity_profile);
+        }else{
+            setContentView(R.layout.activity_profile_landscape);
+        }
         mShared = PreferenceManager.getDefaultSharedPreferences(this);
 
         initialize();
@@ -112,7 +101,7 @@ public class ProfileActivity extends AppCompatActivity {
         offerts_link.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i =new Intent(getBaseContext(),CreateOffertActivity.class);
+                Intent i =new Intent(getBaseContext(),OfferActivity.class);
                 startActivity(i);
             }
         });
@@ -131,26 +120,37 @@ public class ProfileActivity extends AppCompatActivity {
         offerts_link=(TextView)findViewById(R.id.offers_link_textView);
     }
     private void loadPrevInfo(Manager man) {
+            String path=getRealPathFromURI(getBaseContext(),Uri.parse(man.getImage()));
+            if(path!=null) {
+                File imgFile = new File(path);
 
-            File imgFile = new  File(getRealPathFromURI(getBaseContext(),Uri.parse(man.getImage())));
+                if (imgFile.exists()) {
 
-            if(imgFile.exists()){
+                    Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+                    if (myBitmap != null) {
+                        photo.setImageBitmap(myBitmap);
+                    } else {
+                        bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.no_image);
+                        photo.setImageBitmap(bitmap);
+                    }
 
-                //Log.v(TAG,"Image exists! "+getRealPathFromURI(getBaseContext(),Uri.parse(man.getImage())));
-                Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-                if(myBitmap!=null) {
-                    photo.setImageBitmap(myBitmap);
-                }else{
-                    bitmap=BitmapFactory.decodeResource(getResources(), R.drawable.no_image);
+            }
+        }else {
+
+                try {
+                    bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), Uri.parse(man.getImage()));
                     photo.setImageBitmap(bitmap);
+                } catch (IOException e) {
+                    Log.v(TAG, "Error " +e.getMessage());
                 }
+
 
             }
         user_n.setText(getString(R.string.user_n) + ": " + man.getName());
-        tel.setText(getString(R.string.tel)+": "+man.getTelephone());
-        r_n.setText(getString(R.string.r_name)+": "+man.getRes_name());
-        addr.setText(getString(R.string.addr)+": "+man.getAddress());
-        seats.setText(getString(R.string.seats)+": "+man.getSeats());
+        tel.setText(getString(R.string.tel) + ": " + man.getTelephone());
+        r_n.setText(getString(R.string.r_name) + ": " + man.getRes_name());
+        addr.setText(getString(R.string.addr) + ": " + man.getAddress());
+        seats.setText(getString(R.string.seats) + ": " + man.getSeats());
     }
 
     private void showAlert(String message,String title, final boolean ex){
@@ -171,23 +171,7 @@ public class ProfileActivity extends AppCompatActivity {
                 });
         alertDialog.show();
     }
-    public String BitMapToString(Bitmap bitmap){
-        ByteArrayOutputStream baos=new  ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
-        byte [] b=baos.toByteArray();
-        String temp= Base64.encodeToString(b, Base64.DEFAULT);
-        return temp;
-    }
-    public Bitmap StringToBitMap(String encodedString){
-        try {
-            byte [] encodeByte=Base64.decode(encodedString,Base64.DEFAULT);
-            Bitmap bitmap= BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
-            return bitmap;
-        } catch(Exception e) {
-            e.getMessage();
-            return null;
-        }
-    }
+
     public String getRealPathFromURI(Context context, Uri contentUri) {
         Cursor cursor = null;
         try {
@@ -196,7 +180,10 @@ public class ProfileActivity extends AppCompatActivity {
             int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
             cursor.moveToFirst();
             return cursor.getString(column_index);
-        } finally {
+        }catch(Exception e){
+            return null;
+        }
+        finally {
             if (cursor != null) {
                 cursor.close();
             }

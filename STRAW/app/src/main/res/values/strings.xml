@@ -1,4 +1,5 @@
 <resources>
+    <!--Strings for the manager account management part-->
     <string name="app_name">STRAW</string>
     <string name="ident">Identification</string>
     <string name="notyet">Not yet a member?</string>
@@ -21,23 +22,6 @@
     <string name="canteen">Canteen</string>
     <string name="ta">Take Away</string>
     <string name="c_acc">Create Account</string>
-    <string name="Add_plate">Add Plate</string>
-    <string name="Add_drink">Add Drink</string>
-    <string name="Edit_plate">Edit Plate</string>
-    <string name="Edit_drink">Edit Drink</string>
-    <string name="Name">Name</string>
-    <string name="Price">Price</string>
-    <string name="Vegan">Vegan</string>
-    <string name="Gluten_free">Gluten Free</string>
-    <string name="Choose_photo">Choose photo</string>
-    <string name="Take_photo">Take photo</string>
-    <string name="Ingredients">Ingredients</string>
-    <string name="Volume">Volume</string>
-    <string name="Add">Add</string>
-    <string name="Currency">€</string>
-    <string name="Volume_unit">L</string>
-    <string name="select_photo">Select photo</string>
-    <string name="take_photo">Take photo</string>
     <string name="error">Error!</string>
     <string name="m_succ">Success!</string>
     <string name="m_c">Account Created!</string>
@@ -56,13 +40,53 @@
     <string name="Default">Default</string>
     <string name="Menu">- Menu</string>
     <string name="Reservation">- Reservation</string>
+
+    <!--Strings for the menu part -->
+    <string name="Add_plate">Add Plate</string>
+    <string name="Add_drink">Add Drink</string>
+    <string name="Edit_plate">Edit Plate</string>
+    <string name="Edit_drink">Edit Drink</string>
+    <string name="Name">Name</string>
+    <string name="Price">Price</string>
+    <string name="Vegan">Vegan</string>
+    <string name="Gluten_free">Gluten Free</string>
+    <string name="Choose_photo">Choose photo</string>
+    <string name="Take_photo">Take photo</string>
+    <string name="Ingredients">Ingredients</string>
+    <string name="Volume">Volume</string>
+    <string name="Add">Add</string>
+    <string name="Currency">€</string>
+    <string name="Volume_unit">L</string>
+
+    <!--Strings for the Manage Reservation part -->
     <string name="Time">Time</string>
     <string name="NbPeople">Number</string>
     <string name="Plates">Plates</string>
     <string name="Persons">persons</string>
     <string name="Handle">Handle</string>
-    <string name="offerts">- Offerts</string>
-    <string name="c_of">Create offert</string>
-    <string name="edit_of">Edit offert</string>
+    <string name="Discard">Discard</string>
+    <string name="Accept">Accept</string>
+    <string name="MoreOptions">More Options...</string>
+    <string name="ChangeTime">Change Time</string>
+    <string name="Cancel">Cancel</string>
+    <string name="RefuseOrder">Refuse this order?</string>
+    <string name="Yes">Yes</string>
+    <string name="OrderRefusedToast">This order is refused
+ A notification has been sent to the customer</string>
+    <string name="OrderAcceptedToast">This order is confirmed
+ A notification has been sent to the customer</string>
+    <string name="HourChangedToast">The time of this reservation is changed.
+    A message has been sent to the customer for confirmation</string>
+    <string name="AcceptOrder">Accept this order?</string>
 
+    <string name="offerts">- Offers</string>
+    <string name="c_of">Create offer</string>
+    <string name="edit_of">Edit offer</string>
+    <string name="show_off">Show offer</string>
+    <string name="finish">Finish</string>
+    <string name="menu">The Menu</string>
+    <string name="offer">The Offer</string>
+    <string name="returnT">Return</string>
+    <string name="put_price">Write the price of the offer</string>
+    <string name="save_price">Save Price</string>
 </resources>
