@@ -12,9 +12,8 @@ import java.util.StringTokenizer;
  */
 public class Manager {
 
-    private String name;
     private String pwd;
-    private int telephone;
+    private String telephone;
     private String address;
     private String res_name;
     private String res_type;
@@ -29,9 +28,8 @@ public class Manager {
 
         try {
             JSONObject oj=new JSONObject(man);
-            name= (String) oj.get("user_n");
             pwd= (String) oj.get("pwd");
-            telephone= (int)oj.get("tel");
+            telephone= (String) oj.get("tel");
             address=(String)oj.get("addr");
             res_name=(String)oj.get("r_n");
             res_type=(String)oj.get("r_t");
@@ -59,13 +57,6 @@ public class Manager {
         this.image = image;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public String getPwd() {
         return pwd;
@@ -75,11 +66,11 @@ public class Manager {
         this.pwd = pwd;
     }
 
-    public int getTelephone() {
+    public String getTelephone() {
         return telephone;
     }
 
-    public void setTelephone(int telephone) {
+    public void setTelephone(String telephone) {
         this.telephone = telephone;
     }
 
@@ -117,7 +108,6 @@ public class Manager {
     public String toJSONObject(){
         JSONObject oj=new JSONObject();
         try {
-            oj.put("user_n",name);
             oj.put("pwd",pwd);
             oj.put("tel",telephone);
             oj.put("addr",address);

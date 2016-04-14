@@ -39,7 +39,6 @@ import straw.polito.it.straw.data.Manager;
 public class CreateAccountActivity extends AppCompatActivity {
 
     ImageView photo;
-    EditText user_n;
     EditText c_pwd;
     EditText cc_pwd;
     EditText tel;
@@ -95,7 +94,6 @@ public class CreateAccountActivity extends AppCompatActivity {
         } catch (IOException e) {
             Log.v(TAG, "Error on loading the photo! " + e.getMessage());
         }
-        user_n.setText(man.getName());
         c_pwd.setText(man.getPwd());
         tel.setText(String.valueOf(man.getTelephone()));
         email.setText(man.getEmail());
@@ -121,12 +119,6 @@ public class CreateAccountActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 boolean sw = false;
-                if (!user_n.getText().toString().equals("")) {
-                    man.setName(user_n.getText().toString());
-                } else {
-                    showAlert(getString(R.string.m_user_n), getString(R.string.error), false);
-                    sw = true;
-                }
                 if (!email.getText().toString().equals("")) {
                     man.setEmail(email.getText().toString());
                 } else {
@@ -140,7 +132,7 @@ public class CreateAccountActivity extends AppCompatActivity {
                     sw = true;
                 }
                 if (tel.getText().toString().length() > 6) {
-                    man.setTelephone(Integer.parseInt(tel.getText().toString()));
+                    man.setTelephone(tel.getText().toString());
                 } else {
                     showAlert(getString(R.string.m_tel), getString(R.string.error), false);
                     sw = true;
@@ -212,7 +204,6 @@ public class CreateAccountActivity extends AppCompatActivity {
 
     private void initialize() {
         photo=(ImageView)findViewById(R.id.photo_imageView);
-        user_n=(EditText)findViewById(R.id.user_n_editText);
         c_pwd=(EditText)findViewById(R.id.c_pwd_editText);
         cc_pwd=(EditText)findViewById(R.id.cc_pwd_editText);
         tel=(EditText)findViewById(R.id.tel_editText);
