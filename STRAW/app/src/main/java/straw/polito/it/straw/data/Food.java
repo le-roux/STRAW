@@ -1,6 +1,7 @@
 package straw.polito.it.straw.data;
 
 import android.content.SharedPreferences;
+import android.net.Uri;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -45,7 +46,7 @@ public abstract class Food {
     public Food() {
         this.name = "Default";
         this.price = 0d;
-        this.imageURI = null;
+        this.imageURI = "android.resource://straw.polito.it.straw/drawable/no_image";
     }
 
     public void setName(String name) {

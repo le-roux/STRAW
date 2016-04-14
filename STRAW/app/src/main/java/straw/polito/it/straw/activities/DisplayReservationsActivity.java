@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import straw.polito.it.straw.R;
 import straw.polito.it.straw.adapter.ReservationAdapter;
 import straw.polito.it.straw.data.Reservation;
+import straw.polito.it.straw.utils.Logger;
 
 public class DisplayReservationsActivity extends AppCompatActivity {
 
@@ -31,7 +32,7 @@ public class DisplayReservationsActivity extends AppCompatActivity {
             int reservation_number = this.sharedPreferences.getInt(RESERVATION_NUMBER, 0);
             String description;
             for (int i = 0; i < reservation_number; i++) {
-                description = this.sharedPreferences.getString(String.valueOf(i), "");
+                description = this.sharedPreferences.getString(Reservation.RESERVATION + String.valueOf(i), "");
                 this.reservationList.add(Reservation.create(description));
             }
             //For test purpose only
@@ -73,7 +74,8 @@ public class DisplayReservationsActivity extends AppCompatActivity {
         super.onStop();
         SharedPreferences.Editor editor = this.sharedPreferences.edit();
         for (int i = 0; i < this.reservationList.size(); i++) {
-            editor.putString(String.valueOf(i), this.reservationList.get(i).toString());
+            editor.putString(Reservation.RESERVATION + String.valueOf(i),
+                    this.reservationList.get(i).toString());
         }
         editor.putInt(RESERVATION_NUMBER, this.reservationList.size());
         editor.commit();

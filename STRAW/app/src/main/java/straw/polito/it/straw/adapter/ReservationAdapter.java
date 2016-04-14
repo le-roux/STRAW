@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import straw.polito.it.straw.R;
 import straw.polito.it.straw.activities.DisplayReservationsActivity;
 import straw.polito.it.straw.data.Reservation;
+import straw.polito.it.straw.utils.Logger;
 import straw.polito.it.straw.utils.TimePickerFragment;
 
 /**
@@ -37,6 +38,7 @@ public class ReservationAdapter extends BaseAdapter {
     public ReservationAdapter(Context context, ArrayList<Reservation> reservationList,
                               DisplayReservationsActivity activity) {
         this.reservationList = reservationList;
+        Logger.d("Creation");
         this.context = context;
         this.parentActivity = activity;
     }
@@ -151,10 +153,12 @@ public class ReservationAdapter extends BaseAdapter {
         });
 
         //Fill them with appropriate values
-        numberPeople.setText(this.reservationList.get(position).getNumberPeople() + " " +
-                context.getString(R.string.Persons));
-        time.setText(this.reservationList.get(position).getTimeString());
-        plates.setText(this.reservationList.get(position).getPlates());
+        if(position < this.reservationList.size()) {
+            numberPeople.setText(this.reservationList.get(position).getNumberPeople() + " " +
+                    context.getString(R.string.Persons));
+            time.setText(this.reservationList.get(position).getTimeString());
+            plates.setText(this.reservationList.get(position).getPlates());
+        }
 
         return convertView;
     }

@@ -7,6 +7,8 @@ import java.sql.Time;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+import straw.polito.it.straw.utils.Logger;
+
 /**
  * Created by Sylvain on 07/04/2016.
  */
