@@ -19,6 +19,7 @@ public class Reservation {
     public static final String NUMBER_PEOPLE = "NumberPeople";
     public static final String TIME = "Time";
     public static final String PLATES = "Plates";
+    public static final String RESERVATION = "Reservation";
 
     public Reservation() {
         this.numberPeople = 0;
@@ -75,6 +76,14 @@ public class Reservation {
             stringBuilder.append('0');
         stringBuilder.append(minute);
         return stringBuilder.toString();
+    }
+
+    public int getHour() {
+        return this.time.get(Calendar.HOUR_OF_DAY);
+    }
+
+    public int getMinutes() {
+        return this.time.get(Calendar.MINUTE);
     }
 
     public void setTime(GregorianCalendar gregorianCalendar) {

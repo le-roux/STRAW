@@ -65,4 +65,8 @@ public class DisplayReservationsActivity extends AppCompatActivity {
             this.reservationList.add(Reservation.create(b.getString(String.valueOf(i))));
         }
     }
+
+    public ReservationAdapter getAdapter() {
+        return (ReservationAdapter)this.reservationList_View.getAdapter();
+    }
 }

@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -170,7 +171,10 @@ public class ReservationAdapter extends BaseAdapter {
      * @param reservation
      */
     public void showTimePickerFragmentDialog(Reservation reservation) {
-        DialogFragment fragment = new TimePickerFragment(reservation, ReservationAdapter.this);
+        DialogFragment fragment = new TimePickerFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(Reservation.RESERVATION, reservation.toString());
+        fragment.setArguments(bundle);
         fragment.show(this.parentActivity.getFragmentManager(), "timePicker");
     }
 }
