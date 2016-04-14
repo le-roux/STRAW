@@ -81,7 +81,7 @@ public class HomeActivity extends AppCompatActivity {
         if(!ss.equals("Error")){
             try {
                 JSONObject jo=new JSONObject(ss);
-                if(u.equals(jo.get("user_n")) && p.equals(jo.get("pwd"))){
+                if(u.equals(jo.get("email")) && p.equals(jo.get("pwd"))){
                     return true;
                 }
             } catch (JSONException e) {

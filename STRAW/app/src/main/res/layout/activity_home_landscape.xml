@@ -71,9 +71,10 @@
             android:layout_height="wrap_content"
             android:id="@+id/user_name_editText"
             android:layout_alignBottom="@+id/user_n_textView"
-            android:layout_toRightOf="@+id/user_n_textView"
             android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true" />
+            android:layout_alignParentEnd="true"
+            android:layout_alignLeft="@+id/log_in_button"
+            android:layout_alignStart="@+id/log_in_button" />
 
         <EditText
             android:layout_width="wrap_content"
@@ -82,8 +83,8 @@
             android:ems="10"
             android:id="@+id/pwd_editText"
             android:layout_below="@+id/user_name_editText"
-            android:layout_alignLeft="@+id/remember_checkBox"
-            android:layout_alignStart="@+id/remember_checkBox" />
+            android:layout_alignLeft="@+id/user_name_editText"
+            android:layout_alignStart="@+id/user_name_editText" />
 
         <Button
             android:layout_width="wrap_content"
@@ -107,7 +108,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="@string/user_n"
+            android:text="@string/email"
             android:id="@+id/user_n_textView"
             android:layout_above="@+id/log_in_button"
             android:layout_alignParentLeft="true"

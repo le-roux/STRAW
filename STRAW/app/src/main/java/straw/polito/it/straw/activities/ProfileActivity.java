@@ -152,7 +152,7 @@ public class ProfileActivity extends AppCompatActivity {
 
 
         }*/
-        user_n.setText(getString(R.string.user_n) + ": " + man.getName());
+        user_n.setText(getString(R.string.email) + ": " + man.getEmail());
         tel.setText(getString(R.string.tel) + ": " + man.getTelephone());
         r_n.setText(getString(R.string.r_name) + ": " + man.getRes_name());
         addr.setText(getString(R.string.addr) + ": " + man.getAddress());

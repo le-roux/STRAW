@@ -22,9 +22,10 @@
             android:layout_height="wrap_content"
             android:id="@+id/user_name_editText"
             android:layout_alignBottom="@+id/user_n_textView"
-            android:layout_toRightOf="@+id/user_n_textView"
             android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true" />
+            android:layout_alignParentEnd="true"
+            android:layout_alignLeft="@+id/pwd_editText"
+            android:layout_alignStart="@+id/pwd_editText" />
 
         <EditText
             android:layout_width="wrap_content"
@@ -58,7 +59,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="@string/user_n"
+            android:text="@string/email"
             android:id="@+id/user_n_textView"
             android:layout_marginTop="29dp"
             android:layout_alignParentTop="true"
@@ -82,8 +83,7 @@
             android:id="@+id/remember_checkBox"
             android:checked="false"
             android:layout_above="@+id/textView"
-            android:layout_toRightOf="@+id/user_n_textView"
-            android:layout_toEndOf="@+id/user_n_textView" />
+            android:layout_centerHorizontal="true" />
     </RelativeLayout>
 
     <TextView
