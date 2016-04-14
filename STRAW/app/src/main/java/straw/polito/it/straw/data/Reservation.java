@@ -17,7 +17,11 @@ public class Reservation {
     private String plates;
 
     public static final String NUMBER_PEOPLE = "NumberPeople";
-    public static final String TIME = "Time";
+    public static final String DAY = "Day";
+    public static final String MONTH = "Month";
+    public static final String YEAR = "Year";
+    public static final String HOUR = "Hour";
+    public static final String MINUTES = "Minutes";
     public static final String PLATES = "Plates";
     public static final String RESERVATION = "Reservation";
 
@@ -86,6 +90,17 @@ public class Reservation {
         return this.time.get(Calendar.MINUTE);
     }
 
+    public int getMonth() {
+        return this.time.get(Calendar.MONTH);
+    }
+
+    public int getDay() {
+        return this.time.get(Calendar.DAY_OF_MONTH);
+    }
+    public int getYear() {
+        return this.time.get(Calendar.YEAR);
+    }
+
     public void setTime(GregorianCalendar gregorianCalendar) {
         this.time = gregorianCalendar;
     }
@@ -97,12 +112,20 @@ public class Reservation {
         this.time.set(year, month, day, hour, minute);
     }
 
+    public void setTime(int year, int month, int day, int hour, int minute) {
+        this.time.set(year, month, day, hour, minute);
+    }
+
     public JSONObject save() {
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put(NUMBER_PEOPLE, this.numberPeople);
             jsonObject.putOpt(PLATES, this.plates);
-            jsonObject.putOpt(TIME, this.time);
+            jsonObject.put(YEAR, this.getYear());
+            jsonObject.put(MONTH, this.getMonth());
+            jsonObject.put(DAY, this.getDay());
+            jsonObject.put(HOUR, this.getHour());
+            jsonObject.put(MINUTES, this.getMinutes());
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -119,7 +142,12 @@ public class Reservation {
         try {
             reservation.setNumberPeople(jsonObject.getInt(NUMBER_PEOPLE));
             reservation.setPlates(jsonObject.getString(PLATES));
-            reservation.setTime((GregorianCalendar)jsonObject.get(TIME));
+            int year = jsonObject.getInt(YEAR);
+            int month = jsonObject.getInt(MONTH);
+            int day = jsonObject.getInt(DAY);
+            int hour = jsonObject.getInt(HOUR);
+            int minutes = jsonObject.getInt(MINUTES);
+            reservation.setTime(year, month, day, hour, minutes);
         } catch (JSONException e) {
             e.printStackTrace();
             return null;
@@ -135,5 +163,4 @@ public class Reservation {
             return null;
         }
     }
-
 }
