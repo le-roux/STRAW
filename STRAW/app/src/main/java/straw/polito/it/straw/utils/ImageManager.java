@@ -1,12 +1,10 @@
-package straw.polito.it.straw.straw.polito.it.straw.utils;
+package straw.polito.it.straw.utils;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.widget.ImageView;
 
 import java.io.File;

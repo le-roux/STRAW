@@ -18,16 +18,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 import straw.polito.it.straw.R;
-import straw.polito.it.straw.adapter.FoodAdapter;
 import straw.polito.it.straw.adapter.OfferAdapter;
 import straw.polito.it.straw.data.Food;
 import straw.polito.it.straw.data.Offer;
-import straw.polito.it.straw.straw.polito.it.straw.utils.Logger;
-import straw.polito.it.straw.straw.polito.it.straw.utils.ObjectSerializer;
 
 public class CreateOfferActivity extends AppCompatActivity {
 

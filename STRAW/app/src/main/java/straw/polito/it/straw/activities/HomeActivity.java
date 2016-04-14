@@ -15,7 +15,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import straw.polito.it.straw.R;
-import straw.polito.it.straw.straw.polito.it.straw.utils.Logger;
+import straw.polito.it.straw.utils.Logger;
 
 public class HomeActivity extends AppCompatActivity {
 

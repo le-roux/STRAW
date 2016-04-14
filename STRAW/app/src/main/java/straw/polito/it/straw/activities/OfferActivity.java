@@ -6,24 +6,18 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONStringer;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 import straw.polito.it.straw.R;
-import straw.polito.it.straw.adapter.FoodAdapter;
-import straw.polito.it.straw.adapter.OfferAdapter;
 import straw.polito.it.straw.adapter.OffersListAdapter;
 import straw.polito.it.straw.data.Offer;
-import straw.polito.it.straw.straw.polito.it.straw.utils.Logger;
-import straw.polito.it.straw.straw.polito.it.straw.utils.ObjectSerializer;
+import straw.polito.it.straw.utils.Logger;
 
 public class OfferActivity extends AppCompatActivity {
 

@@ -7,26 +7,18 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
-import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 import straw.polito.it.straw.R;
 import straw.polito.it.straw.adapter.FoodAdapter;
 import straw.polito.it.straw.data.Drink;
 import straw.polito.it.straw.data.Food;
-import straw.polito.it.straw.R;
 import straw.polito.it.straw.data.Plate;
-import straw.polito.it.straw.straw.polito.it.straw.utils.Logger;
-import straw.polito.it.straw.straw.polito.it.straw.utils.ObjectSerializer;
 
 
 public class CreateMenuActivity extends AppCompatActivity {

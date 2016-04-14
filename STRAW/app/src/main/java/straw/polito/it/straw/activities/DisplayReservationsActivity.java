@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -13,7 +11,6 @@ import java.util.ArrayList;
 import straw.polito.it.straw.R;
 import straw.polito.it.straw.adapter.ReservationAdapter;
 import straw.polito.it.straw.data.Reservation;
-import straw.polito.it.straw.straw.polito.it.straw.utils.Logger;
 
 public class DisplayReservationsActivity extends AppCompatActivity {
 

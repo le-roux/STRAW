@@ -28,8 +28,8 @@ import java.util.ArrayList;
 import straw.polito.it.straw.R;
 import straw.polito.it.straw.data.Food;
 import straw.polito.it.straw.data.Plate;
-import straw.polito.it.straw.straw.polito.it.straw.utils.ImageManager;
-import straw.polito.it.straw.straw.polito.it.straw.utils.Logger;
+import straw.polito.it.straw.utils.ImageManager;
+import straw.polito.it.straw.utils.Logger;
 
 public class AddPlateActivity extends AppCompatActivity {
 

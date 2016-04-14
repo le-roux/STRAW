@@ -27,8 +27,8 @@ import java.util.ArrayList;
 import straw.polito.it.straw.R;
 import straw.polito.it.straw.data.Drink;
 import straw.polito.it.straw.data.Food;
-import straw.polito.it.straw.straw.polito.it.straw.utils.ImageManager;
-import straw.polito.it.straw.straw.polito.it.straw.utils.Logger;
+import straw.polito.it.straw.utils.ImageManager;
+import straw.polito.it.straw.utils.Logger;
 
 /**
  * This activity allows the manager to create a new drink and to add it to the menu of his/her

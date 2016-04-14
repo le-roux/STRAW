@@ -1,4 +1,4 @@
-package straw.polito.it.straw.straw.polito.it.straw.utils;
+package straw.polito.it.straw.utils;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
