@@ -112,7 +112,7 @@ public class ReservationAdapter extends BaseAdapter {
                             builder_refuse.show();
 
                         } else if (item == CHANGE_TIME) {
-                            showTimePickerFragmentDialog(reservationList.get(position));
+                            showTimePickerFragmentDialog(position);
                         } else if (item == CANCEL) {
                             dialog.dismiss();
                         }
@@ -168,12 +168,12 @@ public class ReservationAdapter extends BaseAdapter {
 
     /**
      * Display a time picker on top of the current activity
-     * @param reservation
+     * @param position
      */
-    public void showTimePickerFragmentDialog(Reservation reservation) {
+    public void showTimePickerFragmentDialog(int position) {
         DialogFragment fragment = new TimePickerFragment();
         Bundle bundle = new Bundle();
-        bundle.putString(Reservation.RESERVATION, reservation.toString());
+        bundle.putInt(Reservation.RESERVATION, position);
         fragment.setArguments(bundle);
         fragment.show(this.parentActivity.getFragmentManager(), "timePicker");
     }

@@ -18,18 +18,21 @@ import straw.polito.it.straw.data.Reservation;
  */
 public class TimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener{
     private Reservation reservation;
+    private DisplayReservationsActivity activity;
     private ReservationAdapter adapter;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         Bundle bundle = getArguments();
         int position = bundle.getInt(Reservation.RESERVATION);
-        this.adapter = ((DisplayReservationsActivity)getActivity()).getAdapter();
+        this.activity = (DisplayReservationsActivity)getActivity();
+        this.adapter = this.activity.getAdapter();
         this.reservation = (Reservation)this.adapter.getItem(position);
         int hour = this.reservation.getHour();
         int minutes = this.reservation.getMinutes();
 
-        return new TimePickerDialog(getActivity(), this, hour, minutes, DateFormat.is24HourFormat(getActivity()));
+        return new TimePickerDialog(this.activity, this, hour, minutes,
+                DateFormat.is24HourFormat(this.activity));
     }
 
     @Override

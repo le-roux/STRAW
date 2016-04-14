@@ -1,8 +1,8 @@
 package straw.polito.it.straw.activities;
 
-import android.app.Activity;
-import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ListView;
 
@@ -16,37 +16,35 @@ public class DisplayReservationsActivity extends AppCompatActivity {
 
     private ListView reservationList_View;
     private ArrayList<Reservation> reservationList;
+    private SharedPreferences sharedPreferences;
 
-    public static final String RESERVATION = "Reservation";
-    public static final String RESERVATION_ID = "Reservation_id";
-
-    public static final int MANAGE_RESERVATION_REQUEST_CODE = 1;
+    public static final String RESERVATION_NUMBER = "ReservationNumber";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_reservations);
+        this.sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
         this.reservationList = new ArrayList<Reservation>();
         if (savedInstanceState == null) {
-            this.reservationList.add(new Reservation(2, "pasta"));
-            this.reservationList.add(new Reservation(4, "pasta, pizza"));
-            this.reservationList.add(new Reservation(2, "gnocchis, mineral water"));
+            int reservation_number = this.sharedPreferences.getInt(RESERVATION_NUMBER, 0);
+            String description;
+            for (int i = 0; i < reservation_number; i++) {
+                description = this.sharedPreferences.getString(String.valueOf(i), "");
+                this.reservationList.add(Reservation.create(description));
+            }
+            //For test purpose only
+            if (reservation_number == 0) {
+                this.reservationList.add(new Reservation(2, "pasta"));
+                this.reservationList.add(new Reservation(4, "pasta, pizza"));
+                this.reservationList.add(new Reservation(2, "gnocchis, mineral water"));
+            }
         }
 
         this.reservationList_View = (ListView)findViewById(R.id.reservations_list);
         this.reservationList_View.setAdapter(new ReservationAdapter(getApplicationContext(),
                 this.reservationList, this));
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent result) {
-        if (resultCode == Activity.RESULT_OK) {
-            if(requestCode == MANAGE_RESERVATION_REQUEST_CODE) {
-                this.reservationList.remove(result.getIntExtra(RESERVATION_ID, 0));
-                ((ReservationAdapter)this.reservationList_View.getAdapter()).notifyDataSetChanged();
-            }
-        }
     }
 
     @Override
@@ -65,5 +63,19 @@ public class DisplayReservationsActivity extends AppCompatActivity {
 
     public ReservationAdapter getAdapter() {
         return (ReservationAdapter)this.reservationList_View.getAdapter();
+    }
+
+    /**
+     * Save data (reservations) in sharedPreference for permanent storage
+     */
+    @Override
+    public void onStop() {
+        super.onStop();
+        SharedPreferences.Editor editor = this.sharedPreferences.edit();
+        for (int i = 0; i < this.reservationList.size(); i++) {
+            editor.putString(String.valueOf(i), this.reservationList.get(i).toString());
+        }
+        editor.putInt(RESERVATION_NUMBER, this.reservationList.size());
+        editor.commit();
     }
 }
