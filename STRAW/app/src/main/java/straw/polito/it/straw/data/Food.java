@@ -46,7 +46,7 @@ public abstract class Food {
     public Food() {
         this.name = "Default";
         this.price = 0d;
-        this.imageURI = "android.resource://straw.polito.it.straw/drawable/no_image";
+        this.imageURI = null;
     }
 
     public void setName(String name) {
