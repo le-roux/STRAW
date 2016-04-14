@@ -35,6 +35,7 @@ import java.util.List;
 
 import straw.polito.it.straw.R;
 import straw.polito.it.straw.data.Manager;
+import straw.polito.it.straw.utils.Logger;
 
 public class CreateAccountActivity extends AppCompatActivity {
 
@@ -279,10 +280,11 @@ public class CreateAccountActivity extends AppCompatActivity {
             sw=true;
             try{
                 bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(),photo_uri);
-                bitmap=Bitmap.createScaledBitmap(bitmap,photo.getHeight(),photo.getWidth(),true);
+                bitmap=Bitmap.createScaledBitmap(bitmap, photo.getHeight(), photo.getWidth(), true);
                 photo.setImageBitmap(bitmap);
+                Logger.d("create account uri : " + photo_uri);
             }catch(Exception e){
-                Log.v(TAG,"Error on Activity result! "+e.getMessage());
+                Logger.d("Error on Activity result! " + e.getMessage());
             }
         }
     }

@@ -25,6 +25,8 @@ import java.io.IOException;
 
 import straw.polito.it.straw.R;
 import straw.polito.it.straw.data.Manager;
+import straw.polito.it.straw.utils.ImageManager;
+import straw.polito.it.straw.utils.Logger;
 
 public class ProfileActivity extends AppCompatActivity {
 
@@ -121,32 +123,35 @@ public class ProfileActivity extends AppCompatActivity {
         offerts_link=(TextView)findViewById(R.id.offers_link_textView);
     }
     private void loadPrevInfo(Manager man) {
-            String path=getRealPathFromURI(getBaseContext(),Uri.parse(man.getImage()));
-            if(path!=null) {
-                File imgFile = new File(path);
+        String path=getRealPathFromURI(getBaseContext(),Uri.parse(man.getImage()));
+        Logger.d("man getImage : " + man.getImage());
+        Logger.d("profile path : " + path);
+        ImageManager.setImage(this, photo, Uri.parse(man.getImage()));
+        /*if(path!=null) {
+            File imgFile = new File(path);
 
-                if (imgFile.exists()) {
+            if (imgFile.exists()) {
 
-                    Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-                    if (myBitmap != null) {
-                        photo.setImageBitmap(myBitmap);
-                    } else {
-                        bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.no_image);
-                        photo.setImageBitmap(bitmap);
-                    }
+                Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+                if (myBitmap != null) {
+                    photo.setImageBitmap(myBitmap);
+                } else {
+                    bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.no_image);
+                    photo.setImageBitmap(bitmap);
+                }
 
             }
         }else {
 
-                try {
-                    bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), Uri.parse(man.getImage()));
-                    photo.setImageBitmap(bitmap);
-                } catch (IOException e) {
-                    Log.v(TAG, "Error " +e.getMessage());
-                }
-
-
+            try {
+                bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), Uri.parse(man.getImage()));
+                photo.setImageBitmap(bitmap);
+            } catch (IOException e) {
+                Log.v(TAG, "Error " +e.getMessage());
             }
+
+
+        }*/
         user_n.setText(getString(R.string.user_n) + ": " + man.getName());
         tel.setText(getString(R.string.tel) + ": " + man.getTelephone());
         r_n.setText(getString(R.string.r_name) + ": " + man.getRes_name());
