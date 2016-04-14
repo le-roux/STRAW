@@ -282,7 +282,6 @@ public class CreateAccountActivity extends AppCompatActivity {
                 bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(),photo_uri);
                 bitmap=Bitmap.createScaledBitmap(bitmap, photo.getHeight(), photo.getWidth(), true);
                 photo.setImageBitmap(bitmap);
-                Logger.d("create account uri : " + photo_uri);
             }catch(Exception e){
                 Logger.d("Error on Activity result! " + e.getMessage());
             }

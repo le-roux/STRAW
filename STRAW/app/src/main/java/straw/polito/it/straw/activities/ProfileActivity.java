@@ -7,8 +7,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -20,13 +18,9 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.io.File;
-import java.io.IOException;
-
 import straw.polito.it.straw.R;
 import straw.polito.it.straw.data.Manager;
 import straw.polito.it.straw.utils.ImageManager;
-import straw.polito.it.straw.utils.Logger;
 
 public class ProfileActivity extends AppCompatActivity {
 
@@ -40,8 +34,6 @@ public class ProfileActivity extends AppCompatActivity {
     TextView reservations_link;
     TextView offerts_link;
     Button edit_button;
-
-    Bitmap bitmap;
 
     private String TAG = "ProfileActivity";
     private SharedPreferences mShared;
@@ -124,34 +116,8 @@ public class ProfileActivity extends AppCompatActivity {
     }
     private void loadPrevInfo(Manager man) {
         String path=getRealPathFromURI(getBaseContext(),Uri.parse(man.getImage()));
-        Logger.d("man getImage : " + man.getImage());
-        Logger.d("profile path : " + path);
         ImageManager.setImage(this, photo, Uri.parse(man.getImage()));
-        /*if(path!=null) {
-            File imgFile = new File(path);
 
-            if (imgFile.exists()) {
-
-                Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-                if (myBitmap != null) {
-                    photo.setImageBitmap(myBitmap);
-                } else {
-                    bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.no_image);
-                    photo.setImageBitmap(bitmap);
-                }
-
-            }
-        }else {
-
-            try {
-                bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), Uri.parse(man.getImage()));
-                photo.setImageBitmap(bitmap);
-            } catch (IOException e) {
-                Log.v(TAG, "Error " +e.getMessage());
-            }
-
-
-        }*/
         user_n.setText(getString(R.string.email) + ": " + man.getEmail());
         tel.setText(getString(R.string.tel) + ": " + man.getTelephone());
         r_n.setText(getString(R.string.r_name) + ": " + man.getRes_name());
