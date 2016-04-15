@@ -6,14 +6,12 @@ import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import straw.polito.it.straw.R;
-import straw.polito.it.straw.data.Manager;
 import straw.polito.it.straw.data.User;
 import straw.polito.it.straw.utils.ImageManager;
 
@@ -91,9 +89,9 @@ public class ProfileUserActivity extends AppCompatActivity {
     private void initialize() {
         photo=(ImageView)findViewById(R.id.photo_imageView);
         email=(TextView)findViewById(R.id.email_textView);
-        user_info=(TextView)findViewById(R.id.u_textView);
-        diet=(TextView)findViewById(R.id.diet_textView);
-        pref_t=(TextView)findViewById(R.id.pref_t_textView);
+        user_info=(TextView)findViewById(R.id.tel_editText);
+        diet=(TextView)findViewById(R.id.r_n_editText);
+        pref_t=(TextView)findViewById(R.id.addr_editText);
     }
     private void loadPrevInfo(User user) {
         ImageManager.setImage(this, photo, Uri.parse(user.getImage()));

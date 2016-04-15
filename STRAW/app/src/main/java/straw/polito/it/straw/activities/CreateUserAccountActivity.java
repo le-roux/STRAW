@@ -109,7 +109,7 @@ public class CreateUserAccountActivity extends AppCompatActivity {
         u_t=(Spinner)findViewById(R.id.u_t_spinner);
         u_d=(Spinner)findViewById(R.id.u_d_spinner);
         p_t=(Spinner)findViewById(R.id.p_t_spinner);
-        email=(EditText)findViewById(R.id.email_textView);
+        email=(EditText)findViewById(R.id.email_editText);
         c_acc_button=(Button)findViewById(R.id.create_button);
         setUpPopUpWindow();
 
