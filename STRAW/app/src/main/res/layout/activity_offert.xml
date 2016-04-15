@@ -41,7 +41,7 @@
             android:layout_height="0dp"
             android:layout_above="@id/create_offert_button"
             android:paddingTop="@dimen/padding_small"
-            android:background="@color/grey"
+            android:background="@color/background"
             android:layout_alignParentTop="true">
         </ListView>
 

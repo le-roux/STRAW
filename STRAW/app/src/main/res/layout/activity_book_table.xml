@@ -7,7 +7,14 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:background="@color/beige"
     tools:context="straw.polito.it.straw.activities.BookTableActivity">
+
+    <TextView
+        android:id="@+id/center"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_centerInParent="true"/>
 
     <TextView
         android:id="@+id/title"
@@ -29,11 +36,13 @@
 
     <TextView
         android:id="@+id/number_people_number"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="0"
         android:textSize="@dimen/Medium_size"
+        android:textAlignment="center"
         android:layout_toRightOf="@id/number_people_text"
+        android:layout_alignParentRight="true"
         android:layout_alignBaseline="@id/number_people_text"
         android:layout_marginLeft="@dimen/activity_horizontal_margin"
         android:background="@drawable/customborder_buttons"/>
@@ -52,7 +61,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignTop="@id/Where_text"
-        android:layout_alignParentRight="true">
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="@dimen/activity_vertical_margin">
         <RadioButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -67,11 +77,12 @@
 
     <Button
         android:id="@+id/calendar"
-        android:layout_width="@dimen/Icon_size"
-        android:layout_height="@dimen/Icon_size"
+        android:layout_width="@dimen/Icon_size_horizontal"
+        android:layout_height="@dimen/Icon_size_vertical"
         android:layout_below="@id/Place_group"
         android:layout_alignParentRight="true"
         android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
         android:background="@drawable/calendar"/>
     <!-- Created by Edward Boatman from Noun Project -->
 
@@ -81,9 +92,8 @@
         android:layout_height="wrap_content"
         android:text="30/03/2016"
         android:textSize="@dimen/Medium_size"
-        android:layout_below="@id/Place_group"
-        android:layout_toLeftOf="@id/calendar"
-        android:background="@drawable/customborder_buttons"/>
+        android:layout_alignTop="@id/calendar"
+        android:layout_toLeftOf="@id/calendar"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -92,17 +102,7 @@
         android:text="@string/When"
         android:textSize="@dimen/Medium_size"/>
 
-    <Button
-        android:id="@+id/clock"
-        android:layout_width="@dimen/Icon_size"
-        android:layout_height="@dimen/Icon_size"
-        android:layout_below="@id/calendar"
-        android:layout_alignParentRight="true"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:background="@drawable/clock"/>
-    <!--Created by christoph robausch from Noun Project -->
-
-    <TextView
+    <straw.polito.it.straw.data.TimerDisplay
         android:id="@+id/Time"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -112,8 +112,61 @@
         android:text="12:00"
         android:textSize="@dimen/Medium_size"
         android:textAlignment="center"
-        android:background="@drawable/customborder_buttons"
         android:layout_marginTop="@dimen/activity_vertical_margin"/>
+
+    <Button
+        android:id="@+id/clock"
+        android:layout_width="@dimen/Icon_size_horizontal"
+        android:layout_height="0dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignBottom="@id/Time"
+        android:layout_alignTop="@id/Time"
+        android:background="@drawable/clock"/>
+    <!--Created by christoph robausch from Noun Project -->
+
+    <Button
+        android:id="@+id/InviteFriendsButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/Time"
+        android:layout_marginTop="@dimen/activity_horizontal_margin"
+        android:text="@string/InviteFriends"
+        android:textSize="@dimen/Medium_size"
+        android:textAlignment="center"
+        android:background="@drawable/customborder_buttons"/>
+
+    <Button
+        android:id="@+id/confirm_button"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_below="@id/InviteFriendsButton"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_toLeftOf="@id/center"
+        android:text="@string/Confirm"
+        android:textSize="@dimen/Medium_size"
+        android:textAlignment="center"
+        android:background="@drawable/customborder_buttons"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        />
+
+    <Button
+        android:id="@+id/PreOrderButton"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_below="@id/InviteFriendsButton"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_toRightOf="@id/center"
+        android:text="@string/PreOrder"
+        android:textSize="@dimen/Medium_size"
+        android:textAlignment="center"
+        android:background="@drawable/customborder_buttons"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginTop="@dimen/activity_vertical_margin"/>
+
+
 
 
 

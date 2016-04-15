@@ -3,17 +3,27 @@ package straw.polito.it.straw.activities;
 import android.app.DialogFragment;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutCompat;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import straw.polito.it.straw.BookTableInterface;
 import straw.polito.it.straw.R;
+import straw.polito.it.straw.Timer;
+import straw.polito.it.straw.adapter.ReservationAdapter;
 import straw.polito.it.straw.data.Manager;
+import straw.polito.it.straw.data.Reservation;
+import straw.polito.it.straw.data.TimerDisplay;
 import straw.polito.it.straw.utils.NumberPickerFragment;
+import straw.polito.it.straw.utils.TimePickerFragment;
 
 public class BookTableActivity extends AppCompatActivity implements BookTableInterface{
 
     private TextView numberPeopleNumber;
+    private Button calendarButton;
+    private Button clockButton;
+    private TimerDisplay clock;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,6 +31,9 @@ public class BookTableActivity extends AppCompatActivity implements BookTableInt
         setContentView(R.layout.activity_book_table);
 
         this.numberPeopleNumber = (TextView)findViewById(R.id.number_people_number);
+        this.calendarButton = (Button)findViewById(R.id.calendar);
+        this.clockButton = (Button)findViewById(R.id.clock);
+        this.clock = (TimerDisplay)findViewById(R.id.Time);
 
         //Add a listener to launch the NumberPicker dialog to select the number of people in the reservation
         this.numberPeopleNumber.setOnClickListener(new View.OnClickListener() {
@@ -34,7 +47,22 @@ public class BookTableActivity extends AppCompatActivity implements BookTableInt
             }
         });
 
+        this.clockButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DialogFragment fragment = new TimePickerFragment();
+                Bundle bundle = new Bundle();
+                bundle.putBoolean(ReservationAdapter.ADAPTER, false);
+                fragment.setArguments(bundle);
+                fragment.show(getFragmentManager(), "timePicker");
+            }
+        });
 
+
+    }
+
+    public TimerDisplay getClock() {
+        return this.clock;
     }
 
     @Override

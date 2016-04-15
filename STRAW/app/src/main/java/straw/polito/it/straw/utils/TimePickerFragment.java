@@ -1,5 +1,6 @@
 package straw.polito.it.straw.utils;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.TimePickerDialog;
@@ -9,6 +10,8 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import straw.polito.it.straw.R;
+import straw.polito.it.straw.Timer;
+import straw.polito.it.straw.activities.BookTableActivity;
 import straw.polito.it.straw.activities.DisplayReservationsActivity;
 import straw.polito.it.straw.adapter.ReservationAdapter;
 import straw.polito.it.straw.data.Reservation;
@@ -17,19 +20,25 @@ import straw.polito.it.straw.data.Reservation;
  * Created by sylvain on 12/04/2016.
  */
 public class TimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener{
-    private Reservation reservation;
-    private DisplayReservationsActivity activity;
+    private Timer timer;
+    private Activity activity;
     private ReservationAdapter adapter;
+    private boolean notifyAdapter;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         Bundle bundle = getArguments();
         int position = bundle.getInt(Reservation.RESERVATION);
-        this.activity = (DisplayReservationsActivity)getActivity();
-        this.adapter = this.activity.getAdapter();
-        this.reservation = (Reservation)this.adapter.getItem(position);
-        int hour = this.reservation.getHour();
-        int minutes = this.reservation.getMinutes();
+        this.activity = getActivity();
+        this.notifyAdapter = bundle.getBoolean(ReservationAdapter.ADAPTER);
+        if (this.notifyAdapter) {
+            this.adapter = ((DisplayReservationsActivity) this.activity).getAdapter();
+            this.timer = (Timer) this.adapter.getItem(position);
+        } else {
+            this.timer = ((BookTableActivity)this.activity).getClock();
+        }
+        int hour = this.timer.getHour();
+        int minutes = this.timer.getMinutes();
 
         return new TimePickerDialog(this.activity, this, hour, minutes,
                 DateFormat.is24HourFormat(this.activity));
@@ -37,9 +46,11 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
 
     @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-        this.reservation.setTime(hourOfDay, minute);
-        this.adapter.notifyDataSetChanged();
-        Toast.makeText(getActivity(), getActivity().getString(R.string.HourChangedToast),
-                Toast.LENGTH_LONG).show();
+        this.timer.setTime(hourOfDay, minute);
+        if (this.notifyAdapter) {
+            this.adapter.notifyDataSetChanged();
+            Toast.makeText(getActivity(), getActivity().getString(R.string.HourChangedToast),
+                    Toast.LENGTH_LONG).show();
+        }
     }
 }

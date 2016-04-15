@@ -40,7 +40,7 @@
         android:layout_alignParentTop="true"
         android:layout_above="@id/add_plate_button"
         android:paddingTop="@dimen/padding_small"
-        android:background="@color/grey">
+        android:background="@color/background">
     </ListView>
 
 

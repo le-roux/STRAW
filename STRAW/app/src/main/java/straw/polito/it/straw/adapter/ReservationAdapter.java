@@ -16,6 +16,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 import straw.polito.it.straw.R;
+import straw.polito.it.straw.Timer;
 import straw.polito.it.straw.activities.DisplayReservationsActivity;
 import straw.polito.it.straw.data.Reservation;
 import straw.polito.it.straw.utils.Logger;
@@ -29,6 +30,8 @@ public class ReservationAdapter extends BaseAdapter {
     private ArrayList<Reservation> reservationList;
     private static Context context;
     private DisplayReservationsActivity parentActivity;
+
+    public static final String ADAPTER = "Adapter";
 
     public ReservationAdapter (Context context) {
         this.reservationList = new ArrayList<Reservation>();
@@ -178,6 +181,7 @@ public class ReservationAdapter extends BaseAdapter {
         DialogFragment fragment = new TimePickerFragment();
         Bundle bundle = new Bundle();
         bundle.putInt(Reservation.RESERVATION, position);
+        bundle.putBoolean(ReservationAdapter.ADAPTER, true);
         fragment.setArguments(bundle);
         fragment.show(this.parentActivity.getFragmentManager(), "timePicker");
     }
