@@ -1,6 +1,7 @@
 <resources>
     <!--Strings for the manager account management part-->
     <string name="app_name">STRAW</string>
+    <string name="error_log_in">Error Logging In</string>
     <string name="ident">Identification</string>
     <string name="notyet">Not yet a member?</string>
     <string name="user_n">User Name</string>

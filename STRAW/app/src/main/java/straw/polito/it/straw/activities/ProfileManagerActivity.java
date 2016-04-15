@@ -96,8 +96,8 @@ public class ProfileManagerActivity extends AppCompatActivity {
         photo=(ImageView)findViewById(R.id.photo_imageView);
         user_n=(TextView)findViewById(R.id.email_textView);
         tel=(TextView)findViewById(R.id.tel_editText);
-        r_n=(TextView)findViewById(R.id.r_n_editText);
-        addr=(TextView)findViewById(R.id.addr_editText);
+        r_n=(TextView)findViewById(R.id.diet_editText);
+        addr=(TextView)findViewById(R.id.pref_t_textView);
         seats=(TextView)findViewById(R.id.seats_editText);
         edit_button=(Button)findViewById(R.id.edit_button);
         this.menu_link = (TextView)findViewById(R.id.reservation_history);
