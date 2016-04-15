@@ -56,7 +56,7 @@ public class HomeActivity extends AppCompatActivity {
                     startActivity(i);
                 }else{
                     Toast.makeText(getApplicationContext(), getString(R.string.error_log_in), Toast.LENGTH_SHORT).show();
-                    Log.v(TAG, "User log in ERROR");
+                    Log.v(TAG, "User log in ERROR "+sol);
                 }
             }
         });
@@ -89,7 +89,8 @@ public class HomeActivity extends AppCompatActivity {
                 Log.v(TAG,"Error retreiving manager");
             }
 
-        }else if(mShared.contains("User")){
+        }
+        if(mShared.contains("User")){
             try {
                 JSONObject jo=new JSONObject(mShared.getString("User","Error"));
                 if(u.equals(jo.get("email")) && p.equals(jo.get("pwd"))){
