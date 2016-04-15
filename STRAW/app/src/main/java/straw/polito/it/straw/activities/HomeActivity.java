@@ -58,7 +58,7 @@ public class HomeActivity extends AppCompatActivity {
         create_man_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i= new Intent(getBaseContext(),CreateAccountActivity.class);
+                Intent i= new Intent(getBaseContext(),CreateManagerAccountActivity.class);
                 startActivity(i);
             }
         });

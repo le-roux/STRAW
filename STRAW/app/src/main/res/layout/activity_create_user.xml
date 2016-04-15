@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ScrollView01"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+    <RelativeLayout
+        android:id="@+id/RelativeLayout01"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" >
+
+        <RelativeLayout
+            android:id="@+id/LinearLayout01"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="vertical"
+            android:weightSum="1">
+            <RelativeLayout
+                android:id="@+id/LinearLayout02"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:orientation="vertical"
+                android:weightSum="1"
+                android:layout_margin="10sp"
+                android:background="@drawable/customborder">
+
+                <ImageView
+                    android:layout_width="160sp"
+                    android:layout_height="160sp"
+                    android:id="@+id/photo_imageView"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true" />
+
+                <TextView
+                    android:id="@+id/email_textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="20dip"
+                    android:text="@string/email"
+                    android:layout_below="@+id/photo_imageView"/>
+
+                <TextView
+                    android:id="@+id/pwd_textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="20dip"
+                    android:text="@string/c_pwd"
+                    android:layout_below="@+id/email_textView"/>
+
+                <TextView
+                    android:id="@+id/c_pwd_textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="20dip"
+                    android:text="@string/cc_pwd"
+                    android:layout_below="@+id/pwd_textView"/>
+
+                <TextView
+                    android:id="@+id/u_t_textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="20dip"
+                    android:text="@string/u_t"
+                    android:layout_below="@+id/c_pwd_textView"/>
+
+                <TextView
+                    android:id="@+id/uni_textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="20dip"
+                    android:text="@string/uni"
+                    android:layout_below="@+id/u_t_textView"/>
+
+                <TextView
+                    android:id="@+id/u_d_textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="20dip"
+                    android:text="@string/u_d"
+                    android:layout_below="@+id/uni_textView"/>
+
+                <TextView
+                    android:id="@+id/p_t_textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="20dip"
+                    android:text="@string/p_t"
+                    android:layout_below="@+id/u_d_textView"/>
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/c_acc"
+                    android:id="@+id/create_button"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_below="@+id/p_t_textView"
+                    android:layout_alignLeft="@+id/photo_imageView"
+                    android:layout_alignStart="@+id/photo_imageView"
+                    android:background="@drawable/customborder_buttons"/>
+
+                <EditText
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPersonName"
+                    android:ems="10"
+                    android:id="@+id/email_editText"
+                    android:layout_below="@+id/photo_imageView"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_toRightOf="@+id/p_t_textView"
+                    android:layout_toEndOf="@+id/p_t_textView" />
+
+                <EditText
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPassword"
+                    android:ems="10"
+                    android:id="@+id/pwd_editText"
+                    android:layout_alignBottom="@+id/pwd_textView"
+                    android:layout_alignLeft="@+id/email_editText"
+                    android:layout_alignStart="@+id/email_editText" />
+
+                <EditText
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPassword"
+                    android:ems="10"
+                    android:id="@+id/cc_pwd_editText"
+                    android:layout_below="@+id/pwd_textView"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignLeft="@+id/pwd_editText"
+                    android:layout_alignStart="@+id/pwd_editText" />
+
+                <Spinner
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/u_d_spinner"
+                    android:layout_alignBottom="@+id/u_d_textView"
+                    android:layout_toRightOf="@+id/pwd_textView"
+                    android:layout_toEndOf="@+id/pwd_textView"
+                    android:layout_below="@+id/uni_textView"
+                    android:spinnerMode="dropdown" />
+
+                <Spinner
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/p_t_spinner"
+                    android:layout_alignBottom="@+id/p_t_textView"
+                    android:layout_alignLeft="@+id/u_d_spinner"
+                    android:layout_alignStart="@+id/u_d_spinner"
+                    android:layout_below="@+id/u_d_textView"
+                    android:spinnerMode="dropdown" />
+
+                <EditText
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPersonName"
+                    android:ems="10"
+                    android:id="@+id/uni_editText"
+                    android:layout_alignBaseline="@+id/uni_textView"
+                    android:layout_alignBottom="@+id/uni_textView"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true" />
+
+                <Spinner
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/u_t_spinner"
+                    android:layout_alignLeft="@+id/cc_pwd_editText"
+                    android:layout_alignStart="@+id/cc_pwd_editText"
+                    android:layout_above="@+id/uni_textView"
+                    android:layout_alignTop="@+id/u_t_textView"
+                    android:spinnerMode="dropdown" />
+
+            </RelativeLayout>
+        </RelativeLayout>
+    </RelativeLayout>
+
+</ScrollView>

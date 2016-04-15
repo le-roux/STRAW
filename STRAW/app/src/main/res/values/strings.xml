@@ -79,6 +79,7 @@
     A message has been sent to the customer for confirmation</string>
     <string name="AcceptOrder">Accept this order?</string>
 
+    <!--Strings for the offers part -->
     <string name="offerts">- Offers</string>
     <string name="c_of">Create offer</string>
     <string name="edit_of">Edit offer</string>
@@ -89,4 +90,13 @@
     <string name="returnT">Return</string>
     <string name="put_price">Write the price of the offer</string>
     <string name="save_price">Save Price</string>
+
+    <!--Strings for the user creation part -->
+    <string name="u_t">User Type</string>
+    <string name="uni">University</string>
+    <string name="u_d">User diet</string>
+    <string name="p_t">Preferred Time</string>
+    <string name="student">Student</string>
+    <string name="professor">Professor</string>
+    <string name="worker">Worker</string>
 </resources>

@@ -71,7 +71,7 @@ public class ProfileActivity extends AppCompatActivity {
         edit_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(getBaseContext(), CreateAccountActivity.class);
+                Intent i = new Intent(getBaseContext(), CreateManagerAccountActivity.class);
                 Log.v(TAG,man.toJSONObject());
                 i.putExtra("manager", man.toJSONObject());
                 startActivity(i);

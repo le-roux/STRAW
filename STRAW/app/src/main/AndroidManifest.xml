@@ -6,10 +6,10 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
-        android:largeHeap="true"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:largeHeap="true"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".activities.HomeActivity">
@@ -19,7 +19,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.CreateAccountActivity" />
+        <activity android:name=".activities.CreateManagerAccountActivity" />
         <activity android:name=".activities.CreateMenuActivity" />
         <activity android:name=".activities.AddDrinkActivity" />
         <activity android:name=".activities.AddPlateActivity" />
@@ -27,6 +27,7 @@
         <activity android:name=".activities.DisplayReservationsActivity" />
         <activity android:name=".activities.OfferActivity" />
         <activity android:name=".activities.CreateOfferActivity" />
+        <activity android:name=".activities.CreateUserAccountActivity"></activity>
     </application>
 
 </manifest>

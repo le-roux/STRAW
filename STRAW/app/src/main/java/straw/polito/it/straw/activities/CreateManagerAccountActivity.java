@@ -37,7 +37,7 @@ import straw.polito.it.straw.R;
 import straw.polito.it.straw.data.Manager;
 import straw.polito.it.straw.utils.Logger;
 
-public class CreateAccountActivity extends AppCompatActivity {
+public class CreateManagerAccountActivity extends AppCompatActivity {
 
     ImageView photo;
     EditText c_pwd;
@@ -56,7 +56,7 @@ public class CreateAccountActivity extends AppCompatActivity {
     Uri photo_uri;
 
     List<String> types;
-    private String TAG = "CreateAccountActivity";
+    private String TAG = "CreateManagerAccountActivity";
     private SharedPreferences mShared;
     private static final int IMAGE_REQ = 1;
     private static final int CAMERA_REQ = 2;
@@ -178,7 +178,7 @@ public class CreateAccountActivity extends AppCompatActivity {
     }
 
     private void showAlert(String message,String title, final boolean ex){
-        AlertDialog alertDialog = new AlertDialog.Builder(CreateAccountActivity.this).create();
+        AlertDialog alertDialog = new AlertDialog.Builder(CreateManagerAccountActivity.this).create();
         alertDialog.setTitle(title);
         alertDialog.setMessage(message);
         alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
@@ -223,7 +223,7 @@ public class CreateAccountActivity extends AppCompatActivity {
         final List<String> listOpt=new ArrayList<>();
         listOpt.add(getString(R.string.Choose_photo));
         listOpt.add(getString(R.string.Take_photo));
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(CreateAccountActivity.this, android.R.layout.simple_list_item_1, listOpt);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(CreateManagerAccountActivity.this, android.R.layout.simple_list_item_1, listOpt);
         final ListView opt_listView = new ListView(getBaseContext());
         opt_listView.setAdapter(adapter);
         opt_listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
