@@ -42,11 +42,7 @@ public class ProfileActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
-            setContentView(R.layout.activity_profile);
-        }else{
-            setContentView(R.layout.activity_profile_landscape);
-        }
+        setContentView(R.layout.activity_profile);
         mShared = PreferenceManager.getDefaultSharedPreferences(this);
 
         initialize();

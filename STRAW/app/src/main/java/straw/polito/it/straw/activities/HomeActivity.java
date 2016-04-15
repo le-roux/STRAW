@@ -30,11 +30,7 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
-            setContentView(R.layout.activity_home);
-        }else{
-            setContentView(R.layout.activity_home_landscape);
-        }
+        setContentView(R.layout.activity_home);
         mShared= PreferenceManager.getDefaultSharedPreferences(this);
         initialize();
 
