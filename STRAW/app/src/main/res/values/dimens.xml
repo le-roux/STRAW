@@ -7,4 +7,5 @@
     <dimen name="padding">10dp</dimen>
     <dimen name="padding_small">5dp</dimen>
     <dimen name="Medium_size">26dp</dimen>
+    <dimen name="Icon_size">50dp</dimen>
 </resources>

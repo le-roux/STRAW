@@ -1,8 +1,8 @@
 package straw.polito.it.straw.activities;
 
 import android.app.DialogFragment;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
 
@@ -21,6 +21,8 @@ public class BookTableActivity extends AppCompatActivity implements BookTableInt
         setContentView(R.layout.activity_book_table);
 
         this.numberPeopleNumber = (TextView)findViewById(R.id.number_people_number);
+
+        //Add a listener to launch the NumberPicker dialog to select the number of people in the reservation
         this.numberPeopleNumber.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -31,6 +33,8 @@ public class BookTableActivity extends AppCompatActivity implements BookTableInt
                 fragment.show(BookTableActivity.this.getFragmentManager(), "NumberPicker");
             }
         });
+
+
     }
 
     @Override

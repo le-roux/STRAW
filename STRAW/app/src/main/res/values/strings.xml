@@ -104,6 +104,10 @@
     <string name="BookTable"><u>Book a table</u></string>
     <string name="HowManyPeople">How many people ?</string>
     <string name="Confirm">Confirm</string>
+    <string name="Where">Where ?</string>
+    <string name="Inside">Inside</string>
+    <string name="Outside">Outside</string>
+    <string name="When">When ?</string>
     
     <string name="rev_h">- Review History</string>
     <string name="res_h">- Reservation History</string>

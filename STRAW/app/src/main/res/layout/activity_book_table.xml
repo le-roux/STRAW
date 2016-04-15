@@ -37,4 +37,84 @@
         android:layout_alignBaseline="@id/number_people_text"
         android:layout_marginLeft="@dimen/activity_horizontal_margin"
         android:background="@drawable/customborder_buttons"/>
+
+    <TextView
+        android:id="@+id/Where_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/number_people_text"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:text="@string/Where"
+        android:textSize="@dimen/Medium_size"/>
+
+    <RadioGroup
+        android:id="@+id/Place_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/Where_text"
+        android:layout_alignParentRight="true">
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/Inside"
+            android:textSize="@dimen/Content_size"/>
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/Outside"
+            android:textSize="@dimen/Content_size"/>
+    </RadioGroup>
+
+    <Button
+        android:id="@+id/calendar"
+        android:layout_width="@dimen/Icon_size"
+        android:layout_height="@dimen/Icon_size"
+        android:layout_below="@id/Place_group"
+        android:layout_alignParentRight="true"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:background="@drawable/calendar"/>
+    <!-- Created by Edward Boatman from Noun Project -->
+
+    <TextView
+        android:id="@+id/Date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="30/03/2016"
+        android:textSize="@dimen/Medium_size"
+        android:layout_below="@id/Place_group"
+        android:layout_toLeftOf="@id/calendar"
+        android:background="@drawable/customborder_buttons"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/Date"
+        android:text="@string/When"
+        android:textSize="@dimen/Medium_size"/>
+
+    <Button
+        android:id="@+id/clock"
+        android:layout_width="@dimen/Icon_size"
+        android:layout_height="@dimen/Icon_size"
+        android:layout_below="@id/calendar"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:background="@drawable/clock"/>
+    <!--Created by christoph robausch from Noun Project -->
+
+    <TextView
+        android:id="@+id/Time"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/Date"
+        android:layout_alignLeft="@id/Date"
+        android:layout_alignRight="@id/Date"
+        android:text="12:00"
+        android:textSize="@dimen/Medium_size"
+        android:textAlignment="center"
+        android:background="@drawable/customborder_buttons"
+        android:layout_marginTop="@dimen/activity_vertical_margin"/>
+
+
+
 </RelativeLayout>
