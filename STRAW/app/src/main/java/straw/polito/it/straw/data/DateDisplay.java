@@ -7,7 +7,6 @@ import android.widget.TextView;
 import java.util.Calendar;
 
 import straw.polito.it.straw.DateDisplayer;
-import straw.polito.it.straw.utils.Logger;
 
 /**
  * Created by Sylvain on 15/04/2016.
@@ -60,7 +59,6 @@ public class DateDisplay extends TextView implements DateDisplayer {
     }
 
     public void updateText() {
-        Logger.d("updateText : " + this.month);
         StringBuilder builder = new StringBuilder();
         if (this.day < 10)
             builder.append('0');
