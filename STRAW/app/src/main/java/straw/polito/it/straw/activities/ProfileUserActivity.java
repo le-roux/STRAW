@@ -89,9 +89,13 @@ public class ProfileUserActivity extends AppCompatActivity {
     private void initialize() {
         photo=(ImageView)findViewById(R.id.photo_imageView);
         email=(TextView)findViewById(R.id.email_textView);
-        user_info=(TextView)findViewById(R.id.tel_editText);
-        diet=(TextView)findViewById(R.id.r_n_editText);
-        pref_t=(TextView)findViewById(R.id.addr_editText);
+        user_info=(TextView)findViewById(R.id.user_textView);
+        diet=(TextView)findViewById(R.id.diet_textView);
+        pref_t=(TextView)findViewById(R.id.pref_t_textView);
+        edit_profile=(Button)findViewById(R.id.edit_button);
+        res_h=(TextView)findViewById(R.id.reservation_history);
+        rev_h=(TextView)findViewById(R.id.review_history);
+        friends=(TextView)findViewById(R.id.list_friends);
     }
     private void loadPrevInfo(User user) {
         ImageManager.setImage(this, photo, Uri.parse(user.getImage()));

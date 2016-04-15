@@ -108,8 +108,8 @@
                     android:layout_below="@+id/photo_imageView"
                     android:layout_alignParentRight="true"
                     android:layout_alignParentEnd="true"
-                    android:layout_toRightOf="@+id/p_t_textView"
-                    android:layout_toEndOf="@+id/p_t_textView" />
+                    android:layout_toEndOf="@+id/pwd_textView"
+                    android:layout_toRightOf="@+id/pwd_textView" />
 
                 <EditText
                     android:layout_width="wrap_content"
@@ -130,28 +130,34 @@
                     android:ems="10"
                     android:id="@+id/cc_pwd_editText"
                     android:layout_alignBottom="@+id/c_pwd_textView"
-                    android:layout_alignLeft="@+id/pwd_editText"
-                    android:layout_alignStart="@+id/pwd_editText" />
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_toRightOf="@+id/pwd_textView"
+                    android:layout_toEndOf="@+id/pwd_textView" />
 
                 <Spinner
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/u_d_spinner"
                     android:layout_alignBottom="@+id/u_d_textView"
-                    android:layout_toRightOf="@+id/pwd_textView"
-                    android:layout_toEndOf="@+id/pwd_textView"
                     android:layout_below="@+id/uni_textView"
-                    android:spinnerMode="dropdown" />
+                    android:spinnerMode="dropdown"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignLeft="@+id/uni_editText"
+                    android:layout_alignStart="@+id/uni_editText" />
 
                 <Spinner
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/p_t_spinner"
                     android:layout_alignBottom="@+id/p_t_textView"
-                    android:layout_alignLeft="@+id/u_d_spinner"
-                    android:layout_alignStart="@+id/u_d_spinner"
                     android:layout_below="@+id/u_d_textView"
-                    android:spinnerMode="dropdown" />
+                    android:spinnerMode="dropdown"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_toEndOf="@+id/p_t_textView"
+                    android:layout_toRightOf="@+id/p_t_textView" />
 
                 <EditText
                     android:layout_width="wrap_content"
@@ -161,6 +167,8 @@
                     android:id="@+id/uni_editText"
                     android:layout_alignBaseline="@+id/uni_textView"
                     android:layout_alignBottom="@+id/uni_textView"
+                    android:layout_alignLeft="@+id/pwd_editText"
+                    android:layout_alignStart="@+id/pwd_editText"
                     android:layout_alignParentRight="true"
                     android:layout_alignParentEnd="true" />
 
@@ -168,11 +176,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/u_t_spinner"
-                    android:layout_alignLeft="@+id/cc_pwd_editText"
-                    android:layout_alignStart="@+id/cc_pwd_editText"
                     android:layout_above="@+id/uni_textView"
                     android:layout_alignTop="@+id/u_t_textView"
-                    android:spinnerMode="dropdown" />
+                    android:spinnerMode="dropdown"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignLeft="@+id/cc_pwd_editText"
+                    android:layout_alignStart="@+id/cc_pwd_editText" />
 
             </RelativeLayout>
         </RelativeLayout>

@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -44,12 +45,17 @@ public class HomeActivity extends AppCompatActivity {
 
                 String u = user_name_editText.getText().toString();
                 String p = pwd_editText.getText().toString();
-
-                if (log_in(u, p)) {
-                    Log.v(TAG, "User log in successfull");
+                int sol=log_in(u, p);
+                if (sol==1) {
+                    Log.v(TAG, "Manager log in successfull");
                     Intent i=new Intent(getBaseContext(),ProfileManagerActivity.class);
                     startActivity(i);
+                }else if(sol==2){
+                    Log.v(TAG, "User log in successfull");
+                    Intent i=new Intent(getBaseContext(),ProfileUserActivity.class);
+                    startActivity(i);
                 }else{
+                    Toast.makeText(getApplicationContext(), getString(R.string.error_log_in), Toast.LENGTH_SHORT).show();
                     Log.v(TAG, "User log in ERROR");
                 }
             }
@@ -72,21 +78,30 @@ public class HomeActivity extends AppCompatActivity {
 
     }
 
-    private boolean log_in(String u, String p) {
-        String ss=mShared.getString("Manager","Error");
-        if(!ss.equals("Error")){
+    private int log_in(String u, String p) {
+        if(mShared.contains("Manager")){
             try {
-                JSONObject jo=new JSONObject(ss);
+                JSONObject jo=new JSONObject(mShared.getString("Manager","Error"));
                 if(u.equals(jo.get("email")) && p.equals(jo.get("pwd"))){
-                    return true;
+                    return 1;
                 }
             } catch (JSONException e) {
                 Log.v(TAG,"Error retreiving manager");
             }
 
+        }else if(mShared.contains("User")){
+            try {
+                JSONObject jo=new JSONObject(mShared.getString("User","Error"));
+                if(u.equals(jo.get("email")) && p.equals(jo.get("pwd"))){
+                    return 2;
+                }
+            } catch (JSONException e) {
+                Log.v(TAG,"Error retreiving user");
+            }
+
         }
 
-        return false;
+        return 0;
     }
 
     private void initialize() {

@@ -57,7 +57,7 @@ public class CreateUserAccountActivity extends AppCompatActivity {
     List<String> u_t_list;
     List<String> u_d_list;
     List<String> p_t_list;
-    private String TAG = "CreateManagerAccountActivity";
+    private String TAG = "CreateUserAccountActivity";
     private SharedPreferences mShared;
     private static final int IMAGE_REQ = 1;
     private static final int CAMERA_REQ = 2;
@@ -103,7 +103,7 @@ public class CreateUserAccountActivity extends AppCompatActivity {
 
     private void initialize() {
         photo=(ImageView)findViewById(R.id.photo_imageView);
-        c_pwd=(EditText)findViewById(R.id.c_pwd_editText);
+        c_pwd=(EditText)findViewById(R.id.pwd_editText);
         cc_pwd=(EditText)findViewById(R.id.cc_pwd_editText);
         uni=(EditText)findViewById(R.id.uni_editText);
         u_t=(Spinner)findViewById(R.id.u_t_spinner);
@@ -177,7 +177,7 @@ public class CreateUserAccountActivity extends AppCompatActivity {
                     }else{
                         showAlert(getString(R.string.m_c), getString(R.string.m_succ), true);
                     }
-                    Intent intent = new Intent(getApplicationContext(), ProfileManagerActivity.class);
+                    Intent intent = new Intent(getApplicationContext(), ProfileUserActivity.class);
                     startActivity(intent);
                 } else {
                     return;

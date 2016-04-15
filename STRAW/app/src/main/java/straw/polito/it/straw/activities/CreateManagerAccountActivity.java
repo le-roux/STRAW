@@ -208,9 +208,9 @@ public class CreateManagerAccountActivity extends AppCompatActivity {
         c_pwd=(EditText)findViewById(R.id.c_pwd_editText);
         cc_pwd=(EditText)findViewById(R.id.cc_pwd_editText);
         tel=(EditText)findViewById(R.id.tel_editText);
-        r_n=(EditText)findViewById(R.id.r_n_editText);
+        r_n=(EditText)findViewById(R.id.diet_editText);
         r_t=(Spinner)findViewById(R.id.r_t_spinner);
-        addr=(EditText)findViewById(R.id.addr_editText);
+        addr=(EditText)findViewById(R.id.pref_t_textView);
         seats=(EditText)findViewById(R.id.seats_editText);
         email=(EditText)findViewById(R.id.email_editText);
         c_acc_button=(Button)findViewById(R.id.create_button);

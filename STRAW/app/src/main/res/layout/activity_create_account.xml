@@ -110,7 +110,7 @@
                     android:layout_height="wrap_content"
                     android:inputType="textPersonName"
                     android:ems="10"
-                    android:id="@+id/r_n_editText"
+                    android:id="@+id/diet_editText"
                     android:layout_below="@+id/photo_imageView"
                     android:layout_toRightOf="@+id/pwd_textView"
                     android:layout_toEndOf="@+id/pwd_textView" />
@@ -128,7 +128,7 @@
                 <EditText
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/addr_editText"
+                    android:id="@+id/pref_t_textView"
                     android:layout_alignBottom="@+id/addr_textView"
                     android:layout_alignLeft="@+id/r_t_spinner"
                     android:layout_alignStart="@+id/r_t_spinner"
