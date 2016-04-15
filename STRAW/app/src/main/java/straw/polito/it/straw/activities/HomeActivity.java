@@ -2,7 +2,6 @@ package straw.polito.it.straw.activities;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -33,7 +32,12 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
         mShared= PreferenceManager.getDefaultSharedPreferences(this);
         initialize();
+        setListeners();
 
+
+    }
+
+    private void setListeners() {
         log_in_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -43,7 +47,7 @@ public class HomeActivity extends AppCompatActivity {
 
                 if (log_in(u, p)) {
                     Log.v(TAG, "User log in successfull");
-                    Intent i=new Intent(getBaseContext(),ProfileActivity.class);
+                    Intent i=new Intent(getBaseContext(),ProfileManagerActivity.class);
                     startActivity(i);
                 }else{
                     Log.v(TAG, "User log in ERROR");
@@ -58,14 +62,10 @@ public class HomeActivity extends AppCompatActivity {
                 startActivity(i);
             }
         });
-
-        this.create_user_button = (Button)findViewById(R.id.c_user_button);
-        this.create_user_button.setOnClickListener(new View.OnClickListener() {
+        create_user_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Logger.d("Launch menu");
                 Intent intent = new Intent(getApplicationContext(), BookTableActivity.class);
-                Logger.d("Intent created");
                 startActivity(intent);
             }
         });

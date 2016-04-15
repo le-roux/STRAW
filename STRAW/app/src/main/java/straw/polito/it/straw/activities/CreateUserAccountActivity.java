@@ -1,8 +1,11 @@
 package straw.polito.it.straw.activities;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
@@ -31,7 +34,7 @@ import java.util.Date;
 import java.util.List;
 
 import straw.polito.it.straw.R;
-import straw.polito.it.straw.data.Manager;
+import straw.polito.it.straw.data.User;
 import straw.polito.it.straw.utils.Logger;
 
 public class CreateUserAccountActivity extends AppCompatActivity {
@@ -39,7 +42,6 @@ public class CreateUserAccountActivity extends AppCompatActivity {
     ImageView photo;
     EditText c_pwd;
     EditText cc_pwd;
-    EditText tel;
     EditText email;
     EditText uni;
     Spinner u_d;
@@ -59,7 +61,7 @@ public class CreateUserAccountActivity extends AppCompatActivity {
     private SharedPreferences mShared;
     private static final int IMAGE_REQ = 1;
     private static final int CAMERA_REQ = 2;
-    Manager man;
+    User user;
     boolean sw;
 
     @Override
@@ -67,16 +69,42 @@ public class CreateUserAccountActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_user);
         mShared= PreferenceManager.getDefaultSharedPreferences(this);
-        initialize();
-        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+        initialize();
+        setListeners();
+        if(getIntent().hasExtra("user")){
+            Log.v(TAG,getIntent().getExtras().getString("user"));
+            user=new User(getIntent().getExtras().getString("user"));
+            loadPrevInfo(user);
+        }else{
+            user=new User();
+            setPhoto();
+        }
+
+    }
+
+    private void loadPrevInfo(User user) {
+        try {
+            photo_uri=Uri.parse(user.getImage());
+            bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), Uri.parse(user.getImage()));
+            photo.setImageBitmap(bitmap);
+        } catch (IOException e) {
+            Log.v(TAG, "Error on loading the photo! " + e.getMessage());
+        }
+        c_pwd.setText(user.getPwd());
+        email.setText(user.getEmail());
+        uni.setText(user.getUniversity());
+        u_d.setSelection(u_d_list.indexOf(user.getDiet()));
+        u_t.setSelection(u_t_list.indexOf(user.getDiet()));
+        p_t.setSelection(p_t_list.indexOf(user.getDiet()));
+        c_acc_button.setText(getString(R.string.save));
     }
 
     private void initialize() {
         photo=(ImageView)findViewById(R.id.photo_imageView);
         c_pwd=(EditText)findViewById(R.id.c_pwd_editText);
         cc_pwd=(EditText)findViewById(R.id.cc_pwd_editText);
-        tel=(EditText)findViewById(R.id.tel_editText);
         uni=(EditText)findViewById(R.id.uni_editText);
         u_t=(Spinner)findViewById(R.id.u_t_spinner);
         u_d=(Spinner)findViewById(R.id.u_d_spinner);
@@ -105,6 +133,85 @@ public class CreateUserAccountActivity extends AppCompatActivity {
         u_d.setAdapter(new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_list_item_1, (List<String>) u_d));
         p_t.setAdapter(new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_list_item_1, (List<String>) p_t));
 
+    }
+    private void setListeners() {
+
+        photo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popUp.showAsDropDown(v, 0, 0);
+            }
+        });
+
+        c_acc_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                boolean sw = false;
+                if (!email.getText().toString().equals("")) {
+                    user.setEmail(email.getText().toString());
+                } else {
+                    showAlert(getString(R.string.m_email), getString(R.string.error), false);
+                    sw = true;
+                }
+                if (!c_pwd.getText().toString().equals("") && c_pwd.getText().toString().equals(cc_pwd.getText().toString())) {
+                    user.setPwd(c_pwd.getText().toString());
+                } else {
+                    showAlert(getString(R.string.m_pwd), getString(R.string.error), false);
+                    sw = true;
+                }
+                if (!uni.getText().toString().equals("")) {
+                    user.setUniversity(uni.getText().toString());
+                } else {
+                    showAlert(getString(R.string.uni), getString(R.string.error), false);
+                    sw = true;
+                }
+                user.setDiet(u_d_list.get(u_d.getSelectedItemPosition()));
+                user.setType(u_t_list.get(u_t.getSelectedItemPosition()));
+                user.setPref_time(p_t_list.get(p_t.getSelectedItemPosition()));
+                user.setImage( photo_uri.toString());
+
+                if (!sw) {
+                    String oj = user.toString();
+                    mShared.edit().putString("User", oj).commit();
+                    if(getIntent().hasExtra("user")) {
+                        showAlert(getString(R.string.m_save), getString(R.string.m_succ), true);
+                    }else{
+                        showAlert(getString(R.string.m_c), getString(R.string.m_succ), true);
+                    }
+                    Intent intent = new Intent(getApplicationContext(), ProfileManagerActivity.class);
+                    startActivity(intent);
+                } else {
+                    return;
+                }
+            }
+        });
+
+
+    }
+
+    private void showAlert(String message,String title, final boolean ex){
+        AlertDialog alertDialog = new AlertDialog.Builder(CreateUserAccountActivity.this).create();
+        alertDialog.setTitle(title);
+        alertDialog.setMessage(message);
+        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        if (ex) {
+
+                            finish();
+                        } else {
+                            dialog.dismiss();
+                        }
+                    }
+                });
+        alertDialog.show();
+    }
+
+    private void setPhoto() {
+        bitmap= BitmapFactory.decodeResource(getResources(), R.drawable.no_image);
+        photo.setImageBitmap(bitmap);
+        photo_uri=Uri.parse("android.resource://straw.polito.it.straw/drawable/no_image");
     }
     private void setUpPopUpWindow() {
         popUp = new PopupWindow(getBaseContext());

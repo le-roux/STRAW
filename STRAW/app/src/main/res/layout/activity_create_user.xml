@@ -118,8 +118,8 @@
                     android:ems="10"
                     android:id="@+id/pwd_editText"
                     android:layout_alignBottom="@+id/pwd_textView"
-                    android:layout_alignLeft="@+id/email_editText"
-                    android:layout_alignStart="@+id/email_editText" />
+                    android:layout_alignLeft="@+id/email_textView"
+                    android:layout_alignStart="@+id/email_textView" />
 
                 <EditText
                     android:layout_width="wrap_content"

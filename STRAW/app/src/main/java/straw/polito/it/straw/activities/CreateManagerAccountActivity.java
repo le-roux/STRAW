@@ -166,7 +166,7 @@ public class CreateManagerAccountActivity extends AppCompatActivity {
                     }else{
                         showAlert(getString(R.string.m_c), getString(R.string.m_succ), true);
                     }
-                    Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
+                    Intent intent = new Intent(getApplicationContext(), ProfileManagerActivity.class);
                     startActivity(intent);
                 } else {
                     return;
