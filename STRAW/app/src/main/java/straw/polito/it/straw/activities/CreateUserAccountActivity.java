@@ -72,6 +72,21 @@ public class CreateUserAccountActivity extends AppCompatActivity {
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         initialize();
+        u_t_list=new ArrayList<>();
+        u_d_list=new ArrayList<>();
+        p_t_list=new ArrayList<>();
+
+        u_t_list.add(getString(R.string.student));
+        u_t_list.add(getString(R.string.professor));
+        u_t_list.add(getString(R.string.worker));
+
+        u_d_list.add(getString(R.string.Vegan));
+        u_d_list.add(getString(R.string.Gluten_free));
+
+        for(int i=11;i<5;i++){
+            p_t_list.add(i+":00");
+            p_t_list.add(i+":30");
+        }
         setListeners();
         if(getIntent().hasExtra("user")){
             Log.v(TAG,getIntent().getExtras().getString("user"));
@@ -113,25 +128,9 @@ public class CreateUserAccountActivity extends AppCompatActivity {
         c_acc_button=(Button)findViewById(R.id.create_button);
         setUpPopUpWindow();
 
-        u_t_list=new ArrayList<>();
-        u_d_list=new ArrayList<>();
-        p_t_list=new ArrayList<>();
-
-        u_t_list.add(getString(R.string.student));
-        u_t_list.add(getString(R.string.professor));
-        u_t_list.add(getString(R.string.worker));
-
-        u_d_list.add(getString(R.string.Vegan));
-        u_d_list.add(getString(R.string.Gluten_free));
-
-        for(int i=11;i<5;i++){
-                p_t_list.add(i+":00");
-                p_t_list.add(i+":30");
-        }
-
-        u_t.setAdapter(new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_list_item_1, (List<String>) u_t));
-        u_d.setAdapter(new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_list_item_1, (List<String>) u_d));
-        p_t.setAdapter(new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_list_item_1, (List<String>) p_t));
+        u_t.setAdapter(new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_list_item_1, u_t_list));
+        u_d.setAdapter(new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_list_item_1, u_d_list));
+        p_t.setAdapter(new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_list_item_1, p_t_list));
 
     }
     private void setListeners() {
