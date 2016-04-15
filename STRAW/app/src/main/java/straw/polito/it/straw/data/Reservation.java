@@ -3,12 +3,10 @@ package straw.polito.it.straw.data;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.sql.Time;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import straw.polito.it.straw.Timer;
-import straw.polito.it.straw.utils.Logger;
 
 /**
  * Created by Sylvain on 07/04/2016.
@@ -85,12 +83,17 @@ public class Reservation implements Timer{
         return stringBuilder.toString();
     }
 
-    public int getHour() {
+    public int getHourOfDay() {
         return this.time.get(Calendar.HOUR_OF_DAY);
     }
 
     public int getMinutes() {
         return this.time.get(Calendar.MINUTE);
+    }
+
+    @Override
+    public void setIs24HFormat(boolean format) {
+        //To do
     }
 
     public int getMonth() {
@@ -127,7 +130,7 @@ public class Reservation implements Timer{
             jsonObject.put(YEAR, this.getYear());
             jsonObject.put(MONTH, this.getMonth());
             jsonObject.put(DAY, this.getDay());
-            jsonObject.put(HOUR, this.getHour());
+            jsonObject.put(HOUR, this.getHourOfDay());
             jsonObject.put(MINUTES, this.getMinutes());
         } catch (JSONException e) {
             e.printStackTrace();

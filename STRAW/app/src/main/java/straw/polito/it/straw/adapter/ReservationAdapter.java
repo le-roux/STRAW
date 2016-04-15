@@ -41,7 +41,6 @@ public class ReservationAdapter extends BaseAdapter {
     public ReservationAdapter(Context context, ArrayList<Reservation> reservationList,
                               DisplayReservationsActivity activity) {
         this.reservationList = reservationList;
-        Logger.d("Creation");
         this.context = context;
         this.parentActivity = activity;
     }

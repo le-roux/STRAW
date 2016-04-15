@@ -5,6 +5,7 @@ package straw.polito.it.straw;
  */
 public interface Timer {
     void setTime(int hour, int minute);
-    int getHour();
+    int getHourOfDay();
     int getMinutes();
+    void setIs24HFormat(boolean format);
 }

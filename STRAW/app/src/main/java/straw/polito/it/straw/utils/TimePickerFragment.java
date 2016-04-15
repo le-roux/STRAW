@@ -37,7 +37,7 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
         } else {
             this.timer = ((BookTableActivity)this.activity).getClock();
         }
-        int hour = this.timer.getHour();
+        int hour = this.timer.getHourOfDay();
         int minutes = this.timer.getMinutes();
 
         return new TimePickerDialog(this.activity, this, hour, minutes,
@@ -46,6 +46,7 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
 
     @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+        this.timer.setIs24HFormat(DateFormat.is24HourFormat(this.activity));
         this.timer.setTime(hourOfDay, minute);
         if (this.notifyAdapter) {
             this.adapter.notifyDataSetChanged();
