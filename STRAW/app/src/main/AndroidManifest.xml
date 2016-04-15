@@ -27,7 +27,8 @@
         <activity android:name=".activities.DisplayReservationsActivity" />
         <activity android:name=".activities.OfferActivity" />
         <activity android:name=".activities.CreateOfferActivity" />
-        <activity android:name=".activities.CreateUserAccountActivity"></activity>
+        <activity android:name=".activities.CreateUserAccountActivity" />
+        <activity android:name=".activities.BookTableActivity"></activity>
     </application>
 
 </manifest>

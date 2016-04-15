@@ -64,7 +64,7 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Logger.d("Launch menu");
-                Intent intent = new Intent(getApplicationContext(), DisplayReservationsActivity.class);
+                Intent intent = new Intent(getApplicationContext(), BookTableActivity.class);
                 Logger.d("Intent created");
                 startActivity(intent);
             }

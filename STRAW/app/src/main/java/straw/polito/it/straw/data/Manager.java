@@ -21,6 +21,8 @@ public class Manager {
     private String image;
     private String email;
 
+    public static final String SEATS_AVAILABLE = "SeatsAvailable";
+
     public Manager() {
     }
 
