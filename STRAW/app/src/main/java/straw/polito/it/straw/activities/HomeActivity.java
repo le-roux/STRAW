@@ -95,6 +95,7 @@ public class HomeActivity extends AppCompatActivity {
         pwd_editText=(EditText)findViewById(R.id.pwd_editText);
         log_in_button=(Button)findViewById(R.id.log_in_button);
         create_man_button=(Button)findViewById(R.id.c_man_button);
+        create_user_button=(Button)findViewById(R.id.c_user_button);
     }
 
 

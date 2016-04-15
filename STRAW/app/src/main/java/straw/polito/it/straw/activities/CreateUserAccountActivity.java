@@ -124,14 +124,13 @@ public class CreateUserAccountActivity extends AppCompatActivity {
         u_d_list.add(getString(R.string.Vegan));
         u_d_list.add(getString(R.string.Gluten_free));
 
-        for(int i=11;i<5;i++){
-                p_t_list.add(i+":00");
-                p_t_list.add(i+":30");
+        for(int i=0;i<5;i++){
+            p_t_list.add((11+i)+":00");
+            p_t_list.add((11+i)+":30");
         }
-
-        u_t.setAdapter(new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_list_item_1, (List<String>) u_t));
-        u_d.setAdapter(new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_list_item_1, (List<String>) u_d));
-        p_t.setAdapter(new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_list_item_1, (List<String>) p_t));
+        u_t.setAdapter(new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_list_item_1, u_t_list));
+        u_d.setAdapter(new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_list_item_1, u_d_list));
+        p_t.setAdapter(new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_list_item_1, p_t_list));
 
     }
     private void setListeners() {
