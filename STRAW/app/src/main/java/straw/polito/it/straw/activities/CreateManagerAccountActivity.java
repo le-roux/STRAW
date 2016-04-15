@@ -166,7 +166,7 @@ public class CreateManagerAccountActivity extends AppCompatActivity {
                     }else{
                         showAlert(getString(R.string.m_c), getString(R.string.m_succ), true);
                     }
-                    Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
+                    Intent intent = new Intent(getApplicationContext(), ProfileManagerActivity.class);
                     startActivity(intent);
                 } else {
                     return;
@@ -207,12 +207,12 @@ public class CreateManagerAccountActivity extends AppCompatActivity {
         photo=(ImageView)findViewById(R.id.photo_imageView);
         c_pwd=(EditText)findViewById(R.id.c_pwd_editText);
         cc_pwd=(EditText)findViewById(R.id.cc_pwd_editText);
-        tel=(EditText)findViewById(R.id.tel_editText);
-        r_n=(EditText)findViewById(R.id.r_n_editText);
+        tel=(EditText)findViewById(R.id.u_textView);
+        r_n=(EditText)findViewById(R.id.diet_textView);
         r_t=(Spinner)findViewById(R.id.r_t_spinner);
-        addr=(EditText)findViewById(R.id.addr_editText);
+        addr=(EditText)findViewById(R.id.pref_t_textView);
         seats=(EditText)findViewById(R.id.seats_editText);
-        email=(EditText)findViewById(R.id.email_editText);
+        email=(EditText)findViewById(R.id.email_textView);
         c_acc_button=(Button)findViewById(R.id.create_button);
         setUpPopUpWindow();
         sw=false;
