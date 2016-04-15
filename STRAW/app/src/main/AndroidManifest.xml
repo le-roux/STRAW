@@ -28,6 +28,7 @@
         <activity android:name=".activities.OfferActivity" />
         <activity android:name=".activities.CreateOfferActivity" />
         <activity android:name=".activities.CreateUserAccountActivity" />
+        <activity android:name=".activities.BookTableActivity"></activity>
         <activity android:name=".activities.ProfileUserActivity"></activity>
     </application>
 

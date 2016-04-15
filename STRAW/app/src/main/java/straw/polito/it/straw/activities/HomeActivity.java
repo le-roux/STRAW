@@ -70,9 +70,9 @@ public class HomeActivity extends AppCompatActivity {
         });
         create_user_button.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                Intent i= new Intent(getBaseContext(),CreateUserAccountActivity.class);
-                startActivity(i);
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), ProfileUserActivity.class);
+                startActivity(intent);
             }
         });
 

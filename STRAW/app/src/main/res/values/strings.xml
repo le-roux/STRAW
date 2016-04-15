@@ -100,6 +100,11 @@
     <string name="student">Student</string>
     <string name="professor">Professor</string>
     <string name="worker">Worker</string>
+
+    <!--Strings for the Book Table part-->
+    <string name="BookTable"><u>Book a table</u></string>
+    <string name="HowManyPeople">How many people ?</string>
+    <string name="Confirm">Confirm</string>
     
     <string name="rev_h">- Review History</string>
     <string name="res_h">- Reservation History</string>
