@@ -9,21 +9,26 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import straw.polito.it.straw.BookTableInterface;
+import straw.polito.it.straw.DateContainer;
+import straw.polito.it.straw.DateDisplayer;
 import straw.polito.it.straw.R;
 import straw.polito.it.straw.Timer;
 import straw.polito.it.straw.adapter.ReservationAdapter;
 import straw.polito.it.straw.data.Manager;
 import straw.polito.it.straw.data.Reservation;
 import straw.polito.it.straw.data.TimerDisplay;
+import straw.polito.it.straw.utils.DatePickerFragment;
 import straw.polito.it.straw.utils.NumberPickerFragment;
 import straw.polito.it.straw.utils.TimePickerFragment;
 
-public class BookTableActivity extends AppCompatActivity implements BookTableInterface{
+public class BookTableActivity extends AppCompatActivity implements BookTableInterface, DateContainer{
 
     private TextView numberPeopleNumber;
     private Button calendarButton;
+    private DateDisplayer calendar;
     private Button clockButton;
     private TimerDisplay clock;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +37,7 @@ public class BookTableActivity extends AppCompatActivity implements BookTableInt
 
         this.numberPeopleNumber = (TextView)findViewById(R.id.number_people_number);
         this.calendarButton = (Button)findViewById(R.id.calendar);
+        this.calendar = (DateDisplayer)findViewById(R.id.Date);
         this.clockButton = (Button)findViewById(R.id.clock);
         this.clock = (TimerDisplay)findViewById(R.id.Time);
 
@@ -58,6 +64,15 @@ public class BookTableActivity extends AppCompatActivity implements BookTableInt
             }
         });
 
+        //Add a listener to launch the DatePickerDialog to select the date of the reservation
+        this.calendarButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DialogFragment fragment = new DatePickerFragment();
+                fragment.show(getFragmentManager(), "DatePicker");
+            }
+        });
+
 
     }
 
@@ -68,5 +83,10 @@ public class BookTableActivity extends AppCompatActivity implements BookTableInt
     @Override
     public void setNumberPeople(int numberPeople) {
         this.numberPeopleNumber.setText(String.valueOf(numberPeople));
+    }
+
+    @Override
+    public DateDisplayer getDateDisplayer() {
+        return this.calendar;
     }
 }

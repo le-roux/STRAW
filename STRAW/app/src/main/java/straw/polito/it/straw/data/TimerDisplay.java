@@ -1,15 +1,15 @@
 package straw.polito.it.straw.data;
 
 import android.content.Context;
-import android.text.format.DateFormat;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
+import java.util.Calendar;
+
 import straw.polito.it.straw.Timer;
-import straw.polito.it.straw.utils.Logger;
 
 /**
- * Created by sylva on 15/04/2016.
+ * Created by Sylvain on 15/04/2016.
  */
 public class TimerDisplay extends TextView implements Timer {
 
@@ -26,9 +26,12 @@ public class TimerDisplay extends TextView implements Timer {
     }
     public TimerDisplay(Context context, AttributeSet attributeSet, int style) {
         super(context, attributeSet, style);
-        this.hourOfDay = 0;
-        this.minute = 0;
+        //By default, the values are the current ones
+        Calendar calendar = Calendar.getInstance();
+        this.hourOfDay = calendar.get(Calendar.HOUR_OF_DAY);
+        this.minute = calendar.get(Calendar.MINUTE);
         this.is24HFormat = true;
+        updateText();
     }
 
     @Override
