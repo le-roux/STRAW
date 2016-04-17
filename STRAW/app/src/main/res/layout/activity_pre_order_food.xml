@@ -7,6 +7,80 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="straw.polito.it.straw.activities.PreOrderFoodActivity">
+    tools:context="straw.polito.it.straw.activities.PreOrderFoodActivity"
+    android:background="@color/background">
+
+    <TextView
+        android:id="@+id/center"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_centerInParent="true"/>
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="@string/PreOrderFood"
+        android:textSize="@dimen/Title_size"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"/>
+
+    <ScrollView
+        android:id="@+id/menu"
+        android:layout_width="match_parent"
+        android:layout_height= "0dp"
+        android:layout_below="@id/title"
+        android:layout_above="@id/Price"
+        android:background="@color/beige">
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"></ListView>
+    </ScrollView>
+
+    <TextView
+        android:id="@+id/Price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/add_plate_button"
+        android:text="@string/Price"
+        android:textSize="@dimen/Title_size"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        android:layout_marginTop="@dimen/activity_vertical_margin"/>
+
+    <Button
+        android:id="@+id/confirm_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:text="@string/Confirm"
+        android:textSize="@dimen/Medium_size"
+        android:background="@drawable/customborder_buttons"/>
+
+    <Button
+        android:id="@+id/add_plate_button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/confirm_button"
+        android:layout_alignParentLeft="true"
+        android:layout_toLeftOf="@id/center"
+        android:text="@string/Add_plate"
+        android:textSize="@dimen/Content_size"
+        android:background="@drawable/customborder_buttons"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"/>
+
+    <Button
+        android:id="@id/add_drink_button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/center"
+        android:layout_alignParentRight="true"
+        android:layout_above="@id/confirm_button"
+        android:text="@string/Add_drink"
+        android:textSize="@dimen/Content_size"
+        android:background="@drawable/customborder_buttons"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"/>
 
 </RelativeLayout>

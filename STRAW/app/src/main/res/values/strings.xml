@@ -112,6 +112,9 @@
     <string name="InviteFriends">Invite Friend(s)</string>
     <string name="PreOrder">Pre-Order</string>
 
+    <!--Strings for the Pre Order Food part-->
+    <string name="PreOrderFood"><u>Pre-order Food</u></string>
+
     <string name="rev_h">- Review History</string>
     <string name="res_h">- Reservation History</string>
     <string name="friends">- Friend List</string>
