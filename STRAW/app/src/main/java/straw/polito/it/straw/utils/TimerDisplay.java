@@ -1,4 +1,4 @@
-package straw.polito.it.straw.data;
+package straw.polito.it.straw.utils;
 
 import android.content.Context;
 import android.util.AttributeSet;

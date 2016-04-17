@@ -60,7 +60,7 @@ public class CreateMenuActivity extends AppCompatActivity {
         this.add_plate_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), AddPlateActivity.class);
+                Intent intent = new Intent(getApplicationContext(), CreatePlateActivity.class);
                 intent.putExtra(ACTION, ADD_ELEMENT);
                 startActivityForResult(intent, ADD_FOOD);
             }
@@ -71,7 +71,7 @@ public class CreateMenuActivity extends AppCompatActivity {
         this.add_drink_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), AddDrinkActivity.class);
+                Intent intent = new Intent(getApplicationContext(), CreateDrinkActivity.class);
                 intent.putExtra(ACTION, ADD_ELEMENT);
                 startActivityForResult(intent, ADD_FOOD);
             }
@@ -115,9 +115,9 @@ public class CreateMenuActivity extends AppCompatActivity {
                 data.putInt(ID, position);
                 data.putString(ACTION, EDIT_ELEMENT);
                 if (list_plate.get(position).getClass().equals(Drink.class)) {
-                    detail = new Intent(getApplicationContext(), AddDrinkActivity.class);
+                    detail = new Intent(getApplicationContext(), CreateDrinkActivity.class);
                 } else if (list_plate.get(position).getClass().equals(Plate.class)) {
-                    detail = new Intent(getApplicationContext(), AddPlateActivity.class);
+                    detail = new Intent(getApplicationContext(), CreatePlateActivity.class);
                 }
                 detail.putExtras(data);
                 startActivityForResult(detail, EDIT_FOOD);

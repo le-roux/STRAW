@@ -21,8 +21,8 @@
         </activity>
         <activity android:name=".activities.CreateManagerAccountActivity" />
         <activity android:name=".activities.CreateMenuActivity" />
-        <activity android:name=".activities.AddDrinkActivity" />
-        <activity android:name=".activities.AddPlateActivity" />
+        <activity android:name=".activities.CreateDrinkActivity" />
+        <activity android:name=".activities.CreatePlateActivity" />
         <activity android:name=".activities.ProfileManagerActivity" />
         <activity android:name=".activities.DisplayReservationsActivity" />
         <activity android:name=".activities.OfferActivity" />
@@ -30,7 +30,8 @@
         <activity android:name=".activities.CreateUserAccountActivity" />
         <activity android:name=".activities.BookTableActivity" />
         <activity android:name=".activities.ProfileUserActivity" />
-        <activity android:name=".activities.PreOrderFoodActivity"></activity>
+        <activity android:name=".activities.PreOrderFoodActivity" />
+        <activity android:name=".activities.AddPlateActivity"></activity>
     </application>
 
 </manifest>

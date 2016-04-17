@@ -17,9 +17,9 @@ import java.util.ArrayList;
 
 import straw.polito.it.straw.R;
 import straw.polito.it.straw.activities.DisplayReservationsActivity;
-import straw.polito.it.straw.data.DateDisplay;
+import straw.polito.it.straw.utils.DateDisplay;
 import straw.polito.it.straw.data.Reservation;
-import straw.polito.it.straw.data.TimerDisplay;
+import straw.polito.it.straw.utils.TimerDisplay;
 import straw.polito.it.straw.utils.TimePickerFragment;
 
 /**

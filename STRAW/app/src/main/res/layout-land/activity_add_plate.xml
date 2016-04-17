@@ -7,111 +7,59 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".activities.AddPlateActivity">
+    tools:context="straw.polito.it.straw.activities.AddPlateActivity"
+    android:background="@color/background">
 
-    <TextView
-        android:id="@+id/center"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_centerInParent="true"
-        />
 
     <TextView
         android:id="@+id/title"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/Add_plate"
-        android:textAlignment="center"
+        android:layout_alignParentRight="true"
+        android:text="@string/AddPlateTitle"
         android:textSize="@dimen/Title_size"
-        android:background="@drawable/customborder_dark"
-        android:padding="@dimen/padding"/>
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"/>
 
-    <EditText
-        android:id="@+id/name_field"
+    <TextView
+        android:id="@+id/Price"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_below="@id/title"
-        android:layout_alignParentLeft="true"
-        android:layout_toLeftOf="@id/center"
-        android:hint="@string/Name"
-        android:layout_marginTop="@dimen/activity_vertical_margin"/>
-
-    <TextView
-        android:id="@+id/currency_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/Currency"
+        android:layout_alignParentRight="true"
+        android:layout_toRightOf="@id/list_item"
+        android:text="@string/Price"
         android:textSize="@dimen/Title_size"
-        android:layout_below="@id/name_field"
-        android:layout_toLeftOf="@id/center"
-        android:layout_marginTop="@dimen/activity_vertical_margin"/>
-    <EditText
-        android:id="@+id/price_field"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_toLeftOf="@id/currency_text"
-        android:layout_below="@id/name_field"
-        android:hint="@string/Price"
-        android:inputType="numberDecimal"
+        android:textAlignment="center"
         android:layout_marginTop="@dimen/activity_vertical_margin"
         android:layout_marginBottom="@dimen/activity_vertical_margin"/>
 
-    <EditText
-        android:id="@+id/ingredients_field"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/price_field"
-        android:layout_alignParentLeft="true"
-        android:layout_toLeftOf="@id/center"
-        android:inputType="text"
-        android:hint="@string/Ingredients"/>
-
-    <CheckBox
-        android:id="@+id/vegan_checkbox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/ingredients_field"
-        android:layout_marginLeft="@dimen/activity_horizontal_margin"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:text="@string/Vegan"
-        android:textSize="@dimen/Content_size"
-        />
-
-    <CheckBox
-        android:id="@+id/glutenfree_checkbox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/ingredients_field"
-        android:layout_toRightOf="@id/vegan_checkbox"
-        android:layout_marginRight="@dimen/activity_horizontal_margin"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:text="@string/Gluten_free"
-        android:textSize="@dimen/Content_size"
-        />
-
     <Button
-        android:id="@+id/confirm_button"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_toRightOf="@id/center"
-        android:text="@string/Add"
-        android:background="@drawable/customborder_buttons"
-        android:padding="@dimen/padding"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
-        />
-
-    <ImageView
-        android:id="@+id/photo_imageView"
+        android:id="@+id/add_button"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_above="@id/confirm_button"
-        android:layout_toRightOf="@id/center"
+        android:layout_alignParentBottom="true"
+        android:layout_below="@id/Price"
         android:layout_alignParentRight="true"
-        android:layout_below="@id/title"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:layout_toRightOf="@id/list_item"
         android:layout_marginLeft="@dimen/activity_horizontal_margin"
-        android:background="@color/grey"/>
+        android:padding="@dimen/padding"
+        android:text="@string/Add"
+        android:textSize="@dimen/Medium_size"
+        android:background="@drawable/customborder_buttons"
+        android:layout_marginTop="@dimen/activity_vertical_margin"/>
+
+    <ListView
+        android:id="@+id/list_item"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_toLeftOf="@id/title"
+        android:background="@color/beige"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"></ListView>
+
 </RelativeLayout>

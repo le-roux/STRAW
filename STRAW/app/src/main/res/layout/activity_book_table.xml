@@ -84,7 +84,7 @@
         android:background="@drawable/calendar"/>
     <!-- Created by Edward Boatman from Noun Project -->
 
-    <straw.polito.it.straw.data.DateDisplay
+    <straw.polito.it.straw.utils.DateDisplay
         android:id="@+id/Date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -100,7 +100,7 @@
         android:text="@string/When"
         android:textSize="@dimen/Medium_size"/>
 
-    <straw.polito.it.straw.data.TimerDisplay
+    <straw.polito.it.straw.utils.TimerDisplay
         android:id="@+id/Time"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

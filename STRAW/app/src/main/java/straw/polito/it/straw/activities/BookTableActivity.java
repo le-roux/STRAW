@@ -18,7 +18,7 @@ import straw.polito.it.straw.adapter.ReservationAdapter;
 import straw.polito.it.straw.data.Manager;
 import straw.polito.it.straw.data.Reservation;
 import straw.polito.it.straw.data.Reservation.Place;
-import straw.polito.it.straw.data.TimerDisplay;
+import straw.polito.it.straw.utils.TimerDisplay;
 import straw.polito.it.straw.utils.DatePickerFragment;
 import straw.polito.it.straw.utils.NumberPickerFragment;
 import straw.polito.it.straw.utils.TimePickerFragment;
