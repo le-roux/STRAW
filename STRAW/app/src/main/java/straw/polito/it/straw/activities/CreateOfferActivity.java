@@ -35,6 +35,8 @@ public class CreateOfferActivity extends AppCompatActivity {
     SharedPreferences mShared;
     ArrayList<Food> combo;
 
+    public static final String NUMBER_OF_ELEMENTS = "ElementsNb";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,7 +46,7 @@ public class CreateOfferActivity extends AppCompatActivity {
         menu=new ArrayList<Food>();
         combo=new ArrayList<Food>();
 
-        int elementsNb = mShared.getInt(CreateMenuActivity.NUMBER_OF_ELEMENTS, 0);
+        int elementsNb = mShared.getInt(NUMBER_OF_ELEMENTS, 0);
 
         for (int i = 0; i < elementsNb; i++) {
             menu.add(Food.create(mShared.getString(String.valueOf(i), "")));
