@@ -44,7 +44,7 @@
         android:textSize="@dimen/Medium_size"
         android:textAlignment="center"
         android:layout_toRightOf="@id/number_people_text"
-        android:layout_alignParentRight="true"
+        android:layout_toLeftOf="@id/center"
         android:layout_alignBaseline="@id/number_people_text"
         android:layout_marginLeft="@dimen/activity_horizontal_margin"
         android:background="@drawable/customborder_buttons"/>
@@ -53,8 +53,10 @@
         android:id="@+id/Where_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/number_people_text"
+        android:layout_below="@id/title"
+        android:layout_toRightOf="@id/center"
         android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
         android:text="@string/Where"
         android:textSize="@dimen/Medium_size"/>
 
@@ -63,7 +65,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text= "@string/Inside"
-        android:layout_alignLeft="@id/number_people_number"
+        android:layout_alignParentRight="true"
         android:layout_alignTop="@id/Where_text"/>
 
     <CheckBox
@@ -71,15 +73,40 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/Outside"
-        android:layout_alignLeft="@id/number_people_number"
+        android:layout_alignParentRight="true"
         android:layout_below="@id/insideCheckbox"/>
+
+    <Button
+        android:id="@+id/clock"
+        android:layout_width="@dimen/Icon_size_horizontal"
+        android:layout_height="@dimen/Icon_size_vertical"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/outsideCheckbox"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:background="@drawable/clock"/>
+    <!--Created by christoph robausch from Noun Project -->
+
+    <straw.polito.it.straw.data.TimerDisplay
+        android:id="@+id/Time"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_alignTop="@id/clock"
+        android:layout_alignBottom="@id/clock"
+        android:layout_toLeftOf="@id/clock"
+        android:text="12:00"
+        android:textSize="@dimen/Medium_size"
+        android:textAlignment="center"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"/>
+
     <Button
         android:id="@+id/calendar"
         android:layout_width="@dimen/Icon_size_horizontal"
         android:layout_height="@dimen/Icon_size_vertical"
         android:layout_below="@id/outsideCheckbox"
-        android:layout_alignParentRight="true"
+        android:layout_toLeftOf="@id/Time"
         android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
         android:layout_marginTop="@dimen/activity_vertical_margin"
         android:background="@drawable/calendar"/>
     <!-- Created by Edward Boatman from Noun Project -->
@@ -87,60 +114,28 @@
     <straw.polito.it.straw.data.DateDisplay
         android:id="@+id/Date"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:text="30/03/2016"
         android:textSize="@dimen/Medium_size"
         android:layout_alignTop="@id/calendar"
+        android:layout_alignBottom="@id/calendar"
         android:layout_toLeftOf="@id/calendar"/>
 
     <TextView
+        android:id="@+id/When_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@id/Date"
         android:text="@string/When"
         android:textSize="@dimen/Medium_size"/>
 
-    <straw.polito.it.straw.data.TimerDisplay
-        android:id="@+id/Time"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/Date"
-        android:layout_alignLeft="@id/Date"
-        android:layout_alignRight="@id/Date"
-        android:text="12:00"
-        android:textSize="@dimen/Medium_size"
-        android:textAlignment="center"
-        android:layout_marginTop="@dimen/activity_vertical_margin"/>
-
-    <Button
-        android:id="@+id/clock"
-        android:layout_width="@dimen/Icon_size_horizontal"
-        android:layout_height="0dp"
-        android:layout_alignParentRight="true"
-        android:layout_alignBottom="@id/Time"
-        android:layout_alignTop="@id/Time"
-        android:background="@drawable/clock"/>
-    <!--Created by christoph robausch from Noun Project -->
-
-    <Button
-        android:id="@+id/InviteFriendsButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/Time"
-        android:layout_marginTop="@dimen/activity_horizontal_margin"
-        android:text="@string/InviteFriends"
-        android:textSize="@dimen/Medium_size"
-        android:textAlignment="center"
-        android:background="@drawable/customborder_buttons"/>
-
     <Button
         android:id="@+id/confirm_button"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:layout_below="@id/InviteFriendsButton"
+        android:layout_below="@id/When_text"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
-        android:layout_toLeftOf="@id/center"
         android:text="@string/Confirm"
         android:textSize="@dimen/Medium_size"
         android:textAlignment="center"
@@ -150,13 +145,26 @@
         />
 
     <Button
+        android:id="@+id/InviteFriendsButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/When_text"
+        android:layout_toRightOf="@id/confirm_button"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="@dimen/activity_horizontal_margin"
+        android:text="@string/InviteFriends"
+        android:textSize="@dimen/Medium_size"
+        android:textAlignment="center"
+        android:background="@drawable/customborder_buttons"/>
+
+    <Button
         android:id="@+id/PreOrderButton"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_below="@id/InviteFriendsButton"
+        android:layout_below="@id/When_text"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:layout_toRightOf="@id/center"
+        android:layout_toRightOf="@id/InviteFriendsButton"
         android:text="@string/PreOrder"
         android:textSize="@dimen/Medium_size"
         android:textAlignment="center"
