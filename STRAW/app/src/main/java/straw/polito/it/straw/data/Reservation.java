@@ -6,12 +6,13 @@ import org.json.JSONObject;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-import straw.polito.it.straw.Timer;
+import straw.polito.it.straw.DateDisplayer;
+import straw.polito.it.straw.TimeDisplayer;
 
 /**
  * Created by Sylvain on 07/04/2016.
  */
-public class Reservation implements Timer{
+public class Reservation implements TimeDisplayer, DateDisplayer{
 
     private int numberPeople;
     private GregorianCalendar time;
@@ -68,31 +69,6 @@ public class Reservation implements Timer{
         return this.time;
     }
 
-    public String getTimeString() {
-        String time = "";
-        StringBuilder stringBuilder = new StringBuilder();
-        int day = this.time.get(Calendar.DAY_OF_MONTH);
-        if (day < 10)
-            stringBuilder.append('0');
-        stringBuilder.append(day)
-                .append("/");
-        int month = this.time.get(Calendar.MONTH);
-        if (month < 10)
-            stringBuilder.append('0');
-        stringBuilder.append(month)
-                .append("  ");
-        int hour = this.time.get(Calendar.HOUR_OF_DAY);
-        if (hour < 10)
-            stringBuilder.append('0');
-        stringBuilder.append(hour)
-                .append(":");
-        int minute = this.time.get(Calendar.MINUTE);
-        if (minute < 10)
-            stringBuilder.append('0');
-        stringBuilder.append(minute);
-        return stringBuilder.toString();
-    }
-
     public int getHourOfDay() {
         return this.time.get(Calendar.HOUR_OF_DAY);
     }
@@ -130,6 +106,10 @@ public class Reservation implements Timer{
 
     public void setTime(int year, int month, int day, int hour, int minute) {
         this.time.set(year, month, day, hour, minute);
+    }
+
+    public void setDate(int year, int month, int day) {
+        this.time.set(year, month, day);
     }
 
     public void setPlace(Place place) {

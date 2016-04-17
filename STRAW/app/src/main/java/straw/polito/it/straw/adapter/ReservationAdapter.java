@@ -16,10 +16,10 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 import straw.polito.it.straw.R;
-import straw.polito.it.straw.Timer;
 import straw.polito.it.straw.activities.DisplayReservationsActivity;
+import straw.polito.it.straw.data.DateDisplay;
 import straw.polito.it.straw.data.Reservation;
-import straw.polito.it.straw.utils.Logger;
+import straw.polito.it.straw.data.TimerDisplay;
 import straw.polito.it.straw.utils.TimePickerFragment;
 
 /**
@@ -69,7 +69,8 @@ public class ReservationAdapter extends BaseAdapter {
 
         //Get the views of the item
         TextView numberPeople = (TextView) convertView.findViewById(R.id.number_people);
-        TextView time = (TextView) convertView.findViewById(R.id.time);
+        DateDisplay dateDisplay = (DateDisplay) convertView.findViewById(R.id.Date);
+        TimerDisplay timerDisplay = (TimerDisplay)convertView.findViewById(R.id.Timer);
         TextView plates = (TextView) convertView.findViewById(R.id.plates);
         TextView moreOptions = (TextView) convertView.findViewById(R.id.moreOptionsLink);
 
@@ -156,9 +157,11 @@ public class ReservationAdapter extends BaseAdapter {
 
         //Fill them with appropriate values
         if(position < this.reservationList.size()) {
-            numberPeople.setText(this.reservationList.get(position).getNumberPeople() + " " +
+            Reservation reservation = this.reservationList.get(position);
+            numberPeople.setText(reservation.getNumberPeople() + " " +
                     context.getString(R.string.Persons));
-            time.setText(this.reservationList.get(position).getTimeString());
+            dateDisplay.setDate(reservation.getYear(), reservation.getMonth(), reservation.getDay());
+            timerDisplay.setTime(reservation.getHourOfDay(), reservation.getMinutes());
             plates.setText(this.reservationList.get(position).getPlates());
         }
 

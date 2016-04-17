@@ -6,12 +6,12 @@ import android.widget.TextView;
 
 import java.util.Calendar;
 
-import straw.polito.it.straw.Timer;
+import straw.polito.it.straw.TimeDisplayer;
 
 /**
  * Created by Sylvain on 15/04/2016.
  */
-public class TimerDisplay extends TextView implements Timer {
+public class TimerDisplay extends TextView implements TimeDisplayer {
 
     private int hourOfDay;
     private int minute;

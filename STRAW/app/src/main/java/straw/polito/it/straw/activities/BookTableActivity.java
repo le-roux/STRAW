@@ -12,17 +12,18 @@ import straw.polito.it.straw.BookTableInterface;
 import straw.polito.it.straw.DateContainer;
 import straw.polito.it.straw.DateDisplayer;
 import straw.polito.it.straw.R;
+import straw.polito.it.straw.TimeContainer;
+import straw.polito.it.straw.TimeDisplayer;
 import straw.polito.it.straw.adapter.ReservationAdapter;
 import straw.polito.it.straw.data.Manager;
 import straw.polito.it.straw.data.Reservation;
 import straw.polito.it.straw.data.Reservation.Place;
 import straw.polito.it.straw.data.TimerDisplay;
 import straw.polito.it.straw.utils.DatePickerFragment;
-import straw.polito.it.straw.utils.Logger;
 import straw.polito.it.straw.utils.NumberPickerFragment;
 import straw.polito.it.straw.utils.TimePickerFragment;
 
-public class BookTableActivity extends AppCompatActivity implements BookTableInterface, DateContainer{
+public class BookTableActivity extends AppCompatActivity implements BookTableInterface, DateContainer, TimeContainer{
 
     private TextView numberPeopleNumber;
     private Button calendarButton;
@@ -145,5 +146,10 @@ public class BookTableActivity extends AppCompatActivity implements BookTableInt
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         this.reservation = Reservation.create(savedInstanceState.getString(Reservation.RESERVATION));
         updateDisplay();
+    }
+
+    @Override
+    public TimeDisplayer getTimeDisplayer() {
+        return this.clock;
     }
 }

@@ -8,12 +8,12 @@ import android.widget.ListView;
 
 import java.util.ArrayList;
 
+import straw.polito.it.straw.BaseAdapterContainer;
 import straw.polito.it.straw.R;
 import straw.polito.it.straw.adapter.ReservationAdapter;
 import straw.polito.it.straw.data.Reservation;
-import straw.polito.it.straw.utils.Logger;
 
-public class DisplayReservationsActivity extends AppCompatActivity {
+public class DisplayReservationsActivity extends AppCompatActivity implements BaseAdapterContainer {
 
     private ListView reservationList_View;
     private ArrayList<Reservation> reservationList;
