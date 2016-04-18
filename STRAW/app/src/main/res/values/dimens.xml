@@ -7,4 +7,5 @@
     <dimen name="padding">10dp</dimen>
     <dimen name="padding_small">5dp</dimen>
     <dimen name="Medium_size">26dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
 </resources>

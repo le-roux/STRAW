@@ -89,4 +89,18 @@
     <string name="returnT">Return</string>
     <string name="put_price">Write the price of the offer</string>
     <string name="save_price">Save Price</string>
+    <string name="title_activity_search">SearchActivity</string>
+    <string name="title_activity_search_">Search_Activity</string>
+
+    <!--Strings for the Search part -->
+    <string name="a_search">Advanced search</string>
+    <string name="q_search">Quick search</string>
+    <string name="see_prof">Profile</string>
+    <string name="title_activity_quick_search">QuickSearchActivity</string>
+    <string name="addfilter">Add filter(s)</string>
+    <string-array name="list_sort_by">
+        <item>sort by rating</item>
+        <item>sort by location</item>
+        <item>sort by price</item>
+    </string-array>
 </resources>
