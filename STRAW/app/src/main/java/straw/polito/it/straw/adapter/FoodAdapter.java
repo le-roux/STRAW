@@ -26,7 +26,7 @@ public abstract class FoodAdapter extends BaseAdapter {
      * List of the food elements managed by the Adapter
      */
     protected ArrayList<Food> goods;
-    private Context context;
+    protected Context context;
 
     public FoodAdapter(Context context) {
         this.goods = new ArrayList<Food>();
@@ -57,7 +57,7 @@ public abstract class FoodAdapter extends BaseAdapter {
     public View getView(final int position, View convertView, ViewGroup parent) {
         if(convertView == null) {
             LayoutInflater layoutInflater = (LayoutInflater)this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = layoutInflater.inflate(R.layout.food_item, null);
+            convertView = getConvertView(layoutInflater);
             setSpecificElement(convertView, position);
         }
 
@@ -84,4 +84,5 @@ public abstract class FoodAdapter extends BaseAdapter {
     }
 
     protected abstract void setSpecificElement(View convertView, int position);
+    protected abstract View getConvertView(LayoutInflater layoutInflater);
 }

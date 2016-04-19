@@ -1,6 +1,7 @@
 package straw.polito.it.straw.activities;
 
 import android.app.DialogFragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -32,6 +33,7 @@ public class BookTableActivity extends AppCompatActivity implements BookTableInt
     private TimerDisplay clock;
     private CheckBox insideCheckbox;
     private CheckBox outsideCheckbox;
+    private Button preOrderButton;
 
     private Reservation reservation;
 
@@ -47,6 +49,7 @@ public class BookTableActivity extends AppCompatActivity implements BookTableInt
         this.clock = (TimerDisplay)findViewById(R.id.Time);
         this.insideCheckbox = (CheckBox)findViewById(R.id.insideCheckbox);
         this.outsideCheckbox = (CheckBox)findViewById(R.id.outsideCheckbox);
+        this.preOrderButton = (Button)findViewById(R.id.PreOrderButton);
 
         //Add a listener to launch the NumberPicker dialog to select the number of people in the reservation
         this.numberPeopleNumber.setOnClickListener(new View.OnClickListener() {
@@ -77,6 +80,14 @@ public class BookTableActivity extends AppCompatActivity implements BookTableInt
             public void onClick(View view) {
                 DialogFragment fragment = new DatePickerFragment();
                 fragment.show(getFragmentManager(), "DatePicker");
+            }
+        });
+
+        this.preOrderButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), PreOrderFoodActivity.class);
+                startActivity(intent);
             }
         });
 

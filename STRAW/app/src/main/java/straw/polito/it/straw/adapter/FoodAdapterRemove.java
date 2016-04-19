@@ -1,6 +1,7 @@
 package straw.polito.it.straw.adapter;
 
 import android.content.Context;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 
@@ -37,5 +38,10 @@ public class FoodAdapterRemove extends FoodAdapter {
         //Necessary in order that the item can react (onItemClicked) when clicked somewhere
         // else than on the button
         remove_button.setFocusable(false);
+    }
+
+    @Override
+    protected View getConvertView(LayoutInflater layoutInflater) {
+        return layoutInflater.inflate(R.layout.food_item, null);
     }
 }
