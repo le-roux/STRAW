@@ -31,7 +31,8 @@
         <activity android:name=".activities.BookTableActivity" />
         <activity android:name=".activities.ProfileUserActivity" />
         <activity android:name=".activities.PreOrderFoodActivity" />
-        <activity android:name=".activities.AddPlateActivity"></activity>
+        <activity android:name=".activities.AddPlateActivity" />
+        <activity android:name=".activities.AddDrinkActivity"></activity>
     </application>
 
 </manifest>

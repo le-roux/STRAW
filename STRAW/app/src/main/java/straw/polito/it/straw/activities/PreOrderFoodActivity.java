@@ -57,7 +57,8 @@ public class PreOrderFoodActivity extends AppCompatActivity implements PriceCont
         this.addDrinkButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TO DO
+                Intent intent = new Intent(getApplicationContext(), AddDrinkActivity.class);
+                startActivityForResult(intent, ADD_DRINK_REQUEST_CODE);
             }
         });
 
