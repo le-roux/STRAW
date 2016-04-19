@@ -36,7 +36,7 @@ public class ProfileManagerActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile);
+        setContentView(R.layout.activity_profile_manager);
         mShared = PreferenceManager.getDefaultSharedPreferences(this);
 
         initialize();
