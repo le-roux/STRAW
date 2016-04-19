@@ -117,6 +117,9 @@
     <string name="AddPlateTitle"><u>Add Plate</u></string>
     <string name="AddDrinkTitle"><u>Add Drink</u></string>
 
+    <!--Strings for the Confirm Reservation part-->
+    <string name="Confirm_title"><u>Confirm</u></string>
+
     <string name="rev_h">- Review History</string>
     <string name="res_h">- Reservation History</string>
     <string name="friends">- Friend List</string>
