@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/cyan_light"
+    android:orientation="horizontal"
+    android:padding="5dip" >
+
+    <ImageView
+        android:id="@+id/PlateImage"
+        android:layout_width="50dip"
+        android:layout_height="50dip"
+        android:src="@drawable/pizza"
+        android:layout_alignParentLeft="true"
+        />
+
+    <TextView
+        android:id="@+id/PlateName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/PlateImage"
+        android:layout_toRightOf="@id/PlateImage"
+        android:text="Pizza"
+        android:textColor="@color/text_list"
+        android:typeface="sans"
+        android:textSize="15dp"
+        android:textStyle="bold"/>
+
+    <Button
+        android:id="@+id/RemoveButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="5dp"
+        android:layout_centerVertical="true"
+        android:text="@string/Remove"
+        android:textSize="@dimen/Content_size"
+        android:textColor="@color/text_list"
+        android:background="@drawable/customborder_buttons"
+        />
+
+    <TextView
+        android:id="@+id/PlatePrice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#343434"
+        android:textSize="15dp"
+        android:text="4.99€"
+        android:layout_toLeftOf="@id/RemoveButton"
+        android:layout_toStartOf="@id/RemoveButton"
+        android:layout_marginRight="@dimen/padding_small"
+        android:layout_centerVertical="true"
+        android:textStyle="bold"
+        />
+
+    <TextView
+        android:id="@+id/PlateDescription"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textColor="#343434"
+        android:textSize="10dp"
+        android:text="Description, description, ingrédient, ingrédient, ingrédient, ingrédient"
+
+        android:layout_below="@+id/PlateName"
+        android:layout_toRightOf="@id/PlateImage"
+        android:layout_toLeftOf="@id/PlatePrice"/>
+</RelativeLayout>

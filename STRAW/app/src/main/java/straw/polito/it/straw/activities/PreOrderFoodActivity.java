@@ -65,7 +65,7 @@ public class PreOrderFoodActivity extends AppCompatActivity {
             }
         });
 
-        this.listView.setAdapter(new FoodAdapter(getApplicationContext()));
+        //this.listView.setAdapter(new FoodAdapter(getApplicationContext()));
     }
 
     @Override

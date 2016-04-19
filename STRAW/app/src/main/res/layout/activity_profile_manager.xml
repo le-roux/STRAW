@@ -2,6 +2,15 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/edit_prof"
+        android:id="@+id/edit_button"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="@dimen/activity_horizontal_margin"
+        android:background="@drawable/customborder_buttons"/>
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -115,13 +124,4 @@
                 android:layout_alignParentStart="true"/>
         </RelativeLayout>
     </ScrollView>
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/edit_prof"
-        android:id="@+id/edit_button"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_margin="@dimen/activity_horizontal_margin"
-        android:background="@drawable/customborder_buttons"/>
 </RelativeLayout>

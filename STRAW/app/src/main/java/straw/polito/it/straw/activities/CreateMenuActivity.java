@@ -19,6 +19,7 @@ import java.util.ArrayList;
 
 import straw.polito.it.straw.R;
 import straw.polito.it.straw.adapter.FoodAdapter;
+import straw.polito.it.straw.adapter.FoodAdapterRemove;
 import straw.polito.it.straw.data.Drink;
 import straw.polito.it.straw.data.Food;
 import straw.polito.it.straw.data.Plate;
@@ -123,7 +124,7 @@ public class CreateMenuActivity extends AppCompatActivity {
                 startActivityForResult(detail, EDIT_FOOD);
             }
         });
-        food_listView.setAdapter(new FoodAdapter(context, list_plate));
+        food_listView.setAdapter(new FoodAdapterRemove(context, list_plate));
     }
 
     @Override
