@@ -39,9 +39,9 @@ public class FoodAdapterCheckbox extends FoodAdapter {
     protected void setSpecificElement(View convertView, int groupPosition, int childPosition) {
         CheckBox checkBox = (CheckBox)convertView.findViewById(R.id.checkbox);
         if (childPosition < this.checkBoxLists[groupPosition].size())
-            this.checkBoxLists.set(groupPosition * this.groups[0].size() + childPosition, checkBox);
-        else if (childPosition == this.checkBoxList.size())
-            this.checkBoxList.add(checkBox);
+            this.checkBoxLists[groupPosition].set(childPosition, checkBox);
+        else if (childPosition == this.checkBoxLists[groupPosition].size())
+            this.checkBoxLists[groupPosition].add(checkBox);
         checkBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -61,10 +61,19 @@ public class FoodAdapterCheckbox extends FoodAdapter {
      */
     public ArrayList<Integer> getPlates() {
         ArrayList<Integer> platesSelected = new ArrayList<>();
-        for (int i = 0; i < this.checkBoxList.size(); i++) {
-            if (this.checkBoxList.get(i).isChecked())
+        for (int i = 0; i < this.checkBoxListPLates.size(); i++) {
+            if (this.checkBoxListPLates.get(i).isChecked())
                 platesSelected.add(i);
         }
         return platesSelected;
+    }
+
+    public ArrayList<Integer> getDrinks() {
+        ArrayList<Integer> drinksSelected = new ArrayList<>();
+        for (int i = 0; i < this.checkBoxListDrinks.size(); i++) {
+            if (this.checkBoxListDrinks.get(i).isChecked())
+                drinksSelected.add(i);
+        }
+        return drinksSelected;
     }
 }

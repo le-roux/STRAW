@@ -34,7 +34,7 @@ public abstract class AddFoodActivity extends AppCompatActivity implements Price
         this.price = (PriceDisplay)findViewById(R.id.Price);
         this.addButton = (Button)findViewById(R.id.add_button);
 
-        this.menu_view.setAdapter(new FoodAdapterCheckbox(this, this.menu));
+        this.menu_view.setAdapter(new FoodAdapterCheckbox(this, this.menu, this.menu));
 
         this.addButton.setOnClickListener(new View.OnClickListener() {
             @Override

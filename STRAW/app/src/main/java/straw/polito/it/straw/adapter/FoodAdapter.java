@@ -30,18 +30,20 @@ public abstract class FoodAdapter extends BaseAdapter implements ExpandableListA
      */
     protected ArrayList<Food> platesList;
     protected ArrayList<Food> drinksList;
-    protected ArrayList<Food>[] groups = new ArrayList[]{platesList, drinksList};
+    protected ArrayList<Food>[] groups;
     protected Context context;
 
     public FoodAdapter(Context context) {
         this.platesList = new ArrayList<>();
         this.drinksList = new ArrayList<>();
+        this.groups = new ArrayList[]{platesList, drinksList};
         this.context = context;
     }
 
     public FoodAdapter(Context context,ArrayList<Food> platesList, ArrayList<Food> drinksList) {
         this.platesList = platesList;
         this.drinksList = drinksList;
+        this.groups = new ArrayList[]{platesList, drinksList};
         this.context = context;
     }
 
@@ -65,7 +67,7 @@ public abstract class FoodAdapter extends BaseAdapter implements ExpandableListA
         if(convertView == null) {
             LayoutInflater layoutInflater = (LayoutInflater)this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = getConvertView(layoutInflater);
-            setSpecificElement(convertView, position);
+            setSpecificElement(convertView, position, position);
         }
 
         //Get the different components of an item
@@ -98,7 +100,13 @@ public abstract class FoodAdapter extends BaseAdapter implements ExpandableListA
 
     @Override
     public int getChildrenCount(int groupPosition) {
-        return groups[groupPosition].size();
+        if (groupPosition < 2)
+            return groups[groupPosition].size();
+        else {
+            Logger.d("group position " + groupPosition);
+            return 0;
+        }
+
     }
 
     @Override
@@ -138,7 +146,7 @@ public abstract class FoodAdapter extends BaseAdapter implements ExpandableListA
         if(convertView == null) {
             LayoutInflater layoutInflater = (LayoutInflater)this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = getConvertView(layoutInflater);
-            setSpecificElement(convertView, childPosition);
+            setSpecificElement(convertView, groupPosition, childPosition);
         }
 
         //Get the different components of an item

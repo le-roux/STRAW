@@ -19,19 +19,23 @@ public class FoodAdapterRemove extends FoodAdapter {
         super(context);
     }
 
+    public FoodAdapterRemove(Context context, ArrayList<Food> platesList) {
+        super(context, platesList, new ArrayList<Food>());
+    }
+
     public FoodAdapterRemove(Context context, ArrayList<Food> platesList, ArrayList<Food> drinksList) {
         super(context, platesList, drinksList);
     }
 
     @Override
-    protected void setSpecificElement(View convertView, final int position) {
+    protected void setSpecificElement(View convertView, final int groupPosition, final int childPosition) {
         //Listener of the 'remove' button of each item
         Button remove_button = (Button) convertView.findViewById(R.id.RemoveButton);
 
         remove_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                goods.remove(position);
+                groups[groupPosition].remove(childPosition);
                 FoodAdapterRemove.this.notifyDataSetChanged();
             }
         });
