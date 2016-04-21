@@ -88,10 +88,6 @@ public abstract class FoodExpandableAdapter extends BaseExpandableListAdapter im
             if (groupPosition == 1)
                 ((TextView)convertView.findViewById(R.id.text)).setText(R.string.Drinks);
         }
-        if (groupPosition == 0)
-            ((TextView)convertView).setText(R.string.Plates);
-        else
-            ((TextView)convertView).setText(R.string.Drinks);
         return convertView;
     }
 
@@ -156,7 +152,7 @@ public abstract class FoodExpandableAdapter extends BaseExpandableListAdapter im
     public boolean hasStableIds() {
         return false;
     }
-    
+
     protected abstract void setSpecificElement(View convertView, int groupPosition, int childPosition);
     protected abstract View getConvertView(LayoutInflater layoutInflater);
 }
