@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -19,7 +20,7 @@ import straw.polito.it.straw.utils.Logger;
 /**
  * Created by Sylvain on 01/04/2016.
  */
-public abstract class FoodExpandableAdapter implements ExpandableListAdapter {
+public abstract class FoodExpandableAdapter extends BaseExpandableListAdapter implements ExpandableListAdapter {
 
     /**
      * List of the food elements managed by the Adapter
@@ -151,6 +152,11 @@ public abstract class FoodExpandableAdapter implements ExpandableListAdapter {
         return 0;
     }
 
+    @Override
+    public boolean hasStableIds() {
+        return false;
+    }
+    
     protected abstract void setSpecificElement(View convertView, int groupPosition, int childPosition);
     protected abstract View getConvertView(LayoutInflater layoutInflater);
 }

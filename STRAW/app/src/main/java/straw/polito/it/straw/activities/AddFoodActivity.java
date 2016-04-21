@@ -11,6 +11,7 @@ import java.util.ArrayList;
 
 import straw.polito.it.straw.PriceContainer;
 import straw.polito.it.straw.R;
+import straw.polito.it.straw.adapter.FoodAdapterCheckbox;
 import straw.polito.it.straw.adapter.FoodExpandableAdapterCheckbox;
 import straw.polito.it.straw.data.Food;
 import straw.polito.it.straw.utils.PriceDisplay;
@@ -33,7 +34,7 @@ public abstract class AddFoodActivity extends AppCompatActivity implements Price
         this.price = (PriceDisplay)findViewById(R.id.Price);
         this.addButton = (Button)findViewById(R.id.add_button);
 
-        this.menu_view.setAdapter(new FoodExpandableAdapterCheckbox(this, this.menu, this.menu));
+        this.menu_view.setAdapter(new FoodAdapterCheckbox(this, this.menu));
 
         this.addButton.setOnClickListener(new View.OnClickListener() {
             @Override

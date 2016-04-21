@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ExpandableListAdapter;
+import android.widget.ExpandableListView;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -22,7 +24,7 @@ public class PreOrderFoodActivity extends AppCompatActivity implements PriceCont
     private Button addDrinkButton;
     private Button confirmButton;
     private PriceDisplay price;
-    private ListView listView;
+    private ExpandableListView listView;
     private ArrayList<Food> command;
 
     public static final int ADD_PLATE_REQUEST_CODE = 1;
@@ -40,7 +42,7 @@ public class PreOrderFoodActivity extends AppCompatActivity implements PriceCont
         this.addDrinkButton = (Button)findViewById(R.id.add_drink_button);
         this.confirmButton = (Button)findViewById(R.id.confirm_button);
         this.price = (PriceDisplay) findViewById(R.id.Price);
-        this.listView = (ListView)findViewById(R.id.list_item);
+        this.listView = (ExpandableListView)findViewById(R.id.list_item);
 
         this.command = new ArrayList<>();
 
