@@ -8,11 +8,9 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
-import android.widget.ListView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -20,8 +18,8 @@ import org.json.JSONException;
 import java.util.ArrayList;
 
 import straw.polito.it.straw.R;
-import straw.polito.it.straw.adapter.FoodAdapter;
-import straw.polito.it.straw.adapter.FoodAdapterRemove;
+import straw.polito.it.straw.adapter.FoodExpandableAdapter;
+import straw.polito.it.straw.adapter.FoodExpandableAdapterRemove;
 import straw.polito.it.straw.data.Drink;
 import straw.polito.it.straw.data.Food;
 import straw.polito.it.straw.data.Plate;
@@ -127,7 +125,7 @@ public class CreateMenuActivity extends AppCompatActivity {
                 return true;
             }
         });
-        food_listView.setAdapter((ExpandableListAdapter)new FoodAdapterRemove(context, list_plate));
+        food_listView.setAdapter((ExpandableListAdapter)new FoodExpandableAdapterRemove(context, list_plate));
     }
 
     @Override
@@ -135,12 +133,12 @@ public class CreateMenuActivity extends AppCompatActivity {
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == this.EDIT_FOOD) {
                 this.list_plate.set(result.getIntExtra(ID, 0), Food.create(result.getStringExtra(ELEMENT)));
-                ((FoodAdapter)this.food_listView.getAdapter()).notifyDataSetChanged();
+                ((FoodExpandableAdapter)this.food_listView.getAdapter()).notifyDataSetChanged();
             } else if(requestCode == this.ADD_FOOD) {
                 Food element = Food.create(result.getStringExtra(ELEMENT));
                 if (element != null)
                     this.list_plate.add(element);
-                ((FoodAdapter)this.food_listView.getAdapter()).notifyDataSetChanged();
+                ((FoodExpandableAdapter)this.food_listView.getAdapter()).notifyDataSetChanged();
             }
         }
     }

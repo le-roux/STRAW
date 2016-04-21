@@ -3,7 +3,6 @@ package straw.polito.it.straw.adapter;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.CheckBox;
 
 import java.util.ArrayList;
@@ -15,13 +14,13 @@ import straw.polito.it.straw.data.Food;
 /**
  * Created by Sylvain on 19/04/2016.
  */
-public class FoodAdapterCheckbox extends FoodAdapter {
+public class FoodExpandableAdapterCheckbox extends FoodExpandableAdapter {
 
     private ArrayList<CheckBox> checkBoxListPLates;
     private ArrayList<CheckBox> checkBoxListDrinks;
     private ArrayList<CheckBox> checkBoxLists[];
 
-    public FoodAdapterCheckbox(Context context) {
+    public FoodExpandableAdapterCheckbox(Context context) {
         super(context);
         this.checkBoxListPLates = new ArrayList<>();
         this.checkBoxListDrinks = new ArrayList<>();
@@ -29,7 +28,7 @@ public class FoodAdapterCheckbox extends FoodAdapter {
 
     }
 
-    public FoodAdapterCheckbox(Context context, ArrayList<Food> platesList, ArrayList<Food> drinksList) {
+    public FoodExpandableAdapterCheckbox(Context context, ArrayList<Food> platesList, ArrayList<Food> drinksList) {
         super(context, platesList, drinksList);
         this.checkBoxListPLates = new ArrayList<>();
         this.checkBoxListDrinks = new ArrayList<>();

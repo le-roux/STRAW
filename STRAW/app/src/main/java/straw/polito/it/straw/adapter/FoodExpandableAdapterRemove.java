@@ -13,17 +13,17 @@ import straw.polito.it.straw.data.Food;
 /**
  * Created by Sylvain on 19/04/2016.
  */
-public class FoodAdapterRemove extends FoodAdapter {
+public class FoodExpandableAdapterRemove extends FoodExpandableAdapter {
 
-    public FoodAdapterRemove(Context context) {
+    public FoodExpandableAdapterRemove(Context context) {
         super(context);
     }
 
-    public FoodAdapterRemove(Context context, ArrayList<Food> platesList) {
+    public FoodExpandableAdapterRemove(Context context, ArrayList<Food> platesList) {
         super(context, platesList, new ArrayList<Food>());
     }
 
-    public FoodAdapterRemove(Context context, ArrayList<Food> platesList, ArrayList<Food> drinksList) {
+    public FoodExpandableAdapterRemove(Context context, ArrayList<Food> platesList, ArrayList<Food> drinksList) {
         super(context, platesList, drinksList);
     }
 
@@ -36,7 +36,7 @@ public class FoodAdapterRemove extends FoodAdapter {
             @Override
             public void onClick(View view) {
                 groups[groupPosition].remove(childPosition);
-                FoodAdapterRemove.this.notifyDataSetChanged();
+                FoodExpandableAdapterRemove.this.notifyDataSetChanged();
             }
         });
         //Necessary in order that the item can react (onItemClicked) when clicked somewhere
