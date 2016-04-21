@@ -10,6 +10,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ExpandableListAdapter;
+import android.widget.ExpandableListView;
 import android.widget.ListView;
 
 import org.json.JSONArray;
@@ -39,7 +41,7 @@ public class CreateMenuActivity extends AppCompatActivity {
     public static final String EDIT_ELEMENT = "it.polito.straw.Edit";
     public static final String MENU = "Menu";
 
-    private ListView food_listView;
+    private ExpandableListView food_listView;
     private ArrayList<Food> list_plate;
     private Context context;
     private Button add_plate_button;
@@ -104,27 +106,28 @@ public class CreateMenuActivity extends AppCompatActivity {
         }
 
         //Initialisation of the listView
-        food_listView = (ListView)findViewById(R.id.Plate_list);
+        food_listView = (ExpandableListView)findViewById(R.id.Plate_list);
         //Listener for the ListView
 
-        food_listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        food_listView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            public boolean onChildClick(ExpandableListView parent, View view, int groupPosition, int childPosition, long id) {
                 Intent detail = null;
                 Bundle data = new Bundle();
-                data.putString(ELEMENT, list_plate.get(position).toString());
-                data.putInt(ID, position);
+                data.putString(ELEMENT, list_plate.get(childPosition).toString());
+                data.putInt(ID, childPosition);
                 data.putString(ACTION, EDIT_ELEMENT);
-                if (list_plate.get(position).getClass().equals(Drink.class)) {
+                if (list_plate.get(childPosition).getClass().equals(Drink.class)) {
                     detail = new Intent(getApplicationContext(), CreateDrinkActivity.class);
-                } else if (list_plate.get(position).getClass().equals(Plate.class)) {
+                } else if (list_plate.get(childPosition).getClass().equals(Plate.class)) {
                     detail = new Intent(getApplicationContext(), CreatePlateActivity.class);
                 }
                 detail.putExtras(data);
                 startActivityForResult(detail, EDIT_FOOD);
+                return true;
             }
         });
-        food_listView.setAdapter(new FoodAdapterRemove(context, list_plate));
+        food_listView.setAdapter((ExpandableListAdapter)new FoodAdapterRemove(context, list_plate));
     }
 
     @Override

@@ -19,8 +19,8 @@ public class FoodAdapterRemove extends FoodAdapter {
         super(context);
     }
 
-    public FoodAdapterRemove(Context context, ArrayList<Food> menu) {
-        super(context, menu);
+    public FoodAdapterRemove(Context context, ArrayList<Food> platesList, ArrayList<Food> drinksList) {
+        super(context, platesList, drinksList);
     }
 
     @Override

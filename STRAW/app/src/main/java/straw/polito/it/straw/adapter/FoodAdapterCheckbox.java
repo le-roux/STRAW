@@ -3,6 +3,7 @@ package straw.polito.it.straw.adapter;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.CheckBox;
 
 import java.util.ArrayList;
@@ -16,23 +17,30 @@ import straw.polito.it.straw.data.Food;
  */
 public class FoodAdapterCheckbox extends FoodAdapter {
 
-    private ArrayList<CheckBox> checkBoxList;
+    private ArrayList<CheckBox> checkBoxListPLates;
+    private ArrayList<CheckBox> checkBoxListDrinks;
+    private ArrayList<CheckBox> checkBoxLists[];
 
     public FoodAdapterCheckbox(Context context) {
         super(context);
-        this.checkBoxList = new ArrayList<>();
+        this.checkBoxListPLates = new ArrayList<>();
+        this.checkBoxListDrinks = new ArrayList<>();
+        this.checkBoxLists = new ArrayList[] {this.checkBoxListPLates, this.checkBoxListDrinks};
+
     }
 
-    public FoodAdapterCheckbox(Context context, ArrayList<Food> menu) {
-        super(context, menu);
-        this.checkBoxList = new ArrayList<>();
+    public FoodAdapterCheckbox(Context context, ArrayList<Food> platesList, ArrayList<Food> drinksList) {
+        super(context, platesList, drinksList);
+        this.checkBoxListPLates = new ArrayList<>();
+        this.checkBoxListDrinks = new ArrayList<>();
+        this.checkBoxLists = new ArrayList[] {this.checkBoxListPLates, this.checkBoxListDrinks};
     }
     @Override
-    protected void setSpecificElement(View convertView, int position) {
+    protected void setSpecificElement(View convertView, int groupPosition, int childPosition) {
         CheckBox checkBox = (CheckBox)convertView.findViewById(R.id.checkbox);
-        if (position < this.checkBoxList.size())
-            this.checkBoxList.set(position, checkBox);
-        else if (position == this.checkBoxList.size())
+        if (childPosition < this.checkBoxLists[groupPosition].size())
+            this.checkBoxLists.set(groupPosition * this.groups[0].size() + childPosition, checkBox);
+        else if (childPosition == this.checkBoxList.size())
             this.checkBoxList.add(checkBox);
         checkBox.setOnClickListener(new View.OnClickListener() {
             @Override
