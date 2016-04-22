@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import straw.polito.it.straw.R;
 import straw.polito.it.straw.adapter.OfferAdapter;
 import straw.polito.it.straw.data.Food;
+import straw.polito.it.straw.data.Menu;
 import straw.polito.it.straw.data.Offer;
 
 public class CreateOfferActivity extends AppCompatActivity {
@@ -34,9 +35,7 @@ public class CreateOfferActivity extends AppCompatActivity {
     ArrayList<Food> menu;
     SharedPreferences mShared;
     ArrayList<Food> combo;
-
-    public static final String NUMBER_OF_ELEMENTS = "ElementsNb";
-
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,10 +45,14 @@ public class CreateOfferActivity extends AppCompatActivity {
         menu=new ArrayList<Food>();
         combo=new ArrayList<Food>();
 
-        int elementsNb = mShared.getInt(NUMBER_OF_ELEMENTS, 0);
-
-        for (int i = 0; i < elementsNb; i++) {
-            menu.add(Food.create(mShared.getString(String.valueOf(i), "")));
+        JSONArray jsonArray = Menu.getMenuFromSharedPreferences(this.getApplicationContext());
+        ArrayList<Food> tmp = Menu.getPlates(jsonArray);
+        for (Food food : tmp) {
+            menu.add(food);
+        }
+        tmp = Menu.getDrinks(jsonArray);
+        for (Food food : tmp) {
+            menu.add(food);
         }
         if(mShared.contains("combo_l")){
             try {
