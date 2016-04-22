@@ -100,6 +100,7 @@ public class CreatePlateActivity extends AppCompatActivity {
                 Bundle data = new Bundle();
                 data.putString(CreateMenuActivity.ID, intent.getStringExtra(CreateMenuActivity.ID));
                 data.putString(CreateMenuActivity.ELEMENT, plate.toString());
+                data.putInt(CreateMenuActivity.TYPE, CreateMenuActivity.PLATES);
                 result.putExtras(data);
                 setResult(Activity.RESULT_OK, result);
                 finish();

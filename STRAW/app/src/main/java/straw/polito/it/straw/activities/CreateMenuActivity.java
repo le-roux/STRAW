@@ -4,12 +4,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 
 import org.json.JSONArray;
@@ -32,8 +31,8 @@ public class CreateMenuActivity extends AppCompatActivity {
     private static final int ADD_FOOD = 2;
 
     //Index in the goods array
-    private static final int PLATES = 0;
-    private static final int DRINKS = 1;
+    public static final int PLATES = 0;
+    public static final int DRINKS = 1;
 
     //Keys for storing and retrieving the data in bundles or sharedPreference
     public static final String ELEMENT = "it.polito.straw.Element";
@@ -117,10 +116,8 @@ public class CreateMenuActivity extends AppCompatActivity {
                 data.putInt(ID, childPosition);
                 data.putString(ACTION, EDIT_ELEMENT);
                 if (groupPosition == DRINKS) {
-                    data.putInt(TYPE, DRINKS);
                     detail = new Intent(getApplicationContext(), CreateDrinkActivity.class);
                 } else if (groupPosition == PLATES) {
-                    data.putInt(TYPE, PLATES);
                     detail = new Intent(getApplicationContext(), CreatePlateActivity.class);
                 }
                 detail.putExtras(data);
@@ -137,13 +134,12 @@ public class CreateMenuActivity extends AppCompatActivity {
             int type = result.getIntExtra(TYPE, PLATES);
             if (requestCode == this.EDIT_FOOD) {
                 this.goods[type].set(result.getIntExtra(ID, 0), Food.create(result.getStringExtra(ELEMENT)));
-                ((FoodExpandableAdapter)this.food_listView.getAdapter()).notifyDataSetChanged();
             } else if(requestCode == this.ADD_FOOD) {
                 Food element = Food.create(result.getStringExtra(ELEMENT));
                 if (element != null)
                     this.goods[type].add(element);
-                ((FoodExpandableAdapter)this.food_listView.getAdapter()).notifyDataSetChanged();
             }
+            ((FoodExpandableAdapter)this.food_listView.getExpandableListAdapter()).notifyDataSetChanged();
         }
     }
 
@@ -213,10 +209,9 @@ public class CreateMenuActivity extends AppCompatActivity {
                 jsonArray.put(index, this.goods[PLATES].get(i).toString());
                 index++;
             }
-            jsonArray.put(index, this.goods[DRINKS].size());
+            jsonArray.put(index++, this.goods[DRINKS].size());
             for (int i = 0; i < this.goods[DRINKS].size(); i++) {
-                jsonArray.put(index, this.goods[DRINKS].get(i).toString());
-                index++;
+                jsonArray.put(index++, this.goods[DRINKS].get(i).toString());
             }
         } catch (JSONException e) {
             e.printStackTrace();

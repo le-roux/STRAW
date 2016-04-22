@@ -122,6 +122,7 @@ public class CreateDrinkActivity extends AppCompatActivity {
                     data.putString(CreateMenuActivity.ID, intent.getStringExtra(CreateMenuActivity.ID));
                 }
                 data.putString(CreateMenuActivity.ELEMENT, drink.toString());
+                data.putInt(CreateMenuActivity.TYPE, CreateMenuActivity.DRINKS);
                 result.putExtras(data);
                 setResult(Activity.RESULT_OK, result);
                 finish();
