@@ -8,7 +8,9 @@
         android:layout_height="wrap_content"
         android:text="@string/Plates"
         android:textSize="@dimen/Title_size"
-        android:padding="@dimen/padding"
+        android:paddingBottom="@dimen/padding"
+        android:paddingTop="@dimen/padding"
+        android:paddingLeft="@dimen/padding_big"
         android:background="@color/colorPrimaryDark"/>
 
 </LinearLayout>
