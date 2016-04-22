@@ -41,6 +41,7 @@ public class CreateMenuActivity extends AppCompatActivity {
     public static final String ACTION = "it.polito.straw.Action";
     public static final String ADD_ELEMENT = "it.polito.straw.Add";
     public static final String EDIT_ELEMENT = "it.polito.straw.Edit";
+    public static final String TYPE = "it.polito.straw.Type";
     public static final String MENU = "Menu";
 
     private ExpandableListView food_listView;
@@ -88,7 +89,6 @@ public class CreateMenuActivity extends AppCompatActivity {
 
         if (savedInstanceState == null) {
             //No data temporarily stored
-            //Get number of elements stored in sharedPreference
             JSONArray jsonArray;
             try {
                 jsonArray = new JSONArray(this.sharedPreferences.getString(MENU, ""));
@@ -96,14 +96,8 @@ public class CreateMenuActivity extends AppCompatActivity {
                 e.printStackTrace();
                 jsonArray = new JSONArray();
             }
-            //Retrieve element(s) from sharedPreference
-            for (int i = 0; i < jsonArray.length(); i++) {
-                try {
-                    this.list_plate.add(Food.create(jsonArray.get(i).toString()));
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
+            //Retrieve element(s) from the jsonArray
+            restoreData(jsonArray);
             if (jsonArray.length() == 0)
                 //No data found in the sharedPreference --> default init
                 //TO DO : change default init for final version
@@ -119,12 +113,14 @@ public class CreateMenuActivity extends AppCompatActivity {
             public boolean onChildClick(ExpandableListView parent, View view, int groupPosition, int childPosition, long id) {
                 Intent detail = null;
                 Bundle data = new Bundle();
-                data.putString(ELEMENT, list_plate.get(childPosition).toString());
+                data.putString(ELEMENT, goods[groupPosition].get(childPosition).toString());
                 data.putInt(ID, childPosition);
                 data.putString(ACTION, EDIT_ELEMENT);
-                if (list_plate.get(childPosition).getClass().equals(Drink.class)) {
+                if (groupPosition == DRINKS) {
+                    data.putInt(TYPE, DRINKS);
                     detail = new Intent(getApplicationContext(), CreateDrinkActivity.class);
-                } else if (list_plate.get(childPosition).getClass().equals(Plate.class)) {
+                } else if (groupPosition == PLATES) {
+                    data.putInt(TYPE, PLATES);
                     detail = new Intent(getApplicationContext(), CreatePlateActivity.class);
                 }
                 detail.putExtras(data);
@@ -132,42 +128,46 @@ public class CreateMenuActivity extends AppCompatActivity {
                 return true;
             }
         });
-        food_listView.setAdapter((ExpandableListAdapter)new FoodExpandableAdapterRemove(context, list_plate));
+        food_listView.setAdapter(new FoodExpandableAdapterRemove(context, goods[PLATES], goods[DRINKS]));
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent result) {
         if (resultCode == Activity.RESULT_OK) {
+            int type = result.getIntExtra(TYPE, PLATES);
             if (requestCode == this.EDIT_FOOD) {
-                this.list_plate.set(result.getIntExtra(ID, 0), Food.create(result.getStringExtra(ELEMENT)));
+                this.goods[type].set(result.getIntExtra(ID, 0), Food.create(result.getStringExtra(ELEMENT)));
                 ((FoodExpandableAdapter)this.food_listView.getAdapter()).notifyDataSetChanged();
             } else if(requestCode == this.ADD_FOOD) {
                 Food element = Food.create(result.getStringExtra(ELEMENT));
                 if (element != null)
-                    this.list_plate.add(element);
+                    this.goods[type].add(element);
                 ((FoodExpandableAdapter)this.food_listView.getAdapter()).notifyDataSetChanged();
             }
         }
     }
 
     private void init_list() {
-        this.list_plate.add(new Plate());
+        this.goods[PLATES].add(new Plate());
+        this.goods[DRINKS].add(new Drink());
     }
 
     @Override
     public void onSaveInstanceState(Bundle bundle) {
-
-        for (int i = 0; i < this.list_plate.size(); i++) {
-            bundle.putString(String.valueOf(i), this.list_plate.get(i).toString());
-        }
+        JSONArray jsonArray = saveData();
+        bundle.putString(MENU, jsonArray.toString());
     }
 
     @Override
     public void onRestoreInstanceState(Bundle bundle) {
-
-        for (int i = 0; i < bundle.size(); i++) {
-            this.list_plate.add(Food.create(bundle.getString(String.valueOf(i))));
+        JSONArray jsonArray = null;
+        try {
+            jsonArray = new JSONArray(bundle.getString(MENU, ""));
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
+        if (jsonArray != null)
+            restoreData(jsonArray);
     }
 
     /**
@@ -177,23 +177,50 @@ public class CreateMenuActivity extends AppCompatActivity {
     public void onStop() {
         super.onStop();
         SharedPreferences.Editor editor = this.sharedPreferences.edit();
-        JSONArray list = new JSONArray();
-        for (int i = 0; i < this.goods.length; i++) {
-            JSONArray jsonArray = new JSONArray();
-            for (int j = 0; j < this.goods[i].size(); j++) {
-                try {
-                    jsonArray.put(j, this.goods[i].get(j).toString());
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-            try {
-                list.put(i, jsonArray);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-        editor.putString(MENU, list.toString());
+        JSONArray jsonArray = saveData();
+        editor.putString(MENU, jsonArray.toString());
         editor.commit();
+    }
+
+    private void restoreData(JSONArray jsonArray) {
+        try {
+            int index = 0;
+            //Get plates number
+            int platesNumber = jsonArray.getInt(index++);
+            //Get plates
+            for (int i = 0; i < platesNumber; i++) {
+                this.goods[PLATES].add(Food.create(jsonArray.get(index++).toString()));
+            }
+            //Get drinks number
+            int drinksNumber = jsonArray.getInt(index++);
+            //Get drinks
+            for (int i = 0; i < drinksNumber; i++) {
+                this.goods[DRINKS].add(Food.create(jsonArray.get(index++).toString()));
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private JSONArray saveData() {
+        JSONArray jsonArray = new JSONArray();
+        int index = 0;
+        try {
+            jsonArray.put(index, this.goods[PLATES].size());
+
+            index++;
+            for (int i = 0; i < this.goods[PLATES].size(); i++) {
+                jsonArray.put(index, this.goods[PLATES].get(i).toString());
+                index++;
+            }
+            jsonArray.put(index, this.goods[DRINKS].size());
+            for (int i = 0; i < this.goods[DRINKS].size(); i++) {
+                jsonArray.put(index, this.goods[DRINKS].get(i).toString());
+                index++;
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return jsonArray;
     }
 }
