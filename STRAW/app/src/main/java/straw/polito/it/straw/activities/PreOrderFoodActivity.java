@@ -16,6 +16,7 @@ import straw.polito.it.straw.PriceContainer;
 import straw.polito.it.straw.R;
 import straw.polito.it.straw.adapter.FoodExpandableAdapterRemove;
 import straw.polito.it.straw.data.Food;
+import straw.polito.it.straw.data.Menu;
 import straw.polito.it.straw.utils.PriceDisplay;
 
 public class PreOrderFoodActivity extends AppCompatActivity implements PriceContainer{
@@ -25,7 +26,8 @@ public class PreOrderFoodActivity extends AppCompatActivity implements PriceCont
     private Button confirmButton;
     private PriceDisplay price;
     private ExpandableListView listView;
-    private ArrayList<Food> command;
+    private ArrayList<Food>[] command;
+    private ArrayList<Food>[] menu;
 
     public static final int ADD_PLATE_REQUEST_CODE = 1;
     public static final int ADD_DRINK_REQUEST_CODE = 2;
@@ -44,7 +46,9 @@ public class PreOrderFoodActivity extends AppCompatActivity implements PriceCont
         this.price = (PriceDisplay) findViewById(R.id.Price);
         this.listView = (ExpandableListView)findViewById(R.id.list_item);
 
-        this.command = new ArrayList<>();
+        this.command = new ArrayList[2];
+        this.command[Menu.PLATES] = new ArrayList();
+        this.command[Menu.DRINKS] = new ArrayList();
 
         //Set a listener to launch the AddPlate activity
         this.addPlateButton.setOnClickListener(new View.OnClickListener() {
@@ -96,8 +100,10 @@ public class PreOrderFoodActivity extends AppCompatActivity implements PriceCont
     @Override
     public void updatePrice() {
         double price = 0;
-        for (Food food : this.command) {
-            price += food.getPrice();
+        for (int i = 0; i < 2; i++) {
+            for (Food food : this.command[i]) {
+                price += food.getPrice();
+            }
         }
         this.price.setPrice(price);
     }
