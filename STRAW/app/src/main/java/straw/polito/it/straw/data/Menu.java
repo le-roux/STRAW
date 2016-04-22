@@ -24,7 +24,7 @@ public class Menu
      * @param jsonArray : the array containing the saved data
      * @param menu : the ArrayLists to fill/complete with new data
      */
-    public static void restoreData(JSONArray jsonArray, ArrayList[] menu) {
+    public static void restoreMenu(JSONArray jsonArray, ArrayList[] menu) {
         try {
             int index = 0;
             //Get plates number

@@ -86,7 +86,7 @@ public class CreateMenuActivity extends AppCompatActivity {
             //No data temporarily stored
             JSONArray jsonArray = Menu.getMenuFromSharedPreferences(this.context);
             //Retrieve element(s) from the jsonArray
-            Menu.restoreData(jsonArray, this.goods);
+            Menu.restoreMenu(jsonArray, this.goods);
             if (jsonArray.length() == 0)
                 //No data found in the sharedPreference --> default init
                 //TO DO : change default init for final version
@@ -153,7 +153,7 @@ public class CreateMenuActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         if (jsonArray != null)
-            Menu.restoreData(jsonArray, this.goods);
+            Menu.restoreMenu(jsonArray, this.goods);
     }
 
     /**

@@ -6,11 +6,10 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
-import android.widget.ListView;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 
 import java.util.ArrayList;
 
@@ -20,7 +19,6 @@ import straw.polito.it.straw.adapter.FoodExpandableAdapter;
 import straw.polito.it.straw.adapter.FoodExpandableAdapterRemove;
 import straw.polito.it.straw.data.Food;
 import straw.polito.it.straw.data.Menu;
-import straw.polito.it.straw.utils.Logger;
 import straw.polito.it.straw.utils.PriceDisplay;
 
 public class PreOrderFoodActivity extends AppCompatActivity implements PriceContainer{
@@ -37,7 +35,7 @@ public class PreOrderFoodActivity extends AppCompatActivity implements PriceCont
     public static final int ADD_DRINK_REQUEST_CODE = 2;
 
     public static final String POSITIONS = "Positions";
-    public static final String RESULT = "Result";
+    public static final String COMMAND = "Command";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +52,7 @@ public class PreOrderFoodActivity extends AppCompatActivity implements PriceCont
         this.menu = new ArrayList[2];
         this.menu[Menu.PLATES] = new ArrayList<>();
         this.menu[Menu.DRINKS] = new ArrayList<>();
-        Menu.restoreData(data, this.menu);
+        Menu.restoreMenu(data, this.menu);
 
         this.command = new ArrayList[2];
         this.command[Menu.PLATES] = new ArrayList();
@@ -126,5 +124,22 @@ public class PreOrderFoodActivity extends AppCompatActivity implements PriceCont
             }
         }
         this.price.setPrice(price);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        JSONArray commandJson = Menu.saveMenu(this.command);
+        outState.putString(COMMAND, commandJson.toString());
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        JSONArray commandJson = null;
+        try {
+            commandJson = new JSONArray(savedInstanceState.getString(COMMAND));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        Menu.restoreMenu(commandJson, this.command);
     }
 }
