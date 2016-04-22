@@ -31,6 +31,10 @@ public class CreateMenuActivity extends AppCompatActivity {
     private static final int EDIT_FOOD = 1;
     private static final int ADD_FOOD = 2;
 
+    //Index in the goods array
+    private static final int PLATES = 0;
+    private static final int DRINKS = 1;
+
     //Keys for storing and retrieving the data in bundles or sharedPreference
     public static final String ELEMENT = "it.polito.straw.Element";
     public static final String ID = "it.polito.straw.Id";
@@ -40,7 +44,7 @@ public class CreateMenuActivity extends AppCompatActivity {
     public static final String MENU = "Menu";
 
     private ExpandableListView food_listView;
-    private ArrayList<Food> list_plate;
+    private ArrayList[] goods;
     private Context context;
     private Button add_plate_button;
     private Button add_drink_button;
@@ -78,7 +82,10 @@ public class CreateMenuActivity extends AppCompatActivity {
             }
         });
 
-        this.list_plate = new ArrayList<Food>();
+        this.goods = new ArrayList[2];
+        this.goods[PLATES] = new ArrayList<Food>();
+        this.goods[DRINKS] = new ArrayList<Food>();
+
         if (savedInstanceState == null) {
             //No data temporarily stored
             //Get number of elements stored in sharedPreference
@@ -170,15 +177,23 @@ public class CreateMenuActivity extends AppCompatActivity {
     public void onStop() {
         super.onStop();
         SharedPreferences.Editor editor = this.sharedPreferences.edit();
-        JSONArray jsonArray = new JSONArray();
-        for (int i = 0; i < this.list_plate.size(); i++) {
+        JSONArray list = new JSONArray();
+        for (int i = 0; i < this.goods.length; i++) {
+            JSONArray jsonArray = new JSONArray();
+            for (int j = 0; j < this.goods[i].size(); j++) {
+                try {
+                    jsonArray.put(j, this.goods[i].get(j).toString());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
             try {
-                jsonArray.put(i, this.list_plate.get(i).toString());
+                list.put(i, jsonArray);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
-        editor.putString(MENU, jsonArray.toString());
+        editor.putString(MENU, list.toString());
         editor.commit();
     }
 }
