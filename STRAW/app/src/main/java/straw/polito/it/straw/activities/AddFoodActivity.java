@@ -1,5 +1,6 @@
 package straw.polito.it.straw.activities;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -43,10 +44,8 @@ public abstract class AddFoodActivity extends AppCompatActivity implements Price
             public void onClick(View view) {
                 Intent result = new Intent();
                 ArrayList<Integer> plates = ((FoodAdapterCheckbox)menu_view.getAdapter()).getPlates();
-                Bundle bundle = new Bundle();
-                bundle.putIntegerArrayList(PreOrderFoodActivity.POSITIONS, plates);
-                result.putExtra(PreOrderFoodActivity.RESULT, bundle);
-                setResult(result);
+                result.putIntegerArrayListExtra(PreOrderFoodActivity.POSITIONS, plates);
+                setResult(Activity.RESULT_OK, result);
                 finish();
             }
         });

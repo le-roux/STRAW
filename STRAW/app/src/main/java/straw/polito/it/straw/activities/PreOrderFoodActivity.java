@@ -10,13 +10,17 @@ import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ListView;
 
+import org.json.JSONArray;
+
 import java.util.ArrayList;
 
 import straw.polito.it.straw.PriceContainer;
 import straw.polito.it.straw.R;
+import straw.polito.it.straw.adapter.FoodExpandableAdapter;
 import straw.polito.it.straw.adapter.FoodExpandableAdapterRemove;
 import straw.polito.it.straw.data.Food;
 import straw.polito.it.straw.data.Menu;
+import straw.polito.it.straw.utils.Logger;
 import straw.polito.it.straw.utils.PriceDisplay;
 
 public class PreOrderFoodActivity extends AppCompatActivity implements PriceContainer{
@@ -45,6 +49,12 @@ public class PreOrderFoodActivity extends AppCompatActivity implements PriceCont
         this.confirmButton = (Button)findViewById(R.id.confirm_button);
         this.price = (PriceDisplay) findViewById(R.id.Price);
         this.listView = (ExpandableListView)findViewById(R.id.list_item);
+
+        JSONArray data = Menu.getMenuFromSharedPreferences(this.getApplicationContext());
+        this.menu = new ArrayList[2];
+        this.menu[Menu.PLATES] = new ArrayList<>();
+        this.menu[Menu.DRINKS] = new ArrayList<>();
+        Menu.restoreData(data, this.menu);
 
         this.command = new ArrayList[2];
         this.command[Menu.PLATES] = new ArrayList();
@@ -76,17 +86,27 @@ public class PreOrderFoodActivity extends AppCompatActivity implements PriceCont
             }
         });
 
-        this.listView.setAdapter(new FoodExpandableAdapterRemove(getApplicationContext()));
+        this.listView.setAdapter(new FoodExpandableAdapterRemove(getApplicationContext(), this.command[Menu.PLATES], this.command[Menu.DRINKS]));
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
+            int type = -1;
             switch (requestCode) {
                 case (ADD_PLATE_REQUEST_CODE):
+                    type = 0;
                     break;
                 case (ADD_DRINK_REQUEST_CODE):
+                    type = 1;
                     break;
+            }
+            if (type != -1) {
+                ArrayList<Integer> result = data.getIntegerArrayListExtra(POSITIONS);
+                for (Integer i : result) {
+                    this.command[type].add(this.menu[type].get(i));
+                }
+                ((FoodExpandableAdapter)this.listView.getExpandableListAdapter()).notifyDataSetChanged();
             }
         }
         updatePrice();
