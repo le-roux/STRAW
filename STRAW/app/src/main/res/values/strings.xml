@@ -131,6 +131,10 @@
     <!--Strings for the Pre Order Food part-->
     <string name="PreOrderFood"><u>Pre-order Food</u></string>
     <string name="AddPlateTitle"><u>Add Plate</u></string>
+    <string name="AddDrinkTitle"><u>Add Drink</u></string>
+
+    <!--Strings for the Confirm Reservation part-->
+    <string name="Confirm_title"><u>Confirm</u></string>
 
     <string name="rev_h">- Review History</string>
     <string name="res_h">- Reservation History</string>

@@ -20,13 +20,13 @@ import straw.polito.it.straw.utils.Logger;
 /**
  * Created by Sylvain on 01/04/2016.
  */
-public class FoodAdapter extends BaseAdapter {
+public abstract class FoodAdapter extends BaseAdapter {
 
     /**
      * List of the food elements managed by the Adapter
      */
-    private ArrayList<Food> goods;
-    private Context context;
+    protected ArrayList<Food> goods;
+    protected Context context;
 
     public FoodAdapter(Context context) {
         this.goods = new ArrayList<Food>();
@@ -57,22 +57,8 @@ public class FoodAdapter extends BaseAdapter {
     public View getView(final int position, View convertView, ViewGroup parent) {
         if(convertView == null) {
             LayoutInflater layoutInflater = (LayoutInflater)this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = layoutInflater.inflate(R.layout.list_design, null);
-
-            //Listener of the 'remove' button of each item
-            Button remove_button = (Button) convertView.findViewById(R.id.RemoveButton);
-
-            remove_button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    goods.remove(position);
-                    FoodAdapter.this.notifyDataSetChanged();
-                }
-            });
-            //Necessary in order that the item can react (onItemClicked) when clicked somewhere
-            // else than on the button
-            remove_button.setFocusable(false);
-
+            convertView = getConvertView(layoutInflater);
+            setSpecificElement(convertView, position);
         }
 
         //Get the different components of an item
@@ -88,7 +74,6 @@ public class FoodAdapter extends BaseAdapter {
         //Fill the View with the proper data
         if (position < this.goods.size()) {
             String uri = this.goods.get(position).getImageURI();
-            Logger.d("uri = " + uri);
             if(uri != null)
                 ImageManager.setImage(this.context, imageView, Uri.parse(uri));
             title.setText(this.goods.get(position).getName());
@@ -97,4 +82,7 @@ public class FoodAdapter extends BaseAdapter {
         }
         return convertView;
     }
+
+    protected abstract void setSpecificElement(View convertView, int position);
+    protected abstract View getConvertView(LayoutInflater layoutInflater);
 }

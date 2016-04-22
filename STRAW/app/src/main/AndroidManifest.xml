@@ -41,8 +41,13 @@
         <activity android:name=".activities.BookTableActivity" />
         <activity android:name=".activities.ProfileUserActivity" />
         <activity android:name=".activities.PreOrderFoodActivity" />
+
         <activity android:name=".activities.AddPlateActivity"></activity>
->>>>>>> 75c26d1f78be3e0c8b541581ea96d4327cf2d86f
+
+
+        <activity android:name=".activities.AddDrinkActivity" />
+        <activity android:name=".activities.ConfirmReservationActivity"></activity>
+
     </application>
 
 </manifest>

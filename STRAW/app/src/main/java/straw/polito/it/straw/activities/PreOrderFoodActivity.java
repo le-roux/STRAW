@@ -10,12 +10,13 @@ import android.widget.ListView;
 
 import java.util.ArrayList;
 
+import straw.polito.it.straw.PriceContainer;
 import straw.polito.it.straw.R;
-import straw.polito.it.straw.adapter.FoodAdapter;
+import straw.polito.it.straw.adapter.FoodAdapterRemove;
 import straw.polito.it.straw.data.Food;
 import straw.polito.it.straw.utils.PriceDisplay;
 
-public class PreOrderFoodActivity extends AppCompatActivity {
+public class PreOrderFoodActivity extends AppCompatActivity implements PriceContainer{
 
     private Button addPlateButton;
     private Button addDrinkButton;
@@ -26,6 +27,9 @@ public class PreOrderFoodActivity extends AppCompatActivity {
 
     public static final int ADD_PLATE_REQUEST_CODE = 1;
     public static final int ADD_DRINK_REQUEST_CODE = 2;
+
+    public static final String POSITIONS = "Positions";
+    public static final String RESULT = "Result";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +57,8 @@ public class PreOrderFoodActivity extends AppCompatActivity {
         this.addDrinkButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TO DO
+                Intent intent = new Intent(getApplicationContext(), AddDrinkActivity.class);
+                startActivityForResult(intent, ADD_DRINK_REQUEST_CODE);
             }
         });
 
@@ -65,7 +70,7 @@ public class PreOrderFoodActivity extends AppCompatActivity {
             }
         });
 
-        this.listView.setAdapter(new FoodAdapter(getApplicationContext()));
+        this.listView.setAdapter(new FoodAdapterRemove(getApplicationContext()));
     }
 
     @Override
@@ -81,6 +86,12 @@ public class PreOrderFoodActivity extends AppCompatActivity {
         updatePrice();
     }
 
+    @Override
+    public PriceDisplay getPriceDisplay() {
+        return this.price;
+    }
+
+    @Override
     public void updatePrice() {
         double price = 0;
         for (Food food : this.command) {
