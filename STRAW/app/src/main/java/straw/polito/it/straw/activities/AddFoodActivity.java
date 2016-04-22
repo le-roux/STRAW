@@ -1,5 +1,6 @@
 package straw.polito.it.straw.activities;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -11,9 +12,11 @@ import java.util.ArrayList;
 
 import straw.polito.it.straw.PriceContainer;
 import straw.polito.it.straw.R;
+import straw.polito.it.straw.adapter.FoodAdapter;
 import straw.polito.it.straw.adapter.FoodAdapterCheckbox;
+import straw.polito.it.straw.adapter.FoodExpandableAdapter;
+import straw.polito.it.straw.adapter.FoodExpandableAdapterCheckbox;
 import straw.polito.it.straw.data.Food;
-import straw.polito.it.straw.data.Plate;
 import straw.polito.it.straw.utils.PriceDisplay;
 
 public abstract class AddFoodActivity extends AppCompatActivity implements PriceContainer {
@@ -41,14 +44,11 @@ public abstract class AddFoodActivity extends AppCompatActivity implements Price
             public void onClick(View view) {
                 Intent result = new Intent();
                 ArrayList<Integer> plates = ((FoodAdapterCheckbox)menu_view.getAdapter()).getPlates();
-                Bundle bundle = new Bundle();
-                bundle.putIntegerArrayList(PreOrderFoodActivity.POSITIONS, plates);
-                result.putExtra(PreOrderFoodActivity.RESULT, bundle);
-                setResult(result);
+                result.putIntegerArrayListExtra(PreOrderFoodActivity.POSITIONS, plates);
+                setResult(Activity.RESULT_OK, result);
                 finish();
             }
         });
-
     }
 
     @Override

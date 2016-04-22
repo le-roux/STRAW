@@ -58,11 +58,12 @@
     <string name="Add">Add</string>
     <string name="Currency">€</string>
     <string name="Volume_unit">L</string>
+    <string name="Plates">Plates</string>
+    <string name="Drinks">Drinks</string>
 
     <!--Strings for the Manage Reservation part -->
     <string name="Time">Time</string>
     <string name="NbPeople">Number</string>
-    <string name="Plates">Plates</string>
     <string name="Persons">persons</string>
     <string name="Handle">Handle</string>
     <string name="Discard">Discard</string>

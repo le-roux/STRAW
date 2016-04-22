@@ -27,6 +27,7 @@ import java.util.ArrayList;
 
 import straw.polito.it.straw.R;
 import straw.polito.it.straw.data.Food;
+import straw.polito.it.straw.data.Menu;
 import straw.polito.it.straw.data.Plate;
 import straw.polito.it.straw.utils.ImageManager;
 import straw.polito.it.straw.utils.Logger;
@@ -100,6 +101,7 @@ public class CreatePlateActivity extends AppCompatActivity {
                 Bundle data = new Bundle();
                 data.putString(CreateMenuActivity.ID, intent.getStringExtra(CreateMenuActivity.ID));
                 data.putString(CreateMenuActivity.ELEMENT, plate.toString());
+                data.putInt(CreateMenuActivity.TYPE, Menu.PLATES);
                 result.putExtras(data);
                 setResult(Activity.RESULT_OK, result);
                 finish();

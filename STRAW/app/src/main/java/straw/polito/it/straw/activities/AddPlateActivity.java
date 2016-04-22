@@ -2,10 +2,13 @@ package straw.polito.it.straw.activities;
 
 import android.content.Intent;
 
+import org.json.JSONArray;
+
 import java.util.ArrayList;
 
 import straw.polito.it.straw.R;
 import straw.polito.it.straw.data.Food;
+import straw.polito.it.straw.data.Menu;
 import straw.polito.it.straw.data.Plate;
 
 public class AddPlateActivity extends AddFoodActivity {
@@ -17,10 +20,8 @@ public class AddPlateActivity extends AddFoodActivity {
 
     @Override
     protected ArrayList<Food> getMenu() {
-        //TO DO
-        ArrayList<Food> plates = new ArrayList<>();
-        plates.add(new Plate());
-        plates.get(0).setPrice(10);
+        JSONArray jsonArray = Menu.getMenuFromSharedPreferences(this.getApplicationContext());
+        ArrayList<Food> plates = Menu.getPlates(jsonArray);
         return plates;
     }
 

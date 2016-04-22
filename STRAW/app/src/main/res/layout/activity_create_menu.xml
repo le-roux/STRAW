@@ -33,7 +33,7 @@
         android:layout_margin="@dimen/activity_horizontal_margin"
         android:background="@drawable/customborder_buttons"/>
 
-    <ListView
+    <ExpandableListView
         android:id="@+id/Plate_list"
         android:layout_width="fill_parent"
         android:layout_height="0dp"
@@ -41,7 +41,7 @@
         android:layout_above="@id/add_plate_button"
         android:paddingTop="@dimen/padding_small"
         android:background="@color/background">
-    </ListView>
+    </ExpandableListView>
 
 
 </RelativeLayout>

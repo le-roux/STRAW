@@ -19,10 +19,10 @@ import straw.polito.it.straw.adapter.ReservationAdapter;
 import straw.polito.it.straw.data.Manager;
 import straw.polito.it.straw.data.Reservation;
 import straw.polito.it.straw.data.Reservation.Place;
-import straw.polito.it.straw.utils.TimerDisplay;
 import straw.polito.it.straw.utils.DatePickerFragment;
 import straw.polito.it.straw.utils.NumberPickerFragment;
 import straw.polito.it.straw.utils.TimePickerFragment;
+import straw.polito.it.straw.utils.TimerDisplay;
 
 public class BookTableActivity extends AppCompatActivity implements BookTableInterface, DateContainer, TimeContainer{
 
@@ -98,6 +98,7 @@ public class BookTableActivity extends AppCompatActivity implements BookTableInt
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), ConfirmReservationActivity.class);
+                intent.putExtra(Reservation.RESERVATION, reservation.toString());
                 startActivity(intent);
             }
         });
