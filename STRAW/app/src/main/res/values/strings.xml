@@ -1,6 +1,7 @@
 <resources>
     <!--Strings for the manager account management part-->
     <string name="app_name">STRAW</string>
+    <string name="error_log_in">Error Logging In</string>
     <string name="ident">Identification</string>
     <string name="notyet">Not yet a member?</string>
     <string name="user_n">User Name</string>
@@ -79,6 +80,7 @@
     A message has been sent to the customer for confirmation</string>
     <string name="AcceptOrder">Accept this order?</string>
 
+    <!--Strings for the offers part -->
     <string name="offerts">- Offers</string>
     <string name="c_of">Create offer</string>
     <string name="edit_of">Edit offer</string>
@@ -89,6 +91,7 @@
     <string name="returnT">Return</string>
     <string name="put_price">Write the price of the offer</string>
     <string name="save_price">Save Price</string>
+
     <string name="title_activity_search">SearchActivity</string>
     <string name="title_activity_search_">Search_Activity</string>
 
@@ -103,4 +106,34 @@
         <item>sort by location</item>
         <item>sort by price</item>
     </string-array>
+=======
+
+    <!--Strings for the user creation part -->
+    <string name="u_t">User Type</string>
+    <string name="uni">University</string>
+    <string name="u_d">User diet</string>
+    <string name="p_t">Preferred Time</string>
+    <string name="student">Student</string>
+    <string name="professor">Professor</string>
+    <string name="worker">Worker</string>
+
+    <!--Strings for the Book Table part-->
+    <string name="BookTable"><u>Book a table</u></string>
+    <string name="HowManyPeople">How many people ?</string>
+    <string name="Confirm">Confirm</string>
+    <string name="Where">Where ?</string>
+    <string name="Inside">Inside</string>
+    <string name="Outside">Outside</string>
+    <string name="When">When ?</string>
+    <string name="InviteFriends">Invite Friend(s)</string>
+    <string name="PreOrder">Pre-Order</string>
+
+    <!--Strings for the Pre Order Food part-->
+    <string name="PreOrderFood"><u>Pre-order Food</u></string>
+    <string name="AddPlateTitle"><u>Add Plate</u></string>
+
+    <string name="rev_h">- Review History</string>
+    <string name="res_h">- Reservation History</string>
+    <string name="friends">- Friend List</string>
+>>>>>>> 75c26d1f78be3e0c8b541581ea96d4327cf2d86f
 </resources>

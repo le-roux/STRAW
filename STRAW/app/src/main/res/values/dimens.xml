@@ -7,5 +7,10 @@
     <dimen name="padding">10dp</dimen>
     <dimen name="padding_small">5dp</dimen>
     <dimen name="Medium_size">26dp</dimen>
+
     <dimen name="fab_margin">16dp</dimen>
+
+    <dimen name="Icon_size_vertical">40dp</dimen>
+    <dimen name="Icon_size_horizontal">50dp</dimen>
+>>>>>>> 75c26d1f78be3e0c8b541581ea96d4327cf2d86f
 </resources>

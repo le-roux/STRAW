@@ -21,21 +21,28 @@ public class Manager {
     private String image;
     private String email;
 
+    public static final String SEATS_AVAILABLE = "SeatsAvailable";
+    public static final String NAME = "NAME";
+    //public static final String PRICE = "PRICE";
+    public static final String IMAGE_URI = "IMAGE_URI";
+    private static final String DEFAULT_NAME = "Default";
+    //private static final String DEFAULT_PRICE = "€€€";
+
     public Manager() {
     }
 
     public Manager(String man) {
 
         try {
-            JSONObject oj=new JSONObject(man);
-            pwd= (String) oj.get("pwd");
-            telephone= (String) oj.get("tel");
-            address=(String)oj.get("addr");
-            res_name=(String)oj.get("r_n");
-            res_type=(String)oj.get("r_t");
-            seats=(int)oj.get("seats");
-            image=(String)oj.get("photo");
-            email=(String)oj.get("email");
+            JSONObject oj = new JSONObject(man);
+            pwd = (String) oj.get("pwd");
+            telephone = (String) oj.get("tel");
+            address = (String) oj.get("addr");
+            res_name = (String) oj.get("r_n");
+            res_type = (String) oj.get("r_t");
+            seats = (int) oj.get("seats");
+            image = (String) oj.get("photo");
+            email = (String) oj.get("email");
         } catch (JSONException e) {
             Log.v("Manager", "Error creating the manager");
         }
@@ -105,21 +112,51 @@ public class Manager {
     public void setSeats(int seats) {
         this.seats = seats;
     }
-    public String toJSONObject(){
-        JSONObject oj=new JSONObject();
+
+
+    public String toJSONObject() {
+        JSONObject oj = new JSONObject();
         try {
-            oj.put("pwd",pwd);
-            oj.put("tel",telephone);
-            oj.put("addr",address);
-            oj.put("r_n",res_name);
-            oj.put("r_t",res_type);
-            oj.put("seats",seats);
-            oj.put("photo",image);
-            oj.put("email",email);
+            oj.put("pwd", pwd);
+            oj.put("tel", telephone);
+            oj.put("addr", address);
+            oj.put("r_n", res_name);
+            oj.put("r_t", res_type);
+            oj.put("seats", seats);
+            oj.put("photo", image);
+            oj.put("email", email);
             return oj.toString();
         } catch (JSONException e) {
             Log.v("Manager", "Error creating the manager");
         }
         return null;
     }
+    /**
+    public static Manager create(JSONObject jsonObject) {
+        Manager manager = new Manager();
+        try {
+            manager.setGlutenFree(jsonObject.getBoolean(GLUTEN_FREE));
+            manager.setVegan(jsonObject.getBoolean(VEGAN));
+            manager.setIngredients(jsonObject.getString(INGREDIENTS));
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return manager;
+    }
+     */
+
+
 }
+
+
+
+
+
+
+
+
+
+
+
+

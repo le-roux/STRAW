@@ -18,23 +18,26 @@
             android:layout_height="160sp"
             android:id="@+id/photo_imageView"
             android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true" />
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
 
         <TextView
             android:layout_width="500sp"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="@string/Name"
+            android:text="@string/email"
             android:id="@+id/email_textView"
-            android:layout_marginTop="25dp"
-            android:layout_below="@+id/photo_imageView"/>
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@+id/photo_imageView"
+            android:layout_toEndOf="@+id/photo_imageView"
+            android:layout_marginLeft="20sp"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Tel"
-            android:id="@+id/tel_editText"
+            android:text="user_info"
+            android:id="@+id/user_textView"
             android:layout_below="@+id/email_textView"
             android:layout_alignLeft="@+id/email_textView"
             android:layout_alignStart="@+id/email_textView"
@@ -45,9 +48,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Medium Text"
-            android:id="@+id/diet_editText"
-            android:layout_below="@+id/tel_editText"
+            android:text="diet"
+            android:id="@+id/diet_textView"
+            android:layout_below="@+id/user_textView"
             android:layout_alignLeft="@+id/email_textView"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true" />
@@ -56,20 +59,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Address"
+            android:text="Pref_t"
             android:id="@+id/pref_t_textView"
-            android:layout_below="@+id/diet_editText"
-            android:layout_alignLeft="@+id/email_textView"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Seats"
-            android:id="@+id/seats_editText"
-            android:layout_below="@+id/pref_t_textView"
+            android:layout_below="@+id/diet_textView"
             android:layout_alignLeft="@+id/email_textView"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true" />
@@ -78,12 +70,14 @@
             android:id="@+id/reservation_history"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/seats_editText"
-            android:layout_marginTop="@dimen/activity_vertical_margin"
             android:textSize="@dimen/Content_size"
             android:textColor="@color/link_color"
-            android:text="@string/Menu"
-            android:focusable="true"/>
+            android:text="@string/res_h"
+            android:focusable="true"
+            android:layout_below="@+id/pref_t_textView"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/photo_imageView"
+            android:layout_toEndOf="@+id/photo_imageView" />
 
         <TextView
             android:id="@+id/review_history"
@@ -91,23 +85,23 @@
             android:layout_height="wrap_content"
             android:textSize="@dimen/Content_size"
             android:textColor="@color/link_color"
-            android:text="@string/Reservation"
+            android:text="@string/rev_h"
             android:focusable="true"
             android:layout_below="@+id/reservation_history"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
+            android:layout_toRightOf="@+id/photo_imageView"
+            android:layout_toEndOf="@+id/photo_imageView" />
 
         <TextView
-            android:id="@+id/offers_link_textView"
+            android:id="@+id/list_friends"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="@dimen/Content_size"
             android:textColor="@color/link_color"
-            android:text="@string/offerts"
+            android:text="@string/friends"
             android:focusable="true"
             android:layout_below="@+id/review_history"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"/>
+            android:layout_toRightOf="@+id/photo_imageView"
+            android:layout_toEndOf="@+id/photo_imageView" />
     </RelativeLayout>
     <Button
         android:layout_width="match_parent"

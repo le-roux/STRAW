@@ -34,7 +34,7 @@ import straw.polito.it.straw.utils.Logger;
  * This activity allows the manager to create a new drink and to add it to the menu of his/her
  * restaurant and also to modify an existing drink.
  */
-public class AddDrinkActivity extends AppCompatActivity {
+public class CreateDrinkActivity extends AppCompatActivity {
 
     //The views
     private TextView title;
@@ -66,7 +66,7 @@ public class AddDrinkActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_drink);
+        setContentView(R.layout.activity_create_drink);
         this.intent = getIntent();
 
         setPopupWindow();

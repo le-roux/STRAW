@@ -26,6 +26,10 @@ import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.Spinner;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -34,10 +38,11 @@ import java.util.Date;
 import java.util.List;
 
 import straw.polito.it.straw.R;
+
 import straw.polito.it.straw.data.Manager;
 import straw.polito.it.straw.utils.Logger;
 
-public class CreateAccountActivity extends AppCompatActivity {
+public class CreateManagerAccountActivity extends AppCompatActivity {
 
     ImageView photo;
     EditText c_pwd;
@@ -56,10 +61,13 @@ public class CreateAccountActivity extends AppCompatActivity {
     Uri photo_uri;
 
     List<String> types;
-    private String TAG = "CreateAccountActivity";
+    private String TAG = "CreateManagerAccountActivity";
     private SharedPreferences mShared;
     private static final int IMAGE_REQ = 1;
     private static final int CAMERA_REQ = 2;
+    public static final String NUMBER_OF_ELEMENTS = "ElementsNb";
+
+    ArrayList<Manager> arrayManager;
     Manager man;
     boolean sw;
     @Override
@@ -83,6 +91,24 @@ public class CreateAccountActivity extends AppCompatActivity {
         }else{
             man=new Manager();
             setPhoto();
+        }
+
+        int elementsNb = mShared.getInt(NUMBER_OF_ELEMENTS, 0);
+
+        for (int i = 0; i < elementsNb; i++) {
+            arrayManager.add(new Manager(mShared.getString(String.valueOf(i), "")));
+        }
+
+        if(mShared.contains("Manager")){
+            try {
+                JSONArray jarr=new JSONArray(mShared.getString("Manager","Error"));
+                for (int i=0;i<jarr.length();i++){
+                    JSONObject jo= new JSONObject(jarr.get(i).toString());
+                    arrayManager.add(new Manager(jo.toString()));
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
 
     }
@@ -157,16 +183,23 @@ public class CreateAccountActivity extends AppCompatActivity {
                     showAlert(getString(R.string.m_seats), getString(R.string.error), false);
                     sw = true;
                 }
-                man.setImage( photo_uri.toString());
+                man.setImage(photo_uri.toString());
                 if (!sw) {
                     String oj = man.toJSONObject();
                     mShared.edit().putString("Manager", oj).commit();
-                    if(getIntent().hasExtra("manager")) {
+                    if (getIntent().hasExtra("manager")) {
                         showAlert(getString(R.string.m_save), getString(R.string.m_succ), true);
-                    }else{
+                    } else {
                         showAlert(getString(R.string.m_c), getString(R.string.m_succ), true);
                     }
-                    Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
+                    //arrayManager.add(man);
+
+                    Intent intent = new Intent(getApplicationContext(), ProfileManagerActivity.class);
+
+                    String name = c_pwd.getText().toString();
+                    Intent intentForSearch = new Intent(getApplicationContext(), QuickSearchActivity.class);
+                    intentForSearch.putExtra("EXTRA_NAME", name.toString());
+
                     startActivity(intent);
                 } else {
                     return;
@@ -178,7 +211,7 @@ public class CreateAccountActivity extends AppCompatActivity {
     }
 
     private void showAlert(String message,String title, final boolean ex){
-        AlertDialog alertDialog = new AlertDialog.Builder(CreateAccountActivity.this).create();
+        AlertDialog alertDialog = new AlertDialog.Builder(CreateManagerAccountActivity.this).create();
         alertDialog.setTitle(title);
         alertDialog.setMessage(message);
         alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
@@ -206,11 +239,12 @@ public class CreateAccountActivity extends AppCompatActivity {
     private void initialize() {
         photo=(ImageView)findViewById(R.id.photo_imageView);
         c_pwd=(EditText)findViewById(R.id.c_pwd_editText);
+
         cc_pwd=(EditText)findViewById(R.id.cc_pwd_editText);
         tel=(EditText)findViewById(R.id.tel_editText);
-        r_n=(EditText)findViewById(R.id.r_n_editText);
+        r_n=(EditText)findViewById(R.id.diet_editText);
         r_t=(Spinner)findViewById(R.id.r_t_spinner);
-        addr=(EditText)findViewById(R.id.addr_editText);
+        addr=(EditText)findViewById(R.id.pref_t_textView);
         seats=(EditText)findViewById(R.id.seats_editText);
         email=(EditText)findViewById(R.id.email_editText);
         c_acc_button=(Button)findViewById(R.id.create_button);
@@ -223,7 +257,7 @@ public class CreateAccountActivity extends AppCompatActivity {
         final List<String> listOpt=new ArrayList<>();
         listOpt.add(getString(R.string.Choose_photo));
         listOpt.add(getString(R.string.Take_photo));
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(CreateAccountActivity.this, android.R.layout.simple_list_item_1, listOpt);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(CreateManagerAccountActivity.this, android.R.layout.simple_list_item_1, listOpt);
         final ListView opt_listView = new ListView(getBaseContext());
         opt_listView.setAdapter(adapter);
         opt_listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -287,4 +321,5 @@ public class CreateAccountActivity extends AppCompatActivity {
             }
         }
     }
+
 }

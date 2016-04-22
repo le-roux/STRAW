@@ -2,7 +2,6 @@ package straw.polito.it.straw.activities;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -30,27 +30,36 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
-            setContentView(R.layout.activity_home);
-        }else{
-            setContentView(R.layout.activity_home_landscape);
-        }
+        setContentView(R.layout.activity_home);
         mShared= PreferenceManager.getDefaultSharedPreferences(this);
         initialize();
+        setListeners();
 
+
+    }
+
+    private void setListeners() {
         log_in_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 String u = user_name_editText.getText().toString();
                 String p = pwd_editText.getText().toString();
-
-                if (log_in(u, p)) {
+                int sol=log_in(u, p);
+                if (sol==1) {
+                    Log.v(TAG, "Manager log in successfull");
+                    //Intent i=new Intent(getBaseContext(),ProfileManagerActivity.class);
+                    Intent i=new Intent(getBaseContext(),SearchActivity.class);
+                    startActivity(i);
+                }else if(sol==2){
                     Log.v(TAG, "User log in successfull");
+
+                    //Intent i=new Intent(getBaseContext(),ProfileUserActivity.class);
                     Intent i=new Intent(getBaseContext(),SearchActivity.class);
                     startActivity(i);
                 }else{
-                    Log.v(TAG, "User log in ERROR");
+                    Toast.makeText(getApplicationContext(), getString(R.string.error_log_in), Toast.LENGTH_SHORT).show();
+                    Log.v(TAG, "User log in ERROR "+sol);
                 }
             }
         });
@@ -58,39 +67,45 @@ public class HomeActivity extends AppCompatActivity {
         create_man_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i= new Intent(getBaseContext(),CreateAccountActivity.class);
+                Intent i= new Intent(getBaseContext(),CreateManagerAccountActivity.class);
                 startActivity(i);
             }
         });
-
-        this.create_user_button = (Button)findViewById(R.id.c_user_button);
-        this.create_user_button.setOnClickListener(new View.OnClickListener() {
+        create_user_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Logger.d("Launch menu");
-                Intent intent = new Intent(getApplicationContext(), DisplayReservationsActivity.class);
-                Logger.d("Intent created");
+                Intent intent = new Intent(getApplicationContext(), BookTableActivity.class);
                 startActivity(intent);
             }
         });
 
     }
 
-    private boolean log_in(String u, String p) {
-        String ss=mShared.getString("Manager","Error");
-        if(!ss.equals("Error")){
+    private int log_in(String u, String p) {
+        if(mShared.contains("Manager")){
             try {
-                JSONObject jo=new JSONObject(ss);
+                JSONObject jo=new JSONObject(mShared.getString("Manager","Error"));
                 if(u.equals(jo.get("email")) && p.equals(jo.get("pwd"))){
-                    return true;
+                    return 1;
                 }
             } catch (JSONException e) {
                 Log.v(TAG,"Error retreiving manager");
             }
 
         }
+        if(mShared.contains("User")){
+            try {
+                JSONObject jo=new JSONObject(mShared.getString("User","Error"));
+                if(u.equals(jo.get("email")) && p.equals(jo.get("pwd"))){
+                    return 2;
+                }
+            } catch (JSONException e) {
+                Log.v(TAG,"Error retreiving user");
+            }
 
-        return false;
+        }
+
+        return 0;
     }
 
     private void initialize() {
@@ -99,6 +114,7 @@ public class HomeActivity extends AppCompatActivity {
         pwd_editText=(EditText)findViewById(R.id.pwd_editText);
         log_in_button=(Button)findViewById(R.id.log_in_button);
         create_man_button=(Button)findViewById(R.id.c_man_button);
+        create_user_button=(Button)findViewById(R.id.c_user_button);
     }
 
 

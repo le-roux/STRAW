@@ -12,6 +12,9 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import java.util.ArrayList;
 
 import straw.polito.it.straw.R;
@@ -33,7 +36,7 @@ public class CreateMenuActivity extends AppCompatActivity {
     public static final String ACTION = "it.polito.straw.Action";
     public static final String ADD_ELEMENT = "it.polito.straw.Add";
     public static final String EDIT_ELEMENT = "it.polito.straw.Edit";
-    public static final String NUMBER_OF_ELEMENTS = "ElementsNb";
+    public static final String MENU = "Menu";
 
     private ListView food_listView;
     private ArrayList<Food> list_plate;
@@ -57,7 +60,7 @@ public class CreateMenuActivity extends AppCompatActivity {
         this.add_plate_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), AddPlateActivity.class);
+                Intent intent = new Intent(getApplicationContext(), CreatePlateActivity.class);
                 intent.putExtra(ACTION, ADD_ELEMENT);
                 startActivityForResult(intent, ADD_FOOD);
             }
@@ -68,7 +71,7 @@ public class CreateMenuActivity extends AppCompatActivity {
         this.add_drink_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), AddDrinkActivity.class);
+                Intent intent = new Intent(getApplicationContext(), CreateDrinkActivity.class);
                 intent.putExtra(ACTION, ADD_ELEMENT);
                 startActivityForResult(intent, ADD_FOOD);
             }
@@ -78,12 +81,22 @@ public class CreateMenuActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
             //No data temporarily stored
             //Get number of elements stored in sharedPreference
-            int elementsNb = sharedPreferences.getInt(NUMBER_OF_ELEMENTS, 0);
-            //Retrieve element(s) from sharedPreference
-            for (int i = 0; i < elementsNb; i++) {
-                this.list_plate.add(Food.create(sharedPreferences.getString(String.valueOf(i), "")));
+            JSONArray jsonArray;
+            try {
+                jsonArray = new JSONArray(this.sharedPreferences.getString(MENU, ""));
+            } catch (JSONException e) {
+                e.printStackTrace();
+                jsonArray = new JSONArray();
             }
-            if (elementsNb == 0)
+            //Retrieve element(s) from sharedPreference
+            for (int i = 0; i < jsonArray.length(); i++) {
+                try {
+                    this.list_plate.add(Food.create(jsonArray.get(i).toString()));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (jsonArray.length() == 0)
                 //No data found in the sharedPreference --> default init
                 //TO DO : change default init for final version
                 this.init_list();
@@ -102,9 +115,9 @@ public class CreateMenuActivity extends AppCompatActivity {
                 data.putInt(ID, position);
                 data.putString(ACTION, EDIT_ELEMENT);
                 if (list_plate.get(position).getClass().equals(Drink.class)) {
-                    detail = new Intent(getApplicationContext(), AddDrinkActivity.class);
+                    detail = new Intent(getApplicationContext(), CreateDrinkActivity.class);
                 } else if (list_plate.get(position).getClass().equals(Plate.class)) {
-                    detail = new Intent(getApplicationContext(), AddPlateActivity.class);
+                    detail = new Intent(getApplicationContext(), CreatePlateActivity.class);
                 }
                 detail.putExtras(data);
                 startActivityForResult(detail, EDIT_FOOD);
@@ -155,10 +168,15 @@ public class CreateMenuActivity extends AppCompatActivity {
     public void onStop() {
         super.onStop();
         SharedPreferences.Editor editor = this.sharedPreferences.edit();
+        JSONArray jsonArray = new JSONArray();
         for (int i = 0; i < this.list_plate.size(); i++) {
-            editor.putString(String.valueOf(i), this.list_plate.get(i).toString());
+            try {
+                jsonArray.put(i, this.list_plate.get(i).toString());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
-        editor.putInt(NUMBER_OF_ELEMENTS, this.list_plate.size());
+        editor.putString(MENU, jsonArray.toString());
         editor.commit();
     }
 }
