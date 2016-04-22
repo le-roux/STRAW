@@ -38,7 +38,6 @@ public class CreateMenuActivity extends AppCompatActivity {
     public static final String ADD_ELEMENT = "it.polito.straw.Add";
     public static final String EDIT_ELEMENT = "it.polito.straw.Edit";
     public static final String TYPE = "it.polito.straw.Type";
-    public static final String MENU = "Menu";
 
     private ExpandableListView food_listView;
     private ArrayList[] goods;
@@ -85,13 +84,7 @@ public class CreateMenuActivity extends AppCompatActivity {
 
         if (savedInstanceState == null) {
             //No data temporarily stored
-            JSONArray jsonArray;
-            try {
-                jsonArray = new JSONArray(this.sharedPreferences.getString(MENU, ""));
-            } catch (JSONException e) {
-                e.printStackTrace();
-                jsonArray = new JSONArray();
-            }
+            JSONArray jsonArray = Menu.getMenuFromSharedPreferences(this.context);
             //Retrieve element(s) from the jsonArray
             Menu.restoreData(jsonArray, this.goods);
             if (jsonArray.length() == 0)
@@ -147,15 +140,15 @@ public class CreateMenuActivity extends AppCompatActivity {
 
     @Override
     public void onSaveInstanceState(Bundle bundle) {
-        JSONArray jsonArray = Menu.saveData(this.goods);
-        bundle.putString(MENU, jsonArray.toString());
+        JSONArray jsonArray = Menu.saveMenu(this.goods);
+        bundle.putString(Menu.MENU, jsonArray.toString());
     }
 
     @Override
     public void onRestoreInstanceState(Bundle bundle) {
         JSONArray jsonArray = null;
         try {
-            jsonArray = new JSONArray(bundle.getString(MENU, ""));
+            jsonArray = new JSONArray(bundle.getString(Menu.MENU, ""));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -169,9 +162,6 @@ public class CreateMenuActivity extends AppCompatActivity {
     @Override
     public void onStop() {
         super.onStop();
-        SharedPreferences.Editor editor = this.sharedPreferences.edit();
-        JSONArray jsonArray = Menu.saveData(this.goods);
-        editor.putString(MENU, jsonArray.toString());
-        editor.commit();
+        Menu.saveMenuInSharedPreferences(this.context, this.goods);
     }
 }

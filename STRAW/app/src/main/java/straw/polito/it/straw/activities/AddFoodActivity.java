@@ -11,7 +11,9 @@ import java.util.ArrayList;
 
 import straw.polito.it.straw.PriceContainer;
 import straw.polito.it.straw.R;
+import straw.polito.it.straw.adapter.FoodAdapter;
 import straw.polito.it.straw.adapter.FoodAdapterCheckbox;
+import straw.polito.it.straw.adapter.FoodExpandableAdapter;
 import straw.polito.it.straw.adapter.FoodExpandableAdapterCheckbox;
 import straw.polito.it.straw.data.Food;
 import straw.polito.it.straw.utils.PriceDisplay;
@@ -40,7 +42,7 @@ public abstract class AddFoodActivity extends AppCompatActivity implements Price
             @Override
             public void onClick(View view) {
                 Intent result = new Intent();
-                ArrayList<Integer> plates = ((FoodExpandableAdapterCheckbox)menu_view.getAdapter()).getPlates();
+                ArrayList<Integer> plates = ((FoodAdapterCheckbox)menu_view.getAdapter()).getPlates();
                 Bundle bundle = new Bundle();
                 bundle.putIntegerArrayList(PreOrderFoodActivity.POSITIONS, plates);
                 result.putExtra(PreOrderFoodActivity.RESULT, bundle);
@@ -48,7 +50,6 @@ public abstract class AddFoodActivity extends AppCompatActivity implements Price
                 finish();
             }
         });
-
     }
 
     @Override
@@ -58,7 +59,7 @@ public abstract class AddFoodActivity extends AppCompatActivity implements Price
 
     @Override
     public void updatePrice() {
-        ArrayList<Integer> plates = ((FoodExpandableAdapterCheckbox)menu_view.getAdapter()).getPlates();
+        ArrayList<Integer> plates = ((FoodAdapterCheckbox)menu_view.getAdapter()).getPlates();
         double price = 0;
         for (Integer position : plates) {
             price += this.menu.get(position).getPrice();
