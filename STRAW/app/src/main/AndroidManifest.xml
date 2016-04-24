@@ -27,7 +27,6 @@
         <activity android:name=".activities.DisplayReservationsActivity" />
         <activity android:name=".activities.OfferActivity" />
         <activity android:name=".activities.CreateOfferActivity" />
-
         <activity
             android:name=".activities.SearchActivity"
             android:label="@string/title_activity_search"
@@ -35,19 +34,15 @@
         <activity
             android:name=".activities.QuickSearchActivity"
             android:label="@string/title_activity_quick_search"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
-
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".activities.CreateUserAccountActivity" />
         <activity android:name=".activities.BookTableActivity" />
         <activity android:name=".activities.ProfileUserActivity" />
         <activity android:name=".activities.PreOrderFoodActivity" />
-
-        <activity android:name=".activities.AddPlateActivity"></activity>
-
-
+        <activity android:name=".activities.AddPlateActivity" />
         <activity android:name=".activities.AddDrinkActivity" />
-        <activity android:name=".activities.ConfirmReservationActivity"></activity>
-
+        <activity android:name=".activities.ConfirmReservationActivity" />
+        <activity android:name=".activities.InviteFriendActivity"></activity>
     </application>
 
 </manifest>

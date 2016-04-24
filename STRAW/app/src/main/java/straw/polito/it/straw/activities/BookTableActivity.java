@@ -35,6 +35,7 @@ public class BookTableActivity extends AppCompatActivity implements BookTableInt
     private CheckBox outsideCheckbox;
     private Button preOrderButton;
     private Button confirmButton;
+    private Button inviteFriendsButton;
 
     private Reservation reservation;
 
@@ -52,6 +53,7 @@ public class BookTableActivity extends AppCompatActivity implements BookTableInt
         this.outsideCheckbox = (CheckBox)findViewById(R.id.outsideCheckbox);
         this.preOrderButton = (Button)findViewById(R.id.PreOrderButton);
         this.confirmButton = (Button)findViewById(R.id.confirm_button);
+        this.inviteFriendsButton = (Button)findViewById(R.id.InviteFriendsButton);
 
 
         //Add a listener to launch the NumberPicker dialog to select the number of people in the reservation
@@ -102,6 +104,14 @@ public class BookTableActivity extends AppCompatActivity implements BookTableInt
                 updateData();
                 Intent intent = new Intent(getApplicationContext(), ConfirmReservationActivity.class);
                 intent.putExtra(Reservation.RESERVATION, reservation.toString());
+                startActivity(intent);
+            }
+        });
+
+        this.inviteFriendsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), InviteFriendActivity.class);
                 startActivity(intent);
             }
         });

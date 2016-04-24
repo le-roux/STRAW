@@ -107,7 +107,7 @@
         <item>sort by location</item>
         <item>sort by price</item>
     </string-array>
-=======
+    =======
 
     <!--Strings for the user creation part -->
     <string name="u_t">User Type</string>
@@ -131,6 +131,11 @@
     <string name="PreOrder">Pre-Order</string>
     <string name="ReservationSent">Reservation sent to the restaurant</string>
 
+    <!--Strings for the Invite Friends part-->
+    <string name="InviteFriendsTitle"><u>Invite Friends</u></string>
+    <string name="SendInvitation">Send Invitation(s)</string>
+    <string name="InvitationsSent">Invitation(s) sent</string>
+
     <!--Strings for the Pre Order Food part-->
     <string name="PreOrderFood"><u>Pre-order Food</u></string>
     <string name="AddPlateTitle"><u>Add Plate</u></string>
@@ -142,5 +147,5 @@
     <string name="rev_h">- Review History</string>
     <string name="res_h">- Reservation History</string>
     <string name="friends">- Friend List</string>
->>>>>>> 75c26d1f78be3e0c8b541581ea96d4327cf2d86f
+    >>>>>>> 75c26d1f78be3e0c8b541581ea96d4327cf2d86f
 </resources>
