@@ -19,6 +19,7 @@ import straw.polito.it.straw.adapter.FoodExpandableAdapter;
 import straw.polito.it.straw.adapter.FoodExpandableAdapterRemove;
 import straw.polito.it.straw.data.Food;
 import straw.polito.it.straw.data.Menu;
+import straw.polito.it.straw.data.Reservation;
 import straw.polito.it.straw.utils.PriceDisplay;
 
 public class PreOrderFoodActivity extends AppCompatActivity implements PriceContainer{
@@ -30,6 +31,7 @@ public class PreOrderFoodActivity extends AppCompatActivity implements PriceCont
     private ExpandableListView listView;
     private ArrayList<Food>[] command;
     private ArrayList<Food>[] menu;
+    private Reservation reservation;
 
     public static final int ADD_PLATE_REQUEST_CODE = 1;
     public static final int ADD_DRINK_REQUEST_CODE = 2;
@@ -41,6 +43,8 @@ public class PreOrderFoodActivity extends AppCompatActivity implements PriceCont
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pre_order_food);
+        Intent intent = getIntent();
+        this.reservation = Reservation.create(intent.getStringExtra(Reservation.RESERVATION));
 
         this.addPlateButton = (Button)findViewById(R.id.add_plate_button);
         this.addDrinkButton = (Button)findViewById(R.id.add_drink_button);
@@ -80,7 +84,11 @@ public class PreOrderFoodActivity extends AppCompatActivity implements PriceCont
         this.confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TO DO
+                reservation.setPlates(command[Menu.PLATES]);
+                reservation.setDrinks(command[Menu.DRINKS]);
+                Intent intent = new Intent(getApplicationContext(), ConfirmReservationActivity.class);
+                intent.putExtra(Reservation.RESERVATION, reservation.toString());
+                startActivity(intent);
             }
         });
 

@@ -89,7 +89,9 @@ public class BookTableActivity extends AppCompatActivity implements BookTableInt
         this.preOrderButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                updateData();
                 Intent intent = new Intent(getApplicationContext(), PreOrderFoodActivity.class);
+                intent.putExtra(Reservation.RESERVATION, reservation.toString());
                 startActivity(intent);
             }
         });
@@ -153,7 +155,8 @@ public class BookTableActivity extends AppCompatActivity implements BookTableInt
         if (this.insideCheckbox.isChecked()) {
             if (this.outsideCheckbox.isChecked())
                 this.reservation.setPlace(Place.NO_PREFERENCE);
-            this.reservation.setPlace(Place.INSIDE);
+            else
+                this.reservation.setPlace(Place.INSIDE);
         } else if (this.outsideCheckbox.isChecked()) {
             this.reservation.setPlace(Place.OUTSIDE);
         } else

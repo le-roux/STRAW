@@ -1,14 +1,14 @@
 package straw.polito.it.straw.activities;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.Button;
-import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import straw.polito.it.straw.R;
 import straw.polito.it.straw.adapter.FoodExpandableAdapterRemove;
@@ -50,8 +50,10 @@ public class ConfirmReservationActivity extends AppCompatActivity {
         this.numberPeople.setText(this.reservation.getNumberPeople() + " " + this.resources.getString(R.string.Persons));
         if (this.reservation.getPlace().equals(Reservation.Place.OUTSIDE))
             this.place.setText(this.resources.getString(R.string.Outside));
-        else
+        else if (this.reservation.getPlace().equals(Reservation.Place.INSIDE))
             this.place.setText(this.resources.getString(R.string.Inside));
+        else
+            this.place.setText(this.getResources().getString(R.string.NoPreference));
         this.date.setDate(this.reservation.getYear(), this.reservation.getMonth(), this.reservation.getDay());
         this.time.setTime(this.reservation.getHourOfDay(), this.reservation.getMinutes());
         this.list_item.setAdapter(new FoodExpandableAdapterRemove(getApplicationContext(), this.reservation.getPlates(), this.reservation.getDrinks()));
@@ -61,5 +63,13 @@ public class ConfirmReservationActivity extends AppCompatActivity {
         for (Food drink : this.reservation.getDrinks())
             price += drink.getPrice();
         this.price.setPrice(price);
+
+        this.confirmButton.setOnClickListener(new View.OnClickListener() {
+             @Override
+            public void onClick(View view) {
+                 Toast toast = Toast.makeText(getApplicationContext(), R.string.ReservationSent, Toast.LENGTH_LONG);
+                 toast.show();
+             }
+        });
     }
 }

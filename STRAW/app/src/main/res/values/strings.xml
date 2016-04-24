@@ -125,9 +125,11 @@
     <string name="Where">Where ?</string>
     <string name="Inside">Inside</string>
     <string name="Outside">Outside</string>
+    <string name="NoPreference">No preference</string>
     <string name="When">When ?</string>
     <string name="InviteFriends">Invite Friend(s)</string>
     <string name="PreOrder">Pre-Order</string>
+    <string name="ReservationSent">Reservation sent to the restaurant</string>
 
     <!--Strings for the Pre Order Food part-->
     <string name="PreOrderFood"><u>Pre-order Food</u></string>
