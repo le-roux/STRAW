@@ -30,7 +30,7 @@ public class DateDisplay extends TextView implements DateDisplayer {
         //By default, values are the current date
         Calendar calendar = Calendar.getInstance();
         this.year = calendar.get(Calendar.YEAR);
-        this.month = calendar.get(Calendar.MONTH) + 1;
+        this.month = calendar.get(Calendar.MONTH);
         this.day = calendar.get(Calendar.DAY_OF_MONTH);
         updateText();
     }
@@ -53,7 +53,7 @@ public class DateDisplay extends TextView implements DateDisplayer {
     @Override
     public void setDate(int year, int month, int day) {
         this.year = year;
-        this.month = month + 1;
+        this.month = month;
         this.day = day;
         updateText();
     }
@@ -66,7 +66,7 @@ public class DateDisplay extends TextView implements DateDisplayer {
                 .append('/');
         if(this.month < 10)
             builder.append('0');
-        builder.append(this.month)
+        builder.append(this.month + 1)
                 .append('/')
                 .append(this.year);
         this.setText(builder.toString());

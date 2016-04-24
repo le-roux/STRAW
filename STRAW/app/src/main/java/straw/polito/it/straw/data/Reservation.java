@@ -1,8 +1,10 @@
 package straw.polito.it.straw.data;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
@@ -16,7 +18,8 @@ public class Reservation implements TimeDisplayer, DateDisplayer{
 
     private int numberPeople;
     private GregorianCalendar time;
-    private String plates;
+    private ArrayList<Food> plates;
+    private ArrayList<Food> drinks;
     public enum Place {INSIDE, OUTSIDE, NO_PREFERENCE};
     public static final int INSIDE = 0;
     public static final int OUTSIDE = 1;
@@ -31,20 +34,22 @@ public class Reservation implements TimeDisplayer, DateDisplayer{
     public static final String HOUR = "Hour";
     public static final String MINUTES = "Minutes";
     public static final String PLATES = "Plates";
+    public static final String DRINKS = "Drinks";
     public static final String RESERVATION = "Reservation";
     public static  final String PLACE = "Place";
 
     public Reservation() {
-        this(0, "", Place.NO_PREFERENCE);
+        this(0, new ArrayList<Food>(), new ArrayList<Food>(), Place.NO_PREFERENCE);
     }
 
-    public Reservation(int numberPeople, String plates) {
-        this(numberPeople, plates, Place.NO_PREFERENCE);
+    public Reservation(int numberPeople, ArrayList<Food> plates, ArrayList<Food> drinks) {
+        this(numberPeople, plates, drinks, Place.NO_PREFERENCE);
     }
 
-    public Reservation(int numberPeople, String plates, Place place) {
+    public Reservation(int numberPeople, ArrayList<Food> plates, ArrayList<Food> drinks, Place place) {
         this.numberPeople = numberPeople;
         this.plates = plates;
+        this.drinks = drinks;
         this.time = new GregorianCalendar();
         this.place = place;
     }
@@ -57,12 +62,34 @@ public class Reservation implements TimeDisplayer, DateDisplayer{
         this.numberPeople = numberPeople;
     }
 
-    public String getPlates() {
+    public String getFoodList() {
+        StringBuilder builder = new StringBuilder();
+        for (Food plate : this.plates) {
+            builder.append(plate.toString())
+                    .append(", ");
+        }
+        for (Food drink : this.drinks) {
+            builder.append(drink.toString())
+                    .append(", ");
+        }
+         builder.delete(builder.length() - 2, builder.length() - 1);
+        return builder.toString();
+    }
+
+    public ArrayList<Food> getPlates() {
         return this.plates;
     }
 
-    public void setPlates(String plates) {
+    public ArrayList<Food> getDrinks() {
+        return this.drinks;
+    }
+
+    public void setPlates(ArrayList<Food> plates) {
         this.plates = plates;
+    }
+
+    public void setDrinks(ArrayList<Food> drinks) {
+        this.drinks = drinks;
     }
 
     public GregorianCalendar getTime() {
@@ -143,7 +170,14 @@ public class Reservation implements TimeDisplayer, DateDisplayer{
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put(NUMBER_PEOPLE, this.numberPeople);
-            jsonObject.putOpt(PLATES, this.plates);
+            JSONArray platesArray = new JSONArray();
+            for (int i = 0; i < this.plates.size(); i++)
+                platesArray.put(i, this.plates.get(i).toString());
+            jsonObject.putOpt(PLATES, platesArray);
+            JSONArray drinksArray = new JSONArray();
+            for (int i = 0; i < this.drinks.size(); i++)
+                drinksArray.put(i, this.drinks.get(i).toString());
+            jsonObject.put(DRINKS, drinksArray);
             jsonObject.put(YEAR, this.getYear());
             jsonObject.put(MONTH, this.getMonth());
             jsonObject.put(DAY, this.getDay());
@@ -165,7 +199,16 @@ public class Reservation implements TimeDisplayer, DateDisplayer{
         Reservation reservation = new Reservation();
         try {
             reservation.setNumberPeople(jsonObject.getInt(NUMBER_PEOPLE));
-            reservation.setPlates(jsonObject.getString(PLATES));
+            JSONArray platesArray = jsonObject.getJSONArray(PLATES);
+            ArrayList<Food> plates = new ArrayList<>();
+            for (int i = 0; i < platesArray.length(); i++)
+                plates.add(Food.create(platesArray.getString(i)));
+            reservation.setPlates(plates);
+            JSONArray drinksArray = jsonObject.getJSONArray(DRINKS);
+            ArrayList<Food> drinks = new ArrayList<>();
+            for (int i = 0; i < drinksArray.length(); i++)
+                drinks.add(Food.create(drinksArray.getString(i)));
+            reservation.setDrinks(drinks);
             int year = jsonObject.getInt(YEAR);
             int month = jsonObject.getInt(MONTH);
             int day = jsonObject.getInt(DAY);

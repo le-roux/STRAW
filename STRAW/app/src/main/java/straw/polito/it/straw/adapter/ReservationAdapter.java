@@ -162,7 +162,7 @@ public class ReservationAdapter extends BaseAdapter {
                     context.getString(R.string.Persons));
             dateDisplay.setDate(reservation.getYear(), reservation.getMonth(), reservation.getDay());
             timerDisplay.setTime(reservation.getHourOfDay(), reservation.getMinutes());
-            plates.setText(this.reservationList.get(position).getPlates());
+            plates.setText(this.reservationList.get(position).getFoodList());
         }
 
         return convertView;

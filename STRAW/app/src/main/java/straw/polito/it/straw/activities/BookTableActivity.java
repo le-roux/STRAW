@@ -97,6 +97,7 @@ public class BookTableActivity extends AppCompatActivity implements BookTableInt
         this.confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                updateData();
                 Intent intent = new Intent(getApplicationContext(), ConfirmReservationActivity.class);
                 intent.putExtra(Reservation.RESERVATION, reservation.toString());
                 startActivity(intent);

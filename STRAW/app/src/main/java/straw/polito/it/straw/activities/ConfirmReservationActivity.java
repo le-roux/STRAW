@@ -6,10 +6,13 @@ import android.content.res.Resources;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
 
 import straw.polito.it.straw.R;
+import straw.polito.it.straw.adapter.FoodExpandableAdapterRemove;
+import straw.polito.it.straw.data.Food;
 import straw.polito.it.straw.data.Reservation;
 import straw.polito.it.straw.utils.DateDisplay;
 import straw.polito.it.straw.utils.PriceDisplay;
@@ -44,14 +47,19 @@ public class ConfirmReservationActivity extends AppCompatActivity {
         this.price = (PriceDisplay)findViewById(R.id.Price);
         this.confirmButton = (Button)findViewById(R.id.confirm_button);
 
-        this.numberPeople.setText(this.reservation.getNumberPeople() + this.resources.getString(R.string.Persons));
+        this.numberPeople.setText(this.reservation.getNumberPeople() + " " + this.resources.getString(R.string.Persons));
         if (this.reservation.getPlace().equals(Reservation.Place.OUTSIDE))
             this.place.setText(this.resources.getString(R.string.Outside));
         else
             this.place.setText(this.resources.getString(R.string.Inside));
         this.date.setDate(this.reservation.getYear(), this.reservation.getMonth(), this.reservation.getDay());
         this.time.setTime(this.reservation.getHourOfDay(), this.reservation.getMinutes());
-        // To be continued
-
+        this.list_item.setAdapter(new FoodExpandableAdapterRemove(getApplicationContext(), this.reservation.getPlates(), this.reservation.getDrinks()));
+        double price = 0;
+        for (Food plate : this.reservation.getPlates())
+            price += plate.getPrice();
+        for (Food drink : this.reservation.getDrinks())
+            price += drink.getPrice();
+        this.price.setPrice(price);
     }
 }
