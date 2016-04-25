@@ -11,6 +11,12 @@
     tools:context="straw.polito.it.straw.activities.InviteFriendActivity">
 
     <TextView
+        android:id="@+id/center"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_centerInParent="true"/>
+
+    <TextView
         android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -18,16 +24,34 @@
         android:textAlignment="center"
         android:textSize="@dimen/Title_size"/>
 
+    <ListView
+        android:id="@+id/list_friends"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/title"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_toLeftOf="@id/center"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:background="@color/beige"></ListView>
+
     <TextView
         android:id="@+id/RestaurantName"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textSize="@dimen/Title_size"
         android:textAlignment="center"
         android:text="Restaurant"
         android:layout_below="@id/title"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_toEndOf="@id/center"
+        android:layout_toRightOf="@id/center"
         android:background="@color/beige"
         android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:layout_marginStart="@dimen/activity_horizontal_margin"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:paddingBottom="@dimen/padding"
         android:paddingTop="@dimen/padding"
         android:singleLine="true"
         android:ellipsize="end"/>
@@ -37,43 +61,42 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/RestaurantName"
-        android:layout_alignStart="@id/RestaurantName"
         android:layout_alignLeft="@id/RestaurantName"
+        android:layout_alignStart="@id/RestaurantName"
         android:textSize="@dimen/Content_size"
+        android:paddingTop="@dimen/padding"
         android:padding="@dimen/padding"
         android:background="@color/beige"/>
 
     <straw.polito.it.straw.utils.TimerDisplay
         android:id="@+id/Time"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_below="@id/RestaurantName"
+        android:textSize="@dimen/Content_size"
+        android:textAlignment="center"
+        android:padding="@dimen/padding"
         android:layout_alignEnd="@id/RestaurantName"
         android:layout_alignRight="@id/RestaurantName"
         android:layout_toEndOf="@id/Date"
         android:layout_toRightOf="@id/Date"
-        android:textSize="@dimen/Content_size"
-        android:background="@color/beige"
-        android:padding="@dimen/padding"
-        android:textAlignment="center"/>
+        android:layout_below="@id/RestaurantName"
+        android:background="@color/beige" />
 
     <Button
         android:id="@+id/SendInvitationButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_alignParentBottom="true"
+        android:layout_below="@id/Date"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignLeft="@id/RestaurantName"
+        android:layout_alignStart="@id/RestaurantName"
         android:background="@drawable/customborder_buttons"
         android:layout_marginTop="@dimen/activity_vertical_margin"
         android:textSize="@dimen/Content_size"
         android:text="@string/SendInvitation"/>
 
-    <ListView
-        android:id="@+id/list_friends"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/Date"
-        android:layout_above="@id/SendInvitationButton"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:background="@color/beige"></ListView>
+
 
 </RelativeLayout>

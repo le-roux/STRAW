@@ -21,7 +21,6 @@ import straw.polito.it.straw.adapter.UserAdapter;
 import straw.polito.it.straw.data.Reservation;
 import straw.polito.it.straw.data.User;
 import straw.polito.it.straw.utils.DateDisplay;
-import straw.polito.it.straw.utils.Logger;
 import straw.polito.it.straw.utils.TimerDisplay;
 
 public class InviteFriendActivity extends AppCompatActivity {
@@ -43,7 +42,6 @@ public class InviteFriendActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         this.reservation = Reservation.create(intent.getStringExtra(Reservation.RESERVATION));
-        Logger.d("reservation : " + reservation);
 
         this.smsManager = SmsManager.getDefault();
 
