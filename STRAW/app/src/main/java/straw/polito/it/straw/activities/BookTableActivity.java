@@ -112,6 +112,11 @@ public class BookTableActivity extends AppCompatActivity implements BookTableInt
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), InviteFriendActivity.class);
+                //to remove
+                Manager manager = new Manager();
+                manager.setRes_name("foo");
+                reservation.setRestaurant(manager);
+                intent.putExtra(Reservation.RESERVATION, reservation.toString());
                 startActivity(intent);
             }
         });

@@ -1,10 +1,11 @@
 package straw.polito.it.straw.activities;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.telephony.SmsManager;
 import android.view.View;
 import android.widget.Button;
@@ -17,10 +18,10 @@ import java.util.ArrayList;
 
 import straw.polito.it.straw.R;
 import straw.polito.it.straw.adapter.UserAdapter;
-import straw.polito.it.straw.data.Manager;
 import straw.polito.it.straw.data.Reservation;
 import straw.polito.it.straw.data.User;
 import straw.polito.it.straw.utils.DateDisplay;
+import straw.polito.it.straw.utils.Logger;
 import straw.polito.it.straw.utils.TimerDisplay;
 
 public class InviteFriendActivity extends AppCompatActivity {
@@ -40,6 +41,10 @@ public class InviteFriendActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_invite_friend);
 
+        Intent intent = getIntent();
+        this.reservation = Reservation.create(intent.getStringExtra(Reservation.RESERVATION));
+        Logger.d("reservation : " + reservation);
+
         this.smsManager = SmsManager.getDefault();
 
         this.sharedPreferences  = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
@@ -58,45 +63,44 @@ public class InviteFriendActivity extends AppCompatActivity {
             public void onClick(View view) {
                 UserAdapter adapter = (UserAdapter)friendsList.getAdapter();
                 ArrayList<CheckBox> checkBoxes = adapter.getCheckboxes();
-                StringBuilder builder = new StringBuilder();
-                Resources resources = getResources();
-                builder.append(user.getEmail())
-                        .append(resources.getString(R.string.InvitationMessage))
-                        .append(reservation.getRestaurant().getRes_name())
-                        .append(' ')
-                        .append(resources.getString(R.string.on))
-                        .append(' ');
-                if (reservation.getDay() < 10)
-                    builder.append('0');
-                builder.append(reservation.getDay())
-                        .append('/');
-                if(reservation.getMonth() < 10)
-                    builder.append('0');
-                builder.append(reservation.getMonth() + 1)
-                        .append('/')
-                        .append(reservation.getYear());
-                builder.append(' ')
-                        .append(resources.getString(R.string.at))
-                        .append(' ');
-                if(reservation.getHourOfDay() < 10)
-                    builder.append('0');
-                builder.append(reservation.getHourOfDay())
-                        .append(":");
-                if(reservation.getMinutes() < 10)
-                    builder.append(('0'));
-                builder.append(String.valueOf(reservation.getMinutes()));
-
+                String message = getInvitationMessage();
                 int count = 0;
                 for (int i = 0; i < adapter.getCount(); i++) {
                     if (checkBoxes.get(i).isChecked()) {
                         count++;
                         String phoneNumber = ((User)adapter.getItem(i)).getPhoneNumber();
-                        smsManager.sendTextMessage(phoneNumber, null, builder.toString(), null, null);
+                        smsManager.sendTextMessage(phoneNumber, null, message, null, null);
                     }
                 }
-                Toast toast = Toast.makeText(getApplicationContext(), String.valueOf(count) + R.string.InvitationsSent, Toast.LENGTH_SHORT);
+                //For test purpose
+                smsManager.sendTextMessage("+33683781744", null, message, null, null);
+
+                StringBuilder builder = new StringBuilder();
+                builder.append(count)
+                        .append(' ')
+                        .append(getResources().getString(R.string.InvitationsSent));
+                Toast toast = Toast.makeText(getApplicationContext(), builder.toString(), Toast.LENGTH_SHORT);
                 toast.show();
             }
         });
+    }
+
+    private String getInvitationMessage() {
+        StringBuilder builder = new StringBuilder();
+        Resources resources = getResources();
+        builder.append(user.getEmail())
+                .append(' ')
+                .append(resources.getString(R.string.InvitationMessage))
+                .append(' ')
+                .append(reservation.getRestaurant().getRes_name())
+                .append(' ')
+                .append(resources.getString(R.string.on))
+                .append(' ')
+                .append(DateDisplay.getDate(reservation.getDay(), reservation.getMonth(), reservation.getYear()))
+                .append(' ')
+                .append(resources.getString(R.string.at))
+                .append(' ')
+                .append(TimerDisplay.getTime(reservation.getHourOfDay(), reservation.getMinutes(), false));
+        return builder.toString();
     }
 }

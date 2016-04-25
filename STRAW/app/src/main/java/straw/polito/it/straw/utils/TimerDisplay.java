@@ -42,9 +42,14 @@ public class TimerDisplay extends TextView implements TimeDisplayer {
     }
 
     public void updateText() {
+        String text = getTime(this.hourOfDay, this.minute, this.is24HFormat);
+        this.setText(text);
+    }
+
+    public static String getTime(int hourOfDay, int minute, boolean is24HFormat) {
         StringBuilder text = new StringBuilder();
-        int hour = this.hourOfDay;
-        if (!this.is24HFormat)
+        int hour = hourOfDay;
+        if (!is24HFormat)
             if (hour > 12)
                 hour -= 12;
             else if (hour == 0)
@@ -53,15 +58,15 @@ public class TimerDisplay extends TextView implements TimeDisplayer {
             text.append('0');
         text.append(String.valueOf(hour))
                 .append(":");
-        if(this.minute < 10)
+        if(minute < 10)
             text.append(('0'));
-        text.append(String.valueOf(this.minute));
-        if (!this.is24HFormat)
-            if (this.hourOfDay < 12)
+        text.append(String.valueOf(minute));
+        if (!is24HFormat)
+            if (hourOfDay < 12)
                 text.append(" AM");
             else
                 text.append(" PM");
-        this.setText(text.toString());
+        return text.toString();
     }
 
     public void setIs24HFormat(boolean format) {

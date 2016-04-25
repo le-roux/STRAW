@@ -59,16 +59,21 @@ public class DateDisplay extends TextView implements DateDisplayer {
     }
 
     public void updateText() {
+        String text = getDate(this.day, this.month, this.year);
+        this.setText(text);
+    }
+
+    public static String getDate(int day, int month, int year) {
         StringBuilder builder = new StringBuilder();
-        if (this.day < 10)
+        if (day < 10)
             builder.append('0');
-        builder.append(this.day)
+        builder.append(day)
                 .append('/');
-        if(this.month < 10)
+        if(month < 10)
             builder.append('0');
-        builder.append(this.month + 1)
+        builder.append(month + 1)
                 .append('/')
-                .append(this.year);
-        this.setText(builder.toString());
+                .append(year);
+        return builder.toString();
     }
 }

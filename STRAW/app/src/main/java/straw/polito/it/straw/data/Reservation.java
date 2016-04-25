@@ -193,6 +193,8 @@ public class Reservation implements TimeDisplayer, DateDisplayer{
             jsonObject.put(HOUR, this.getHourOfDay());
             jsonObject.put(MINUTES, this.getMinutes());
             jsonObject.put(PLACE, this.getPlaceInt());
+            if (this.getRestaurant() != null)
+                jsonObject.put(RESERVATION, this.getRestaurant().toJSONObject());
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -225,6 +227,7 @@ public class Reservation implements TimeDisplayer, DateDisplayer{
             int minutes = jsonObject.getInt(MINUTES);
             reservation.setTime(year, month, day, hour, minutes);
             reservation.setPlace(jsonObject.getInt(PLACE));
+            reservation.setRestaurant(new Manager(jsonObject.getString(RESERVATION)));
         } catch (JSONException e) {
             e.printStackTrace();
             return null;
