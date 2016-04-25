@@ -20,6 +20,7 @@ public class Reservation implements TimeDisplayer, DateDisplayer{
     private GregorianCalendar time;
     private ArrayList<Food> plates;
     private ArrayList<Food> drinks;
+    private Manager restaurant;
     public enum Place {INSIDE, OUTSIDE, NO_PREFERENCE};
     public static final int INSIDE = 0;
     public static final int OUTSIDE = 1;
@@ -164,6 +165,14 @@ public class Reservation implements TimeDisplayer, DateDisplayer{
             default:
                 return NO_PREFERENCE;
         }
+    }
+
+    public void setRestaurant(Manager restaurant) {
+        this.restaurant = restaurant;
+    }
+
+    public Manager getRestaurant() {
+        return this.restaurant;
     }
 
     public JSONObject save() {

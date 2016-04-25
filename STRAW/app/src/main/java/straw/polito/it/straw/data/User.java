@@ -3,6 +3,8 @@ package straw.polito.it.straw.data;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
 import straw.polito.it.straw.utils.Logger;
 
 /**
@@ -16,11 +18,14 @@ public class User {
     private String type;
     private String pref_time;
     private String image;
+    private String phoneNumber;
+    private ArrayList<User> friends;
 
     public User() {
     }
 
     public User(String s){
+        this.friends = new ArrayList<>();
         try {
             JSONObject jo=new JSONObject(s);
             this.email=jo.getString("email");
@@ -108,5 +113,25 @@ public class User {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public ArrayList<User> getFriends() {
+        return this.friends;
+    }
+
+    public void addFriend(User user) {
+        this.friends.add(user);
+    }
+
+    public void removeFriend(User user) {
+        this.friends.remove(user);
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public String getPhoneNumber() {
+        return this.phoneNumber;
     }
 }
