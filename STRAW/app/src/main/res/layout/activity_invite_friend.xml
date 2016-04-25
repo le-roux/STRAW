@@ -32,30 +32,34 @@
         android:singleLine="true"
         android:ellipsize="end"/>
 
-    <straw.polito.it.straw.utils.DateDisplay
-        android:id="@+id/Date"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/ReservationTime"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_below="@id/RestaurantName"
         android:layout_alignStart="@id/RestaurantName"
         android:layout_alignLeft="@id/RestaurantName"
-        android:textSize="@dimen/Content_size"
-        android:padding="@dimen/padding"
-        android:background="@color/beige"/>
-
-    <straw.polito.it.straw.utils.TimerDisplay
-        android:id="@+id/Time"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/RestaurantName"
         android:layout_alignEnd="@id/RestaurantName"
         android:layout_alignRight="@id/RestaurantName"
-        android:layout_toEndOf="@id/Date"
-        android:layout_toRightOf="@id/Date"
-        android:textSize="@dimen/Content_size"
         android:background="@color/beige"
-        android:padding="@dimen/padding"
-        android:textAlignment="center"/>
+        android:padding="@dimen/padding">
+        <straw.polito.it.straw.utils.DateDisplay
+            android:id="@+id/Date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/Content_size"
+            android:textAlignment="center"
+            android:layout_weight="1"/>
+
+        <straw.polito.it.straw.utils.TimerDisplay
+            android:id="@+id/Time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/Content_size"
+            android:textAlignment="center"
+            android:layout_weight="1"/>
+    </LinearLayout>
+
 
     <Button
         android:id="@+id/SendInvitationButton"
@@ -71,7 +75,7 @@
         android:id="@+id/list_friends"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/Date"
+        android:layout_below="@id/ReservationTime"
         android:layout_above="@id/SendInvitationButton"
         android:layout_marginTop="@dimen/activity_vertical_margin"
         android:background="@color/beige"></ListView>
