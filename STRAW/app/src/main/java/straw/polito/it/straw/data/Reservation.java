@@ -9,7 +9,9 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import straw.polito.it.straw.DateDisplayer;
+import straw.polito.it.straw.R;
 import straw.polito.it.straw.TimeDisplayer;
+import straw.polito.it.straw.utils.Logger;
 
 /**
  * Created by Sylvain on 07/04/2016.
@@ -195,6 +197,10 @@ public class Reservation implements TimeDisplayer, DateDisplayer{
             jsonObject.put(PLACE, this.getPlaceInt());
             if (this.getRestaurant() != null)
                 jsonObject.put(RESERVATION, this.getRestaurant().toJSONObject());
+            else {
+                jsonObject.put(RESERVATION, (new Manager().toJSONObject()));
+                Logger.d("Warning : new restaurant created when saving reservation");
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
