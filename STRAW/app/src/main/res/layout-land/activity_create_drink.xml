@@ -23,7 +23,7 @@
         android:text="@string/Add_drink"
         android:textAlignment="center"
         android:textSize="@dimen/Title_size"
-        android:background="@drawable/customborder_dark"
+        android:background="@color/colorPrimaryDark"
         android:padding="@dimen/padding"/>
 
     <EditText
@@ -78,13 +78,19 @@
 
     <Button
         android:id="@+id/confirm_button"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_toEndOf="@id/center"
+        android:layout_toRightOf="@id/center"
         android:text="@string/Add"
-        android:background="@color/colorPrimary"
+        android:background="@drawable/customborder_buttons"
         android:padding="@dimen/padding"
         android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:layout_marginStart="@dimen/activity_horizontal_margin"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
         />
 
     <ImageView
@@ -96,6 +102,7 @@
         android:layout_alignParentRight="true"
         android:layout_below="@id/title"
         android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:layout_marginStart="@dimen/activity_horizontal_margin"
         android:layout_marginLeft="@dimen/activity_horizontal_margin"
         android:background="@color/grey" />
 </RelativeLayout>

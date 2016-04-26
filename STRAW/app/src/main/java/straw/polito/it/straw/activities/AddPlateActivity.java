@@ -1,6 +1,7 @@
 package straw.polito.it.straw.activities;
 
 import android.content.Intent;
+import android.widget.TextView;
 
 import org.json.JSONArray;
 
@@ -15,7 +16,9 @@ public class AddPlateActivity extends AddFoodActivity {
 
     @Override
     protected void setContentView() {
-        setContentView(R.layout.activity_add_plate);
+        setContentView(R.layout.activity_add_food);
+        TextView title = (TextView)findViewById(R.id.title);
+        title.setText(R.string.Add_plate);
     }
 
     @Override
