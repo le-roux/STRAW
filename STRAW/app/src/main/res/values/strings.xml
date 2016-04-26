@@ -138,6 +138,10 @@
     <string name="InvitationMessage"> invites you to come at </string>
     <string name="at">at</string>
     <string name="on">on</string>
+    <string name="SelectMessageType">How do you want to send the invitation(s) ?</string>
+    <string name="SMS">SMS</string>
+    <string name="Email">Email</string>
+    <string name="STRAWInvitation">STRAW Invitation</string>
 
     <!--Strings for the Pre Order Food part-->
     <string name="PreOrderFood"><u>Pre-order Food</u></string>
