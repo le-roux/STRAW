@@ -50,8 +50,6 @@
         android:text="@string/HowManyPeople"
         android:textSize="@dimen/Medium_size"/>
 
-
-
     <TextView
         android:id="@+id/Where_text"
         android:layout_width="wrap_content"
@@ -85,7 +83,6 @@
             android:layout_height="wrap_content"
             android:text="@string/Outside"/>
     </LinearLayout>
-
 
     <Button
         android:id="@+id/clock"
@@ -144,53 +141,52 @@
         android:text="@string/When"
         android:textSize="@dimen/Medium_size"/>
 
-    <Button
-        android:id="@+id/confirm_button"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/buttons"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_below="@id/When_text"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
-        android:text="@string/Confirm"
-        android:textSize="@dimen/Medium_size"
-        android:textAlignment="center"
-        android:background="@drawable/customborder_buttons"
-        android:layout_marginEnd="@dimen/activity_horizontal_margin"
-        android:layout_marginRight="@dimen/activity_horizontal_margin"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
-        />
+        android:orientation="horizontal"
+        android:layout_marginTop="@dimen/activity_vertical_margin">
 
-    <Button
-        android:id="@+id/InviteFriendsButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/When_text"
-        android:layout_toEndOf="@id/confirm_button"
-        android:layout_toRightOf="@id/confirm_button"
-        android:layout_alignParentBottom="true"
-        android:layout_marginTop="@dimen/activity_horizontal_margin"
-        android:text="@string/InviteFriends"
-        android:textSize="@dimen/Medium_size"
-        android:textAlignment="center"
-        android:background="@drawable/customborder_buttons"/>
+        <Button
+            android:id="@+id/confirm_button"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:text="@string/Confirm"
+            android:textSize="@dimen/Medium_size"
+            android:textAlignment="center"
+            android:background="@drawable/customborder_buttons"
+            android:layout_marginEnd="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:layout_weight="1"
+            android:layout_gravity="center"/>
 
-    <Button
-        android:id="@+id/PreOrderButton"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_below="@id/When_text"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_toEndOf="@id/InviteFriendsButton"
-        android:layout_toRightOf="@id/InviteFriendsButton"
-        android:text="@string/PreOrder"
-        android:textSize="@dimen/Medium_size"
-        android:textAlignment="center"
-        android:background="@drawable/customborder_buttons"
-        android:layout_marginStart="@dimen/activity_horizontal_margin"
-        android:layout_marginLeft="@dimen/activity_horizontal_margin"
-        android:layout_marginTop="@dimen/activity_vertical_margin"/>
+        <Button
+            android:id="@+id/InviteFriendsButton"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:text="@string/InviteFriends"
+            android:textSize="@dimen/Medium_size"
+            android:textAlignment="center"
+            android:background="@drawable/customborder_buttons"
+            android:layout_weight="1"
+            android:layout_gravity="center"/>
+
+        <Button
+            android:id="@+id/PreOrderButton"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:text="@string/PreOrder"
+            android:textSize="@dimen/Medium_size"
+            android:textAlignment="center"
+            android:background="@drawable/customborder_buttons"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_weight="1"
+            android:layout_gravity="center"/>
+
+    </LinearLayout>
 
 </RelativeLayout>

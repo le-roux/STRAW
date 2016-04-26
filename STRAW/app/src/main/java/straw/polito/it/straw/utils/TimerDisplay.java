@@ -71,6 +71,7 @@ public class TimerDisplay extends TextView implements TimeDisplayer {
 
     public void setIs24HFormat(boolean format) {
         this.is24HFormat = format;
+        this.updateText();
     }
 
     public int getHourOfDay() {
