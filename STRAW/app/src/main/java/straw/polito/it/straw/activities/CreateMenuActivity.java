@@ -135,6 +135,10 @@ public class CreateMenuActivity extends AppCompatActivity {
             }
             ((FoodExpandableAdapter)this.food_listView.getExpandableListAdapter()).notifyDataSetChanged();
         }
+        /**
+         * Store the new data in the database
+         */
+        this.application.getDatabaseUtils().saveMenu(this.application.getSharedPreferencesHandler().getCurrentManager().getRes_name(), Menu.saveMenu(this.goods).toString());
     }
 
     private void init_list() {
@@ -161,7 +165,8 @@ public class CreateMenuActivity extends AppCompatActivity {
     }
 
     /**
-     * Save data (menu) in sharedPreference for permanent storage
+     * Save data (menu) for permanent storage (in the Firebase database if possible,
+     * in sharedPreferences otherwise.
      */
     @Override
     public void onStop() {

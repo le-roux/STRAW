@@ -3,12 +3,10 @@ package straw.polito.it.straw.activities;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -45,7 +43,6 @@ public class CreatePlateActivity extends AppCompatActivity {
     private Uri fileUri = null;
     private Context context;
     private Plate plate;
-    private SharedPreferences sharedPreferences;
     private Intent intent;
     private ListView listView;
     private PopupWindow popupWindow;
@@ -65,7 +62,6 @@ public class CreatePlateActivity extends AppCompatActivity {
         this.context = getApplicationContext();
 
         //If needed, restore the values saved
-        this.sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.context);
         if (savedInstanceState != null)
             restoreValues(savedInstanceState.getString(PLATE));
         else {
@@ -96,7 +92,6 @@ public class CreatePlateActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 update();
-                sharedPreferences.edit().putString(plate.getName(), plate.toString()).commit();
                 Intent result = new Intent(getApplicationContext(), CreateMenuActivity.class);
                 Bundle data = new Bundle();
                 data.putString(CreateMenuActivity.ID, intent.getStringExtra(CreateMenuActivity.ID));

@@ -70,6 +70,7 @@ public class DatabaseUtils {
      * @param menu : the internal representation of a complete menu (Plates + Drinks)
      */
     public void retrieveMenu(String restaurantName, final ArrayList[] menu) {
+        //TO DO : check the availability of the network
         Firebase ref = this.firebase.child(MENU).child(restaurantName);
         ref.addValueEventListener(new ValueEventListener() {
             @Override
