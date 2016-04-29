@@ -54,11 +54,14 @@ public class CreateMenuActivity extends AppCompatActivity {
 
     private SharedPreferences sharedPreferences;
     private Manager manager;
+    private StrawApplication application;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_menu);
+
+        this.application = (StrawApplication)getApplication();
 
         this.context = this;
         this.context = getApplicationContext();
@@ -94,13 +97,8 @@ public class CreateMenuActivity extends AppCompatActivity {
 
         if (savedInstanceState == null) {
             //No data temporarily stored
-            JSONArray jsonArray = Menu.getMenuFromSharedPreferences(this.context);
-            //Retrieve element(s) from the jsonArray
-            Menu.restoreMenu(jsonArray, this.goods);
-            if (jsonArray.length() == 0)
-                //No data found in the sharedPreference --> default init
-                //TO DO : change default init for final version
-                this.init_list();
+            //Try to retrieve it from the database
+            this.application.getDatabaseUtils().retrieveMenu(this.application.getSharedPreferencesHandler().getCurrentManager().getRes_name(), this.goods);
         }
 
         //Initialisation of the listView
@@ -132,9 +130,9 @@ public class CreateMenuActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent result) {
         if (resultCode == Activity.RESULT_OK) {
             int type = result.getIntExtra(TYPE, Menu.PLATES);
-            if (requestCode == this.EDIT_FOOD) {
+            if (requestCode == CreateMenuActivity.EDIT_FOOD) {
                 this.goods[type].set(result.getIntExtra(ID, 0), Food.create(result.getStringExtra(ELEMENT)));
-            } else if(requestCode == this.ADD_FOOD) {
+            } else if(requestCode == CreateMenuActivity.ADD_FOOD) {
                 Food element = Food.create(result.getStringExtra(ELEMENT));
                 if (element != null)
                     this.goods[type].add(element);
