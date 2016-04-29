@@ -18,6 +18,7 @@ import java.util.ArrayList;
 
 import straw.polito.it.straw.R;
 import straw.polito.it.straw.StrawApplication;
+import straw.polito.it.straw.data.Manager;
 import straw.polito.it.straw.data.Menu;
 
 /**
@@ -33,6 +34,7 @@ public class DatabaseUtils {
      * Names of the first-level nodes in the Firebase database
      */
     public static String MENU = "menu";
+    public static String MANAGER = "manager";
 
     /**
      * A simple constructor, invoked in StrawApplication.onCreate()
@@ -56,11 +58,65 @@ public class DatabaseUtils {
             String params[] = new String[children.size() + 1];
             children.toArray(params);
             params[params.length - 1] = data;
-            new DatabaseAsyncTask().execute(params);
+            new StoreAsyncTask().execute(params);
             return true;
         } else {
             Toast.makeText(this.context, R.string.NoNetwork, Toast.LENGTH_LONG).show();
             return false;
+        }
+    }
+
+    /**
+     * Allows to perform the sending of data to the database in a secondary thread
+     */
+    private class StoreAsyncTask extends AsyncTask<String, Void, Void> {
+        @Override
+        protected Void doInBackground(String... params) {
+            Firebase ref = firebase;
+            for (int i = 0; i < params.length - 1; i++) {
+                ref = ref.child(params[i]);
+            }
+            ref.setValue(params[params.length - 1]);
+            return null;
+        }
+    }
+
+    /**
+     * Allows to retrieve a String from the Firebase database in a secondary thread.
+     */
+    private class RetrieveAsyncTask extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... params) {
+            Firebase ref = firebase;
+            for (String string : params)
+                ref = ref.child(string);
+            String data = "";
+            ref.addValueEventListener(new RetrieverListener(data));
+            return data;
+        }
+    }
+
+    /**
+     * A simple class used to retrieve a String from the Firebase database.
+     */
+    private class RetrieverListener implements ValueEventListener {
+
+        private String data;
+
+        public RetrieverListener(String data) {
+            this.data = data;
+        }
+
+        @Override
+        public void onDataChange(DataSnapshot dataSnapshot) {
+            if (dataSnapshot != null && dataSnapshot.getValue() != null) {
+                data = dataSnapshot.getValue(String.class);
+            }
+        }
+
+        @Override
+        public void onCancelled(FirebaseError firebaseError) {
+
         }
     }
 
@@ -71,41 +127,30 @@ public class DatabaseUtils {
      */
     public void retrieveMenu(String restaurantName, final ArrayList[] menu) {
         //TO DO : check the availability of the network
-        Firebase ref = this.firebase.child(MENU).child(restaurantName);
-        ref.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot != null) {
-                    JSONArray jsonArray;
-                    if(dataSnapshot.getValue() == null) {
-                        /**
-                         * No data are available
-                         */
-                        Logger.d("Null value retrieved");
-                        return;
-                    }
+        String children[] = new String[2];
+        children[0] = MENU;
+        children[1] = restaurantName;
+        RetrieveAsyncTask task = new RetrieveAsyncTask();
+        task.execute(children);
+        String data;
+        try {
+            data = task.get();
+        } catch (Exception e) {
+            e.printStackTrace();
+            data = null;
+        }
 
-                    try {
-                        jsonArray = new JSONArray(dataSnapshot.getValue(String.class));
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        jsonArray = null;
-                    }
+        JSONArray jsonArray;
+        try {
+            jsonArray = new JSONArray(data);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            jsonArray = null;
+        }
 
-                    if(jsonArray != null) {
-                        Menu.restoreMenu(jsonArray, menu);
-                    }
-                }
-                /**
-                 * If dataSnapshot is null, there is a problem, so don't do anything
-                 */
-            }
-
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-
-            }
-        });
+        if (jsonArray != null) {
+            Menu.restoreMenu(jsonArray, menu);
+        }
     }
 
     /**
@@ -123,17 +168,36 @@ public class DatabaseUtils {
     }
 
     /**
-     * Allows to perform the sending of data to the database in a secondary thread
+     * Store the profile of a manager in the Firebase database
+     * @param manager : the manager profile to save
+     * @return : return true if saving is possible, false otherwise.
      */
-    private class DatabaseAsyncTask extends AsyncTask<String, Void, Void> {
-        @Override
-        protected Void doInBackground(String... params) {
-            Firebase ref = firebase;
-            for (int i = 0; i < params.length - 1; i++) {
-                ref = ref.child(params[i]);
-            }
-            ref.setValue(params[params.length - 1]);
-            return null;
+    public boolean saveManagerProfile(Manager manager) {
+        ArrayList<String> children = new ArrayList<>();
+        children.add(MANAGER);
+        children.add(manager.getEmail());
+        return this.saveData(children, manager.toJSONObject());
+    }
+
+    /**
+     * Retrieve the full profile of a manager (identified by the manager email address) from
+     *                      Firebase database.
+     * @param managerEmail : used as the key to find the manager profile.
+     * @return : The manager profile retrieved from the database.
+     */
+    public Manager retrieveManagerProfile(String managerEmail) {
+        String children[] = new String[2];
+        children[0] = MANAGER;
+        children[1] = managerEmail;
+        RetrieveAsyncTask task = new RetrieveAsyncTask();
+        task.execute(children);
+        String data;
+        try {
+            data = task.get();
+        } catch (Exception e) {
+            e.printStackTrace();
+            data = null;
         }
+        return new Manager(data);
     }
 }
