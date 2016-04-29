@@ -4,15 +4,12 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ExpandableListView;
-import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -29,7 +26,6 @@ import straw.polito.it.straw.data.Manager;
 import straw.polito.it.straw.data.Menu;
 import straw.polito.it.straw.data.Plate;
 import straw.polito.it.straw.utils.DatabaseUtils;
-import straw.polito.it.straw.utils.Logger;
 
 
 public class CreateMenuActivity extends AppCompatActivity {

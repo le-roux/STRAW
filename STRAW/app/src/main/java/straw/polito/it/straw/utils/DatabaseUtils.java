@@ -29,8 +29,15 @@ public class DatabaseUtils {
     private ConnectivityManager connectivityManager;
     private NetworkInfo networkInfo;
 
+    /**
+     * Names of the first-level nodes in the Firebase database
+     */
     public static String MENU = "menu";
 
+    /**
+     * A simple constructor, invoked in StrawApplication.onCreate()
+     * @param context
+     */
     public DatabaseUtils(Context context) {
         this.context = context;
         this.connectivityManager = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -57,6 +64,11 @@ public class DatabaseUtils {
         }
     }
 
+    /**
+     * Retrieve the menu of the restaurant from the Firebase database
+     * @param restaurantName : the name of the restaurant of which we want to get the menu
+     * @param menu : the internal representation of a complete menu (Plates + Drinks)
+     */
     public void retrieveMenu(String restaurantName, final ArrayList[] menu) {
         Firebase ref = this.firebase.child(MENU).child(restaurantName);
         ref.addValueEventListener(new ValueEventListener() {
@@ -65,21 +77,26 @@ public class DatabaseUtils {
                 if (dataSnapshot != null) {
                     JSONArray jsonArray;
                     if(dataSnapshot.getValue() == null) {
+                        /**
+                         * No data are available
+                         */
                         Logger.d("Null value retrieved");
                         return;
                     }
+
                     try {
                         jsonArray = new JSONArray(dataSnapshot.getValue(String.class));
                     } catch (JSONException e) {
                         e.printStackTrace();
                         jsonArray = null;
                     }
+
                     if(jsonArray != null) {
                         Menu.restoreMenu(jsonArray, menu);
                     }
                 }
                 /**
-                 * If dataSnapshot is null, there are no data available, so don't do anything
+                 * If dataSnapshot is null, there is a problem, so don't do anything
                  */
             }
 
@@ -91,7 +108,7 @@ public class DatabaseUtils {
     }
 
     /**
-     *
+     * Store the menu of the restaurant in the Firebase database
      * @param restaurantName : the name of the restaurant, that will be used as the key for
      *                       storing the data.
      * @param data : the actual data to store.
@@ -105,7 +122,7 @@ public class DatabaseUtils {
     }
 
     /**
-     * Performs the sending of data to the database in a secondary thread
+     * Allows to perform the sending of data to the database in a secondary thread
      */
     private class DatabaseAsyncTask extends AsyncTask<String, Void, Void> {
         @Override
@@ -119,4 +136,3 @@ public class DatabaseUtils {
         }
     }
 }
-
