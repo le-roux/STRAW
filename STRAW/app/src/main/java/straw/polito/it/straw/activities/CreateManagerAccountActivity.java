@@ -168,6 +168,7 @@ public class CreateManagerAccountActivity extends AppCompatActivity {
                     }
                     Intent intent = new Intent(getApplicationContext(), ProfileManagerActivity.class);
                     startActivity(intent);
+                    finish();
                 } else {
                     return;
                 }
