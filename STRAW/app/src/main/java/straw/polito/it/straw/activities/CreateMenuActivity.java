@@ -4,12 +4,15 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ExpandableListView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -17,12 +20,16 @@ import org.json.JSONException;
 import java.util.ArrayList;
 
 import straw.polito.it.straw.R;
+import straw.polito.it.straw.StrawApplication;
 import straw.polito.it.straw.adapter.FoodExpandableAdapter;
 import straw.polito.it.straw.adapter.FoodExpandableAdapterRemove;
 import straw.polito.it.straw.data.Drink;
 import straw.polito.it.straw.data.Food;
+import straw.polito.it.straw.data.Manager;
 import straw.polito.it.straw.data.Menu;
 import straw.polito.it.straw.data.Plate;
+import straw.polito.it.straw.utils.DatabaseUtils;
+import straw.polito.it.straw.utils.Logger;
 
 
 public class CreateMenuActivity extends AppCompatActivity {
@@ -46,6 +53,7 @@ public class CreateMenuActivity extends AppCompatActivity {
     private Button add_drink_button;
 
     private SharedPreferences sharedPreferences;
+    private Manager manager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +63,8 @@ public class CreateMenuActivity extends AppCompatActivity {
         this.context = this;
         this.context = getApplicationContext();
         this.sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        this.manager = ((StrawApplication)getApplication()).getSharedPreferencesHandler().getCurrentManager();
+        //TO DO : react if this.manager is null
 
         //Listener for the "Add plate" button
         this.add_plate_button = (Button)findViewById(R.id.add_plate_button);
@@ -162,6 +172,11 @@ public class CreateMenuActivity extends AppCompatActivity {
     @Override
     public void onStop() {
         super.onStop();
-        Menu.saveMenuInSharedPreferences(this.context, this.goods);
+        DatabaseUtils utils = ((StrawApplication)getApplication()).getDatabaseUtils();
+        boolean saved = utils.saveMenu(this.manager.getRes_name(), Menu.saveMenu(this.goods).toString());
+        //If it's impossible to save the data in the database, temporarily store them locally
+        if (!saved)
+            Menu.saveMenuInSharedPreferences(this.context, this.goods);
+        //TO DO : retry later to send the data to the database
     }
 }

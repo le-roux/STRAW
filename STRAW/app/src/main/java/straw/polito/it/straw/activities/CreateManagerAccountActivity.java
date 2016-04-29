@@ -41,6 +41,7 @@ import straw.polito.it.straw.R;
 
 import straw.polito.it.straw.data.Manager;
 import straw.polito.it.straw.utils.Logger;
+import straw.polito.it.straw.utils.SharedPreferencesHandler;
 
 public class CreateManagerAccountActivity extends AppCompatActivity {
 
@@ -186,8 +187,8 @@ public class CreateManagerAccountActivity extends AppCompatActivity {
                 man.setImage(photo_uri.toString());
                 if (!sw) {
                     String oj = man.toJSONObject();
-                    mShared.edit().putString("Manager", oj).commit();
-                    if (getIntent().hasExtra("manager")) {
+                    mShared.edit().putString(SharedPreferencesHandler.MANAGER, oj).commit();
+                    if(getIntent().hasExtra("manager")) {
                         showAlert(getString(R.string.m_save), getString(R.string.m_succ), true);
                     } else {
                         showAlert(getString(R.string.m_c), getString(R.string.m_succ), true);
@@ -201,6 +202,7 @@ public class CreateManagerAccountActivity extends AppCompatActivity {
                     intentForSearch.putExtra("EXTRA_NAME", name.toString());
 
                     startActivity(intent);
+                    finish();
                 } else {
                     return;
                 }

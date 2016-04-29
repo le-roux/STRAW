@@ -179,6 +179,7 @@ public class CreateUserAccountActivity extends AppCompatActivity {
                     }
                     Intent intent = new Intent(getApplicationContext(), ProfileUserActivity.class);
                     startActivity(intent);
+                    finish();
                 } else {
                     return;
                 }
