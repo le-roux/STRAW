@@ -124,4 +124,7 @@
     <string name="rev_h">- Review History</string>
     <string name="res_h">- Reservation History</string>
     <string name="friends">- Friend List</string>
+
+    <!--Strings for the database part-->
+    <string name="NoNetwork">Network is not available\nPlease check your connection</string>
 </resources>
