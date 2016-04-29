@@ -12,6 +12,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -54,7 +55,7 @@ public class QuickSearchActivity extends AppCompatActivity {
         //this.restaurant_list.add(new Manager());
         init_list();
         mShared= PreferenceManager.getDefaultSharedPreferences(this);
-
+        //ADD RESTAURANTS FROM SERVER
         if(mShared.contains("Manager")) {
             String ss = mShared.getString("Manager", "Error");
             Manager man=new Manager(ss);
@@ -81,6 +82,15 @@ public class QuickSearchActivity extends AppCompatActivity {
         this.restaurant_listView = (ListView) findViewById(R.id.restaurant_list);
         addListenerOnButton();
         addListenerOnSpinnerItemSelection();
+
+        restaurant_listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent i=new Intent(getBaseContext(),SearchDetailActivity.class);
+                i.putExtra("res",restaurant_list.get(position).toJSONObject());
+                startActivity(i);
+            }
+        });
     }
     public RestaurantListAdapter getAdapter() {
         return (RestaurantListAdapter)this.restaurant_listView.getAdapter();

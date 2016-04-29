@@ -65,29 +65,34 @@ public class CreateMenuActivity extends AppCompatActivity {
         this.sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         this.manager = ((StrawApplication)getApplication()).getSharedPreferencesHandler().getCurrentManager();
         //TO DO : react if this.manager is null
+        if(!getIntent().getExtras().containsKey("active")) {
+            //Listener for the "Add plate" button
+            this.add_plate_button = (Button) findViewById(R.id.add_plate_button);
+            this.add_plate_button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(getApplicationContext(), CreatePlateActivity.class);
+                    intent.putExtra(ACTION, ADD_ELEMENT);
+                    startActivityForResult(intent, ADD_FOOD);
+                }
+            });
 
-        //Listener for the "Add plate" button
-        this.add_plate_button = (Button)findViewById(R.id.add_plate_button);
-        this.add_plate_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), CreatePlateActivity.class);
-                intent.putExtra(ACTION, ADD_ELEMENT);
-                startActivityForResult(intent, ADD_FOOD);
-            }
-        });
-
-        //Listener for the "Add drink" button
-        this.add_drink_button = (Button)findViewById(R.id.add_drink_button);
-        this.add_drink_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), CreateDrinkActivity.class);
-                intent.putExtra(ACTION, ADD_ELEMENT);
-                startActivityForResult(intent, ADD_FOOD);
-            }
-        });
-
+            //Listener for the "Add drink" button
+            this.add_drink_button = (Button) findViewById(R.id.add_drink_button);
+            this.add_drink_button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(getApplicationContext(), CreateDrinkActivity.class);
+                    intent.putExtra(ACTION, ADD_ELEMENT);
+                    startActivityForResult(intent, ADD_FOOD);
+                }
+            });
+        }else{
+            this.add_plate_button = (Button) findViewById(R.id.add_plate_button);
+            this.add_drink_button = (Button) findViewById(R.id.add_drink_button);
+            this.add_plate_button.setVisibility(View.INVISIBLE);
+            this.add_drink_button.setVisibility(View.INVISIBLE);
+        }
         this.goods = new ArrayList[2];
         this.goods[Menu.PLATES] = new ArrayList<Food>();
         this.goods[Menu.DRINKS] = new ArrayList<Food>();
