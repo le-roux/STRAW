@@ -3,6 +3,7 @@ package straw.polito.it.straw.utils;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.widget.Toast;
 
 import com.firebase.client.Firebase;
@@ -58,4 +59,13 @@ public class DatabaseUtils {
         children.add(restaurantName);
         return this.saveData(children, data);
     }
+
+    private class MenuAsyncTask extends AsyncTask<String, Void, Void> {
+        @Override
+        protected Void doInBackground(String... params) {
+            //TO DO
+            return null;
+        }
+    }
 }
+

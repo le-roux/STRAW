@@ -48,8 +48,7 @@ public class HomeActivity extends AppCompatActivity {
                 int sol=log_in(u, p);
                 if (sol==1) {
                     Log.v(TAG, "Manager log in successfull");
-                    //Intent i=new Intent(getBaseContext(),ProfileManagerActivity.class);
-                    Intent i=new Intent(getBaseContext(),SearchActivity.class);
+                    Intent i=new Intent(getBaseContext(),ProfileManagerActivity.class);
                     startActivity(i);
                 }else if(sol==2){
                     Log.v(TAG, "User log in successfull");
