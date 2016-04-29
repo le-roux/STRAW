@@ -14,6 +14,8 @@ import straw.polito.it.straw.StrawApplication;
 
 /**
  * Created by Sylvain on 29/04/2016.
+ *
+ * Provide
  */
 public class DatabaseUtils {
     private Firebase firebase;

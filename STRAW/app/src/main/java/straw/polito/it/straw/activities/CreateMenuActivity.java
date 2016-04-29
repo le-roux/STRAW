@@ -25,6 +25,7 @@ import straw.polito.it.straw.adapter.FoodExpandableAdapter;
 import straw.polito.it.straw.adapter.FoodExpandableAdapterRemove;
 import straw.polito.it.straw.data.Drink;
 import straw.polito.it.straw.data.Food;
+import straw.polito.it.straw.data.Manager;
 import straw.polito.it.straw.data.Menu;
 import straw.polito.it.straw.data.Plate;
 import straw.polito.it.straw.utils.DatabaseUtils;
@@ -52,6 +53,7 @@ public class CreateMenuActivity extends AppCompatActivity {
     private Button add_drink_button;
 
     private SharedPreferences sharedPreferences;
+    private Manager manager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +63,8 @@ public class CreateMenuActivity extends AppCompatActivity {
         this.context = this;
         this.context = getApplicationContext();
         this.sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        this.manager = ((StrawApplication)getApplication()).getSharedPreferencesHandler().getCurrentManager();
+        //TO DO : react if this.manager is null
 
         //Listener for the "Add plate" button
         this.add_plate_button = (Button)findViewById(R.id.add_plate_button);
@@ -169,9 +173,10 @@ public class CreateMenuActivity extends AppCompatActivity {
     public void onStop() {
         super.onStop();
         DatabaseUtils utils = ((StrawApplication)getApplication()).getDatabaseUtils();
-        boolean saved = utils.saveMenu("restaurant", Menu.saveMenu(this.goods).toString());
+        boolean saved = utils.saveMenu(this.manager.getRes_name(), Menu.saveMenu(this.goods).toString());
         //If it's impossible to save the data in the database, temporarily store them locally
         if (!saved)
             Menu.saveMenuInSharedPreferences(this.context, this.goods);
+        //TO DO : retry later to send the data to the database
     }
 }

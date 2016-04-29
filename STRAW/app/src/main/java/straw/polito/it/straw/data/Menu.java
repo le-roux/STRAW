@@ -118,10 +118,6 @@ public class Menu
         SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
         editor.putString(MENU, saveMenu(menu).toString());
         editor.commit();
-        //Saving to the firebase data base
-        Firebase firebase = new Firebase(StrawApplication.FIREBASEURL);
-        Firebase menuRef = firebase.child("menu");
-        menuRef.child("restaurantName").setValue(saveMenu(menu).toString());
     }
 
     public static JSONArray getMenuFromSharedPreferences(Context context) {
