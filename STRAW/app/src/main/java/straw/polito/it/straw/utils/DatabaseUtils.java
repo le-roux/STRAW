@@ -30,6 +30,8 @@ public class DatabaseUtils {
     private ConnectivityManager connectivityManager;
     private NetworkInfo networkInfo;
 
+    private static final int DELAY = 10000;
+
     /**
      * Names of the first-level nodes in the Firebase database
      */
@@ -54,16 +56,11 @@ public class DatabaseUtils {
      * @return : return true if saving is possible, false otherwise.
      */
     public boolean saveData(ArrayList<String> children, String data) {
-        if (this.networkInfo != null && this.networkInfo.isConnectedOrConnecting()) {
-            String params[] = new String[children.size() + 1];
-            children.toArray(params);
-            params[params.length - 1] = data;
-            new StoreAsyncTask().execute(params);
-            return true;
-        } else {
-            Toast.makeText(this.context, R.string.NoNetwork, Toast.LENGTH_LONG).show();
-            return false;
-        }
+        String params[] = new String[children.size() + 1];
+        children.toArray(params);
+        params[params.length - 1] = data;
+        new StoreAsyncTask().execute(params);
+        return true;
     }
 
     /**
@@ -72,12 +69,25 @@ public class DatabaseUtils {
     private class StoreAsyncTask extends AsyncTask<String, Void, Void> {
         @Override
         protected Void doInBackground(String... params) {
+            /**
+             * Wait until the network is available
+             */
+            if (networkInfo == null || !networkInfo.isConnectedOrConnecting()) {
+                publishProgress();
+                return null;
+            }
             Firebase ref = firebase;
             for (int i = 0; i < params.length - 1; i++) {
                 ref = ref.child(params[i]);
+                Logger.d(params[i]);
             }
             ref.setValue(params[params.length - 1]);
             return null;
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+            Toast.makeText(context, R.string.NoNetwork, Toast.LENGTH_LONG).show();
         }
     }
 
@@ -87,12 +97,25 @@ public class DatabaseUtils {
     private class RetrieveAsyncTask extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... params) {
-            Firebase ref = firebase;
-            for (String string : params)
-                ref = ref.child(string);
-            String data = "";
-            ref.addValueEventListener(new RetrieverListener(data));
-            return data;
+            /**
+             * Check if the network is available
+             */
+            if (networkInfo == null || !networkInfo.isConnectedOrConnecting()) {
+                publishProgress();
+                return null;
+            } else {
+                Firebase ref = firebase;
+                for (String string : params)
+                    ref = ref.child(string);
+                String data = "";
+                ref.addValueEventListener(new RetrieverListener(data));
+                return data;
+            }
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+            Toast.makeText(context, R.string.NoNetwork, Toast.LENGTH_LONG).show();
         }
     }
 
@@ -126,10 +149,13 @@ public class DatabaseUtils {
      * @param menu : the internal representation of a complete menu (Plates + Drinks)
      */
     public void retrieveMenu(String restaurantName, final ArrayList[] menu) {
-        //TO DO : check the availability of the network
         String children[] = new String[2];
         children[0] = MENU;
         children[1] = restaurantName;
+
+        /**
+         * Retrieve the string representation from the database
+         */
         RetrieveAsyncTask task = new RetrieveAsyncTask();
         task.execute(children);
         String data;
@@ -137,9 +163,18 @@ public class DatabaseUtils {
             data = task.get();
         } catch (Exception e) {
             e.printStackTrace();
-            data = null;
+            Toast.makeText(context, R.string.NoNetwork, Toast.LENGTH_LONG);
+            return;
+        }
+        
+        if (data == null) {
+            Toast.makeText(context, R.string.ErrorNetwork, Toast.LENGTH_LONG);
+            return;
         }
 
+        /**
+         * Use the string representation to re-create the menu
+         */
         JSONArray jsonArray;
         try {
             jsonArray = new JSONArray(data);
@@ -200,4 +235,6 @@ public class DatabaseUtils {
         }
         return new Manager(data);
     }
+
+
 }

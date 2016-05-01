@@ -157,4 +157,5 @@
 
     <!--Strings for the database part-->
     <string name="NoNetwork">Network is not available\nPlease check your connection</string>
+    <string name="ErrorNetwork">Error network</string>
 </resources>
