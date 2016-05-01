@@ -14,6 +14,7 @@ import straw.polito.it.straw.BookTableInterface;
 import straw.polito.it.straw.DateContainer;
 import straw.polito.it.straw.DateDisplayer;
 import straw.polito.it.straw.R;
+import straw.polito.it.straw.StrawApplication;
 import straw.polito.it.straw.TimeContainer;
 import straw.polito.it.straw.TimeDisplayer;
 import straw.polito.it.straw.adapter.ReservationAdapter;
@@ -23,6 +24,7 @@ import straw.polito.it.straw.data.Reservation.Place;
 import straw.polito.it.straw.utils.DatePickerFragment;
 import straw.polito.it.straw.utils.Logger;
 import straw.polito.it.straw.utils.NumberPickerFragment;
+import straw.polito.it.straw.utils.SharedPreferencesHandler;
 import straw.polito.it.straw.utils.TimePickerFragment;
 import straw.polito.it.straw.utils.TimerDisplay;
 
@@ -166,7 +168,9 @@ public class BookTableActivity extends AppCompatActivity implements BookTableInt
         this.outsideCheckbox.setChecked(outside);
     }
 
-    //Update the stored data according to the content of the fields
+    /**
+     * Update the stored data according to the content of the fields.
+     */
     public void updateData() {
         this.reservation.setNumberPeople(Integer.decode(String.valueOf(this.numberPeopleNumber.getText())));
         this.reservation.setTime(this.calendar.getYear(), this.calendar.getMonth(), this.calendar.getDay(), this.clock.getHourOfDay(), this.clock.getMinutes());
@@ -179,6 +183,8 @@ public class BookTableActivity extends AppCompatActivity implements BookTableInt
             this.reservation.setPlace(Place.OUTSIDE);
         } else
             this.reservation.setPlace(Place.NO_PREFERENCE);
+        SharedPreferencesHandler handler = ((StrawApplication)getApplication()).getSharedPreferencesHandler();
+        this.reservation.setCustomer(handler.getCurrentUser());
     }
 
     @Override

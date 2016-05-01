@@ -40,6 +40,7 @@ public class Reservation implements TimeDisplayer, DateDisplayer{
     public static final String PLATES = "Plates";
     public static final String DRINKS = "Drinks";
     public static final String RESERVATION = "Reservation";
+    public static final String RESTAURANT = "Restaurant";
     public static final String CUSTOMER = "Customer";
     public static  final String PLACE = "Place";
 
@@ -206,9 +207,11 @@ public class Reservation implements TimeDisplayer, DateDisplayer{
             jsonObject.put(MINUTES, this.getMinutes());
             jsonObject.put(PLACE, this.getPlaceInt());
             if (this.getRestaurant() != null)
-                jsonObject.put(RESERVATION, this.getRestaurant().toJSONObject());
+                jsonObject.put(RESTAURANT, this.getRestaurant().toJSONObject());
             else {
-                jsonObject.put(RESERVATION, (new Manager().toJSONObject()));
+                Manager manager = new Manager();
+                manager.setRes_name("foo");
+                jsonObject.put(RESTAURANT, (manager.toJSONObject()));
                 Logger.d("Warning : new restaurant created when saving reservation");
             }
             jsonObject.put(CUSTOMER, this.getCustomer().toString());
@@ -244,10 +247,13 @@ public class Reservation implements TimeDisplayer, DateDisplayer{
             int minutes = jsonObject.getInt(MINUTES);
             reservation.setTime(year, month, day, hour, minutes);
             reservation.setPlace(jsonObject.getInt(PLACE));
-            reservation.setRestaurant(new Manager(jsonObject.getString(RESERVATION)));
+            Logger.d("create : " + jsonObject.getString(RESTAURANT));
+            reservation.setRestaurant(new Manager(jsonObject.getString(RESTAURANT)));
+            Logger.d("create : " + reservation.getRestaurant().getRes_name());
             reservation.setCustomer(new User(jsonObject.getString(CUSTOMER)));
         } catch (JSONException e) {
             e.printStackTrace();
+            Logger.d("null");
             return null;
         }
         return reservation;

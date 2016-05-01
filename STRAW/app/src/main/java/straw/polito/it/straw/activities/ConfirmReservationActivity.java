@@ -11,9 +11,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import straw.polito.it.straw.R;
+import straw.polito.it.straw.StrawApplication;
 import straw.polito.it.straw.adapter.FoodExpandableAdapterRemove;
 import straw.polito.it.straw.data.Food;
 import straw.polito.it.straw.data.Reservation;
+import straw.polito.it.straw.utils.DatabaseUtils;
 import straw.polito.it.straw.utils.DateDisplay;
 import straw.polito.it.straw.utils.PriceDisplay;
 import straw.polito.it.straw.utils.TimerDisplay;
@@ -39,6 +41,11 @@ public class ConfirmReservationActivity extends AppCompatActivity {
         this.resources = getResources();
         this.reservation = Reservation.create(intent.getStringExtra(Reservation.RESERVATION));
 
+        //TO DO : remove this
+        if (this.reservation.getRestaurant().getRes_name() == null) {
+            this.reservation.getRestaurant().setRes_name("foo");
+        }
+
         this.numberPeople = (TextView)findViewById(R.id.number_people);
         this.place = (TextView)findViewById(R.id.place);
         this.date = (DateDisplay)findViewById(R.id.Date);
@@ -47,7 +54,11 @@ public class ConfirmReservationActivity extends AppCompatActivity {
         this.price = (PriceDisplay)findViewById(R.id.Price);
         this.confirmButton = (Button)findViewById(R.id.confirm_button);
 
-        this.numberPeople.setText(this.reservation.getNumberPeople() + " " + this.resources.getString(R.string.Persons));
+        String text = this.reservation.getNumberPeople()
+                + ' '
+                + this.resources.getString(R.string.Persons);
+        this.numberPeople.setText(text);
+
         if (this.reservation.getPlace().equals(Reservation.Place.OUTSIDE))
             this.place.setText(this.resources.getString(R.string.Outside));
         else if (this.reservation.getPlace().equals(Reservation.Place.INSIDE))
@@ -65,8 +76,10 @@ public class ConfirmReservationActivity extends AppCompatActivity {
         this.price.setPrice(price);
 
         this.confirmButton.setOnClickListener(new View.OnClickListener() {
-             @Override
+            @Override
             public void onClick(View view) {
+                 DatabaseUtils databaseUtils = ((StrawApplication)getApplication()).getDatabaseUtils();
+                 databaseUtils.saveReservation(reservation);
                  Toast toast = Toast.makeText(getApplicationContext(), R.string.ReservationSent, Toast.LENGTH_LONG);
                  toast.show();
              }

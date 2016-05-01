@@ -87,8 +87,8 @@ public class DatabaseUtils {
 
             Firebase ref = firebase;
             for (int i = 0; i < params.length - 1; i++) {
-                ref = ref.child(params[i]);
                 Logger.d(params[i]);
+                ref = ref.child(params[i]);
             }
             ref.setValue(params[params.length - 1]);
             return null;
@@ -294,9 +294,10 @@ public class DatabaseUtils {
      * @param reservation : the reservation to store.
      * @return : return true if saving is possible, false otherwise.
      */
-    public boolean storeReservation(Reservation reservation) {
+    public boolean saveReservation(Reservation reservation) {
         ArrayList<String> children = new ArrayList<>();
         children.add(RESERVATION);
+        Logger.d("save reservation : " + reservation.getRestaurant().getRes_name());
         children.add(reservation.getRestaurant().getRes_name());
         children.add(reservation.getCustomer().getEmail());
         return this.saveData(children, reservation.toString());
