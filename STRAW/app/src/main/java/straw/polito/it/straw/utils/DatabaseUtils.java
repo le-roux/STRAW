@@ -29,8 +29,7 @@ public class DatabaseUtils {
     private Context context;
     private ConnectivityManager connectivityManager;
     private NetworkInfo networkInfo;
-
-    private static final int DELAY = 10000;
+    private SharedPreferencesHandler sharedPreferencesHandler;
 
     /**
      * Names of the first-level nodes in the Firebase database
@@ -42,10 +41,11 @@ public class DatabaseUtils {
      * A simple constructor, invoked in StrawApplication.onCreate()
      * @param context
      */
-    public DatabaseUtils(Context context) {
+    public DatabaseUtils(Context context, SharedPreferencesHandler sharedPreferencesHandler) {
         this.context = context;
         this.connectivityManager = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
         this.networkInfo = connectivityManager.getActiveNetworkInfo();
+        this.sharedPreferencesHandler = sharedPreferencesHandler;
         this.firebase = new Firebase(StrawApplication.FIREBASEURL);
     }
 
@@ -66,16 +66,19 @@ public class DatabaseUtils {
     /**
      * Allows to perform the sending of data to the database in a secondary thread
      */
-    private class StoreAsyncTask extends AsyncTask<String, Void, Void> {
+    private class StoreAsyncTask extends AsyncTask<String, Void, String[]> {
         @Override
-        protected Void doInBackground(String... params) {
+        protected String[] doInBackground(String... params) {
             /**
-             * Wait until the network is available
+             * Check if the network is available
              */
             if (networkInfo == null || !networkInfo.isConnectedOrConnecting()) {
-                publishProgress();
-                return null;
+                String[] result = new String[2];
+                result[0] = MANAGER;
+                result[1] = params[params.length - 1];
+                return result;
             }
+
             Firebase ref = firebase;
             for (int i = 0; i < params.length - 1; i++) {
                 ref = ref.child(params[i]);
@@ -86,8 +89,17 @@ public class DatabaseUtils {
         }
 
         @Override
-        protected void onProgressUpdate(Void... values) {
-            Toast.makeText(context, R.string.NoNetwork, Toast.LENGTH_LONG).show();
+        protected void onPostExecute(String[] result) {
+            if (result != null) {
+                /**
+                 * Impossible to send the data to the remote database
+                 * Store it locally in the sharedPreferences
+                 */
+                Toast.makeText(context, R.string.NoNetwork, Toast.LENGTH_LONG).show();
+                if (result[0].equals(MANAGER)) {
+                    sharedPreferencesHandler.storeCurrentManager(result[1]);
+                }
+            }
         }
     }
 
@@ -163,12 +175,12 @@ public class DatabaseUtils {
             data = task.get();
         } catch (Exception e) {
             e.printStackTrace();
-            Toast.makeText(context, R.string.NoNetwork, Toast.LENGTH_LONG);
+            Toast.makeText(context, R.string.NoNetwork, Toast.LENGTH_LONG).show();
             return;
         }
-        
+
         if (data == null) {
-            Toast.makeText(context, R.string.ErrorNetwork, Toast.LENGTH_LONG);
+            Toast.makeText(context, R.string.ErrorNetwork, Toast.LENGTH_LONG).show();
             return;
         }
 

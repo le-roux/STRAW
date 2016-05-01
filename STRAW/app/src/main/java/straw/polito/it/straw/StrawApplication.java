@@ -20,8 +20,8 @@ public class StrawApplication extends Application {
     public void onCreate() {
         super.onCreate();
         Firebase.setAndroidContext(this);
-        this.databaseUtils = new DatabaseUtils(getApplicationContext());
         this.sharedPreferencesHandler = new SharedPreferencesHandler(getApplicationContext());
+        this.databaseUtils = new DatabaseUtils(getApplicationContext(), this.sharedPreferencesHandler);
     }
 
     public DatabaseUtils getDatabaseUtils() {

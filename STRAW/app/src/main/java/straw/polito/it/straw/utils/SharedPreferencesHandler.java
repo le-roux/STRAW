@@ -31,4 +31,10 @@ public class SharedPreferencesHandler {
             return new Manager(description);
         }
     }
+
+    public void storeCurrentManager(String description) {
+        SharedPreferences.Editor editor = this.sharedPreferences.edit();
+        editor.putString(MANAGER, description);
+        editor.apply();
+    }
 }
