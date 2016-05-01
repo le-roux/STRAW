@@ -13,6 +13,7 @@ import com.firebase.client.ValueEventListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
@@ -21,6 +22,7 @@ import straw.polito.it.straw.R;
 import straw.polito.it.straw.StrawApplication;
 import straw.polito.it.straw.data.Manager;
 import straw.polito.it.straw.data.Menu;
+import straw.polito.it.straw.data.Reservation;
 import straw.polito.it.straw.data.User;
 
 /**
@@ -36,9 +38,10 @@ public class DatabaseUtils {
     /**
      * Names of the first-level nodes in the Firebase database
      */
-    public static String MENU = "menu";
-    public static String MANAGER = "manager";
-    public static String USER = "user";
+    public static final String MENU = "menu";
+    public static final String MANAGER = "manager";
+    public static final String USER = "user";
+    public static final String RESERVATION = "reservation";
 
     /**
      * A simple constructor, invoked in StrawApplication.onCreate()
@@ -284,6 +287,74 @@ public class DatabaseUtils {
             return null;
         }
         return new User(data);
+    }
+
+    /**
+     * Store a reservation in the database.
+     * @param reservation : the reservation to store.
+     * @return : return true if saving is possible, false otherwise.
+     */
+    public boolean storeReservation(Reservation reservation) {
+        ArrayList<String> children = new ArrayList<>();
+        children.add(RESERVATION);
+        children.add(reservation.getRestaurant().getRes_name());
+        children.add(reservation.getCustomer().getEmail());
+        return this.saveData(children, reservation.toString());
+    }
+
+    /**
+     * Retrieve a reservation from the Firebase database.
+     * @param restaurantName : the name of the restaurant in which the reservation has been done.
+     * @param customerEmail : the email address of the customer who did the reservation.
+     * @return : the reservation retrieved or null if it's not possible to retrieve proper data.
+     */
+    public Reservation retrieveReservation(String restaurantName, String customerEmail) {
+        String[] children = new String[3];
+        children[0] = RESERVATION;
+        children[1] = restaurantName;
+        children[2] = customerEmail;
+        RetrieveAsyncTask task = new RetrieveAsyncTask();
+        task.execute(children);
+        String data;
+        try {
+            data = task.get();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+        return Reservation.create(data);
+    }
+
+    /**
+     * Retrieve all the reservations for a restaurant.
+     * @param restaurantName : the name of the restaurant.
+     * @return : An ArrayList of Reservation or null if it's not possible to retrieve proper data.
+     */
+    public ArrayList<Reservation> retrieveReservations(String restaurantName) {
+        ArrayList<Reservation> reservations = new ArrayList<>();
+        String[] children = new String[2];
+        children[0] = RESERVATION;
+        children[1] = restaurantName;
+        RetrieveAsyncTask task = new RetrieveAsyncTask();
+        task.execute(children);
+        String data;
+        try {
+            data = task.get();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+        try {
+            JSONArray jsonArray = new JSONArray(data);
+            for (int i = 0; i < jsonArray.length(); i++) {
+                reservations.add(Reservation.create(jsonArray.getString(i)));
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return reservations;
+
     }
 
 

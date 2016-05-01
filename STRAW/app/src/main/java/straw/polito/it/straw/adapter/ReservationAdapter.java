@@ -158,8 +158,11 @@ public class ReservationAdapter extends BaseAdapter {
         //Fill them with appropriate values
         if(position < this.reservationList.size()) {
             Reservation reservation = this.reservationList.get(position);
-            numberPeople.setText(reservation.getNumberPeople() + " " +
-                    context.getString(R.string.Persons));
+            StringBuilder builder = new StringBuilder();
+            builder.append(reservation.getNumberPeople())
+                    .append(' ')
+                    .append(context.getString(R.string.Persons));
+            numberPeople.setText(builder.toString());
             dateDisplay.setDate(reservation.getYear(), reservation.getMonth(), reservation.getDay());
             timerDisplay.setTime(reservation.getHourOfDay(), reservation.getMinutes());
             plates.setText(this.reservationList.get(position).getFoodList());
