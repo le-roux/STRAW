@@ -15,11 +15,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 import straw.polito.it.straw.R;
 import straw.polito.it.straw.StrawApplication;
 import straw.polito.it.straw.data.Manager;
 import straw.polito.it.straw.data.Menu;
+import straw.polito.it.straw.data.User;
 
 /**
  * Created by Sylvain on 29/04/2016.
@@ -36,6 +38,7 @@ public class DatabaseUtils {
      */
     public static String MENU = "menu";
     public static String MANAGER = "manager";
+    public static String USER = "user";
 
     /**
      * A simple constructor, invoked in StrawApplication.onCreate()
@@ -230,7 +233,8 @@ public class DatabaseUtils {
      * Retrieve the full profile of a manager (identified by the manager email address) from
      *                      Firebase database.
      * @param managerEmail : used as the key to find the manager profile.
-     * @return : The manager profile retrieved from the database.
+     * @return : The manager profile retrieved from the database, or null if it's not possible
+     *          to retrieve proper data.
      */
     public Manager retrieveManagerProfile(String managerEmail) {
         String children[] = new String[2];
@@ -243,9 +247,43 @@ public class DatabaseUtils {
             data = task.get();
         } catch (Exception e) {
             e.printStackTrace();
-            data = null;
+            return null;
         }
         return new Manager(data);
+    }
+
+    /**
+     * Store the profile of a customer in the Firebase database
+     * @param user : the profile to store
+     * @return : return true if saving is possible, false otherwise.
+     */
+    public boolean saveUserProfile(User user) {
+        ArrayList<String> children = new ArrayList<>();
+        children.add(USER);
+        children.add(user.getEmail());
+        return this.saveData(children, user.toString());
+    }
+
+    /**
+     * Retrieve the full profile of a user (identified by the user email address) from the
+     *              Firebase database.
+     * @param userEmail : used as the key to find the profile.
+     * @return : the profile, or null if it's not possible to retrieve proper data.
+     */
+    public User retrieveUserProfile(String userEmail) {
+        String[] children = new String[2];
+        children[0] = USER;
+        children[1] = userEmail;
+        RetrieveAsyncTask task = new RetrieveAsyncTask();
+        task.execute(children);
+        String data;
+        try {
+            data = task.get();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+        return new User(data);
     }
 
 

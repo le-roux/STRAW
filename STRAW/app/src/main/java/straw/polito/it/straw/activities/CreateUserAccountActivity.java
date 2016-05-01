@@ -34,7 +34,9 @@ import java.util.Date;
 import java.util.List;
 
 import straw.polito.it.straw.R;
+import straw.polito.it.straw.StrawApplication;
 import straw.polito.it.straw.data.User;
+import straw.polito.it.straw.utils.DatabaseUtils;
 import straw.polito.it.straw.utils.Logger;
 
 public class CreateUserAccountActivity extends AppCompatActivity {
@@ -170,6 +172,8 @@ public class CreateUserAccountActivity extends AppCompatActivity {
                 user.setImage( photo_uri.toString());
 
                 if (!sw) {
+                    DatabaseUtils databaseUtils = ((StrawApplication)getApplication()).getDatabaseUtils();
+                    databaseUtils.saveUserProfile(user);
                     String oj = user.toString();
                     mShared.edit().putString("User", oj).commit();
                     if(getIntent().hasExtra("user")) {
