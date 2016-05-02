@@ -6,6 +6,7 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.widget.Toast;
 
+import com.firebase.client.AuthData;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
@@ -16,6 +17,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 import straw.polito.it.straw.R;
@@ -358,5 +360,76 @@ public class DatabaseUtils {
 
     }
 
+    /**
+     * Create a new user in the Firebase database
+     * @param emailAddress : the login of the new user
+     * @param password : the password of the new user
+     * @return true if the creation succeeded, false otherwise
+     */
+    public void createUser(String emailAddress, String password) {
+        CreateUserAsyncTask task = new CreateUserAsyncTask();
+        String[] params = new String[2];
+        params[0] = emailAddress;
+        params[1] = password;
+        task.execute(params);
+    }
 
+    /**
+     * A simple AsyncTask that performs the creation of a new user in the Fireabse database in
+     * a secondary thread.
+     */
+    private class CreateUserAsyncTask extends AsyncTask<String, Void, Boolean> {
+
+        @Override
+        protected Boolean doInBackground(String[] params) {
+            firebase.createUser(params[0], params[1], new Firebase.ValueResultHandler<Map<String, Object>>() {
+                @Override
+                public void onSuccess(Map<String, Object> stringObjectMap) {
+                    Toast.makeText(context, R.string.m_c, Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onError(FirebaseError firebaseError) {
+                    Toast.makeText(context, R.string.ErrorNetwork, Toast.LENGTH_SHORT).show();
+                }
+            });
+            return true;
+        }
+    }
+
+    /**
+     * Try to authenticate the user according to it's login and password.
+     * @param emailAddress : the login of the requested account
+     * @param password : the password of the requested account
+     */
+    public void logIn(String emailAddress, String password) {
+        String[] params = new String[2];
+        params[0] = emailAddress;
+        params[1] = password;
+        LogInAsyncTask task = new LogInAsyncTask();
+        task.execute(params);
+    }
+
+    /**
+     * A simple AsyncTask that performs the authentication of the users in a secondary thread.
+     */
+    private class LogInAsyncTask extends AsyncTask<String, Void, Void> {
+
+        @Override
+        protected Void doInBackground(String... params) {
+            firebase.authWithPassword(params[0], params[1], new Firebase.AuthResultHandler() {
+                @Override
+                public void onAuthenticated(AuthData authData) {
+                    Toast.makeText(context, R.string.log_in, Toast.LENGTH_SHORT).show();
+                    //TO DO : Launch the proper activity
+                }
+
+                @Override
+                public void onAuthenticationError(FirebaseError firebaseError) {
+                    Toast.makeText(context, R.string.error_log_in, Toast.LENGTH_SHORT).show();
+                }
+            });
+            return null;
+        }
+    }
 }
