@@ -3,12 +3,10 @@ package straw.polito.it.straw.activities;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -53,7 +51,6 @@ public class CreateDrinkActivity extends AppCompatActivity {
 
     //
     private Context context;
-    private SharedPreferences sharedPreferences;
     private Intent intent;
     private String action;
 
@@ -81,7 +78,6 @@ public class CreateDrinkActivity extends AppCompatActivity {
         this.image = (ImageView)findViewById(R.id.photo_imageView);
 
         this.context = getApplicationContext();
-        this.sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.context);
 
         if (savedInstanceState != null)
             restoreValues(savedInstanceState.getString(DRINK));
@@ -112,8 +108,6 @@ public class CreateDrinkActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 update();
-                //Save the new drink in permanent storage
-                sharedPreferences.edit().putString(drink.getName(), drink.toString()).commit();
 
                 //Prepare the return to the calling activity
                 Intent result = new Intent(getApplicationContext(), CreateMenuActivity.class);

@@ -4,15 +4,12 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ExpandableListView;
-import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -29,7 +26,6 @@ import straw.polito.it.straw.data.Manager;
 import straw.polito.it.straw.data.Menu;
 import straw.polito.it.straw.data.Plate;
 import straw.polito.it.straw.utils.DatabaseUtils;
-import straw.polito.it.straw.utils.Logger;
 
 
 public class CreateMenuActivity extends AppCompatActivity {
@@ -54,11 +50,14 @@ public class CreateMenuActivity extends AppCompatActivity {
 
     private SharedPreferences sharedPreferences;
     private Manager manager;
+    private StrawApplication application;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_menu);
+
+        this.application = (StrawApplication)getApplication();
 
         this.context = this;
         this.context = getApplicationContext();
@@ -99,13 +98,8 @@ public class CreateMenuActivity extends AppCompatActivity {
 
         if (savedInstanceState == null) {
             //No data temporarily stored
-            JSONArray jsonArray = Menu.getMenuFromSharedPreferences(this.context);
-            //Retrieve element(s) from the jsonArray
-            Menu.restoreMenu(jsonArray, this.goods);
-            if (jsonArray.length() == 0)
-                //No data found in the sharedPreference --> default init
-                //TO DO : change default init for final version
-                this.init_list();
+            //Try to retrieve it from the database
+            this.application.getDatabaseUtils().retrieveMenu(this.application.getSharedPreferencesHandler().getCurrentManager().getRes_name(), this.goods);
         }
 
         //Initialisation of the listView
@@ -137,15 +131,19 @@ public class CreateMenuActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent result) {
         if (resultCode == Activity.RESULT_OK) {
             int type = result.getIntExtra(TYPE, Menu.PLATES);
-            if (requestCode == this.EDIT_FOOD) {
+            if (requestCode == CreateMenuActivity.EDIT_FOOD) {
                 this.goods[type].set(result.getIntExtra(ID, 0), Food.create(result.getStringExtra(ELEMENT)));
-            } else if(requestCode == this.ADD_FOOD) {
+            } else if(requestCode == CreateMenuActivity.ADD_FOOD) {
                 Food element = Food.create(result.getStringExtra(ELEMENT));
                 if (element != null)
                     this.goods[type].add(element);
             }
             ((FoodExpandableAdapter)this.food_listView.getExpandableListAdapter()).notifyDataSetChanged();
         }
+        /**
+         * Store the new data in the database
+         */
+        this.application.getDatabaseUtils().saveMenu(this.application.getSharedPreferencesHandler().getCurrentManager().getRes_name(), Menu.saveMenu(this.goods).toString());
     }
 
     private void init_list() {
@@ -172,7 +170,8 @@ public class CreateMenuActivity extends AppCompatActivity {
     }
 
     /**
-     * Save data (menu) in sharedPreference for permanent storage
+     * Save data (menu) for permanent storage (in the Firebase database if possible,
+     * in sharedPreferences otherwise.
      */
     @Override
     public void onStop() {

@@ -15,11 +15,13 @@ import java.util.ArrayList;
 
 import straw.polito.it.straw.PriceContainer;
 import straw.polito.it.straw.R;
+import straw.polito.it.straw.StrawApplication;
 import straw.polito.it.straw.adapter.FoodExpandableAdapter;
 import straw.polito.it.straw.adapter.FoodExpandableAdapterRemove;
 import straw.polito.it.straw.data.Food;
 import straw.polito.it.straw.data.Menu;
 import straw.polito.it.straw.data.Reservation;
+import straw.polito.it.straw.utils.DatabaseUtils;
 import straw.polito.it.straw.utils.PriceDisplay;
 
 public class PreOrderFoodActivity extends AppCompatActivity implements PriceContainer{
@@ -30,7 +32,7 @@ public class PreOrderFoodActivity extends AppCompatActivity implements PriceCont
     private PriceDisplay price;
     private ExpandableListView listView;
     private ArrayList<Food>[] command;
-    private ArrayList<Food>[] menu;
+    private ArrayList<Food>[] menu = null;
     private Reservation reservation;
 
     public static final int ADD_PLATE_REQUEST_CODE = 1;
@@ -56,11 +58,18 @@ public class PreOrderFoodActivity extends AppCompatActivity implements PriceCont
         this.price = (PriceDisplay) findViewById(R.id.Price);
         this.listView = (ExpandableListView)findViewById(R.id.list_item);
 
-        JSONArray data = Menu.getMenuFromSharedPreferences(this.getApplicationContext());
-        this.menu = new ArrayList[2];
-        this.menu[Menu.PLATES] = new ArrayList<>();
-        this.menu[Menu.DRINKS] = new ArrayList<>();
-        Menu.restoreMenu(data, this.menu);
+        DatabaseUtils databaseUtils = ((StrawApplication)getApplication()).getDatabaseUtils();
+        databaseUtils.retrieveMenu(this.reservation.getRestaurant().getRes_name(), this.menu);
+        if (this.menu == null) {
+            /**
+             * The menu can't have been retrieved from the remote database
+             */
+            JSONArray data = Menu.getMenuFromSharedPreferences(this.getApplicationContext());
+            this.menu = new ArrayList[2];
+            this.menu[Menu.PLATES] = new ArrayList<>();
+            this.menu[Menu.DRINKS] = new ArrayList<>();
+            Menu.restoreMenu(data, this.menu);
+        }
 
         this.command = new ArrayList[2];
         this.command[Menu.PLATES] = new ArrayList();
