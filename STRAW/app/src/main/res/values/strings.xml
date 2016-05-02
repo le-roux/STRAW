@@ -157,14 +157,12 @@
 
     <!--Strings for the database part-->
     <string name="NoNetwork">Network is not available\nPlease check your connection</string>
-<<<<<<< HEAD
 
     <!--Strings for the search detail part-->
     <string name="s_menu">Menu</string>
     <string name="s_book">Reserve</string>
     <string name="s_preo">Pre Order</string>
     <string name="s_add_rv">Add review</string>
-=======
     <string name="ErrorNetwork">Error network</string>
->>>>>>> 042e8e9b12cd64a91331dd6ceafb465a3d1d9260
+
 </resources>
