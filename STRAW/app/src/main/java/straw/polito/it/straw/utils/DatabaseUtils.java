@@ -1,6 +1,7 @@
 package straw.polito.it.straw.utils;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -22,6 +23,8 @@ import java.util.concurrent.ExecutionException;
 
 import straw.polito.it.straw.R;
 import straw.polito.it.straw.StrawApplication;
+import straw.polito.it.straw.activities.ProfileManagerActivity;
+import straw.polito.it.straw.activities.ProfileUserActivity;
 import straw.polito.it.straw.data.Manager;
 import straw.polito.it.straw.data.Menu;
 import straw.polito.it.straw.data.Reservation;
@@ -366,11 +369,12 @@ public class DatabaseUtils {
      * @param password : the password of the new user
      * @return true if the creation succeeded, false otherwise
      */
-    public void createUser(String emailAddress, String password) {
+    public void createUser(String emailAddress, String password, String type) {
         CreateUserAsyncTask task = new CreateUserAsyncTask();
-        String[] params = new String[2];
+        String[] params = new String[3];
         params[0] = emailAddress;
         params[1] = password;
+        params[2] = type;
         task.execute(params);
     }
 
@@ -398,7 +402,8 @@ public class DatabaseUtils {
                         saveManagerProfile(manager, uid);
                     }
                     else {
-                        //TODO save user profile
+                        User user = sharedPreferencesHandler.getCurrentUser();
+                        saveUserProfile(user);
                     }
                     /**
                      * Log in
@@ -430,7 +435,8 @@ public class DatabaseUtils {
     }
 
     /**
-     * A simple AsyncTask that performs the authentication of the users in a secondary thread.
+     * A simple AsyncTask that performs the authentication of the users in a secondary thread
+     * and launch the proper Profile activity.
      */
     private class LogInAsyncTask extends AsyncTask<String, Void, Void> {
 
@@ -445,19 +451,34 @@ public class DatabaseUtils {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             if (dataSnapshot.exists()) {
+                                /**
+                                 * It's a customer (and not a manager). Retrieve the profile, store
+                                 * it in the sharedPreferences for future access and launch
+                                 * the proper activity.
+                                 */
                                 User user = dataSnapshot.getValue(User.class);
-                                //TODO : save it in sharedPreferences and launch proper activity
+                                sharedPreferencesHandler.storeCurrentUser(user.toString());
+                                Intent intent = new Intent(context, ProfileUserActivity.class);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                context.startActivity(intent);
                             } else {
+                                /**
+                                 * It's a manager. Retrieve the profile, store it in the
+                                 * sharedPreferences and launch the proper activity.
+                                 */
                                 firebase.child(MANAGER).child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(DataSnapshot dataSnapshot) {
                                         Manager manager = dataSnapshot.getValue(Manager.class);
-                                        //TODO : save it in sharedPreferences and launch proper activity
+                                        sharedPreferencesHandler.storeCurrentManager(manager.toJSONObject());
+                                        Intent intent = new Intent(context, ProfileManagerActivity.class);
+                                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                        context.startActivity(intent);
                                     }
 
                                     @Override
                                     public void onCancelled(FirebaseError firebaseError) {
-
+                                        Toast.makeText(context, R.string.ErrorNetwork, Toast.LENGTH_SHORT).show();
                                     }
                                 });
                             }
@@ -465,7 +486,7 @@ public class DatabaseUtils {
 
                         @Override
                         public void onCancelled(FirebaseError firebaseError) {
-
+                            Toast.makeText(context, R.string.ErrorNetwork, Toast.LENGTH_SHORT).show();
                         }
                     });
                     //TODO : Launch the proper activity

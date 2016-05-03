@@ -65,7 +65,7 @@ public class CreateManagerAccountActivity extends AppCompatActivity {
 
     List<String> types;
     private String TAG = "CreateManagerAccountActivity";
-    private SharedPreferences mShared;
+    private SharedPreferencesHandler sharedPreferencesHandler;
     private static final int IMAGE_REQ = 1;
     private static final int CAMERA_REQ = 2;
     public static final String NUMBER_OF_ELEMENTS = "ElementsNb";
@@ -77,7 +77,7 @@ public class CreateManagerAccountActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_account);
-        mShared= PreferenceManager.getDefaultSharedPreferences(this);
+        sharedPreferencesHandler = ((StrawApplication)getApplication()).getSharedPreferencesHandler();
         initialize();
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
@@ -96,6 +96,7 @@ public class CreateManagerAccountActivity extends AppCompatActivity {
             setPhoto();
         }
 
+        /*
         int elementsNb = mShared.getInt(NUMBER_OF_ELEMENTS, 0);
 
         for (int i = 0; i < elementsNb; i++) {
@@ -113,6 +114,7 @@ public class CreateManagerAccountActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
+        */
 
     }
 
@@ -188,25 +190,15 @@ public class CreateManagerAccountActivity extends AppCompatActivity {
                 }
                 man.setImage(photo_uri.toString());
                 if (!sw) {
+                    /**
+                     * Set the new profile as the current manager.
+                     */
+                    sharedPreferencesHandler.storeCurrentManager(man.toJSONObject());
+                    /**
+                     * Save the profile in the database, log the manager and launch the profile activity.
+                     */
                     DatabaseUtils databaseUtils = ((StrawApplication)getApplication()).getDatabaseUtils();
-                    databaseUtils.saveManagerProfile(man);
-                    String oj = man.toJSONObject();
-                    mShared.edit().putString(SharedPreferencesHandler.MANAGER, oj).commit();
-                    /*if(getIntent().hasExtra("manager")) {
-                        showAlert(getString(R.string.m_save), getString(R.string.m_succ), true);
-                    } else {
-                        showAlert(getString(R.string.m_c), getString(R.string.m_succ), true);
-                    }*/
-                    //arrayManager.add(man);
-
-                    Intent intent = new Intent(getApplicationContext(), ProfileManagerActivity.class);
-
-                    String name = c_pwd.getText().toString();
-                    Intent intentForSearch = new Intent(getApplicationContext(), QuickSearchActivity.class);
-                    intentForSearch.putExtra("EXTRA_NAME", name.toString());
-
-                    startActivity(intent);
-                    finish();
+                    databaseUtils.createUser(man.getEmail(), man.getPwd(), SharedPreferencesHandler.MANAGER);
                 } else {
                     return;
                 }

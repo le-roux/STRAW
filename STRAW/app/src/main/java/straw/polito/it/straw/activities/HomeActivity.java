@@ -47,9 +47,6 @@ public class HomeActivity extends AppCompatActivity {
 
                 String u = user_name_editText.getText().toString();
                 String p = pwd_editText.getText().toString();
-                DatabaseUtils databaseUtils = ((StrawApplication)getApplication()).getDatabaseUtils();
-                databaseUtils.createUser(u, p);
-                Logger.d("return from creation");
                 int sol=log_in(u, p);
                 if (sol==1) {
                     Log.v(TAG, "Manager log in successfull");
