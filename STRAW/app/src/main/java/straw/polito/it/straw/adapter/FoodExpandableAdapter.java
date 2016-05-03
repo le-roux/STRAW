@@ -113,8 +113,10 @@ public abstract class FoodExpandableAdapter extends BaseExpandableListAdapter im
         if (groupPosition < 2) {
             if (childPosition < this.groups[groupPosition].size()) {
                 String uri = this.groups[groupPosition].get(childPosition).getImageURI();
-                if (uri != null)
-                    ImageManager.setImage(this.context, imageView, Uri.parse(uri));
+                if (uri != null) {
+                    String imageString = ImageManager.getImageFromUri(context, Uri.parse(uri));
+                    ImageManager.setImage(this.context, imageView, imageString);
+                }
                 title.setText(this.groups[groupPosition].get(childPosition).getName());
                 description.setText(this.groups[groupPosition].get(childPosition).getDescription());
                 price.setText(String.valueOf(this.groups[groupPosition].get(childPosition).getPrice()) + " €");

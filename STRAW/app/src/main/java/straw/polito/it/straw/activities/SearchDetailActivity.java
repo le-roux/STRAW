@@ -43,11 +43,14 @@ public class SearchDetailActivity extends AppCompatActivity {
         initialize();
         name.setText(man.getRes_name());
         price.setText("SET PRICE");
-        ImageManager.setImage(this, img, Uri.parse(man.getImage()));
+
+        ImageManager.setImage(this, img, Uri.parse(man.getImage()).toString() );
 
         SharedPreferences sp= PreferenceManager.getDefaultSharedPreferences(getBaseContext());
         man = new Manager(sp.getString("Manager","Error"));
         review.setAdapter(new ReviewAdapter(getBaseContext(),man.getReviews()));
+
+        ImageManager.setImage(this, img, man.getImage());
 
         setListeners();
     }

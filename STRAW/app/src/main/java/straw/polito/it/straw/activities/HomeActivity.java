@@ -19,6 +19,7 @@ import straw.polito.it.straw.R;
 import straw.polito.it.straw.StrawApplication;
 import straw.polito.it.straw.utils.DatabaseUtils;
 import straw.polito.it.straw.utils.Logger;
+import straw.polito.it.straw.utils.ProgressBarFragment;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -45,27 +46,12 @@ public class HomeActivity extends AppCompatActivity {
         log_in_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                String u = user_name_editText.getText().toString();
-                String p = pwd_editText.getText().toString();
+                String emailAddress = user_name_editText.getText().toString();
+                String password = pwd_editText.getText().toString();
                 DatabaseUtils databaseUtils = ((StrawApplication)getApplication()).getDatabaseUtils();
-                databaseUtils.createUser(u, p);
-                Logger.d("return from creation");
-                int sol=log_in(u, p);
-                if (sol==1) {
-                    Log.v(TAG, "Manager log in successfull");
-                    Intent i=new Intent(getBaseContext(),ProfileManagerActivity.class);
-                    startActivity(i);
-                }else if(sol==2){
-                    Log.v(TAG, "User log in successfull");
-
-                    //Intent i=new Intent(getBaseContext(),ProfileUserActivity.class);
-                    Intent i=new Intent(getBaseContext(),SearchActivity.class);
-                    startActivity(i);
-                }else{
-                    Toast.makeText(getApplicationContext(), getString(R.string.error_log_in), Toast.LENGTH_SHORT).show();
-                    Log.v(TAG, "User log in ERROR "+sol);
-                }
+                ProgressBarFragment fragment = new ProgressBarFragment();
+                fragment.show(getSupportFragmentManager(), "ProgressBar");
+                databaseUtils.logIn(emailAddress, password, fragment);
             }
         });
 

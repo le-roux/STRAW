@@ -38,6 +38,8 @@ import straw.polito.it.straw.StrawApplication;
 import straw.polito.it.straw.data.User;
 import straw.polito.it.straw.utils.DatabaseUtils;
 import straw.polito.it.straw.utils.Logger;
+import straw.polito.it.straw.utils.ProgressBarFragment;
+import straw.polito.it.straw.utils.SharedPreferencesHandler;
 
 public class CreateUserAccountActivity extends AppCompatActivity {
 
@@ -60,7 +62,7 @@ public class CreateUserAccountActivity extends AppCompatActivity {
     List<String> u_d_list;
     List<String> p_t_list;
     private String TAG = "CreateUserAccountActivity";
-    private SharedPreferences mShared;
+    private SharedPreferencesHandler sharedPreferencesHandler;
     private static final int IMAGE_REQ = 1;
     private static final int CAMERA_REQ = 2;
     User user;
@@ -70,7 +72,7 @@ public class CreateUserAccountActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_user);
-        mShared= PreferenceManager.getDefaultSharedPreferences(this);
+        sharedPreferencesHandler = ((StrawApplication)getApplication()).getSharedPreferencesHandler();
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         initialize();
@@ -94,7 +96,6 @@ public class CreateUserAccountActivity extends AppCompatActivity {
         } catch (IOException e) {
             Log.v(TAG, "Error on loading the photo! " + e.getMessage());
         }
-        c_pwd.setText(user.getPwd());
         email.setText(user.getEmail());
         uni.setText(user.getUniversity());
         u_d.setSelection(u_d_list.indexOf(user.getDiet()));
@@ -154,9 +155,7 @@ public class CreateUserAccountActivity extends AppCompatActivity {
                     showAlert(getString(R.string.m_email), getString(R.string.error), false);
                     sw = true;
                 }
-                if (!c_pwd.getText().toString().equals("") && c_pwd.getText().toString().equals(cc_pwd.getText().toString())) {
-                    user.setPwd(c_pwd.getText().toString());
-                } else {
+                if (c_pwd.getText().toString().equals("") || !c_pwd.getText().toString().equals(cc_pwd.getText().toString())) {
                     showAlert(getString(R.string.m_pwd), getString(R.string.error), false);
                     sw = true;
                 }
@@ -172,18 +171,20 @@ public class CreateUserAccountActivity extends AppCompatActivity {
                 user.setImage( photo_uri.toString());
 
                 if (!sw) {
+                    /**
+                     * Save the new profile as the current user
+                     */
+                    sharedPreferencesHandler.storeCurrentUser(user.toString());
+                    /**
+                     * Create the new user account in the database, store the profile, log in and
+                     * launch the proper activity.
+                     */
+                    ProgressBarFragment fragment = new ProgressBarFragment();
+                    fragment.show(getSupportFragmentManager(), "ProgressBar");
                     DatabaseUtils databaseUtils = ((StrawApplication)getApplication()).getDatabaseUtils();
-                    databaseUtils.saveUserProfile(user);
-                    String oj = user.toString();
-                    ((StrawApplication)getApplication()).getSharedPreferencesHandler().storeCurrentUser(oj);
-                    if(getIntent().hasExtra("user")) {
-                        showAlert(getString(R.string.m_save), getString(R.string.m_succ), true);
-                    }else{
-                        showAlert(getString(R.string.m_c), getString(R.string.m_succ), true);
-                    }
-                    Intent intent = new Intent(getApplicationContext(), SearchActivity.class);
-                    startActivity(intent);
-                    finish();
+                    String emailAddress = email.getText().toString();
+                    String password = c_pwd.getText().toString();
+                    databaseUtils.createUser(emailAddress, password, SharedPreferencesHandler.USER, fragment);
                 } else {
                     return;
                 }

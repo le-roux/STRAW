@@ -132,7 +132,8 @@ public class CreateDrinkActivity extends AppCompatActivity {
                 fileUri = data.getData();
             }
             //In case of "Select picture", the fileUri is already set
-            ImageManager.setImage(context, image, fileUri);
+            String imageString = ImageManager.getImageFromUri(context, fileUri);
+            ImageManager.setImage(context, image, imageString);
         } else if(resultCode == RESULT_CANCELED) {
             Logger.d("result canceled");
         }
@@ -166,7 +167,8 @@ public class CreateDrinkActivity extends AppCompatActivity {
             this.fileUri = Uri.parse(uri);
         else {
             this.fileUri = null;
-            ImageManager.setImage(this.context, this.image, this.fileUri);
+            String imageString = ImageManager.getImageFromUri(context, this.fileUri);
+            ImageManager.setImage(this.context, this.image, imageString);
         }
     }
 

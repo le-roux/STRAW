@@ -3,7 +3,6 @@ package straw.polito.it.straw.activities;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -11,7 +10,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -26,10 +24,6 @@ import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.Spinner;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -43,7 +37,9 @@ import straw.polito.it.straw.StrawApplication;
 import straw.polito.it.straw.data.Manager;
 import straw.polito.it.straw.data.Review;
 import straw.polito.it.straw.utils.DatabaseUtils;
+import straw.polito.it.straw.utils.ImageManager;
 import straw.polito.it.straw.utils.Logger;
+import straw.polito.it.straw.utils.ProgressBarFragment;
 import straw.polito.it.straw.utils.SharedPreferencesHandler;
 
 public class CreateManagerAccountActivity extends AppCompatActivity {
@@ -62,11 +58,11 @@ public class CreateManagerAccountActivity extends AppCompatActivity {
 
     Bitmap bitmap;
 
-    Uri photo_uri;
+    String imageString;
 
     List<String> types;
     private String TAG = "CreateManagerAccountActivity";
-    private SharedPreferences mShared;
+    private SharedPreferencesHandler sharedPreferencesHandler;
     private static final int IMAGE_REQ = 1;
     private static final int CAMERA_REQ = 2;
     public static final String NUMBER_OF_ELEMENTS = "ElementsNb";
@@ -78,7 +74,7 @@ public class CreateManagerAccountActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_account);
-        mShared= PreferenceManager.getDefaultSharedPreferences(this);
+        sharedPreferencesHandler = ((StrawApplication)getApplication()).getSharedPreferencesHandler();
         initialize();
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
@@ -97,6 +93,7 @@ public class CreateManagerAccountActivity extends AppCompatActivity {
             setPhoto();
         }
 
+        /*
         int elementsNb = mShared.getInt(NUMBER_OF_ELEMENTS, 0);
 
         for (int i = 0; i < elementsNb; i++) {
@@ -114,18 +111,13 @@ public class CreateManagerAccountActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
+        */
 
     }
 
     private void loadPrevInfo(Manager man) {
-        try {
-            photo_uri=Uri.parse(man.getImage());
-            bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), Uri.parse(man.getImage()));
-            photo.setImageBitmap(bitmap);
-        } catch (IOException e) {
-            Log.v(TAG, "Error on loading the photo! " + e.getMessage());
-        }
-        c_pwd.setText(man.getPwd());
+        imageString = man.getImage();
+        ImageManager.setImage(getApplicationContext(), photo, imageString);
         tel.setText(String.valueOf(man.getTelephone()));
         email.setText(man.getEmail());
         r_n.setText(man.getRes_name());
@@ -156,9 +148,7 @@ public class CreateManagerAccountActivity extends AppCompatActivity {
                     showAlert(getString(R.string.m_email), getString(R.string.error), false);
                     sw = true;
                 }
-                if (!c_pwd.getText().toString().equals("") && c_pwd.getText().toString().equals(cc_pwd.getText().toString())) {
-                    man.setPwd(c_pwd.getText().toString());
-                } else {
+                if (c_pwd.getText().toString().equals("") || !c_pwd.getText().toString().equals(cc_pwd.getText().toString())) {
                     showAlert(getString(R.string.m_pwd), getString(R.string.error), false);
                     sw = true;
                 }
@@ -187,14 +177,14 @@ public class CreateManagerAccountActivity extends AppCompatActivity {
                     showAlert(getString(R.string.m_seats), getString(R.string.error), false);
                     sw = true;
                 }
-                man.setImage(photo_uri.toString());
+                man.setImage(imageString);
                 if (!sw) {
                     man.setReviews(new ArrayList<Review>());
                     DatabaseUtils databaseUtils = ((StrawApplication)getApplication()).getDatabaseUtils();
                     databaseUtils.saveManagerProfile(man,"");
 
                     String oj = man.toJSONObject();
-                    mShared.edit().putString(SharedPreferencesHandler.MANAGER, oj).commit();
+                    //mShared.edit().putString(SharedPreferencesHandler.MANAGER, oj).commit();
                     /*if(getIntent().hasExtra("manager")) {
                         showAlert(getString(R.string.m_save), getString(R.string.m_succ), true);
                     } else {
@@ -210,6 +200,20 @@ public class CreateManagerAccountActivity extends AppCompatActivity {
 
                     startActivity(intent);
                     finish();
+                    /**
+                     * Set the new profile as the current manager.
+                     */
+                    sharedPreferencesHandler.storeCurrentManager(man.toJSONObject());
+                    Logger.d("storage : " + man.getImage());
+                    /**
+                     * Save the profile in the database, log the manager and launch the profile activity.
+                     */
+                    ProgressBarFragment fragment = new ProgressBarFragment();
+                    fragment.show(getSupportFragmentManager(), "ProgressBar");
+                    databaseUtils = ((StrawApplication)getApplication()).getDatabaseUtils();
+                    String password = c_pwd.getText().toString();
+                    databaseUtils.createUser(man.getEmail(), password, SharedPreferencesHandler.MANAGER, fragment);
+
                 } else {
                     return;
                 }
@@ -241,7 +245,8 @@ public class CreateManagerAccountActivity extends AppCompatActivity {
     private void setPhoto() {
         bitmap=BitmapFactory.decodeResource(getResources(), R.drawable.no_image);
         photo.setImageBitmap(bitmap);
-        photo_uri=Uri.parse("android.resource://straw.polito.it.straw/drawable/no_image");
+        Uri uri = Uri.parse("android.resource://straw.polito.it.straw/drawable/no_image");
+        imageString = ImageManager.getImageFromUri(getApplicationContext(), uri);
     }
 
 
@@ -289,7 +294,7 @@ public class CreateManagerAccountActivity extends AppCompatActivity {
 
                     File image = new File(imagesFolder, "QR_" + timeStamp + ".png");
                     Uri uriSavedImage = Uri.fromFile(image);
-                    photo_uri=uriSavedImage;
+                    imageString = ImageManager.getImageFromUri(getApplicationContext(), uriSavedImage);
                     imageIntent.putExtra(MediaStore.EXTRA_OUTPUT, uriSavedImage);
                     startActivityForResult(imageIntent, CAMERA_REQ);
 
@@ -309,26 +314,14 @@ public class CreateManagerAccountActivity extends AppCompatActivity {
         Log.v(TAG, "Photo selected! " + requestCode);
         if( data!=null && resultCode==RESULT_OK && requestCode== IMAGE_REQ){
             sw=false;
-            Uri image =data.getData();
-            photo_uri=data.getData();
-            try{
-                bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(),image);
-                bitmap=Bitmap.createScaledBitmap(bitmap,photo.getHeight(),photo.getWidth(),true);
-                photo.setImageBitmap(bitmap);
-            }catch(IOException e){
-                Log.v(TAG,"Error on Activity result! "+e.getMessage());
-            }
+            Uri uri = data.getData();
+            imageString = ImageManager.getImageFromUri(getApplicationContext(), uri);
+            Logger.d("onActivityResult : " + imageString);
+            ImageManager.setImage(getApplicationContext(), photo, imageString);
         }
         if( requestCode== CAMERA_REQ){
             sw=true;
-            try{
-                bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(),photo_uri);
-                bitmap=Bitmap.createScaledBitmap(bitmap, photo.getHeight(), photo.getWidth(), true);
-                photo.setImageBitmap(bitmap);
-            }catch(Exception e){
-                Logger.d("Error on Activity result! " + e.getMessage());
-            }
+            ImageManager.setImage(getApplicationContext(), photo, imageString);
         }
     }
-
 }

@@ -105,7 +105,7 @@ public class ProfileManagerActivity extends AppCompatActivity {
         offerts_link=(TextView)findViewById(R.id.offers_link_textView);
     }
     private void loadPrevInfo(Manager man) {
-        ImageManager.setImage(this, photo, Uri.parse(man.getImage()));
+        ImageManager.setImage(this, photo, man.getImage());
 
         user_n.setText(getString(R.string.email) + ": " + man.getEmail());
         tel.setText(getString(R.string.tel) + ": " + man.getTelephone());

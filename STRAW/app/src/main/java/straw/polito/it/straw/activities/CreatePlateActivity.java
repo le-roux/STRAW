@@ -111,7 +111,8 @@ public class CreatePlateActivity extends AppCompatActivity {
                 fileUri = data.getData();
             }
             //In case of "Select picture", the fileUri is already set
-            ImageManager.setImage(context, image, fileUri);
+            String imageString = ImageManager.getImageFromUri(context, fileUri);
+            ImageManager.setImage(context, image, imageString);
         } else if(resultCode == RESULT_CANCELED) {
             Logger.d("result cancelled");
         }
@@ -145,7 +146,8 @@ public class CreatePlateActivity extends AppCompatActivity {
         String uri = this.plate.getImageURI();
         if (uri != null) {
             this.fileUri = Uri.parse(uri);
-            ImageManager.setImage(this.context, this.image, this.fileUri);
+            String imageString = ImageManager.getImageFromUri(context, this.fileUri);
+            ImageManager.setImage(this.context, this.image, imageString);
         }
         else {
             this.fileUri = null;

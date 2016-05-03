@@ -1,9 +1,12 @@
 package straw.polito.it.straw.utils;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.client.AuthData;
@@ -22,6 +25,8 @@ import java.util.concurrent.ExecutionException;
 
 import straw.polito.it.straw.R;
 import straw.polito.it.straw.StrawApplication;
+import straw.polito.it.straw.activities.ProfileManagerActivity;
+import straw.polito.it.straw.activities.ProfileUserActivity;
 import straw.polito.it.straw.data.Manager;
 import straw.polito.it.straw.data.Menu;
 import straw.polito.it.straw.data.Reservation;
@@ -55,60 +60,6 @@ public class DatabaseUtils {
         this.networkInfo = connectivityManager.getActiveNetworkInfo();
         this.sharedPreferencesHandler = sharedPreferencesHandler;
         this.firebase = new Firebase(StrawApplication.FIREBASEURL);
-    }
-
-    /**
-     * Give a simple way to store data in the remote database
-     * @param children : List of the nodes that must be entered before storing the data.
-     * @param data : the actual data to store.
-     * @return : return true if saving is possible, false otherwise.
-     */
-    public boolean saveData(ArrayList<String> children, String data) {
-        String params[] = new String[children.size() + 1];
-        children.toArray(params);
-        params[params.length - 1] = data;
-        new StoreAsyncTask().execute(params);
-        return true;
-    }
-
-    /**
-     * Allows to perform the sending of data to the database in a secondary thread
-     */
-    private class StoreAsyncTask extends AsyncTask<String, Void, String[]> {
-        @Override
-        protected String[] doInBackground(String... params) {
-            /**
-             * Check if the network is available
-             */
-            if (networkInfo == null || !networkInfo.isConnectedOrConnecting()) {
-                String[] result = new String[2];
-                result[0] = MANAGER;
-                result[1] = params[params.length - 1];
-                return result;
-            }
-
-            Firebase ref = firebase;
-            for (int i = 0; i < params.length - 1; i++) {
-                Logger.d(params[i]);
-                ref = ref.child(params[i]);
-            }
-            ref.setValue(params[params.length - 1]);
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(String[] result) {
-            if (result != null) {
-                /**
-                 * Impossible to send the data to the remote database
-                 * Store it locally in the sharedPreferences
-                 */
-                Toast.makeText(context, R.string.NoNetwork, Toast.LENGTH_LONG).show();
-                if (result[0].equals(MANAGER)) {
-                    sharedPreferencesHandler.storeCurrentManager(result[1]);
-                }
-            }
-        }
     }
 
     /**
@@ -216,22 +167,51 @@ public class DatabaseUtils {
      * @return : return true if saving is possible, false otherwise.
      */
     public boolean saveMenu(String restaurantName, String data) {
-        ArrayList<String> children = new ArrayList<>();
-        children.add(MENU);
-        children.add(restaurantName);
-        return this.saveData(children, data);
+        String[] children = new String[3];
+        children[0] = MENU;
+        children[1] = restaurantName;
+        children[2] = data;
+        SaveMenuAsyncTask task = new SaveMenuAsyncTask();
+        task.execute(children);
+        return true;
+    }
+
+    private class SaveMenuAsyncTask extends AsyncTask<String, Void, Void> {
+
+        @Override
+        protected Void doInBackground(String... params) {
+            Firebase ref = firebase.child(params[0]).child(params[1]);
+            ref.setValue(params[2]);
+            return null;
+        }
     }
 
     /**
      * Store the profile of a manager in the Firebase database
      * @param manager : the manager profile to save
-     * @return : return true if saving is possible, false otherwise.
+     * @return : true
      */
     public boolean saveManagerProfile(Manager manager, String uid) {
-        ArrayList<String> children = new ArrayList<>();
-        children.add(MANAGER);
-        children.add(uid);
-        return this.saveData(children, manager.toJSONObject());
+        SaveManagerAsyncTask task = new SaveManagerAsyncTask(uid);
+        task.execute(manager);
+        return true;
+    }
+
+    private class SaveManagerAsyncTask extends AsyncTask<Manager, Void, Void> {
+
+        private String uid;
+
+        public SaveManagerAsyncTask(String uid) {
+            this.uid = uid;
+        }
+
+        @Override
+        protected Void doInBackground(Manager... params) {
+            Firebase ref = firebase.child(MANAGER).child(this.uid);
+            ref.setValue(params[0]);
+            Logger.d("value stored : " + params[0].getEmail());
+            return null;
+        }
     }
 
     /**
@@ -260,13 +240,28 @@ public class DatabaseUtils {
     /**
      * Store the profile of a customer in the Firebase database
      * @param user : the profile to store
-     * @return : return true if saving is possible, false otherwise.
+     * @return : return true
      */
-    public boolean saveUserProfile(User user) {
-        ArrayList<String> children = new ArrayList<>();
-        children.add(USER);
-        children.add(user.getEmail());
-        return this.saveData(children, user.toString());
+    public boolean saveUserProfile(User user, String uid) {
+        SaveUserAsyncTask task = new SaveUserAsyncTask(uid);
+        task.execute(user);
+        return true;
+    }
+
+    private class SaveUserAsyncTask extends AsyncTask<User, Void, Void> {
+
+        private String uid;
+
+        public SaveUserAsyncTask(String uid) {
+            this.uid = uid;
+        }
+
+        @Override
+        protected Void doInBackground(User... params) {
+            Firebase ref = firebase.child(USER).child(uid);
+            ref.setValue(params[0]);
+            return null;
+        }
     }
 
     /**
@@ -294,7 +289,7 @@ public class DatabaseUtils {
     /**
      * Store a reservation in the database.
      * @param reservation : the reservation to store.
-     * @return : return true if saving is possible, false otherwise.
+     * @return : return true
      */
     public boolean saveReservation(Reservation reservation) {
         ArrayList<String> children = new ArrayList<>();
@@ -302,7 +297,27 @@ public class DatabaseUtils {
         Logger.d("save reservation : " + reservation.getRestaurant().getRes_name());
         children.add(reservation.getRestaurant().getRes_name());
         children.add(reservation.getCustomer().getEmail());
-        return this.saveData(children, reservation.toString());
+        StoreReservationAsyncTask task = new StoreReservationAsyncTask(reservation.getRestaurant().getRes_name(), reservation.getCustomer().getEmail());
+        task.execute(reservation);
+        return true;
+    }
+
+    private class StoreReservationAsyncTask extends AsyncTask<Reservation, Void, Void> {
+
+        String restaurantName;
+        String customerName;
+
+        public StoreReservationAsyncTask(String restaurantName, String customerName) {
+            this.restaurantName = restaurantName;
+            this.customerName = customerName;
+        }
+
+        @Override
+        protected Void doInBackground(Reservation... params) {
+            Firebase ref = firebase.child(RESERVATION).child(restaurantName).child(customerName);
+            ref.setValue(params[0]);
+            return null;
+        }
     }
 
     /**
@@ -366,11 +381,14 @@ public class DatabaseUtils {
      * @param password : the password of the new user
      * @return true if the creation succeeded, false otherwise
      */
-    public void createUser(String emailAddress, String password) {
-        CreateUserAsyncTask task = new CreateUserAsyncTask();
-        String[] params = new String[2];
+    public void createUser(String emailAddress, String password, String type, ProgressBarFragment fragment) {
+        if(fragment != null && fragment.isAdded())
+            fragment.setText(R.string.AccountCreation);
+        CreateUserAsyncTask task = new CreateUserAsyncTask(fragment);
+        String[] params = new String[3];
         params[0] = emailAddress;
         params[1] = password;
+        params[2] = type;
         task.execute(params);
     }
 
@@ -379,6 +397,11 @@ public class DatabaseUtils {
      * a secondary thread.
      */
     private class CreateUserAsyncTask extends AsyncTask<String, Void, Void> {
+        private ProgressBarFragment fragment;
+
+        public CreateUserAsyncTask(ProgressBarFragment fragment) {
+            this.fragment = fragment;
+        }
 
         @Override
         protected Void doInBackground(final String[] params) {
@@ -388,27 +411,30 @@ public class DatabaseUtils {
                     /**
                      * Display a message telling the user that everything worked fine
                      */
-                    Toast.makeText(context, R.string.m_c, Toast.LENGTH_SHORT).show();
+                    fragment.setText(R.string.m_c);
                     /**
                      * Store the profile in the database
                      */
                     String uid = (String)result.get("uid");
                     if (params[2].equals(SharedPreferencesHandler.MANAGER)) {
                         Manager manager = sharedPreferencesHandler.getCurrentManager();
+                        Logger.d("current manager : " + manager.getEmail());
                         saveManagerProfile(manager, uid);
                     }
                     else {
-                        //TODO save user profile
+                        User user = sharedPreferencesHandler.getCurrentUser();
+                        saveUserProfile(user, uid);
                     }
                     /**
                      * Log in
                      */
-                    logIn(params[0], params[1]);
+                    logIn(params[0], params[1], fragment);
                 }
 
                 @Override
                 public void onError(FirebaseError firebaseError) {
-                    Logger.d(firebaseError.getMessage());
+                    Logger.d("error creation user : " + firebaseError.getMessage());
+                    fragment.dismiss();
                     Toast.makeText(context, R.string.ErrorNetwork, Toast.LENGTH_SHORT).show();
                 }
             });
@@ -421,43 +447,74 @@ public class DatabaseUtils {
      * @param emailAddress : the login of the requested account
      * @param password : the password of the requested account
      */
-    public void logIn(String emailAddress, String password) {
+    public void logIn(String emailAddress, String password, ProgressBarFragment fragment) {
+        if(fragment != null && fragment.isAdded())
+            fragment.setText(R.string.LoggingIn);
         String[] params = new String[2];
         params[0] = emailAddress;
         params[1] = password;
-        LogInAsyncTask task = new LogInAsyncTask();
+        LogInAsyncTask task = new LogInAsyncTask(fragment);
         task.execute(params);
     }
 
     /**
-     * A simple AsyncTask that performs the authentication of the users in a secondary thread.
+     * A simple AsyncTask that performs the authentication of the users in a secondary thread
+     * and launch the proper Profile activity.
      */
     private class LogInAsyncTask extends AsyncTask<String, Void, Void> {
+
+        private ProgressBarFragment fragment;
+
+        public LogInAsyncTask(ProgressBarFragment fragment) {
+            this.fragment = fragment;
+        }
 
         @Override
         protected Void doInBackground(String... params) {
             firebase.authWithPassword(params[0], params[1], new Firebase.AuthResultHandler() {
                 @Override
                 public void onAuthenticated(AuthData authData) {
-                    Toast.makeText(context, R.string.log_in, Toast.LENGTH_SHORT).show();
+                    fragment.setText(R.string.log_in);
                     final String uid = authData.getUid();
                     firebase.child(USER).child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             if (dataSnapshot.exists()) {
+                                /**
+                                 * It's a customer (and not a manager). Retrieve the profile, store
+                                 * it in the sharedPreferences for future access and launch
+                                 * the proper activity.
+                                 */
                                 User user = dataSnapshot.getValue(User.class);
-                                //TODO : save it in sharedPreferences and launch proper activity
+                                sharedPreferencesHandler.storeCurrentUser(user.toString());
+                                Intent intent = new Intent(context, ProfileUserActivity.class);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                context.startActivity(intent);
                             } else {
+                                /**
+                                 * It's a manager. Retrieve the profile, store it in the
+                                 * sharedPreferences and launch the proper activity.
+                                 */
                                 firebase.child(MANAGER).child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(DataSnapshot dataSnapshot) {
-                                        Manager manager = dataSnapshot.getValue(Manager.class);
-                                        //TODO : save it in sharedPreferences and launch proper activity
+                                        if (dataSnapshot.exists()) {
+                                            Manager manager = dataSnapshot.getValue(Manager.class);
+                                            sharedPreferencesHandler.storeCurrentManager(manager.toJSONObject());
+                                            Intent intent = new Intent(context, ProfileManagerActivity.class);
+                                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                            context.startActivity(intent);
+                                        } else {
+                                            Toast.makeText(context, R.string.error_log_in, Toast.LENGTH_LONG).show();
+                                            fragment.dismiss();
+                                        }
                                     }
 
                                     @Override
                                     public void onCancelled(FirebaseError firebaseError) {
-
+                                        Logger.d("error cancelled : " + firebaseError.getMessage());
+                                        fragment.dismiss();
+                                        Toast.makeText(context, R.string.ErrorNetwork, Toast.LENGTH_SHORT).show();
                                     }
                                 });
                             }
@@ -465,14 +522,17 @@ public class DatabaseUtils {
 
                         @Override
                         public void onCancelled(FirebaseError firebaseError) {
-
+                            Logger.d("error cancelled2 : " + firebaseError.getMessage());
+                            fragment.dismiss();
+                            Toast.makeText(context, R.string.ErrorNetwork, Toast.LENGTH_SHORT).show();
                         }
                     });
-                    //TODO : Launch the proper activity
                 }
 
                 @Override
                 public void onAuthenticationError(FirebaseError firebaseError) {
+                    Logger.d("error log in : " + firebaseError.getMessage());
+                    fragment.dismiss();
                     Toast.makeText(context, R.string.error_log_in, Toast.LENGTH_SHORT).show();
                 }
             });

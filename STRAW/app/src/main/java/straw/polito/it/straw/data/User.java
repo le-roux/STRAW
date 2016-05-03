@@ -12,7 +12,6 @@ import straw.polito.it.straw.utils.Logger;
  */
 public class User {
     private String email;
-    private String pwd;
     private String university;
     private String diet;
     private String type;
@@ -29,7 +28,6 @@ public class User {
         try {
             JSONObject jo=new JSONObject(s);
             this.email=jo.getString("email");
-            this.pwd=jo.getString("pwd");
             this.university=jo.getString("uni");
             this.diet=jo.getString("diet");
             this.type=jo.getString("type");
@@ -45,7 +43,6 @@ public class User {
         JSONObject jo=new JSONObject();
         try {
             jo.put("email",this.email);
-            jo.put("pwd",this.pwd);
             jo.put("uni",this.university);
             jo.put("diet",this.diet);
             jo.put("type",this.type);
@@ -65,14 +62,6 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public String getPwd() {
-        return pwd;
-    }
-
-    public void setPwd(String pwd) {
-        this.pwd = pwd;
     }
 
     public String getUniversity() {
