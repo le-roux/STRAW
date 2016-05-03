@@ -372,6 +372,8 @@ public class DatabaseUtils {
      * @return true if the creation succeeded, false otherwise
      */
     public void createUser(String emailAddress, String password, String type, ProgressBarFragment fragment) {
+        if(fragment != null && fragment.isAdded())
+            fragment.setText(R.string.AccountCreation);
         CreateUserAsyncTask task = new CreateUserAsyncTask(fragment);
         String[] params = new String[3];
         params[0] = emailAddress;
@@ -434,7 +436,8 @@ public class DatabaseUtils {
      * @param password : the password of the requested account
      */
     public void logIn(String emailAddress, String password, ProgressBarFragment fragment) {
-        fragment.setText(R.string.LoggingIn);
+        if(fragment != null && fragment.isAdded())
+            fragment.setText(R.string.LoggingIn);
         String[] params = new String[2];
         params[0] = emailAddress;
         params[1] = password;

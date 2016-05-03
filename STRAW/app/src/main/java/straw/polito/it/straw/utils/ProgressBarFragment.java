@@ -27,8 +27,6 @@ public class ProgressBarFragment extends DialogFragment {
         View view = inflater.inflate(R.layout.progress_bar_fragment, null);
         builder.setView(view);
         text = (TextView)view.findViewById(R.id.text);
-        //ProgressBar progressBar = (ProgressBar)view.findViewById(R.id.progressBar);
-        //progressBar.getIndeterminateDrawable().set
         return builder.create();
     }
 

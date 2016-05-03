@@ -201,7 +201,6 @@ public class CreateManagerAccountActivity extends AppCompatActivity {
                     /**
                      * Save the profile in the database, log the manager and launch the profile activity.
                      */
-
                     ProgressBarFragment fragment = new ProgressBarFragment();
                     fragment.show(getSupportFragmentManager(), "ProgressBar");
                     DatabaseUtils databaseUtils = ((StrawApplication)getApplication()).getDatabaseUtils();
