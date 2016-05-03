@@ -14,7 +14,6 @@ import straw.polito.it.straw.utils.Logger;
  */
 public class Manager {
 
-    private String pwd;
     private String telephone;
     private String address;
     private String res_name;
@@ -37,7 +36,6 @@ public class Manager {
 
         try {
             JSONObject oj = new JSONObject(man);
-            pwd = (String) oj.get("pwd");
             telephone = (String) oj.get("tel");
             address = (String) oj.get("addr");
             res_name = (String) oj.get("r_n");
@@ -64,15 +62,6 @@ public class Manager {
 
     public void setImage(String image) {
         this.image = image;
-    }
-
-
-    public String getPwd() {
-        return pwd;
-    }
-
-    public void setPwd(String pwd) {
-        this.pwd = pwd;
     }
 
     public String getTelephone() {
@@ -119,7 +108,6 @@ public class Manager {
     public String toJSONObject() {
         JSONObject oj = new JSONObject();
         try {
-            oj.put("pwd", pwd);
             oj.put("tel", telephone);
             oj.put("addr", address);
             oj.put("r_n", res_name);
@@ -133,22 +121,6 @@ public class Manager {
         }
         return null;
     }
-    /**
-    public static Manager create(JSONObject jsonObject) {
-        Manager manager = new Manager();
-        try {
-            manager.setGlutenFree(jsonObject.getBoolean(GLUTEN_FREE));
-            manager.setVegan(jsonObject.getBoolean(VEGAN));
-            manager.setIngredients(jsonObject.getString(INGREDIENTS));
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return null;
-        }
-        return manager;
-    }
-     */
-
-
 }
 
 
