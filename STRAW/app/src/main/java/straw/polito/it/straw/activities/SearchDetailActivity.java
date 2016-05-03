@@ -6,9 +6,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import straw.polito.it.straw.R;
+import straw.polito.it.straw.adapter.ReviewAdapter;
 import straw.polito.it.straw.data.Manager;
 import straw.polito.it.straw.utils.ImageManager;
 
@@ -21,16 +23,20 @@ public class SearchDetailActivity extends AppCompatActivity {
     private TextView preorder;
     private TextView add_rev;
     private ImageView img;
+    private ListView review;
+    private Manager man;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_detail);
-        Manager man =new Manager(getIntent().getExtras().getString("res"));
+        man =new Manager(getIntent().getExtras().getString("res"));
         initialize();
         name.setText(man.getRes_name());
         price.setText("SET PRICE");
         ImageManager.setImage(this, img, Uri.parse(man.getImage()));
+        ReviewAdapter reviewAdapter= new ReviewAdapter(getBaseContext(),man.getReviews());
+        review.setAdapter(reviewAdapter);
         setListeners();
     }
 
@@ -57,6 +63,14 @@ public class SearchDetailActivity extends AppCompatActivity {
                 startActivity(i);
             }
         });
+        add_rev.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getBaseContext(),CreateReviewActivity.class);
+                i.putExtra("res",man.toJSONObject());
+                startActivity(i);
+            }
+        });
     }
 
     private void initialize() {
@@ -67,5 +81,6 @@ public class SearchDetailActivity extends AppCompatActivity {
         book=(TextView)findViewById(R.id.booking);
         preorder=(TextView)findViewById(R.id.preorder);
         add_rev=(TextView)findViewById(R.id.add_review);
+        review = (ListView) findViewById(R.id.reviews);
     }
 }

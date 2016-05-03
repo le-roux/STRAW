@@ -164,5 +164,6 @@
     <string name="s_preo">Pre Order</string>
     <string name="s_add_rv">Add review</string>
     <string name="ErrorNetwork">Error network</string>
-
+    <string name="write_rev">Rate and write a breif description</string>
+    <string name="submit">Submit</string>
 </resources>

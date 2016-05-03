@@ -47,7 +47,8 @@
         <activity android:name=".activities.AddDrinkActivity" />
         <activity android:name=".activities.ConfirmReservationActivity" />
         <activity android:name=".activities.InviteFriendActivity" />
-        <activity android:name=".activities.SearchDetailActivity"></activity>
+        <activity android:name=".activities.SearchDetailActivity" />
+        <activity android:name=".activities.CreateReviewActivity"></activity>
     </application>
 
 </manifest>

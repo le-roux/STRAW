@@ -2,9 +2,11 @@ package straw.polito.it.straw.data;
 
 import android.util.Log;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.StringTokenizer;
 
 import straw.polito.it.straw.utils.Logger;
@@ -22,6 +24,7 @@ public class Manager {
     private int seats;
     private String image;
     private String email;
+    private ArrayList<Review> reviews;
 
     public static final String SEATS_AVAILABLE = "SeatsAvailable";
     public static final String NAME = "NAME";
@@ -45,9 +48,23 @@ public class Manager {
             seats = (int) oj.get("seats");
             image = (String) oj.get("photo");
             email = (String) oj.get("email");
+
+            JSONArray jarr = new JSONArray(oj.get("reviews").toString());
+            reviews=new ArrayList<>();
+            for(int i=0;i<jarr.length();i++){
+                reviews.add(new Review(jarr.getJSONObject(i).toString()));
+            }
         } catch (JSONException e) {
             Logger.d("Error creating the manager");
         }
+    }
+
+    public ArrayList<Review> getReviews() {
+        return reviews;
+    }
+
+    public void setReviews(ArrayList<Review> reviews) {
+        this.reviews = reviews;
     }
 
     public String getEmail() {
@@ -127,6 +144,13 @@ public class Manager {
             oj.put("seats", seats);
             oj.put("photo", image);
             oj.put("email", email);
+            JSONArray jarr = new JSONArray();
+
+            for(Review r:reviews){
+                jarr.put(r.toString());
+            }
+            oj.put("reviews",jarr.toString());
+
             return oj.toString();
         } catch (JSONException e) {
             Logger.d("Error storing the manager");
