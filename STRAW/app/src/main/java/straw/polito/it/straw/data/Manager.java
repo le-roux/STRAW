@@ -1,16 +1,7 @@
 package straw.polito.it.straw.data;
 
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.net.Uri;
-import android.provider.MediaStore;
-import android.util.Base64;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 
 import straw.polito.it.straw.utils.Logger;
 
@@ -28,17 +19,11 @@ public class Manager {
     private String email;
 
     public static final String SEATS_AVAILABLE = "SeatsAvailable";
-    public static final String NAME = "NAME";
-    //public static final String PRICE = "PRICE";
-    public static final String IMAGE_URI = "IMAGE_URI";
-    private static final String DEFAULT_NAME = "Default";
-    //private static final String DEFAULT_PRICE = "€€€";
 
     public Manager() {
     }
 
     public Manager(String man) {
-
         try {
             JSONObject oj = new JSONObject(man);
             telephone = (String) oj.get("tel");

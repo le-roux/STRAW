@@ -231,13 +231,28 @@ public class DatabaseUtils {
     /**
      * Store the profile of a manager in the Firebase database
      * @param manager : the manager profile to save
-     * @return : return true if saving is possible, false otherwise.
+     * @return : true
      */
     public boolean saveManagerProfile(Manager manager, String uid) {
-        ArrayList<String> children = new ArrayList<>();
-        children.add(MANAGER);
-        children.add(uid);
-        return this.saveData(children, manager.toJSONObject());
+        SaveManagerAsyncTask task = new SaveManagerAsyncTask(uid);
+        task.execute(manager);
+        return true;
+    }
+
+    private class SaveManagerAsyncTask extends AsyncTask<Manager, Void, Void> {
+
+        private String uid;
+
+        public SaveManagerAsyncTask(String uid) {
+            this.uid = uid;
+        }
+
+        @Override
+        protected Void doInBackground(Manager... params) {
+            Firebase ref = firebase.child(MANAGER).child(this.uid);
+            ref.setValue(params[0]);
+            return null;
+        }
     }
 
     /**
@@ -266,13 +281,28 @@ public class DatabaseUtils {
     /**
      * Store the profile of a customer in the Firebase database
      * @param user : the profile to store
-     * @return : return true if saving is possible, false otherwise.
+     * @return : return true
      */
-    public boolean saveUserProfile(User user) {
-        ArrayList<String> children = new ArrayList<>();
-        children.add(USER);
-        children.add(user.getEmail());
-        return this.saveData(children, user.toString());
+    public boolean saveUserProfile(User user, String uid) {
+        SaveUserAsyncTask task = new SaveUserAsyncTask(uid);
+        task.execute(user);
+        return true;
+    }
+
+    private class SaveUserAsyncTask extends AsyncTask<User, Void, Void> {
+
+        private String uid;
+
+        public SaveUserAsyncTask(String uid) {
+            this.uid = uid;
+        }
+
+        @Override
+        protected Void doInBackground(User... params) {
+            Firebase ref = firebase.child(USER).child(uid);
+            ref.setValue(params[0]);
+            return null;
+        }
     }
 
     /**
@@ -413,7 +443,7 @@ public class DatabaseUtils {
                     }
                     else {
                         User user = sharedPreferencesHandler.getCurrentUser();
-                        saveUserProfile(user);
+                        saveUserProfile(user, uid);
                     }
                     /**
                      * Log in
@@ -460,7 +490,6 @@ public class DatabaseUtils {
 
         @Override
         protected Void doInBackground(String... params) {
-            Logger.d("launching log in task");
             firebase.authWithPassword(params[0], params[1], new Firebase.AuthResultHandler() {
                 @Override
                 public void onAuthenticated(AuthData authData) {
