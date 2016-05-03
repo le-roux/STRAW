@@ -64,7 +64,7 @@ public class CreateMenuActivity extends AppCompatActivity {
         this.sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         this.manager = ((StrawApplication)getApplication()).getSharedPreferencesHandler().getCurrentManager();
         //TO DO : react if this.manager is null
-        if(!getIntent().getExtras().containsKey("active")) {
+        if(getIntent()!=null) {
             //Listener for the "Add plate" button
             this.add_plate_button = (Button) findViewById(R.id.add_plate_button);
             this.add_plate_button.setOnClickListener(new View.OnClickListener() {

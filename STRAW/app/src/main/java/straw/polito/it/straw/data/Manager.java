@@ -49,7 +49,7 @@ public class Manager {
             image = (String) oj.get("photo");
             email = (String) oj.get("email");
 
-            JSONArray jarr = new JSONArray(oj.get("reviews").toString());
+            JSONArray jarr = new JSONArray(oj.getString("reviews"));
             reviews=new ArrayList<>();
             for(int i=0;i<jarr.length();i++){
                 reviews.add(new Review(jarr.getJSONObject(i).toString()));
@@ -147,10 +147,9 @@ public class Manager {
             JSONArray jarr = new JSONArray();
 
             for(Review r:reviews){
-                jarr.put(r.toString());
+                jarr.put(r.toJSONObject());
             }
-            oj.put("reviews",jarr.toString());
-
+            oj.put("reviews",jarr);
             return oj.toString();
         } catch (JSONException e) {
             Logger.d("Error storing the manager");

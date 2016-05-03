@@ -41,6 +41,7 @@ import straw.polito.it.straw.R;
 
 import straw.polito.it.straw.StrawApplication;
 import straw.polito.it.straw.data.Manager;
+import straw.polito.it.straw.data.Review;
 import straw.polito.it.straw.utils.DatabaseUtils;
 import straw.polito.it.straw.utils.Logger;
 import straw.polito.it.straw.utils.SharedPreferencesHandler;
@@ -188,8 +189,10 @@ public class CreateManagerAccountActivity extends AppCompatActivity {
                 }
                 man.setImage(photo_uri.toString());
                 if (!sw) {
+                    man.setReviews(new ArrayList<Review>());
                     DatabaseUtils databaseUtils = ((StrawApplication)getApplication()).getDatabaseUtils();
-                    databaseUtils.saveManagerProfile(man);
+                    databaseUtils.saveManagerProfile(man,"");
+
                     String oj = man.toJSONObject();
                     mShared.edit().putString(SharedPreferencesHandler.MANAGER, oj).commit();
                     /*if(getIntent().hasExtra("manager")) {

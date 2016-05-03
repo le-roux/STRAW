@@ -8,14 +8,12 @@ import org.json.JSONObject;
  */
 public class Review {
 
-    private User user;
-    private Manager restaurant;
+    private String user;
     private float rate;
     private String description;
 
-    public Review(User user, Manager restaurant, float rate, String description) {
+    public Review(String user,float rate, String description) {
         this.user = user;
-        this.restaurant = restaurant;
         this.rate = rate;
         this.description = description;
     }
@@ -23,8 +21,7 @@ public class Review {
     public Review(String review){
         try {
             JSONObject jo=new JSONObject(review);
-            user=new User(jo.get("user").toString());
-            restaurant=new Manager(jo.get("restaurant").toString());
+            user=jo.get("user").toString();
             rate=Float.valueOf(String.valueOf(jo.get("rate")));
             description=jo.getString("desc");
         } catch (JSONException e) {
@@ -36,8 +33,7 @@ public class Review {
     public String toString() {
         JSONObject jo =new JSONObject();
         try {
-            jo.put("user",user.toString());
-            jo.put("restaurant",restaurant.toJSONObject());
+            jo.put("user",user);
             jo.put("rate",rate);
             jo.put("desc",description);
             return jo.toString();
@@ -47,21 +43,26 @@ public class Review {
 
         return null;
     }
+    public JSONObject toJSONObject() {
+        JSONObject jo =new JSONObject();
+        try {
+            jo.put("user",user);
+            jo.put("rate",rate);
+            jo.put("desc",description);
+            return jo;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
-    public User getUser() {
+        return null;
+    }
+
+    public String getUser() {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(String user) {
         this.user = user;
-    }
-
-    public Manager getRestaurant() {
-        return restaurant;
-    }
-
-    public void setRestaurant(Manager restaurant) {
-        this.restaurant = restaurant;
     }
 
     public float getRate() {

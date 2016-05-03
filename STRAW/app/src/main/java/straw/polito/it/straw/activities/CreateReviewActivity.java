@@ -1,5 +1,7 @@
 package straw.polito.it.straw.activities;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -32,9 +34,13 @@ public class CreateReviewActivity extends AppCompatActivity {
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                man.getReviews().add(new Review(user,man,rate.getRating(),desc.getText().toString()));
+                man.getReviews().add(new Review(user.getEmail(),rate.getRating(),desc.getText().toString()));
                 //SAVE IN THE DATABASE
-                new SharedPreferencesHandler(getBaseContext()).storeCurrentManager(man.toJSONObject());
+                //new SharedPreferencesHandler(getBaseContext()).storeCurrentManager(man.toJSONObject());
+                SharedPreferences sp=PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+                sp.edit().putString("Manager",man.toJSONObject()).commit();
+                Intent resultIntent = new Intent();
+                setResult(SearchDetailActivity.RESULT_OK, resultIntent);
                 finish();
             }
         });

@@ -23,7 +23,7 @@ public class SearchActivity extends AppCompatActivity {
         button_edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), ProfileManagerActivity.class);
+                Intent intent = new Intent(getApplicationContext(), ProfileUserActivity.class);
                 startActivity(intent);
             }
         });
