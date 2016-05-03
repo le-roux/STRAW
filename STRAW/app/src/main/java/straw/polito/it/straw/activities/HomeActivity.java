@@ -78,7 +78,7 @@ public class HomeActivity extends AppCompatActivity {
         create_user_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), BookTableActivity.class);
+                Intent intent = new Intent(getApplicationContext(), CreateUserAccountActivity.class);
                 startActivity(intent);
             }
         });

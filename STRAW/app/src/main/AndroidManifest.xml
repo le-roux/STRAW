@@ -4,9 +4,9 @@
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.SEND_SMS"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.SEND_SMS" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:name=".StrawApplication"
@@ -46,7 +46,8 @@
         <activity android:name=".activities.AddPlateActivity" />
         <activity android:name=".activities.AddDrinkActivity" />
         <activity android:name=".activities.ConfirmReservationActivity" />
-        <activity android:name=".activities.InviteFriendActivity"></activity>
+        <activity android:name=".activities.InviteFriendActivity" />
+        <activity android:name=".activities.SearchDetailActivity"></activity>
     </application>
 
 </manifest>

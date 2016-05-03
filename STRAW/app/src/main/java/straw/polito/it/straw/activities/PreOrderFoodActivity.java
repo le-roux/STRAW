@@ -46,7 +46,11 @@ public class PreOrderFoodActivity extends AppCompatActivity implements PriceCont
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pre_order_food);
         Intent intent = getIntent();
-        this.reservation = Reservation.create(intent.getStringExtra(Reservation.RESERVATION));
+        if(intent!=null) {
+            if(intent.getStringExtra(Reservation.RESERVATION)!=null) {
+                this.reservation = Reservation.create(intent.getStringExtra(Reservation.RESERVATION));
+            }
+        }
 
         this.addPlateButton = (Button)findViewById(R.id.add_plate_button);
         this.addDrinkButton = (Button)findViewById(R.id.add_drink_button);

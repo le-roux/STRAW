@@ -175,13 +175,13 @@ public class CreateUserAccountActivity extends AppCompatActivity {
                     DatabaseUtils databaseUtils = ((StrawApplication)getApplication()).getDatabaseUtils();
                     databaseUtils.saveUserProfile(user);
                     String oj = user.toString();
-                    mShared.edit().putString("User", oj).commit();
+                    ((StrawApplication)getApplication()).getSharedPreferencesHandler().storeCurrentUser(oj);
                     if(getIntent().hasExtra("user")) {
                         showAlert(getString(R.string.m_save), getString(R.string.m_succ), true);
                     }else{
                         showAlert(getString(R.string.m_c), getString(R.string.m_succ), true);
                     }
-                    Intent intent = new Intent(getApplicationContext(), ProfileUserActivity.class);
+                    Intent intent = new Intent(getApplicationContext(), SearchActivity.class);
                     startActivity(intent);
                     finish();
                 } else {

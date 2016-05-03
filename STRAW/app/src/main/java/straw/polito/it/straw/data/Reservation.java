@@ -23,6 +23,7 @@ public class Reservation implements TimeDisplayer, DateDisplayer{
     private ArrayList<Food> plates;
     private ArrayList<Food> drinks;
     private Manager restaurant;
+    private User customer;
     public enum Place {INSIDE, OUTSIDE, NO_PREFERENCE};
     public static final int INSIDE = 0;
     public static final int OUTSIDE = 1;
@@ -39,6 +40,8 @@ public class Reservation implements TimeDisplayer, DateDisplayer{
     public static final String PLATES = "Plates";
     public static final String DRINKS = "Drinks";
     public static final String RESERVATION = "Reservation";
+    public static final String RESTAURANT = "Restaurant";
+    public static final String CUSTOMER = "Customer";
     public static  final String PLACE = "Place";
 
     public Reservation() {
@@ -68,14 +71,14 @@ public class Reservation implements TimeDisplayer, DateDisplayer{
     public String getFoodList() {
         StringBuilder builder = new StringBuilder();
         for (Food plate : this.plates) {
-            builder.append(plate.toString())
+            builder.append(plate.getName())
                     .append(", ");
         }
         for (Food drink : this.drinks) {
-            builder.append(drink.toString())
+            builder.append(drink.getName())
                     .append(", ");
         }
-         builder.delete(builder.length() - 2, builder.length() - 1);
+        builder.delete(builder.length() - 2, builder.length() - 1);
         return builder.toString();
     }
 
@@ -177,6 +180,14 @@ public class Reservation implements TimeDisplayer, DateDisplayer{
         return this.restaurant;
     }
 
+    public void setCustomer (User customer) {
+        this.customer = customer;
+    }
+
+    public User getCustomer() {
+        return this.customer;
+    }
+
     public JSONObject save() {
         JSONObject jsonObject = new JSONObject();
         try {
@@ -196,11 +207,14 @@ public class Reservation implements TimeDisplayer, DateDisplayer{
             jsonObject.put(MINUTES, this.getMinutes());
             jsonObject.put(PLACE, this.getPlaceInt());
             if (this.getRestaurant() != null)
-                jsonObject.put(RESERVATION, this.getRestaurant().toJSONObject());
+                jsonObject.put(RESTAURANT, this.getRestaurant().toJSONObject());
             else {
-                jsonObject.put(RESERVATION, (new Manager().toJSONObject()));
+                Manager manager = new Manager();
+                manager.setRes_name("foo");
+                jsonObject.put(RESTAURANT, (manager.toJSONObject()));
                 Logger.d("Warning : new restaurant created when saving reservation");
             }
+            jsonObject.put(CUSTOMER, this.getCustomer().toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -233,9 +247,13 @@ public class Reservation implements TimeDisplayer, DateDisplayer{
             int minutes = jsonObject.getInt(MINUTES);
             reservation.setTime(year, month, day, hour, minutes);
             reservation.setPlace(jsonObject.getInt(PLACE));
-            reservation.setRestaurant(new Manager(jsonObject.getString(RESERVATION)));
+            Logger.d("create : " + jsonObject.getString(RESTAURANT));
+            reservation.setRestaurant(new Manager(jsonObject.getString(RESTAURANT)));
+            Logger.d("create : " + reservation.getRestaurant().getRes_name());
+            reservation.setCustomer(new User(jsonObject.getString(CUSTOMER)));
         } catch (JSONException e) {
             e.printStackTrace();
+            Logger.d("null");
             return null;
         }
         return reservation;

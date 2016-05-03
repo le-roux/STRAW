@@ -7,6 +7,8 @@ import org.json.JSONObject;
 
 import java.util.StringTokenizer;
 
+import straw.polito.it.straw.utils.Logger;
+
 /**
  * Created by Andres Camilo Jimenez on 03/04/2016.
  */
@@ -44,7 +46,7 @@ public class Manager {
             image = (String) oj.get("photo");
             email = (String) oj.get("email");
         } catch (JSONException e) {
-            Log.v("Manager", "Error creating the manager");
+            Logger.d("Error creating the manager");
         }
     }
 
@@ -127,7 +129,7 @@ public class Manager {
             oj.put("email", email);
             return oj.toString();
         } catch (JSONException e) {
-            Log.v("Manager", "Error creating the manager");
+            Logger.d("Error storing the manager");
         }
         return null;
     }

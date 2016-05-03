@@ -33,7 +33,7 @@ public class DisplayReservationsActivity extends AppCompatActivity implements Ba
         setContentView(R.layout.activity_display_reservations);
         this.sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
-        this.reservationList = new ArrayList<Reservation>();
+        this.reservationList = new ArrayList<>();
         if (savedInstanceState == null) {
             String description = "";
             JSONArray jsonArray;
