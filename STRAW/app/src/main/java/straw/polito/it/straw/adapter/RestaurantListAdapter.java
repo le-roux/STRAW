@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.RatingBar;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -70,7 +69,7 @@ public class RestaurantListAdapter extends BaseAdapter {
         if (position < this.list.size()) {
             name.setText(String.valueOf(this.list.get(position).getRes_name()));
 
-            String uri = this.list.get(position).getImage();
+            String uri = this.list.get(position).getImageURI();
             Logger.d("uri = " + uri);
             if(uri != null)
                 ImageManager.setImage(this.context, photo, Uri.parse(uri));

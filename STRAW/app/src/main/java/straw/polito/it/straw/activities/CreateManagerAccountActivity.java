@@ -3,7 +3,6 @@ package straw.polito.it.straw.activities;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -11,12 +10,9 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.preference.PreferenceManager;
 import android.provider.MediaStore;
-import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
@@ -27,11 +23,6 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.Spinner;
-import android.widget.TextView;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
@@ -124,13 +115,12 @@ public class CreateManagerAccountActivity extends AppCompatActivity {
 
     private void loadPrevInfo(Manager man) {
         try {
-            photo_uri=Uri.parse(man.getImage());
-            bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), Uri.parse(man.getImage()));
+            photo_uri=Uri.parse(man.getImageURI());
+            bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), Uri.parse(man.getImageURI()));
             photo.setImageBitmap(bitmap);
         } catch (IOException e) {
             Log.v(TAG, "Error on loading the photo! " + e.getMessage());
         }
-        c_pwd.setText(man.getPwd());
         tel.setText(String.valueOf(man.getTelephone()));
         email.setText(man.getEmail());
         r_n.setText(man.getRes_name());
@@ -161,9 +151,7 @@ public class CreateManagerAccountActivity extends AppCompatActivity {
                     showAlert(getString(R.string.m_email), getString(R.string.error), false);
                     sw = true;
                 }
-                if (!c_pwd.getText().toString().equals("") && c_pwd.getText().toString().equals(cc_pwd.getText().toString())) {
-                    man.setPwd(c_pwd.getText().toString());
-                } else {
+                if (c_pwd.getText().toString().equals("") || !c_pwd.getText().toString().equals(cc_pwd.getText().toString())) {
                     showAlert(getString(R.string.m_pwd), getString(R.string.error), false);
                     sw = true;
                 }
@@ -192,7 +180,7 @@ public class CreateManagerAccountActivity extends AppCompatActivity {
                     showAlert(getString(R.string.m_seats), getString(R.string.error), false);
                     sw = true;
                 }
-                man.setImage(photo_uri.toString());
+                man.setImageURI(photo_uri.toString());
                 if (!sw) {
                     /**
                      * Set the new profile as the current manager.
@@ -204,7 +192,8 @@ public class CreateManagerAccountActivity extends AppCompatActivity {
                     ProgressBarFragment fragment = new ProgressBarFragment();
                     fragment.show(getSupportFragmentManager(), "ProgressBar");
                     DatabaseUtils databaseUtils = ((StrawApplication)getApplication()).getDatabaseUtils();
-                    databaseUtils.createUser(man.getEmail(), man.getPwd(), SharedPreferencesHandler.MANAGER, fragment);
+                    String password = c_pwd.getText().toString();
+                    databaseUtils.createUser(man.getEmail(), password, SharedPreferencesHandler.MANAGER, fragment);
                 } else {
                     return;
                 }

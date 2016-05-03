@@ -17,8 +17,10 @@ public class SharedPreferencesHandler {
     public static final String USER = "User";
 
     private SharedPreferences sharedPreferences;
+    private Context context;
 
     public SharedPreferencesHandler(Context context) {
+        this.context = context;
         this.sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
     }
 

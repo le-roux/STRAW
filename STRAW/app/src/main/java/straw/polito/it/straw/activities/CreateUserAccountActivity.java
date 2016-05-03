@@ -96,7 +96,6 @@ public class CreateUserAccountActivity extends AppCompatActivity {
         } catch (IOException e) {
             Log.v(TAG, "Error on loading the photo! " + e.getMessage());
         }
-        c_pwd.setText(user.getPwd());
         email.setText(user.getEmail());
         uni.setText(user.getUniversity());
         u_d.setSelection(u_d_list.indexOf(user.getDiet()));
@@ -156,9 +155,7 @@ public class CreateUserAccountActivity extends AppCompatActivity {
                     showAlert(getString(R.string.m_email), getString(R.string.error), false);
                     sw = true;
                 }
-                if (!c_pwd.getText().toString().equals("") && c_pwd.getText().toString().equals(cc_pwd.getText().toString())) {
-                    user.setPwd(c_pwd.getText().toString());
-                } else {
+                if (c_pwd.getText().toString().equals("") || !c_pwd.getText().toString().equals(cc_pwd.getText().toString())) {
                     showAlert(getString(R.string.m_pwd), getString(R.string.error), false);
                     sw = true;
                 }

@@ -103,6 +103,7 @@ public class DatabaseUtils {
 
         @Override
         protected void onPostExecute(String[] result) {
+            Logger.d("end store : " + result);
             if (result != null) {
                 /**
                  * Impossible to send the data to the remote database
@@ -422,7 +423,7 @@ public class DatabaseUtils {
 
                 @Override
                 public void onError(FirebaseError firebaseError) {
-                    Logger.d(firebaseError.getMessage());
+                    Logger.d("error creation user : " + firebaseError.getMessage());
                     Toast.makeText(context, R.string.ErrorNetwork, Toast.LENGTH_SHORT).show();
                 }
             });
@@ -459,6 +460,7 @@ public class DatabaseUtils {
 
         @Override
         protected Void doInBackground(String... params) {
+            Logger.d("launching log in task");
             firebase.authWithPassword(params[0], params[1], new Firebase.AuthResultHandler() {
                 @Override
                 public void onAuthenticated(AuthData authData) {
@@ -486,15 +488,21 @@ public class DatabaseUtils {
                                 firebase.child(MANAGER).child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(DataSnapshot dataSnapshot) {
-                                        Manager manager = dataSnapshot.getValue(Manager.class);
-                                        sharedPreferencesHandler.storeCurrentManager(manager.toJSONObject());
-                                        Intent intent = new Intent(context, ProfileManagerActivity.class);
-                                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                        context.startActivity(intent);
+                                        if (dataSnapshot.exists()) {
+                                            Manager manager = dataSnapshot.getValue(Manager.class);
+                                            sharedPreferencesHandler.storeCurrentManager(manager.toJSONObject());
+                                            Intent intent = new Intent(context, ProfileManagerActivity.class);
+                                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                            context.startActivity(intent);
+                                        } else {
+                                            Toast.makeText(context, R.string.error_log_in, Toast.LENGTH_LONG).show();
+                                            fragment.dismiss();
+                                        }
                                     }
 
                                     @Override
                                     public void onCancelled(FirebaseError firebaseError) {
+                                        Logger.d("error cancelled : " + firebaseError.getMessage());
                                         Toast.makeText(context, R.string.ErrorNetwork, Toast.LENGTH_SHORT).show();
                                     }
                                 });
@@ -503,6 +511,7 @@ public class DatabaseUtils {
 
                         @Override
                         public void onCancelled(FirebaseError firebaseError) {
+                            Logger.d("error cancelled2 : " + firebaseError.getMessage());
                             Toast.makeText(context, R.string.ErrorNetwork, Toast.LENGTH_SHORT).show();
                         }
                     });
@@ -511,6 +520,7 @@ public class DatabaseUtils {
 
                 @Override
                 public void onAuthenticationError(FirebaseError firebaseError) {
+                    Logger.d("error log in : " + firebaseError.getMessage());
                     Toast.makeText(context, R.string.error_log_in, Toast.LENGTH_SHORT).show();
                 }
             });

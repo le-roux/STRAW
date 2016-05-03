@@ -1,11 +1,16 @@
 package straw.polito.it.straw.data;
 
-import android.util.Log;
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.provider.MediaStore;
+import android.util.Base64;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.StringTokenizer;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 import straw.polito.it.straw.utils.Logger;
 
@@ -19,7 +24,7 @@ public class Manager {
     private String res_name;
     private String res_type;
     private int seats;
-    private String image;
+    private String imageURI;
     private String email;
 
     public static final String SEATS_AVAILABLE = "SeatsAvailable";
@@ -41,7 +46,7 @@ public class Manager {
             res_name = (String) oj.get("r_n");
             res_type = (String) oj.get("r_t");
             seats = (int) oj.get("seats");
-            image = (String) oj.get("photo");
+            imageURI = (String) oj.get("photo");
             email = (String) oj.get("email");
         } catch (JSONException e) {
             Logger.d("Error creating the manager");
@@ -56,12 +61,12 @@ public class Manager {
         this.email = email;
     }
 
-    public String getImage() {
-        return image;
+    public String getImageURI() {
+        return imageURI;
     }
 
-    public void setImage(String image) {
-        this.image = image;
+    public void setImageURI(String imageURI) {
+        this.imageURI = imageURI;
     }
 
     public String getTelephone() {
@@ -113,7 +118,7 @@ public class Manager {
             oj.put("r_n", res_name);
             oj.put("r_t", res_type);
             oj.put("seats", seats);
-            oj.put("photo", image);
+            oj.put("photo", imageURI);
             oj.put("email", email);
             return oj.toString();
         } catch (JSONException e) {

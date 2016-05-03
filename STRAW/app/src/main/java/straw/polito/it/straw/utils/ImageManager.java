@@ -37,7 +37,7 @@ public class ImageManager {
     }
 
     public static void setImage(Context context, ImageView imageView, Uri uri) {
-        Logger.d( "setImage uri = " + uri);
+        Logger.d( "setImageURI uri = " + uri);
         Bitmap bitmap = null;
         try {
             bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), uri);
