@@ -227,10 +227,10 @@ public class DatabaseUtils {
      * @param manager : the manager profile to save
      * @return : return true if saving is possible, false otherwise.
      */
-    public boolean saveManagerProfile(Manager manager) {
+    public boolean saveManagerProfile(Manager manager, String uid) {
         ArrayList<String> children = new ArrayList<>();
         children.add(MANAGER);
-        children.add(manager.getEmail());
+        children.add(uid);
         return this.saveData(children, manager.toJSONObject());
     }
 
@@ -375,25 +375,44 @@ public class DatabaseUtils {
     }
 
     /**
-     * A simple AsyncTask that performs the creation of a new user in the Fireabse database in
+     * A simple AsyncTask that performs the creation of a new user in the Firebase database in
      * a secondary thread.
      */
-    private class CreateUserAsyncTask extends AsyncTask<String, Void, Boolean> {
+    private class CreateUserAsyncTask extends AsyncTask<String, Void, Void> {
 
         @Override
-        protected Boolean doInBackground(String[] params) {
+        protected Void doInBackground(final String[] params) {
             firebase.createUser(params[0], params[1], new Firebase.ValueResultHandler<Map<String, Object>>() {
                 @Override
-                public void onSuccess(Map<String, Object> stringObjectMap) {
+                public void onSuccess(Map<String, Object> result) {
+                    /**
+                     * Display a message telling the user that everything worked fine
+                     */
                     Toast.makeText(context, R.string.m_c, Toast.LENGTH_SHORT).show();
+                    /**
+                     * Store the profile in the database
+                     */
+                    String uid = (String)result.get("uid");
+                    if (params[2].equals(SharedPreferencesHandler.MANAGER)) {
+                        Manager manager = sharedPreferencesHandler.getCurrentManager();
+                        saveManagerProfile(manager, uid);
+                    }
+                    else {
+                        //TODO save user profile
+                    }
+                    /**
+                     * Log in
+                     */
+                    logIn(params[0], params[1]);
                 }
 
                 @Override
                 public void onError(FirebaseError firebaseError) {
+                    Logger.d(firebaseError.getMessage());
                     Toast.makeText(context, R.string.ErrorNetwork, Toast.LENGTH_SHORT).show();
                 }
             });
-            return true;
+            return null;
         }
     }
 
@@ -421,7 +440,35 @@ public class DatabaseUtils {
                 @Override
                 public void onAuthenticated(AuthData authData) {
                     Toast.makeText(context, R.string.log_in, Toast.LENGTH_SHORT).show();
-                    //TO DO : Launch the proper activity
+                    final String uid = authData.getUid();
+                    firebase.child(USER).child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            if (dataSnapshot.exists()) {
+                                User user = dataSnapshot.getValue(User.class);
+                                //TODO : save it in sharedPreferences and launch proper activity
+                            } else {
+                                firebase.child(MANAGER).child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                        Manager manager = dataSnapshot.getValue(Manager.class);
+                                        //TODO : save it in sharedPreferences and launch proper activity
+                                    }
+
+                                    @Override
+                                    public void onCancelled(FirebaseError firebaseError) {
+
+                                    }
+                                });
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(FirebaseError firebaseError) {
+
+                        }
+                    });
+                    //TODO : Launch the proper activity
                 }
 
                 @Override
