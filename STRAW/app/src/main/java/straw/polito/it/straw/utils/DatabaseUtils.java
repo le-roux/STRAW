@@ -63,61 +63,6 @@ public class DatabaseUtils {
     }
 
     /**
-     * Give a simple way to store data in the remote database
-     * @param children : List of the nodes that must be entered before storing the data.
-     * @param data : the actual data to store.
-     * @return : return true if saving is possible, false otherwise.
-     */
-    public boolean saveData(ArrayList<String> children, String data) {
-        String params[] = new String[children.size() + 1];
-        children.toArray(params);
-        params[params.length - 1] = data;
-        new StoreAsyncTask().execute(params);
-        return true;
-    }
-
-    /**
-     * Allows to perform the sending of data to the database in a secondary thread
-     */
-    private class StoreAsyncTask extends AsyncTask<String, Void, String[]> {
-        @Override
-        protected String[] doInBackground(String... params) {
-            /**
-             * Check if the network is available
-             */
-            if (networkInfo == null || !networkInfo.isConnectedOrConnecting()) {
-                String[] result = new String[2];
-                result[0] = MANAGER;
-                result[1] = params[params.length - 1];
-                return result;
-            }
-
-            Firebase ref = firebase;
-            for (int i = 0; i < params.length - 1; i++) {
-                Logger.d(params[i]);
-                ref = ref.child(params[i]);
-            }
-            ref.setValue(params[params.length - 1]);
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(String[] result) {
-            Logger.d("end store : " + result);
-            if (result != null) {
-                /**
-                 * Impossible to send the data to the remote database
-                 * Store it locally in the sharedPreferences
-                 */
-                Toast.makeText(context, R.string.NoNetwork, Toast.LENGTH_LONG).show();
-                if (result[0].equals(MANAGER)) {
-                    sharedPreferencesHandler.storeCurrentManager(result[1]);
-                }
-            }
-        }
-    }
-
-    /**
      * Allows to retrieve a String from the Firebase database in a secondary thread.
      */
     private class RetrieveAsyncTask extends AsyncTask<String, Void, String> {
@@ -222,10 +167,23 @@ public class DatabaseUtils {
      * @return : return true if saving is possible, false otherwise.
      */
     public boolean saveMenu(String restaurantName, String data) {
-        ArrayList<String> children = new ArrayList<>();
-        children.add(MENU);
-        children.add(restaurantName);
-        return this.saveData(children, data);
+        String[] children = new String[3];
+        children[0] = MENU;
+        children[1] = restaurantName;
+        children[2] = data;
+        SaveMenuAsyncTask task = new SaveMenuAsyncTask();
+        task.execute(children);
+        return true;
+    }
+
+    private class SaveMenuAsyncTask extends AsyncTask<String, Void, Void> {
+
+        @Override
+        protected Void doInBackground(String... params) {
+            Firebase ref = firebase.child(params[0]).child(params[1]);
+            ref.setValue(params[2]);
+            return null;
+        }
     }
 
     /**
@@ -330,7 +288,7 @@ public class DatabaseUtils {
     /**
      * Store a reservation in the database.
      * @param reservation : the reservation to store.
-     * @return : return true if saving is possible, false otherwise.
+     * @return : return true
      */
     public boolean saveReservation(Reservation reservation) {
         ArrayList<String> children = new ArrayList<>();
@@ -338,7 +296,27 @@ public class DatabaseUtils {
         Logger.d("save reservation : " + reservation.getRestaurant().getRes_name());
         children.add(reservation.getRestaurant().getRes_name());
         children.add(reservation.getCustomer().getEmail());
-        return this.saveData(children, reservation.toString());
+        StoreReservationAsyncTask task = new StoreReservationAsyncTask(reservation.getRestaurant().getRes_name(), reservation.getCustomer().getEmail());
+        task.execute(reservation);
+        return true;
+    }
+
+    private class StoreReservationAsyncTask extends AsyncTask<Reservation, Void, Void> {
+
+        String restaurantName;
+        String customerName;
+
+        public StoreReservationAsyncTask(String restaurantName, String customerName) {
+            this.restaurantName = restaurantName;
+            this.customerName = customerName;
+        }
+
+        @Override
+        protected Void doInBackground(Reservation... params) {
+            Firebase ref = firebase.child(RESERVATION).child(restaurantName).child(customerName);
+            ref.setValue(params[0]);
+            return null;
+        }
     }
 
     /**
