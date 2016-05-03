@@ -13,8 +13,10 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
@@ -25,6 +27,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -43,6 +46,7 @@ import straw.polito.it.straw.StrawApplication;
 import straw.polito.it.straw.data.Manager;
 import straw.polito.it.straw.utils.DatabaseUtils;
 import straw.polito.it.straw.utils.Logger;
+import straw.polito.it.straw.utils.ProgressBarFragment;
 import straw.polito.it.straw.utils.SharedPreferencesHandler;
 
 public class CreateManagerAccountActivity extends AppCompatActivity {
@@ -197,8 +201,11 @@ public class CreateManagerAccountActivity extends AppCompatActivity {
                     /**
                      * Save the profile in the database, log the manager and launch the profile activity.
                      */
+
+                    ProgressBarFragment fragment = new ProgressBarFragment();
+                    fragment.show(getSupportFragmentManager(), "ProgressBar");
                     DatabaseUtils databaseUtils = ((StrawApplication)getApplication()).getDatabaseUtils();
-                    databaseUtils.createUser(man.getEmail(), man.getPwd(), SharedPreferencesHandler.MANAGER);
+                    databaseUtils.createUser(man.getEmail(), man.getPwd(), SharedPreferencesHandler.MANAGER, fragment);
                 } else {
                     return;
                 }

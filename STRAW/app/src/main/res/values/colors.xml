@@ -13,4 +13,6 @@
     <color name="cyan_light">#E2FBF2</color>
     <color name="text_list">#040404</color>
     <color name="beige">#FEFEE2</color>
+    <color name="fragmentBackground">#AA000000</color>
+    <color name="progressBar">#FF00E5FF</color>
 </resources>

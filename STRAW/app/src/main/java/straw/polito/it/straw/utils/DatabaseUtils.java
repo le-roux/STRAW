@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.client.AuthData;
@@ -369,8 +371,8 @@ public class DatabaseUtils {
      * @param password : the password of the new user
      * @return true if the creation succeeded, false otherwise
      */
-    public void createUser(String emailAddress, String password, String type) {
-        CreateUserAsyncTask task = new CreateUserAsyncTask();
+    public void createUser(String emailAddress, String password, String type, ProgressBarFragment fragment) {
+        CreateUserAsyncTask task = new CreateUserAsyncTask(fragment);
         String[] params = new String[3];
         params[0] = emailAddress;
         params[1] = password;
@@ -383,6 +385,11 @@ public class DatabaseUtils {
      * a secondary thread.
      */
     private class CreateUserAsyncTask extends AsyncTask<String, Void, Void> {
+        private ProgressBarFragment fragment;
+
+        public CreateUserAsyncTask(ProgressBarFragment fragment) {
+            this.fragment = fragment;
+        }
 
         @Override
         protected Void doInBackground(final String[] params) {
@@ -392,7 +399,7 @@ public class DatabaseUtils {
                     /**
                      * Display a message telling the user that everything worked fine
                      */
-                    Toast.makeText(context, R.string.m_c, Toast.LENGTH_SHORT).show();
+                    fragment.setText(R.string.m_c);
                     /**
                      * Store the profile in the database
                      */
@@ -408,7 +415,7 @@ public class DatabaseUtils {
                     /**
                      * Log in
                      */
-                    logIn(params[0], params[1]);
+                    logIn(params[0], params[1], fragment);
                 }
 
                 @Override
@@ -426,11 +433,12 @@ public class DatabaseUtils {
      * @param emailAddress : the login of the requested account
      * @param password : the password of the requested account
      */
-    public void logIn(String emailAddress, String password) {
+    public void logIn(String emailAddress, String password, ProgressBarFragment fragment) {
+        fragment.setText(R.string.LoggingIn);
         String[] params = new String[2];
         params[0] = emailAddress;
         params[1] = password;
-        LogInAsyncTask task = new LogInAsyncTask();
+        LogInAsyncTask task = new LogInAsyncTask(fragment);
         task.execute(params);
     }
 
@@ -440,12 +448,18 @@ public class DatabaseUtils {
      */
     private class LogInAsyncTask extends AsyncTask<String, Void, Void> {
 
+        private ProgressBarFragment fragment;
+
+        public LogInAsyncTask(ProgressBarFragment fragment) {
+            this.fragment = fragment;
+        }
+
         @Override
         protected Void doInBackground(String... params) {
             firebase.authWithPassword(params[0], params[1], new Firebase.AuthResultHandler() {
                 @Override
                 public void onAuthenticated(AuthData authData) {
-                    Toast.makeText(context, R.string.log_in, Toast.LENGTH_SHORT).show();
+                    fragment.setText(R.string.log_in);
                     final String uid = authData.getUid();
                     firebase.child(USER).child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
