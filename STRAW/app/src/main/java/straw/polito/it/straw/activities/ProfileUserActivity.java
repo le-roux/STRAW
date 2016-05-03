@@ -98,7 +98,7 @@ public class ProfileUserActivity extends AppCompatActivity {
         friends=(TextView)findViewById(R.id.list_friends);
     }
     private void loadPrevInfo(User user) {
-        ImageManager.setImage(this, photo, Uri.parse(user.getImage()));
+        ImageManager.setImage(this, photo, user.getImage());
 
         email.setText(getString(R.string.email) + ": " + user.getEmail());
         user_info.setText(getString(R.string.u_t) + ": " + user.getType()+" , "+user.getUniversity());

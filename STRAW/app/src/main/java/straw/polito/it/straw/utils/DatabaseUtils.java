@@ -209,6 +209,7 @@ public class DatabaseUtils {
         protected Void doInBackground(Manager... params) {
             Firebase ref = firebase.child(MANAGER).child(this.uid);
             ref.setValue(params[0]);
+            Logger.d("value stored : " + params[0].getEmail());
             return null;
         }
     }
@@ -417,6 +418,7 @@ public class DatabaseUtils {
                     String uid = (String)result.get("uid");
                     if (params[2].equals(SharedPreferencesHandler.MANAGER)) {
                         Manager manager = sharedPreferencesHandler.getCurrentManager();
+                        Logger.d("current manager : " + manager.getEmail());
                         saveManagerProfile(manager, uid);
                     }
                     else {
@@ -432,6 +434,7 @@ public class DatabaseUtils {
                 @Override
                 public void onError(FirebaseError firebaseError) {
                     Logger.d("error creation user : " + firebaseError.getMessage());
+                    fragment.dismiss();
                     Toast.makeText(context, R.string.ErrorNetwork, Toast.LENGTH_SHORT).show();
                 }
             });
@@ -510,6 +513,7 @@ public class DatabaseUtils {
                                     @Override
                                     public void onCancelled(FirebaseError firebaseError) {
                                         Logger.d("error cancelled : " + firebaseError.getMessage());
+                                        fragment.dismiss();
                                         Toast.makeText(context, R.string.ErrorNetwork, Toast.LENGTH_SHORT).show();
                                     }
                                 });
@@ -519,15 +523,16 @@ public class DatabaseUtils {
                         @Override
                         public void onCancelled(FirebaseError firebaseError) {
                             Logger.d("error cancelled2 : " + firebaseError.getMessage());
+                            fragment.dismiss();
                             Toast.makeText(context, R.string.ErrorNetwork, Toast.LENGTH_SHORT).show();
                         }
                     });
-                    //TODO : Launch the proper activity
                 }
 
                 @Override
                 public void onAuthenticationError(FirebaseError firebaseError) {
                     Logger.d("error log in : " + firebaseError.getMessage());
+                    fragment.dismiss();
                     Toast.makeText(context, R.string.error_log_in, Toast.LENGTH_SHORT).show();
                 }
             });

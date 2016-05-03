@@ -74,8 +74,10 @@ public abstract class FoodAdapter extends BaseAdapter {
         //Fill the View with the proper data
         if (position < this.goods.size()) {
             String uri = this.goods.get(position).getImageURI();
-            if(uri != null)
-                ImageManager.setImage(this.context, imageView, Uri.parse(uri));
+            if(uri != null) {
+                String imageString = ImageManager.getImageFromUri(context, Uri.parse(uri));
+                ImageManager.setImage(this.context, imageView, imageString);
+            }
             title.setText(this.goods.get(position).getName());
             description.setText(this.goods.get(position).getDescription());
             price.setText(String.valueOf(this.goods.get(position).getPrice()) + " €");

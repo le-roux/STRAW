@@ -30,7 +30,7 @@ public class SearchDetailActivity extends AppCompatActivity {
         initialize();
         name.setText(man.getRes_name());
         price.setText("SET PRICE");
-        ImageManager.setImage(this, img, Uri.parse(man.getImageURI()));
+        ImageManager.setImage(this, img, man.getImage());
         setListeners();
     }
 

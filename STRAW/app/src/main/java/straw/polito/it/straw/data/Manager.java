@@ -3,6 +3,7 @@ package straw.polito.it.straw.data;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import straw.polito.it.straw.utils.ImageManager;
 import straw.polito.it.straw.utils.Logger;
 
 /**
@@ -15,7 +16,7 @@ public class Manager {
     private String res_name;
     private String res_type;
     private int seats;
-    private String imageURI;
+    private String image;
     private String email;
 
     public static final String SEATS_AVAILABLE = "SeatsAvailable";
@@ -31,7 +32,7 @@ public class Manager {
             res_name = (String) oj.get("r_n");
             res_type = (String) oj.get("r_t");
             seats = (int) oj.get("seats");
-            imageURI = (String) oj.get("photo");
+            image = (String) oj.get("photo");
             email = (String) oj.get("email");
         } catch (JSONException e) {
             Logger.d("Error creating the manager");
@@ -46,12 +47,12 @@ public class Manager {
         this.email = email;
     }
 
-    public String getImageURI() {
-        return imageURI;
+    public String getImage() {
+        return image;
     }
 
-    public void setImageURI(String imageURI) {
-        this.imageURI = imageURI;
+    public void setImage(String image) {
+        this.image = image;
     }
 
     public String getTelephone() {
@@ -103,7 +104,7 @@ public class Manager {
             oj.put("r_n", res_name);
             oj.put("r_t", res_type);
             oj.put("seats", seats);
-            oj.put("photo", imageURI);
+            oj.put("photo", image);
             oj.put("email", email);
             return oj.toString();
         } catch (JSONException e) {

@@ -69,11 +69,9 @@ public class RestaurantListAdapter extends BaseAdapter {
         if (position < this.list.size()) {
             name.setText(String.valueOf(this.list.get(position).getRes_name()));
 
-            String uri = this.list.get(position).getImageURI();
-            Logger.d("uri = " + uri);
-            if(uri != null)
-                ImageManager.setImage(this.context, photo, Uri.parse(uri));
-            //name.setText("coucou");
+            String imageString = this.list.get(position).getImage();
+            if(imageString != null)
+                ImageManager.setImage(this.context, photo, imageString);
         }
 
         return convertView;
