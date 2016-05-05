@@ -188,6 +188,9 @@ public class CreateManagerAccountActivity extends AppCompatActivity {
                      * Save the profile in the database, log the manager and launch the profile activity.
                      */
                     ProgressBarFragment fragment = new ProgressBarFragment();
+                    Bundle bundle = new Bundle();
+                    bundle.putString(ProgressBarFragment.TEXT, getResources().getString(R.string.AccountCreation));
+                    fragment.setArguments(bundle);
                     fragment.show(getSupportFragmentManager(), "ProgressBar");
                     DatabaseUtils databaseUtils = ((StrawApplication)getApplication()).getDatabaseUtils();
                     String password = c_pwd.getText().toString();

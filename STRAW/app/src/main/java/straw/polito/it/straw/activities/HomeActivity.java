@@ -50,8 +50,11 @@ public class HomeActivity extends AppCompatActivity {
                 String password = pwd_editText.getText().toString();
                 DatabaseUtils databaseUtils = ((StrawApplication)getApplication()).getDatabaseUtils();
                 ProgressBarFragment fragment = new ProgressBarFragment();
+                Bundle bundle = new Bundle();
+                bundle.putString(ProgressBarFragment.TEXT, getResources().getString(R.string.log_in));
+                fragment.setArguments(bundle);
                 fragment.show(getSupportFragmentManager(), "ProgressBar");
-                databaseUtils.logIn(emailAddress, password, fragment);
+                databaseUtils.logIn(emailAddress, password, true, fragment);
             }
         });
 

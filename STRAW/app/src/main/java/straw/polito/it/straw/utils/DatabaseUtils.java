@@ -486,7 +486,7 @@ public class DatabaseUtils {
                     /**
                      * Log in
                      */
-                    logIn(params[0], params[1], fragment);
+                    logIn(params[0], params[1], false, fragment);
                 }
 
                 @Override
@@ -505,14 +505,14 @@ public class DatabaseUtils {
      * @param emailAddress : the login of the requested account
      * @param password : the password of the requested account
      */
-    public void logIn(String emailAddress, String password, ProgressBarFragment fragment) {
+    public void logIn(String emailAddress, String password, boolean retrieveProfile, ProgressBarFragment fragment) {
         Logger.d("Log in requested");
         if(fragment != null && fragment.isAdded())
             fragment.setText(R.string.LoggingIn);
         String[] params = new String[2];
         params[0] = emailAddress;
         params[1] = password;
-        LogInAsyncTask task = new LogInAsyncTask(fragment);
+        LogInAsyncTask task = new LogInAsyncTask(retrieveProfile, fragment);
         task.execute(params);
     }
 
@@ -523,13 +523,15 @@ public class DatabaseUtils {
     private class LogInAsyncTask extends AsyncTask<String, Void, Void> {
 
         private ProgressBarFragment fragment;
+        private boolean retrieveProfile;
 
-        public LogInAsyncTask(ProgressBarFragment fragment) {
+        public LogInAsyncTask(boolean retrieveProfile, ProgressBarFragment fragment) {
+            this.retrieveProfile = retrieveProfile;
             this.fragment = fragment;
         }
 
         @Override
-        protected Void doInBackground(String... params) {
+        protected Void doInBackground(final String... params) {
             Logger.d("Ask for login");
             firebase.authWithPassword(params[0], params[1], new Firebase.AuthResultHandler() {
                 @Override
@@ -537,58 +539,83 @@ public class DatabaseUtils {
                     Logger.d("Login successfull");
                     String text = context.getResources().getString(R.string.log_in) + " - " + context.getResources().getString(R.string.RetrievingData);
                     fragment.setText(text);
-                    final String uid = authData.getUid();
-                    firebase.child(USER).child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            if (dataSnapshot.exists()) {
-                                /**
-                                 * It's a customer (and not a manager). Retrieve the profile, store
-                                 * it in the sharedPreferences for future access and launch
-                                 * the proper activity.
-                                 */
-                                User user = dataSnapshot.getValue(User.class);
-                                sharedPreferencesHandler.storeCurrentUser(user.toString());
-                                Intent intent = new Intent(context, ProfileUserActivity.class);
+                    if (retrieveProfile) {
+                        final String uid = authData.getUid();
+                        firebase.child(USER).child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                if (dataSnapshot.exists()) {
+                                    /**
+                                     * It's a customer (and not a manager). Retrieve the profile, store
+                                     * it in the sharedPreferences for future access and launch
+                                     * the proper activity.
+                                     */
+                                    User user = dataSnapshot.getValue(User.class);
+                                    sharedPreferencesHandler.storeCurrentUser(user.toString());
+                                    Intent intent = new Intent(context, ProfileUserActivity.class);
+                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    context.startActivity(intent);
+                                } else {
+                                    /**
+                                     * It's a manager. Retrieve the profile, store it in the
+                                     * sharedPreferences and launch the proper activity.
+                                     */
+                                    firebase.child(MANAGER).child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                            if (dataSnapshot.exists()) {
+                                                Manager manager = dataSnapshot.getValue(Manager.class);
+                                                sharedPreferencesHandler.storeCurrentManager(manager.toJSONObject());
+                                                Intent intent = new Intent(context, ProfileManagerActivity.class);
+                                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                                context.startActivity(intent);
+                                            } else {
+                                                Toast.makeText(context, R.string.error_log_in, Toast.LENGTH_LONG).show();
+                                                fragment.dismiss();
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onCancelled(FirebaseError firebaseError) {
+                                            Logger.d("error cancelled : " + firebaseError.getMessage());
+                                            fragment.dismiss();
+                                            Toast.makeText(context, R.string.ErrorNetwork, Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(FirebaseError firebaseError) {
+                                Logger.d("error cancelled2 : " + firebaseError.getMessage());
+                                fragment.dismiss();
+                                Toast.makeText(context, R.string.ErrorNetwork, Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    } else {
+                        Logger.d("Take local profile");
+                        fragment.dismiss();
+                        /**
+                         * No need to retrieve the profile from the remote database.
+                         * First, try to see if it's the current user and if not, try with the
+                         * current manager.
+                         */
+                        User user = sharedPreferencesHandler.getCurrentUser();
+                        if (user != null && user.getEmail().equals(params[0])) {
+                            Intent intent = new Intent(context, ProfileUserActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            context.startActivity(intent);
+                        } else {
+                            Manager manager = sharedPreferencesHandler.getCurrentManager();
+                            if (manager != null && manager.getEmail().equals(params[0])) {
+                                Intent intent = new Intent(context, ProfileManagerActivity.class);
                                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                 context.startActivity(intent);
                             } else {
-                                /**
-                                 * It's a manager. Retrieve the profile, store it in the
-                                 * sharedPreferences and launch the proper activity.
-                                 */
-                                firebase.child(MANAGER).child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(DataSnapshot dataSnapshot) {
-                                        if (dataSnapshot.exists()) {
-                                            Manager manager = dataSnapshot.getValue(Manager.class);
-                                            sharedPreferencesHandler.storeCurrentManager(manager.toJSONObject());
-                                            Intent intent = new Intent(context, ProfileManagerActivity.class);
-                                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                            context.startActivity(intent);
-                                        } else {
-                                            Toast.makeText(context, R.string.error_log_in, Toast.LENGTH_LONG).show();
-                                            fragment.dismiss();
-                                        }
-                                    }
-
-                                    @Override
-                                    public void onCancelled(FirebaseError firebaseError) {
-                                        Logger.d("error cancelled : " + firebaseError.getMessage());
-                                        fragment.dismiss();
-                                        Toast.makeText(context, R.string.ErrorNetwork, Toast.LENGTH_SHORT).show();
-                                    }
-                                });
+                                Toast.makeText(context, R.string.NoMatchingProfile, Toast.LENGTH_LONG).show();
                             }
                         }
-
-                        @Override
-                        public void onCancelled(FirebaseError firebaseError) {
-                            Logger.d("error cancelled2 : " + firebaseError.getMessage());
-                            fragment.dismiss();
-                            Toast.makeText(context, R.string.ErrorNetwork, Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                    }
                 }
 
                 @Override

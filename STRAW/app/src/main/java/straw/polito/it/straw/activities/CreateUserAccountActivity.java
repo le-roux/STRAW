@@ -180,6 +180,9 @@ public class CreateUserAccountActivity extends AppCompatActivity {
                      * launch the proper activity.
                      */
                     ProgressBarFragment fragment = new ProgressBarFragment();
+                    Bundle bundle = new Bundle();
+                    bundle.putString(ProgressBarFragment.TEXT, getResources().getString(R.string.AccountCreation));
+                    fragment.setArguments(bundle);
                     fragment.show(getSupportFragmentManager(), "ProgressBar");
                     DatabaseUtils databaseUtils = ((StrawApplication)getApplication()).getDatabaseUtils();
                     String emailAddress = email.getText().toString();
