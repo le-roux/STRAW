@@ -50,6 +50,7 @@ public class HomeActivity extends AppCompatActivity {
                 ProgressDialog dialog = new ProgressDialog(HomeActivity.this, ProgressDialog.STYLE_SPINNER);
                 dialog.setIndeterminate(true);
                 dialog.setMessage(getResources().getString(R.string.log_in));
+                dialog.setCancelable(false);
                 dialog.show();
                 databaseUtils.logIn(emailAddress, password, true, dialog);
             }

@@ -192,22 +192,9 @@ public class DatabaseUtils {
      * Store the profile of a manager in the Firebase database
      * @param manager : the manager profile to save
      */
-    public boolean saveManagerProfile(Manager manager, String uid, boolean wait) {
-        SaveManagerAsyncTask task = new SaveManagerAsyncTask(uid);
+    public void saveManagerProfile(Manager manager, String uid, boolean logIn, String password, ProgressDialog dialog) {
+        SaveManagerAsyncTask task = new SaveManagerAsyncTask(uid, logIn, password, dialog);
         task.execute(manager);
-        if (wait) {
-            try {
-                task.get();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-                return false;
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-                return false;
-            }
-            return true;
-        }
-        return false;
     }
 
     /**
@@ -217,24 +204,30 @@ public class DatabaseUtils {
      * @param manager : The manager profile to store.
      */
     public void saveManagerProfile(Manager manager) {
-        saveManagerProfile(manager, null, false);
+        saveManagerProfile(manager, null, false, "", null);
     }
 
 
-    private class SaveManagerAsyncTask extends AsyncTask<Manager, Void, Boolean> {
+    private class SaveManagerAsyncTask extends AsyncTask<Manager, Void, Void> {
 
         /**
          * The uid of the current manager. It's used as the key to store the profile in the
          * Firebase database.
          */
         private String uid;
+        private boolean logIn;
+        private String password;
+        private ProgressDialog dialog;
 
-        public SaveManagerAsyncTask(String uid) {
+        public SaveManagerAsyncTask(String uid, boolean logIn, String password, ProgressDialog dialog) {
             this.uid = uid;
+            this.logIn = logIn;
+            this.password = password;
+            this.dialog = dialog;
         }
 
         @Override
-        protected Boolean doInBackground(final Manager... params) {
+        protected Void doInBackground(final Manager... params) {
             /**
              * The uid is unknown, retrieve it according to the current authenticated user.
              */
@@ -255,19 +248,73 @@ public class DatabaseUtils {
                         /**
                          * The actual storage of the data
                          */
+                        if (dialog != null)
+                            dialog.setMessage(context.getResources().getString(R.string.StoringData));
                         Firebase ref = firebase.child(MANAGER).child(uid);
-                        ref.setValue(params[0]);
-                        ref = firebase.child(RESTAURANTS).child(params[0].getRes_name());
-                        ref.setValue(params[0]);
+                        ref.setValue(params[0], new Firebase.CompletionListener() {
+                            @Override
+                            public void onComplete(FirebaseError firebaseError, Firebase resultRef) {
+                                if (firebaseError == null) {
+                                    /**
+                                     * No error, continue the sequence
+                                     */
+                                    if (dialog != null) {
+                                        String message = context.getResources().getString(R.string.StoringData) + " 1/2";
+                                        dialog.setMessage(message);
+                                    }
+                                    Firebase ref = firebase.child(RESTAURANTS).child(params[0].getRes_name());
+                                    Logger.d("res name : " + params[0].getRes_name());
+                                    Logger.d(ref.toString());
+                                    ref.setValue(params[0], new Firebase.CompletionListener() {
+                                        @Override
+                                        public void onComplete(FirebaseError firebaseError, Firebase firebase) {
+                                            if (firebaseError == null) {
+                                                /**
+                                                 * No error, continue the sequence
+                                                 */
+                                                if (dialog != null) {
+                                                    String message = context.getResources().getString(R.string.StoringData) + " 2/2";
+                                                    dialog.setMessage(message);
+                                                }
+                                                if (logIn) {
+                                                    String emailAddress = params[0].getEmail();
+                                                    logIn(emailAddress, password, false, dialog);
+                                                }
+                                            } else {
+                                                /**
+                                                 * An error occurred when trying to save the profile
+                                                 */
+                                                Logger.d(firebaseError.getMessage());
+                                                if (dialog != null)
+                                                    dialog.dismiss();;
+                                                Toast.makeText(context, firebaseError.getMessage(), Toast.LENGTH_LONG).show();
+                                            }
+                                        }
+                                    });
+                                } else {
+                                    /**
+                                     * An error occurred when trying to save the profile
+                                     */
+                                    Logger.d(firebaseError.getMessage());
+                                    if (dialog != null)
+                                        dialog.dismiss();
+                                    Toast.makeText(context, firebaseError.getMessage(), Toast.LENGTH_LONG).show();
+                                }
+                            }
+                        });
                     }
                 }
 
                 @Override
                 public void onCancelled(FirebaseError firebaseError) {
+                    if (dialog != null)
+                        dialog.dismiss();
                     Logger.d("error when checking if restaurant already exists : " + firebaseError.getMessage());
                 }
             });
             Logger.d("return from saveManager");
+            if (!logIn && dialog != null)
+                dialog.dismiss();
             return null;
         }
     }
@@ -434,7 +481,6 @@ public class DatabaseUtils {
      * @return true if the creation succeeded, false otherwise
      */
     public void createUser(String emailAddress, String password, String type, ProgressDialog dialog) {
-        dialog.setMessage(context.getResources().getString(R.string.AccountCreation));
         CreateUserAsyncTask task = new CreateUserAsyncTask(dialog);
         String[] params = new String[3];
         params[0] = emailAddress;
@@ -466,22 +512,18 @@ public class DatabaseUtils {
                      */
                     dialog.setMessage(context.getResources().getString(R.string.m_c));
                     /**
-                     * Store the profile in the database
+                     * Store the profile in the database and logIn
                      */
                     String uid = (String)result.get("uid");
                     if (params[2].equals(SharedPreferencesHandler.MANAGER)) {
                         Manager manager = sharedPreferencesHandler.getCurrentManager();
-                        saveManagerProfile(manager, uid, true);
+                        saveManagerProfile(manager, uid, true, params[1], dialog);
                         Logger.d("return from profile storage");
                     }
                     else {
                         User user = sharedPreferencesHandler.getCurrentUser();
                         saveUserProfile(user, uid);
                     }
-                    /**
-                     * Log in
-                     */
-                    logIn(params[0], params[1], false, dialog);
                 }
 
                 @Override
@@ -580,6 +622,7 @@ public class DatabaseUtils {
                                 sharedPreferencesHandler.storeCurrentUser(user.toString());
                                 Intent intent = new Intent(context, ProfileUserActivity.class);
                                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                dialog.dismiss();
                                 context.startActivity(intent);
                             } else {
                                 /**
@@ -594,6 +637,7 @@ public class DatabaseUtils {
                                             sharedPreferencesHandler.storeCurrentManager(manager.toJSONObject());
                                             Intent intent = new Intent(context, ProfileManagerActivity.class);
                                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                            dialog.dismiss();
                                             context.startActivity(intent);
                                         } else {
                                             Toast.makeText(context, R.string.error_log_in, Toast.LENGTH_LONG).show();

@@ -189,6 +189,7 @@ public class CreateManagerAccountActivity extends AppCompatActivity {
                     ProgressDialog dialog= new ProgressDialog(CreateManagerAccountActivity.this, ProgressDialog.STYLE_SPINNER);
                     dialog.setIndeterminate(true);
                     dialog.setMessage(getResources().getString(R.string.AccountCreation));
+                    dialog.setCancelable(false);
                     dialog.show();
                     DatabaseUtils databaseUtils = ((StrawApplication)getApplication()).getDatabaseUtils();
                     String password = c_pwd.getText().toString();

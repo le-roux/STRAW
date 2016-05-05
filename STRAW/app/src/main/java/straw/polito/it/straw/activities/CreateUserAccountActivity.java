@@ -180,6 +180,7 @@ public class CreateUserAccountActivity extends AppCompatActivity {
                     ProgressDialog dialog = new ProgressDialog(CreateUserAccountActivity.this, ProgressDialog.STYLE_SPINNER);
                     dialog.setIndeterminate(true);
                     dialog.setMessage(getResources().getString(R.string.AccountCreation));
+                    dialog.setCancelable(false);
                     dialog.show();
                     DatabaseUtils databaseUtils = ((StrawApplication)getApplication()).getDatabaseUtils();
                     String emailAddress = email.getText().toString();
