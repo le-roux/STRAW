@@ -1,5 +1,6 @@
 package straw.polito.it.straw.utils;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
@@ -432,10 +433,9 @@ public class DatabaseUtils {
      * @param password : the password of the new user
      * @return true if the creation succeeded, false otherwise
      */
-    public void createUser(String emailAddress, String password, String type, ProgressBarFragment fragment) {
-        if(fragment != null && fragment.isAdded())
-            fragment.setText(R.string.AccountCreation);
-        CreateUserAsyncTask task = new CreateUserAsyncTask(fragment);
+    public void createUser(String emailAddress, String password, String type, ProgressDialog dialog) {
+        dialog.setMessage(context.getResources().getString(R.string.AccountCreation));
+        CreateUserAsyncTask task = new CreateUserAsyncTask(dialog);
         String[] params = new String[3];
         params[0] = emailAddress;
         params[1] = password;
@@ -448,10 +448,10 @@ public class DatabaseUtils {
      * a secondary thread.
      */
     private class CreateUserAsyncTask extends AsyncTask<String, Void, Void> {
-        private ProgressBarFragment fragment;
+        private ProgressDialog dialog;
 
-        public CreateUserAsyncTask(ProgressBarFragment fragment) {
-            this.fragment = fragment;
+        public CreateUserAsyncTask(ProgressDialog dialog) {
+            this.dialog = dialog;
         }
 
         @Override
@@ -464,7 +464,7 @@ public class DatabaseUtils {
                     /**
                      * Display a message telling the user that everything worked fine
                      */
-                    fragment.setText(R.string.m_c);
+                    dialog.setMessage(context.getResources().getString(R.string.m_c));
                     /**
                      * Store the profile in the database
                      */
@@ -481,13 +481,13 @@ public class DatabaseUtils {
                     /**
                      * Log in
                      */
-                    logIn(params[0], params[1], false, fragment);
+                    logIn(params[0], params[1], false, dialog);
                 }
 
                 @Override
                 public void onError(FirebaseError firebaseError) {
                     Logger.d("error creation user : " + firebaseError.getMessage());
-                    fragment.dismiss();
+                    dialog.dismiss();
                     Toast.makeText(context, R.string.ErrorNetwork, Toast.LENGTH_SHORT).show();
                 }
             });
@@ -503,14 +503,13 @@ public class DatabaseUtils {
      *                        must first be searched in the sharedPreferences.
      *                        Be sure that the local version is up-to-date when putting false
      */
-    public void logIn(String emailAddress, String password, boolean retrieveProfile, ProgressBarFragment fragment) {
+    public void logIn(String emailAddress, String password, boolean retrieveProfile, ProgressDialog dialog) {
         Logger.d("Log in requested");
-        if(fragment != null && fragment.isAdded())
-            fragment.setText(R.string.LoggingIn);
+        dialog.setMessage(context.getResources().getString(R.string.LoggingIn));
         String[] params = new String[2];
         params[0] = emailAddress;
         params[1] = password;
-        LogInAsyncTask task = new LogInAsyncTask(retrieveProfile, fragment);
+        LogInAsyncTask task = new LogInAsyncTask(retrieveProfile, dialog);
         task.execute(params);
     }
 
@@ -520,12 +519,12 @@ public class DatabaseUtils {
      */
     private class LogInAsyncTask extends AsyncTask<String, Void, Void> {
 
-        private ProgressBarFragment fragment;
+        private ProgressDialog dialog;
         private boolean retrieveProfile;
 
-        public LogInAsyncTask(boolean retrieveProfile, ProgressBarFragment fragment) {
+        public LogInAsyncTask(boolean retrieveProfile, ProgressDialog dialog) {
             this.retrieveProfile = retrieveProfile;
-            this.fragment = fragment;
+            this.dialog = dialog;
         }
 
         @Override
@@ -536,7 +535,7 @@ public class DatabaseUtils {
                 public void onAuthenticated(AuthData authData) {
                     Logger.d("Login successfull");
                     String text = context.getResources().getString(R.string.log_in) + " - " + context.getResources().getString(R.string.RetrievingData);
-                    fragment.setText(text);
+                    dialog.setMessage(text);
                     if (!retrieveProfile) {
                         Logger.d("Take local profile");
                         /**
@@ -546,7 +545,7 @@ public class DatabaseUtils {
                          */
                         User user = sharedPreferencesHandler.getCurrentUser();
                         if (user != null && user.getEmail().equals(params[0])) {
-                            fragment.dismiss();
+                            dialog.dismiss();
                             Intent intent = new Intent(context, ProfileUserActivity.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             context.startActivity(intent);
@@ -554,7 +553,7 @@ public class DatabaseUtils {
                         } else {
                             Manager manager = sharedPreferencesHandler.getCurrentManager();
                             if (manager != null && manager.getEmail().equals(params[0])) {
-                                fragment.dismiss();
+                                dialog.dismiss();
                                 Intent intent = new Intent(context, ProfileManagerActivity.class);
                                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                 context.startActivity(intent);
@@ -598,14 +597,14 @@ public class DatabaseUtils {
                                             context.startActivity(intent);
                                         } else {
                                             Toast.makeText(context, R.string.error_log_in, Toast.LENGTH_LONG).show();
-                                            fragment.dismiss();
+                                            dialog.dismiss();
                                         }
                                     }
 
                                     @Override
                                     public void onCancelled(FirebaseError firebaseError) {
                                         Logger.d("error cancelled : " + firebaseError.getMessage());
-                                        fragment.dismiss();
+                                        dialog.dismiss();
                                         Toast.makeText(context, R.string.ErrorNetwork, Toast.LENGTH_SHORT).show();
                                     }
                                 });
@@ -615,7 +614,7 @@ public class DatabaseUtils {
                         @Override
                         public void onCancelled(FirebaseError firebaseError) {
                             Logger.d("error cancelled2 : " + firebaseError.getMessage());
-                            fragment.dismiss();
+                            dialog.dismiss();
                             Toast.makeText(context, R.string.ErrorNetwork, Toast.LENGTH_SHORT).show();
                         }
                     });
@@ -624,7 +623,7 @@ public class DatabaseUtils {
                 @Override
                 public void onAuthenticationError(FirebaseError firebaseError) {
                     Logger.d("error log in : " + firebaseError.getMessage());
-                    fragment.dismiss();
+                    dialog.dismiss();
                     Toast.makeText(context, R.string.error_log_in, Toast.LENGTH_SHORT).show();
                 }
             });

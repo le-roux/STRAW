@@ -1,16 +1,15 @@
 package straw.polito.it.straw.activities;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Environment;
-import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -38,7 +37,6 @@ import straw.polito.it.straw.StrawApplication;
 import straw.polito.it.straw.data.User;
 import straw.polito.it.straw.utils.DatabaseUtils;
 import straw.polito.it.straw.utils.Logger;
-import straw.polito.it.straw.utils.ProgressBarFragment;
 import straw.polito.it.straw.utils.SharedPreferencesHandler;
 
 public class CreateUserAccountActivity extends AppCompatActivity {
@@ -179,15 +177,14 @@ public class CreateUserAccountActivity extends AppCompatActivity {
                      * Create the new user account in the database, store the profile, log in and
                      * launch the proper activity.
                      */
-                    ProgressBarFragment fragment = new ProgressBarFragment();
-                    Bundle bundle = new Bundle();
-                    bundle.putString(ProgressBarFragment.TEXT, getResources().getString(R.string.AccountCreation));
-                    fragment.setArguments(bundle);
-                    fragment.show(getSupportFragmentManager(), "ProgressBar");
+                    ProgressDialog dialog = new ProgressDialog(CreateUserAccountActivity.this, ProgressDialog.STYLE_SPINNER);
+                    dialog.setIndeterminate(true);
+                    dialog.setMessage(getResources().getString(R.string.AccountCreation));
+                    dialog.show();
                     DatabaseUtils databaseUtils = ((StrawApplication)getApplication()).getDatabaseUtils();
                     String emailAddress = email.getText().toString();
                     String password = c_pwd.getText().toString();
-                    databaseUtils.createUser(emailAddress, password, SharedPreferencesHandler.USER, fragment);
+                    databaseUtils.createUser(emailAddress, password, SharedPreferencesHandler.USER, dialog);
                 } else {
                     return;
                 }
