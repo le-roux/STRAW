@@ -434,7 +434,9 @@ public class DatabaseUtils {
                 @Override
                 public void onError(FirebaseError firebaseError) {
                     Logger.d("error creation user : " + firebaseError.getMessage());
-                    fragment.dismiss();
+                    if(fragment!=null) {
+                        fragment.dismiss();
+                    }
                     Toast.makeText(context, R.string.ErrorNetwork, Toast.LENGTH_SHORT).show();
                 }
             });
