@@ -1,6 +1,5 @@
 package straw.polito.it.straw.utils;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.os.Bundle;
@@ -32,13 +31,9 @@ public class ProgressBarFragment extends DialogFragment {
         return builder.create();
     }
 
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-    }
-
     public void setText(String text) {
-        this.textView.setText(text);
+        if (text != null)
+            this.textView.setText(text);
     }
 
     public void setText(int resId) {

@@ -80,8 +80,6 @@ public class ConfirmReservationActivity extends AppCompatActivity {
             public void onClick(View view) {
                  DatabaseUtils databaseUtils = ((StrawApplication)getApplication()).getDatabaseUtils();
                  databaseUtils.saveReservation(reservation);
-                 Toast toast = Toast.makeText(getApplicationContext(), R.string.ReservationSent, Toast.LENGTH_LONG);
-                 toast.show();
              }
         });
     }
