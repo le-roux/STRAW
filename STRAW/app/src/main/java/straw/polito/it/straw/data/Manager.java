@@ -1,18 +1,11 @@
 package straw.polito.it.straw.data;
 
-import android.util.Log;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.StringTokenizer;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import straw.polito.it.straw.utils.ImageManager;
 import straw.polito.it.straw.utils.Logger;
 
 /**

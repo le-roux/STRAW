@@ -160,6 +160,7 @@
     <string name="AccountCreation">Account creation</string>
     <string name="LoggingIn">Logging In</string>
     <string name="RetrievingData">Retrieving data</string>
+    <string name="NameAlreadyUsed">This name already exists</string>
 
     <!--Strings for the search detail part-->
     <string name="s_menu">Menu</string>

@@ -29,6 +29,8 @@ public class ProfileManagerActivity extends AppCompatActivity {
     TextView offerts_link;
     Button edit_button;
 
+    public static final String MANAGER = "manager";
+
     private String TAG = "ProfileManagerActivity";
     private SharedPreferences mShared;
     Manager man;
@@ -63,7 +65,7 @@ public class ProfileManagerActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent i = new Intent(getBaseContext(), CreateManagerAccountActivity.class);
                 Log.v(TAG,man.toJSONObject());
-                i.putExtra("manager", man.toJSONObject());
+                i.putExtra(MANAGER, man.toJSONObject());
                 startActivity(i);
             }
         });

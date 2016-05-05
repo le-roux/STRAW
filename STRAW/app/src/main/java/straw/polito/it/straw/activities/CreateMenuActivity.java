@@ -177,10 +177,6 @@ public class CreateMenuActivity extends AppCompatActivity {
     public void onStop() {
         super.onStop();
         DatabaseUtils utils = ((StrawApplication)getApplication()).getDatabaseUtils();
-        boolean saved = utils.saveMenu(this.manager.getRes_name(), Menu.saveMenu(this.goods).toString());
-        //If it's impossible to save the data in the database, temporarily store them locally
-        if (!saved)
-            Menu.saveMenuInSharedPreferences(this.context, this.goods);
-        //TO DO : retry later to send the data to the database
+        utils.saveMenu(this.manager.getRes_name(), Menu.saveMenu(this.goods).toString());
     }
 }

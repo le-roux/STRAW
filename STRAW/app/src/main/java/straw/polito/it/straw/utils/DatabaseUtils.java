@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -165,16 +166,15 @@ public class DatabaseUtils {
      * @param restaurantName : the name of the restaurant, that will be used as the key for
      *                       storing the data.
      * @param data : the actual data to store.
-     * @return : return true if saving is possible, false otherwise.
      */
-    public boolean saveMenu(String restaurantName, String data) {
+    public void saveMenu(String restaurantName, String data) {
         String[] children = new String[3];
         children[0] = MENU;
         children[1] = restaurantName;
         children[2] = data;
         SaveMenuAsyncTask task = new SaveMenuAsyncTask();
         task.execute(children);
-        return true;
+        return;
     }
 
     private class SaveMenuAsyncTask extends AsyncTask<String, Void, Void> {
@@ -190,16 +190,42 @@ public class DatabaseUtils {
     /**
      * Store the profile of a manager in the Firebase database
      * @param manager : the manager profile to save
-     * @return : true
      */
-    public boolean saveManagerProfile(Manager manager, String uid) {
+    public boolean saveManagerProfile(Manager manager, String uid, boolean wait) {
         SaveManagerAsyncTask task = new SaveManagerAsyncTask(uid);
         task.execute(manager);
-        return true;
+        if (wait) {
+            try {
+                task.get();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+                return false;
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+                return false;
+            }
+            return true;
+        }
+        return false;
     }
 
-    private class SaveManagerAsyncTask extends AsyncTask<Manager, Void, Void> {
+    /**
+     * Store the profile of a manager in the Firebase database.
+     * The manager must be authenticated because it's uid will be retrieved according to this
+     * authentication.
+     * @param manager : The manager profile to store.
+     */
+    public void saveManagerProfile(Manager manager) {
+        saveManagerProfile(manager, null, false);
+    }
 
+
+    private class SaveManagerAsyncTask extends AsyncTask<Manager, Void, Boolean> {
+
+        /**
+         * The uid of the current manager. It's used as the key to store the profile in the
+         * Firebase database.
+         */
         private String uid;
 
         public SaveManagerAsyncTask(String uid) {
@@ -207,15 +233,43 @@ public class DatabaseUtils {
         }
 
         @Override
-        protected Void doInBackground(Manager... params) {
-            Firebase ref = firebase.child(MANAGER).child(this.uid);
-            ref.setValue(params[0]);
-            ref = firebase.child(RESTAURANTS).child(params[0].getRes_name());
-            ref.setValue(params[0]);
+        protected Boolean doInBackground(final Manager... params) {
+            /**
+             * The uid is unknown, retrieve it according to the current authenticated user.
+             */
+            if (this.uid == null) {
+                this.uid = firebase.getAuth().getUid();
+            }
+            /**
+             * Check if the restaurant name is already used
+             */
+            Firebase ref = firebase.child(RESTAURANTS).child(params[0].getRes_name());
+            ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    Logger.d("actual storage");
+                    if (dataSnapshot.exists()) {
+                        Toast.makeText(context, R.string.NameAlreadyUsed, Toast.LENGTH_LONG).show();
+                    } else {
+                        /**
+                         * The actual storage of the data
+                         */
+                        Firebase ref = firebase.child(MANAGER).child(uid);
+                        ref.setValue(params[0]);
+                        ref = firebase.child(RESTAURANTS).child(params[0].getRes_name());
+                        ref.setValue(params[0]);
+                    }
+                }
+
+                @Override
+                public void onCancelled(FirebaseError firebaseError) {
+                    Logger.d("error when checking if restaurant already exists : " + firebaseError.getMessage());
+                }
+            });
+            Logger.d("return from saveManager");
             return null;
         }
     }
-
     /**
      * Retrieve the full profile of a manager (identified by the manager email address) from
      *                      Firebase database.
@@ -422,7 +476,8 @@ public class DatabaseUtils {
                     String uid = (String)result.get("uid");
                     if (params[2].equals(SharedPreferencesHandler.MANAGER)) {
                         Manager manager = sharedPreferencesHandler.getCurrentManager();
-                        saveManagerProfile(manager, uid);
+                        saveManagerProfile(manager, uid, true);
+                        Logger.d("return from profile storage");
                     }
                     else {
                         User user = sharedPreferencesHandler.getCurrentUser();
