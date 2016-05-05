@@ -48,7 +48,8 @@ public class DatabaseUtils {
     public static final String MENU = "menu";
     public static final String MANAGER = "manager";
     public static final String USER = "user";
-    public static final String RESERVATION = "reservation";
+    public static final String RESERVATIONS = "reservations";
+    public static final String RESTAURANTS = "restaurants";
 
     /**
      * A simple constructor, invoked in StrawApplication.onCreate()
@@ -209,7 +210,8 @@ public class DatabaseUtils {
         protected Void doInBackground(Manager... params) {
             Firebase ref = firebase.child(MANAGER).child(this.uid);
             ref.setValue(params[0]);
-            Logger.d("value stored : " + params[0].getEmail());
+            ref = firebase.child(RESTAURANTS).child(params[0].getRes_name());
+            ref.setValue(params[0]);
             return null;
         }
     }
@@ -293,7 +295,7 @@ public class DatabaseUtils {
      */
     public boolean saveReservation(Reservation reservation) {
         ArrayList<String> children = new ArrayList<>();
-        children.add(RESERVATION);
+        children.add(RESERVATIONS);
         Logger.d("save reservation : " + reservation.getRestaurant().getRes_name());
         children.add(reservation.getRestaurant().getRes_name());
         children.add(reservation.getCustomer().getEmail());
@@ -314,7 +316,7 @@ public class DatabaseUtils {
 
         @Override
         protected Void doInBackground(Reservation... params) {
-            Firebase ref = firebase.child(RESERVATION).child(restaurantName).child(customerName);
+            Firebase ref = firebase.child(RESERVATIONS).child(restaurantName).child(customerName);
             ref.setValue(params[0]);
             return null;
         }
@@ -328,7 +330,7 @@ public class DatabaseUtils {
      */
     public Reservation retrieveReservation(String restaurantName, String customerEmail) {
         String[] children = new String[3];
-        children[0] = RESERVATION;
+        children[0] = RESERVATIONS;
         children[1] = restaurantName;
         children[2] = customerEmail;
         RetrieveAsyncTask task = new RetrieveAsyncTask();
@@ -351,7 +353,7 @@ public class DatabaseUtils {
     public ArrayList<Reservation> retrieveReservations(String restaurantName) {
         ArrayList<Reservation> reservations = new ArrayList<>();
         String[] children = new String[2];
-        children[0] = RESERVATION;
+        children[0] = RESERVATIONS;
         children[1] = restaurantName;
         RetrieveAsyncTask task = new RetrieveAsyncTask();
         task.execute(children);
@@ -405,9 +407,11 @@ public class DatabaseUtils {
 
         @Override
         protected Void doInBackground(final String[] params) {
+            Logger.d("asking for creation");
             firebase.createUser(params[0], params[1], new Firebase.ValueResultHandler<Map<String, Object>>() {
                 @Override
                 public void onSuccess(Map<String, Object> result) {
+                    Logger.d("creation successfull");
                     /**
                      * Display a message telling the user that everything worked fine
                      */
@@ -418,7 +422,6 @@ public class DatabaseUtils {
                     String uid = (String)result.get("uid");
                     if (params[2].equals(SharedPreferencesHandler.MANAGER)) {
                         Manager manager = sharedPreferencesHandler.getCurrentManager();
-                        Logger.d("current manager : " + manager.getEmail());
                         saveManagerProfile(manager, uid);
                     }
                     else {
@@ -448,6 +451,7 @@ public class DatabaseUtils {
      * @param password : the password of the requested account
      */
     public void logIn(String emailAddress, String password, ProgressBarFragment fragment) {
+        Logger.d("Log in requested");
         if(fragment != null && fragment.isAdded())
             fragment.setText(R.string.LoggingIn);
         String[] params = new String[2];
@@ -471,10 +475,13 @@ public class DatabaseUtils {
 
         @Override
         protected Void doInBackground(String... params) {
+            Logger.d("Ask for login");
             firebase.authWithPassword(params[0], params[1], new Firebase.AuthResultHandler() {
                 @Override
                 public void onAuthenticated(AuthData authData) {
-                    fragment.setText(R.string.log_in);
+                    Logger.d("Login successfull");
+                    String text = context.getResources().getString(R.string.log_in) + " - " + context.getResources().getString(R.string.RetrievingData);
+                    fragment.setText(text);
                     final String uid = authData.getUid();
                     firebase.child(USER).child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override

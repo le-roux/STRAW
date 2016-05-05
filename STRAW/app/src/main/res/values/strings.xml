@@ -159,6 +159,7 @@
     <string name="NoNetwork">Network is not available\nPlease check your connection</string>
     <string name="AccountCreation">Account creation</string>
     <string name="LoggingIn">Logging In</string>
+    <string name="RetrievingData">Retrieving data</string>
 
     <!--Strings for the search detail part-->
     <string name="s_menu">Menu</string>

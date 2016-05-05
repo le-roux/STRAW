@@ -132,9 +132,9 @@ public class Manager {
             oj.put("email", email);
             JSONArray jarr = new JSONArray();
 
-            for(Review r:reviews){
+            /*for(Review r:reviews){
                 jarr.put(r.toJSONObject());
-            }
+            }*/
             oj.put("reviews",jarr);
             return oj.toString();
         } catch (JSONException e) {
