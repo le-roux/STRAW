@@ -180,40 +180,31 @@ public class CreateManagerAccountActivity extends AppCompatActivity {
                 man.setImage(imageString);
                 if (!sw) {
                     man.setReviews(new ArrayList<Review>());
-                    DatabaseUtils databaseUtils = ((StrawApplication)getApplication()).getDatabaseUtils();
-                    databaseUtils.saveManagerProfile(man,"");
-
-                    String oj = man.toJSONObject();
-                    //mShared.edit().putString(SharedPreferencesHandler.MANAGER, oj).commit();
-                    /*if(getIntent().hasExtra("manager")) {
-                        showAlert(getString(R.string.m_save), getString(R.string.m_succ), true);
-                    } else {
-                        showAlert(getString(R.string.m_c), getString(R.string.m_succ), true);
-                    }*/
-                    //arrayManager.add(man);
-
-                    Intent intent = new Intent(getApplicationContext(), ProfileManagerActivity.class);
-
-                    String name = c_pwd.getText().toString();
-                    Intent intentForSearch = new Intent(getApplicationContext(), QuickSearchActivity.class);
-                    intentForSearch.putExtra("EXTRA_NAME", name.toString());
-
-                    startActivity(intent);
-                    finish();
                     /**
                      * Set the new profile as the current manager.
                      */
                     sharedPreferencesHandler.storeCurrentManager(man.toJSONObject());
-                    Logger.d("storage : " + man.getImage());
                     /**
                      * Save the profile in the database, log the manager and launch the profile activity.
                      */
                     ProgressBarFragment fragment = new ProgressBarFragment();
+                    Bundle bundle = new Bundle();
+                    bundle.putString(ProgressBarFragment.TEXT, getResources().getString(R.string.AccountCreation));
+                    fragment.setArguments(bundle);
                     fragment.show(getSupportFragmentManager(), "ProgressBar");
-                    databaseUtils = ((StrawApplication)getApplication()).getDatabaseUtils();
+                    DatabaseUtils databaseUtils = ((StrawApplication)getApplication()).getDatabaseUtils();
                     String password = c_pwd.getText().toString();
-                    databaseUtils.createUser(man.getEmail(), password, SharedPreferencesHandler.MANAGER, fragment);
-
+                    if (getIntent().hasExtra(ProfileManagerActivity.MANAGER)) {
+                        /**
+                         * Update the existing profile
+                         */
+                        databaseUtils.saveManagerProfile(man);
+                    } else {
+                        /**
+                         * Create a new user and save the profile in the database
+                         */
+                        databaseUtils.createUser(man.getEmail(), password, SharedPreferencesHandler.MANAGER, fragment);
+                    }
                 } else {
                     return;
                 }
