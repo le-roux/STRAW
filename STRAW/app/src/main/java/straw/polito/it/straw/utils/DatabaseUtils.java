@@ -6,9 +6,6 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
-import android.util.Log;
-import android.view.View;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.client.AuthData;
@@ -19,11 +16,9 @@ import com.firebase.client.ValueEventListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 
 import straw.polito.it.straw.R;
 import straw.polito.it.straw.StrawApplication;
@@ -55,144 +50,24 @@ public class DatabaseUtils {
 
     /**
      * A simple constructor, invoked in StrawApplication.onCreate()
+     *
      * @param context
      */
     public DatabaseUtils(Context context, SharedPreferencesHandler sharedPreferencesHandler) {
         this.context = context;
-        this.connectivityManager = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        this.connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         this.networkInfo = connectivityManager.getActiveNetworkInfo();
         this.sharedPreferencesHandler = sharedPreferencesHandler;
         this.firebase = new Firebase(StrawApplication.FIREBASEURL);
     }
 
     /**
-     * Allows to retrieve a String from the Firebase database in a secondary thread.
-     */
-    private class RetrieveAsyncTask extends AsyncTask<String, Void, String> {
-        @Override
-        protected String doInBackground(String... params) {
-            /**
-             * Check if the network is available
-             */
-            if (networkInfo == null || !networkInfo.isConnectedOrConnecting()) {
-                publishProgress();
-                return null;
-            } else {
-                Firebase ref = firebase;
-                for (String string : params)
-                    ref = ref.child(string);
-                String data = "";
-                ref.addValueEventListener(new RetrieverListener(data));
-                return data;
-            }
-        }
-
-        @Override
-        protected void onProgressUpdate(Void... values) {
-            Toast.makeText(context, R.string.NoNetwork, Toast.LENGTH_LONG).show();
-        }
-    }
-
-    /**
-     * A simple class used to retrieve a String from the Firebase database.
-     */
-    private class RetrieverListener implements ValueEventListener {
-
-        private String data;
-
-        public RetrieverListener(String data) {
-            this.data = data;
-        }
-
-        @Override
-        public void onDataChange(DataSnapshot dataSnapshot) {
-            if (dataSnapshot != null && dataSnapshot.getValue() != null) {
-                data = dataSnapshot.getValue(String.class);
-            }
-        }
-
-        @Override
-        public void onCancelled(FirebaseError firebaseError) {
-
-        }
-    }
-
-    /**
-     * Retrieve the menu of the restaurant from the Firebase database
-     * @param restaurantName : the name of the restaurant of which we want to get the menu
-     * @param menu : the internal representation of a complete menu (Plates + Drinks)
-     */
-    public void retrieveMenu(String restaurantName, final ArrayList[] menu) {
-        String children[] = new String[2];
-        children[0] = MENU;
-        children[1] = restaurantName;
-
-        /**
-         * Retrieve the string representation from the database
-         */
-        RetrieveAsyncTask task = new RetrieveAsyncTask();
-        task.execute(children);
-        String data;
-        try {
-            data = task.get();
-        } catch (Exception e) {
-            e.printStackTrace();
-            Toast.makeText(context, R.string.NoNetwork, Toast.LENGTH_LONG).show();
-            return;
-        }
-
-        if (data == null) {
-            Toast.makeText(context, R.string.ErrorNetwork, Toast.LENGTH_LONG).show();
-            return;
-        }
-
-        /**
-         * Use the string representation to re-create the menu
-         */
-        JSONArray jsonArray;
-        try {
-            jsonArray = new JSONArray(data);
-        } catch (JSONException e) {
-            e.printStackTrace();
-            jsonArray = null;
-        }
-
-        if (jsonArray != null) {
-            Menu.restoreMenu(jsonArray, menu);
-        }
-    }
-
-    /**
-     * Store the menu of the restaurant in the Firebase database
-     * @param restaurantName : the name of the restaurant, that will be used as the key for
-     *                       storing the data.
-     * @param data : the actual data to store.
-     */
-    public void saveMenu(String restaurantName, String data) {
-        String[] children = new String[3];
-        children[0] = MENU;
-        children[1] = restaurantName;
-        children[2] = data;
-        SaveMenuAsyncTask task = new SaveMenuAsyncTask();
-        task.execute(children);
-        return;
-    }
-
-    private class SaveMenuAsyncTask extends AsyncTask<String, Void, Void> {
-
-        @Override
-        protected Void doInBackground(String... params) {
-            Firebase ref = firebase.child(params[0]).child(params[1]);
-            ref.setValue(params[2]);
-            return null;
-        }
-    }
-
-    /**
      * Store the profile of a manager in the Firebase database
+     *
      * @param manager : the manager profile to save
      */
     public void saveManagerProfile(Manager manager, String uid, boolean logIn, String password, ProgressDialog dialog) {
+        //TODO save in sharedPreferences here
         SaveManagerAsyncTask task = new SaveManagerAsyncTask(uid, logIn, password, dialog);
         task.execute(manager);
     }
@@ -201,6 +76,7 @@ public class DatabaseUtils {
      * Store the profile of a manager in the Firebase database.
      * The manager must be authenticated because it's uid will be retrieved according to this
      * authentication.
+     *
      * @param manager : The manager profile to store.
      */
     public void saveManagerProfile(Manager manager) {
@@ -286,7 +162,8 @@ public class DatabaseUtils {
                                                  */
                                                 Logger.d(firebaseError.getMessage());
                                                 if (dialog != null)
-                                                    dialog.dismiss();;
+                                                    dialog.dismiss();
+                                                ;
                                                 Toast.makeText(context, firebaseError.getMessage(), Toast.LENGTH_LONG).show();
                                             }
                                         }
@@ -318,101 +195,60 @@ public class DatabaseUtils {
             return null;
         }
     }
-    /**
-     * Retrieve the full profile of a manager (identified by the manager email address) from
-     *                      Firebase database.
-     * @param managerEmail : used as the key to find the manager profile.
-     * @return : The manager profile retrieved from the database, or null if it's not possible
-     *          to retrieve proper data.
-     */
-    public Manager retrieveManagerProfile(String managerEmail) {
-        String children[] = new String[2];
-        children[0] = MANAGER;
-        children[1] = managerEmail;
-        RetrieveAsyncTask task = new RetrieveAsyncTask();
-        task.execute(children);
-        String data;
-        try {
-            data = task.get();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-        return new Manager(data);
-    }
 
     /**
      * Store the profile of a customer in the Firebase database
+     *
      * @param user : the profile to store
      * @return : return true
      */
-    public boolean saveUserProfile(User user, String uid) {
-        SaveUserAsyncTask task = new SaveUserAsyncTask(uid);
+    public void saveCustomerProfile(User user, String uid, boolean logIn, String password, ProgressDialog dialog) {
+        SaveCustomerAsyncTask task = new SaveCustomerAsyncTask(uid, logIn, password, dialog);
         task.execute(user);
-        return true;
     }
 
-    private class SaveUserAsyncTask extends AsyncTask<User, Void, Void> {
+    private class SaveCustomerAsyncTask extends AsyncTask<User, Void, Void> {
 
         private String uid;
+        private boolean logIn;
+        private String password;
+        private ProgressDialog dialog;
 
-        public SaveUserAsyncTask(String uid) {
+        public SaveCustomerAsyncTask(String uid, boolean logIn, String password, ProgressDialog dialog) {
             this.uid = uid;
+            this.logIn = logIn;
+            this.password = password;
+            this.dialog = dialog;
         }
 
         @Override
-        protected Void doInBackground(User... params) {
-            Firebase ref = firebase.child(USER).child(uid);
-            ref.setValue(params[0]);
-            return null;
-        }
-    }
-
-    /**
-     * Retrieve the full profile of a user (identified by the user email address) from the
-     *              Firebase database.
-     * @param userEmail : used as the key to find the profile.
-     * @return : the profile, or null if it's not possible to retrieve proper data.
-     */
-    public User retrieveUserProfile(String userEmail) {
-        String[] children = new String[2];
-        children[0] = USER;
-        children[1] = userEmail;
-        RetrieveAsyncTask task = new RetrieveAsyncTask();
-        task.execute(children);
-        String data;
-        try {
-            data = task.get();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-        return new User(data);
-    }
-
-    /**
-     * Store a reservation in the database.
-     * @param reservation : the reservation to store.
-     */
-    public void saveReservation(Reservation reservation) {
-        Logger.d("save reservation : " + reservation.getRestaurant().getRes_name());
-        StoreReservationAsyncTask task = new StoreReservationAsyncTask();
-        task.execute(reservation);
-    }
-
-    private class StoreReservationAsyncTask extends AsyncTask<Reservation, Void, Void> {
-
-        @Override
-        protected Void doInBackground(Reservation... params) {
-            Firebase ref = firebase.child(RESERVATIONS).child(params[0].getRestaurant().getRes_name());
-            String id = ref.push().getKey();
-            ref.child(id).setValue(params[0], new Firebase.CompletionListener() {
+        protected Void doInBackground(final User... params) {
+            if (this.uid == null) {
+                this.uid = firebase.getAuth().getUid();
+            }
+            Firebase ref = firebase.child(USER).child(this.uid);
+            ref.setValue(params[0], new Firebase.CompletionListener() {
                 @Override
                 public void onComplete(FirebaseError firebaseError, Firebase firebase) {
-                    if (firebaseError == null)
-                        Toast.makeText(context, R.string.ReservationSent, Toast.LENGTH_LONG).show();
-                    else
-                        Toast.makeText(context, R.string.ErrorNetwork, Toast.LENGTH_LONG).show();
+                    if (firebaseError == null) {
+                        /**
+                         * Everything worked well
+                         */
+                        if (logIn)
+                            logIn(params[0].getEmail(), password, false, dialog);
+                        else {
+                            if (dialog != null)
+                                dialog.dismiss();
+                            Toast.makeText(context, context.getResources().getString(R.string.ProfileCreationSuccessful), Toast.LENGTH_LONG).show();
+                        }
+                    } else {
+                        /**
+                         * An error occurred
+                         */
+                        if (dialog != null)
+                            dialog.dismiss();
+                        Toast.makeText(context, firebaseError.getMessage(), Toast.LENGTH_LONG).show();
+                    }
                 }
             });
             return null;
@@ -420,64 +256,10 @@ public class DatabaseUtils {
     }
 
     /**
-     * Retrieve a reservation from the Firebase database.
-     * @param restaurantName : the name of the restaurant in which the reservation has been done.
-     * @param customerEmail : the email address of the customer who did the reservation.
-     * @return : the reservation retrieved or null if it's not possible to retrieve proper data.
-     */
-    public Reservation retrieveReservation(String restaurantName, String customerEmail) {
-        String[] children = new String[3];
-        children[0] = RESERVATIONS;
-        children[1] = restaurantName;
-        children[2] = customerEmail;
-        RetrieveAsyncTask task = new RetrieveAsyncTask();
-        task.execute(children);
-        String data;
-        try {
-            data = task.get();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-        return Reservation.create(data);
-    }
-
-    /**
-     * Retrieve all the reservations for a restaurant.
-     * @param restaurantName : the name of the restaurant.
-     * @return : An ArrayList of Reservation or null if it's not possible to retrieve proper data.
-     */
-    public ArrayList<Reservation> retrieveReservations(String restaurantName) {
-        ArrayList<Reservation> reservations = new ArrayList<>();
-        String[] children = new String[2];
-        children[0] = RESERVATIONS;
-        children[1] = restaurantName;
-        RetrieveAsyncTask task = new RetrieveAsyncTask();
-        task.execute(children);
-        String data;
-        try {
-            data = task.get();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-        try {
-            JSONArray jsonArray = new JSONArray(data);
-            for (int i = 0; i < jsonArray.length(); i++) {
-                reservations.add(Reservation.create(jsonArray.getString(i)));
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return null;
-        }
-        return reservations;
-
-    }
-
-    /**
      * Create a new user in the Firebase database
+     *
      * @param emailAddress : the login of the new user
-     * @param password : the password of the new user
+     * @param password     : the password of the new user
      * @return true if the creation succeeded, false otherwise
      */
     public void createUser(String emailAddress, String password, String type, ProgressDialog dialog) {
@@ -514,15 +296,13 @@ public class DatabaseUtils {
                     /**
                      * Store the profile in the database and logIn
                      */
-                    String uid = (String)result.get("uid");
+                    String uid = (String) result.get("uid");
                     if (params[2].equals(SharedPreferencesHandler.MANAGER)) {
                         Manager manager = sharedPreferencesHandler.getCurrentManager();
                         saveManagerProfile(manager, uid, true, params[1], dialog);
-                        Logger.d("return from profile storage");
-                    }
-                    else {
+                    } else {
                         User user = sharedPreferencesHandler.getCurrentUser();
-                        saveUserProfile(user, uid);
+                        saveCustomerProfile(user, uid, true, params[1], dialog);
                     }
                 }
 
@@ -539,8 +319,9 @@ public class DatabaseUtils {
 
     /**
      * Try to authenticate the user according to it's login and password.
-     * @param emailAddress : the login of the requested account
-     * @param password : the password of the requested account
+     *
+     * @param emailAddress    : the login of the requested account
+     * @param password        : the password of the requested account
      * @param retrieveProfile : true if the profile must be downloaded from the database, false if
      *                        must first be searched in the sharedPreferences.
      *                        Be sure that the local version is up-to-date when putting false
@@ -673,5 +454,311 @@ public class DatabaseUtils {
             });
             return null;
         }
+    }
+
+    /**
+     * Store the menu of the restaurant in the Firebase database
+     *
+     * @param restaurantName : the name of the restaurant, that will be used as the key for
+     *                       storing the data.
+     * @param menu           : the actual data to store.
+     */
+    public void saveMenu(String restaurantName, String menu) {
+        /**
+         * Prepare the data
+         */
+        String[] children = new String[3];
+        children[0] = MENU;
+        children[1] = restaurantName;
+        children[2] = menu;
+        /**
+         * Create an indeterminate progress bar dialog to make the user wait
+         */
+        ProgressDialog dialog = new ProgressDialog(context);
+        dialog.setIndeterminate(true);
+        dialog.setMessage(context.getResources().getString(R.string.SavingMenu));
+        dialog.setCancelable(false);
+        dialog.show();
+        /**
+         * Launch the storage
+         */
+        SaveMenuAsyncTask task = new SaveMenuAsyncTask(dialog);
+        task.execute(children);
+    }
+
+    private class SaveMenuAsyncTask extends AsyncTask<String, Void, Void> {
+
+        private ProgressDialog dialog;
+
+        public SaveMenuAsyncTask(ProgressDialog dialog) {
+            this.dialog = dialog;
+        }
+
+        @Override
+        protected Void doInBackground(String... params) {
+            Firebase ref = firebase.child(params[0]).child(params[1]);
+            ref.setValue(params[2], new Firebase.CompletionListener() {
+                @Override
+                public void onComplete(FirebaseError firebaseError, Firebase firebase) {
+                    dialog.dismiss();
+                    if (firebaseError == null)
+                        Toast.makeText(context, context.getResources().getString(R.string.SavingMenuSuccessful), Toast.LENGTH_SHORT).show();
+                    else
+                        Toast.makeText(context, firebaseError.getMessage(), Toast.LENGTH_LONG).show();
+                }
+            });
+            return null;
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /**
+     * Allows to retrieve a String from the Firebase database in a secondary thread.
+     */
+    private class RetrieveAsyncTask extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... params) {
+            /**
+             * Check if the network is available
+             */
+            if (networkInfo == null || !networkInfo.isConnectedOrConnecting()) {
+                publishProgress();
+                return null;
+            } else {
+                Firebase ref = firebase;
+                for (String string : params)
+                    ref = ref.child(string);
+                String data = "";
+                ref.addValueEventListener(new RetrieverListener(data));
+                return data;
+            }
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+            Toast.makeText(context, R.string.NoNetwork, Toast.LENGTH_LONG).show();
+        }
+    }
+
+    /**
+     * A simple class used to retrieve a String from the Firebase database.
+     */
+    private class RetrieverListener implements ValueEventListener {
+
+        private String data;
+
+        public RetrieverListener(String data) {
+            this.data = data;
+        }
+
+        @Override
+        public void onDataChange(DataSnapshot dataSnapshot) {
+            if (dataSnapshot != null && dataSnapshot.getValue() != null) {
+                data = dataSnapshot.getValue(String.class);
+            }
+        }
+
+        @Override
+        public void onCancelled(FirebaseError firebaseError) {
+
+        }
+    }
+
+    /**
+     * Retrieve the menu of the restaurant from the Firebase database
+     *
+     * @param restaurantName : the name of the restaurant of which we want to get the menu
+     * @param menu           : the internal representation of a complete menu (Plates + Drinks)
+     */
+    public void retrieveMenu(String restaurantName, final ArrayList[] menu) {
+        String children[] = new String[2];
+        children[0] = MENU;
+        children[1] = restaurantName;
+
+        /**
+         * Retrieve the string representation from the database
+         */
+        RetrieveAsyncTask task = new RetrieveAsyncTask();
+        task.execute(children);
+        String data;
+        try {
+            data = task.get();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(context, R.string.NoNetwork, Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        if (data == null) {
+            Toast.makeText(context, R.string.ErrorNetwork, Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        /**
+         * Use the string representation to re-create the menu
+         */
+        JSONArray jsonArray;
+        try {
+            jsonArray = new JSONArray(data);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            jsonArray = null;
+        }
+
+        if (jsonArray != null) {
+            Menu.restoreMenu(jsonArray, menu);
+        }
+    }
+
+
+
+
+    /**
+     * Retrieve the full profile of a manager (identified by the manager email address) from
+     * Firebase database.
+     *
+     * @param managerEmail : used as the key to find the manager profile.
+     * @return : The manager profile retrieved from the database, or null if it's not possible
+     * to retrieve proper data.
+     */
+    public Manager retrieveManagerProfile(String managerEmail) {
+        String children[] = new String[2];
+        children[0] = MANAGER;
+        children[1] = managerEmail;
+        RetrieveAsyncTask task = new RetrieveAsyncTask();
+        task.execute(children);
+        String data;
+        try {
+            data = task.get();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+        return new Manager(data);
+    }
+
+
+
+    /**
+     * Retrieve the full profile of a user (identified by the user email address) from the
+     * Firebase database.
+     *
+     * @param userEmail : used as the key to find the profile.
+     * @return : the profile, or null if it's not possible to retrieve proper data.
+     */
+    public User retrieveUserProfile(String userEmail) {
+        String[] children = new String[2];
+        children[0] = USER;
+        children[1] = userEmail;
+        RetrieveAsyncTask task = new RetrieveAsyncTask();
+        task.execute(children);
+        String data;
+        try {
+            data = task.get();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+        return new User(data);
+    }
+
+    /**
+     * Store a reservation in the database.
+     *
+     * @param reservation : the reservation to store.
+     */
+    public void saveReservation(Reservation reservation) {
+        Logger.d("save reservation : " + reservation.getRestaurant().getRes_name());
+        StoreReservationAsyncTask task = new StoreReservationAsyncTask();
+        task.execute(reservation);
+    }
+
+    private class StoreReservationAsyncTask extends AsyncTask<Reservation, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Reservation... params) {
+            Firebase ref = firebase.child(RESERVATIONS).child(params[0].getRestaurant().getRes_name());
+            String id = ref.push().getKey();
+            ref.child(id).setValue(params[0], new Firebase.CompletionListener() {
+                @Override
+                public void onComplete(FirebaseError firebaseError, Firebase firebase) {
+                    if (firebaseError == null)
+                        Toast.makeText(context, R.string.ReservationSent, Toast.LENGTH_LONG).show();
+                    else
+                        Toast.makeText(context, R.string.ErrorNetwork, Toast.LENGTH_LONG).show();
+                }
+            });
+            return null;
+        }
+    }
+
+    /**
+     * Retrieve a reservation from the Firebase database.
+     *
+     * @param restaurantName : the name of the restaurant in which the reservation has been done.
+     * @param customerEmail  : the email address of the customer who did the reservation.
+     * @return : the reservation retrieved or null if it's not possible to retrieve proper data.
+     */
+    public Reservation retrieveReservation(String restaurantName, String customerEmail) {
+        String[] children = new String[3];
+        children[0] = RESERVATIONS;
+        children[1] = restaurantName;
+        children[2] = customerEmail;
+        RetrieveAsyncTask task = new RetrieveAsyncTask();
+        task.execute(children);
+        String data;
+        try {
+            data = task.get();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+        return Reservation.create(data);
+    }
+
+    /**
+     * Retrieve all the reservations for a restaurant.
+     *
+     * @param restaurantName : the name of the restaurant.
+     * @return : An ArrayList of Reservation or null if it's not possible to retrieve proper data.
+     */
+    public ArrayList<Reservation> retrieveReservations(String restaurantName) {
+        ArrayList<Reservation> reservations = new ArrayList<>();
+        String[] children = new String[2];
+        children[0] = RESERVATIONS;
+        children[1] = restaurantName;
+        RetrieveAsyncTask task = new RetrieveAsyncTask();
+        task.execute(children);
+        String data;
+        try {
+            data = task.get();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+        try {
+            JSONArray jsonArray = new JSONArray(data);
+            for (int i = 0; i < jsonArray.length(); i++) {
+                reservations.add(Reservation.create(jsonArray.getString(i)));
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return reservations;
+
     }
 }

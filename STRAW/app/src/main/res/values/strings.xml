@@ -158,11 +158,14 @@
     <!--Strings for the database part-->
     <string name="NoNetwork">Network is not available\nPlease check your connection</string>
     <string name="AccountCreation">Account creation</string>
+    <string name="ProfileCreationSuccessful">Profile created successfully</string>
     <string name="LoggingIn">Logging In</string>
     <string name="RetrievingData">Retrieving data</string>
     <string name="NameAlreadyUsed">This name already exists</string>
     <string name="NoMatchingProfile">No matching profile</string>
     <string name="StoringData">Your profile is being created</string>
+    <string name="SavingMenu">Saving menu</string>
+    <string name="SavingMenuSuccessful">Menu successfully saved</string>
 
     <!--Strings for the search detail part-->
     <string name="s_menu">Menu</string>
