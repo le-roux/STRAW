@@ -95,17 +95,6 @@ public class CreateMenuActivity extends AppCompatActivity {
         this.goods[Menu.PLATES] = new ArrayList<Food>();
         this.goods[Menu.DRINKS] = new ArrayList<Food>();
 
-        /**
-         * If data has been temporarily stored, onRestoreInstanceState will be called and take care
-         * of their restoration.
-         */
-        if (savedInstanceState == null) {
-            /**
-             * No data temporarily stored, retrieve the menu from the database.
-             */
-            this.application.getDatabaseUtils().retrieveMenu(this.manager.getRes_name(), this.goods);
-        }
-
         //Initialisation of the listView
         food_listView = (ExpandableListView)findViewById(R.id.Plate_list);
         //Listener for the ListView
@@ -128,7 +117,20 @@ public class CreateMenuActivity extends AppCompatActivity {
                 return true;
             }
         });
-        food_listView.setAdapter(new FoodExpandableAdapterRemove(context, goods[Menu.PLATES], goods[Menu.DRINKS]));
+        FoodExpandableAdapterRemove adapter = new FoodExpandableAdapterRemove(context, goods[Menu.PLATES], goods[Menu.DRINKS]);
+        adapter.setSyncWithDatabase(true, application);
+        food_listView.setAdapter(adapter);
+
+        /**
+         * If data has been temporarily stored, onRestoreInstanceState will be called and take care
+         * of their restoration.
+         */
+        if (savedInstanceState == null) {
+            /**
+             * No data temporarily stored, retrieve the menu from the database.
+             */
+            this.application.getDatabaseUtils().retrieveMenu(this.manager.getRes_name(), adapter);
+        }
     }
 
     @Override
@@ -142,15 +144,8 @@ public class CreateMenuActivity extends AppCompatActivity {
          * Actually get the result
          */
         if (resultCode == Activity.RESULT_OK) {
-            int type = result.getIntExtra(TYPE, Menu.PLATES);
             Food element = Food.create(result.getStringExtra(ELEMENT));
-            if (element != null) {
-                if (requestCode == CreateMenuActivity.EDIT_FOOD) {
-                    this.goods[type].set(result.getIntExtra(ID, 0), element);
-                } else if (requestCode == CreateMenuActivity.ADD_FOOD) {
-                        this.goods[type].add(element);
-                }
-            }
+
             /**
              * Create an indeterminate ProgressBar dialog to make the user wait
              */

@@ -25,6 +25,7 @@ import straw.polito.it.straw.R;
 import straw.polito.it.straw.StrawApplication;
 import straw.polito.it.straw.activities.ProfileManagerActivity;
 import straw.polito.it.straw.activities.ProfileUserActivity;
+import straw.polito.it.straw.adapter.FoodExpandableAdapter;
 import straw.polito.it.straw.data.Drink;
 import straw.polito.it.straw.data.Food;
 import straw.polito.it.straw.data.Manager;
@@ -570,13 +571,37 @@ public class DatabaseUtils {
         }
     }
 
+    public void removeFood(String restaurantName, int type, String foodName) {
+        String[] children = new String[3];
+        children[0] = restaurantName;
+        if (type == Menu.PLATES)
+            children[1] = PLATES;
+        else
+            children[1] = DRINKS;
+        children[2] = foodName;
+        RemoveFoodAsyncTask task = new RemoveFoodAsyncTask();
+        task.execute(children);
+    }
+
+    private class RemoveFoodAsyncTask extends AsyncTask<String, Void, Void> {
+
+        @Override
+        protected Void doInBackground(String... params) {
+            Firebase ref = firebase.child(MENU);
+            for (String child : params)
+                ref = ref.child(child);
+            ref.setValue(null);
+            return null;
+        }
+    }
+
     /**
      * Retrieve the menu of the restaurant from the Firebase database
      *
      * @param restaurantName : the name of the restaurant of which we want to get the menu
      * @param menu           : the internal representation of a complete menu (Plates + Drinks)
      */
-    public void retrieveMenu(String restaurantName, ArrayList[] menu) {
+    public void retrieveMenu(String restaurantName, FoodExpandableAdapter menu) {
         /**
          * Retrieve the string representation from the database
          */
@@ -584,7 +609,7 @@ public class DatabaseUtils {
         task.execute(menu);
     }
 
-    private class RetrieveMenuAsyncTask extends AsyncTask<ArrayList[], Void, Void> {
+    private class RetrieveMenuAsyncTask extends AsyncTask<FoodExpandableAdapter, Void, Void> {
 
         private String restaurantName;
 
@@ -593,14 +618,16 @@ public class DatabaseUtils {
         }
 
         @Override
-        protected Void doInBackground(ArrayList[]... params) {
-            final ArrayList<Plate> plates = params[0][Menu.PLATES];
+        protected Void doInBackground(final FoodExpandableAdapter... params) {
+            final ArrayList<Plate> plates = (ArrayList<Plate>)params[0].getGroup(Menu.PLATES);
             plates.clear();
+            params[0].notifyDataSetChanged();
             Firebase ref = firebase.child(MENU).child(this.restaurantName).child(PLATES);
             ref.addChildEventListener(new ChildEventListener() {
                 @Override
                 public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                     plates.add(dataSnapshot.getValue(Plate.class));
+                    params[0].notifyDataSetChanged();
                 }
 
                 @Override
@@ -624,13 +651,15 @@ public class DatabaseUtils {
                 }
             });
 
-            final ArrayList<Drink> drinks = params[0][Menu.DRINKS];
+            final ArrayList<Drink> drinks = (ArrayList<Drink>)params[0].getGroup(Menu.DRINKS);
             drinks.clear();
+            params[0].notifyDataSetChanged();
             ref = firebase.child(MENU).child(this.restaurantName).child(DRINKS);
             ref.addChildEventListener(new ChildEventListener() {
                 @Override
                 public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                     drinks.add(dataSnapshot.getValue(Drink.class));
+                    params[0].notifyDataSetChanged();
                 }
 
                 @Override
