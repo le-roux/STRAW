@@ -1,6 +1,7 @@
 package straw.polito.it.straw.activities;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -99,7 +100,7 @@ public class CreateMenuActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
             //No data temporarily stored
             //Try to retrieve it from the database
-            this.application.getDatabaseUtils().retrieveMenu(this.application.getSharedPreferencesHandler().getCurrentManager().getRes_name(), this.goods);
+            //this.application.getDatabaseUtils().retrieveMenu(this.application.getSharedPreferencesHandler().getCurrentManager().getRes_name(), this.goods);
         }
 
         //Initialisation of the listView
@@ -141,9 +142,17 @@ public class CreateMenuActivity extends AppCompatActivity {
             ((FoodExpandableAdapter)this.food_listView.getExpandableListAdapter()).notifyDataSetChanged();
         }
         /**
+         * Create an indeterminate progress bar dialog to make the user wait
+         */
+        ProgressDialog dialog = new ProgressDialog(CreateMenuActivity.this);
+        dialog.setIndeterminate(true);
+        dialog.setMessage(context.getResources().getString(R.string.SavingMenu));
+        dialog.setCancelable(false);
+        dialog.show();
+        /**
          * Store the new data in the database
          */
-        this.application.getDatabaseUtils().saveMenu(this.application.getSharedPreferencesHandler().getCurrentManager().getRes_name(), Menu.saveMenu(this.goods).toString());
+        this.application.getDatabaseUtils().saveMenu(this.application.getSharedPreferencesHandler().getCurrentManager().getRes_name(),this.goods, dialog);
     }
 
     private void init_list() {
@@ -175,8 +184,16 @@ public class CreateMenuActivity extends AppCompatActivity {
      */
     @Override
     public void onStop() {
-        super.onStop();
+        /**
+         * Create an indeterminate progress bar dialog to make the user wait
+         */
+        ProgressDialog dialog = new ProgressDialog(CreateMenuActivity.this);
+        dialog.setIndeterminate(true);
+        dialog.setMessage(context.getResources().getString(R.string.SavingMenu));
+        dialog.setCancelable(false);
+        dialog.show();
         DatabaseUtils utils = ((StrawApplication)getApplication()).getDatabaseUtils();
-        utils.saveMenu(this.manager.getRes_name(), Menu.saveMenu(this.goods).toString());
+        utils.saveMenu(this.manager.getRes_name(), this.goods, dialog);
+        super.onStop();
     }
 }

@@ -24,8 +24,11 @@ import straw.polito.it.straw.R;
 import straw.polito.it.straw.StrawApplication;
 import straw.polito.it.straw.activities.ProfileManagerActivity;
 import straw.polito.it.straw.activities.ProfileUserActivity;
+import straw.polito.it.straw.data.Drink;
+import straw.polito.it.straw.data.Food;
 import straw.polito.it.straw.data.Manager;
 import straw.polito.it.straw.data.Menu;
+import straw.polito.it.straw.data.Plate;
 import straw.polito.it.straw.data.Reservation;
 import straw.polito.it.straw.data.User;
 
@@ -47,6 +50,8 @@ public class DatabaseUtils {
     public static final String USER = "user";
     public static final String RESERVATIONS = "reservations";
     public static final String RESTAURANTS = "restaurants";
+    public static final String PLATES = "plates";
+    public static final String DRINKS = "drinks";
 
     /**
      * A simple constructor, invoked in StrawApplication.onCreate()
@@ -163,7 +168,6 @@ public class DatabaseUtils {
                                                 Logger.d(firebaseError.getMessage());
                                                 if (dialog != null)
                                                     dialog.dismiss();
-                                                ;
                                                 Toast.makeText(context, firebaseError.getMessage(), Toast.LENGTH_LONG).show();
                                             }
                                         }
@@ -186,7 +190,7 @@ public class DatabaseUtils {
                 public void onCancelled(FirebaseError firebaseError) {
                     if (dialog != null)
                         dialog.dismiss();
-                    Logger.d("error when checking if restaurant already exists : " + firebaseError.getMessage());
+                    Toast.makeText(context, firebaseError.getMessage(), Toast.LENGTH_LONG).show();
                 }
             });
             Logger.d("return from saveManager");
@@ -308,9 +312,8 @@ public class DatabaseUtils {
 
                 @Override
                 public void onError(FirebaseError firebaseError) {
-                    Logger.d("error creation user : " + firebaseError.getMessage());
                     dialog.dismiss();
-                    Toast.makeText(context, R.string.ErrorNetwork, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, firebaseError.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             });
             return null;
@@ -463,51 +466,66 @@ public class DatabaseUtils {
      *                       storing the data.
      * @param menu           : the actual data to store.
      */
-    public void saveMenu(String restaurantName, String menu) {
-        /**
-         * Prepare the data
-         */
-        String[] children = new String[3];
-        children[0] = MENU;
-        children[1] = restaurantName;
-        children[2] = menu;
-        /**
-         * Create an indeterminate progress bar dialog to make the user wait
-         */
-        ProgressDialog dialog = new ProgressDialog(context);
-        dialog.setIndeterminate(true);
-        dialog.setMessage(context.getResources().getString(R.string.SavingMenu));
-        dialog.setCancelable(false);
-        dialog.show();
+    public void saveMenu(String restaurantName, ArrayList[] menu, ProgressDialog dialog) {
         /**
          * Launch the storage
          */
-        SaveMenuAsyncTask task = new SaveMenuAsyncTask(dialog);
-        task.execute(children);
+        SaveMenuAsyncTask task = new SaveMenuAsyncTask(restaurantName, dialog);
+        task.execute(menu);
     }
 
-    private class SaveMenuAsyncTask extends AsyncTask<String, Void, Void> {
+    private class SaveMenuAsyncTask extends AsyncTask<ArrayList[], Void, Void> {
 
+        private String restaurantName;
         private ProgressDialog dialog;
 
-        public SaveMenuAsyncTask(ProgressDialog dialog) {
+        public SaveMenuAsyncTask(String restaurantName, ProgressDialog dialog) {
             this.dialog = dialog;
+            this.restaurantName = restaurantName;
         }
 
         @Override
-        protected Void doInBackground(String... params) {
-            Firebase ref = firebase.child(params[0]).child(params[1]);
-            ref.setValue(params[2], new Firebase.CompletionListener() {
-                @Override
-                public void onComplete(FirebaseError firebaseError, Firebase firebase) {
-                    dialog.dismiss();
-                    if (firebaseError == null)
-                        Toast.makeText(context, context.getResources().getString(R.string.SavingMenuSuccessful), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(context, firebaseError.getMessage(), Toast.LENGTH_LONG).show();
-                }
-            });
+        protected Void doInBackground(ArrayList[]... params) {
+            Firebase ref = firebase.child(MENU).child(this.restaurantName).child(PLATES);
+            ArrayList<Plate> plates = params[0][Menu.PLATES];
+            final int plateNb = plates.size();
+            for (Plate plate : plates)
+                ref.push().setValue(plate, new ProgressCompletionListener(context.getString(R.string.SavingPlates), plateNb));
+
+            ArrayList<Drink> drinks = params[0][Menu.DRINKS];
+            int drinkNb = drinks.size();
+            for (Drink drink : drinks)
+                ref.push().setValue(drink, new ProgressCompletionListener(context.getString(R.string.SavingDrinks), drinkNb));
+            dialog.dismiss();
             return null;
+        }
+
+        /**
+         * A simple completion listener that displays the progress in the ProgressDialog
+         */
+        private class ProgressCompletionListener implements Firebase.CompletionListener {
+
+            private String message;
+            private int maxValue;
+            private int progress;
+
+            public ProgressCompletionListener(String message, int maxValue) {
+                this.message = message;
+                this.maxValue = maxValue;
+            }
+
+            @Override
+            public void onComplete(FirebaseError firebaseError, Firebase firebase) {
+                if (firebaseError == null) {
+                    /**
+                     * No error
+                     */
+                    progress++;
+                    String text = message + ' ' + progress + '/' + maxValue;
+                    dialog.setMessage(text);
+                }
+                //TODO in case of error ???
+            }
         }
     }
 

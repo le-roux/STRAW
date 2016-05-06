@@ -166,6 +166,8 @@
     <string name="StoringData">Your profile is being created</string>
     <string name="SavingMenu">Saving menu</string>
     <string name="SavingMenuSuccessful">Menu successfully saved</string>
+    <string name="SavingPlates">Saving plates</string>
+    <string name="SavingDrinks">Saving drinks</string>
 
     <!--Strings for the search detail part-->
     <string name="s_menu">Menu</string>
