@@ -9,6 +9,7 @@ import android.os.AsyncTask;
 import android.widget.Toast;
 
 import com.firebase.client.AuthData;
+import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
@@ -492,6 +493,7 @@ public class DatabaseUtils {
             for (Plate plate : plates)
                 ref.push().setValue(plate, new ProgressCompletionListener(context.getString(R.string.SavingPlates), plateNb));
 
+            ref = firebase.child(MENU).child(this.restaurantName).child(DRINKS);
             ArrayList<Drink> drinks = params[0][Menu.DRINKS];
             int drinkNb = drinks.size();
             for (Drink drink : drinks)
@@ -526,6 +528,132 @@ public class DatabaseUtils {
                 }
                 //TODO in case of error ???
             }
+        }
+    }
+
+    public void saveFood(String restaurantName, Food food, ProgressDialog dialog) {
+        SaveFoodAsyncTask task = new SaveFoodAsyncTask(restaurantName, dialog);
+        task.execute(food);
+    }
+
+    private class SaveFoodAsyncTask extends AsyncTask<Food, Void, Void> {
+
+        private String restaurantName;
+        private ProgressDialog dialog;
+
+        public SaveFoodAsyncTask(String restaurantName, ProgressDialog dialog) {
+            this.restaurantName = restaurantName;
+            this.dialog = dialog;
+        }
+
+        @Override
+        protected Void doInBackground(Food... params) {
+            Logger.d("saving food");
+            Firebase ref;
+            /**
+             * Go in the proper subnode according to the type of food
+             */
+            if (params[0].getClass().equals(Plate.class))
+                ref = firebase.child(MENU).child(this.restaurantName).child(PLATES);
+            else
+                ref = firebase.child(MENU).child(this.restaurantName).child(DRINKS);
+            /**
+             * Store/update the data
+             */
+            ref.child(params[0].getName()).setValue(params[0], new Firebase.CompletionListener() {
+                @Override
+                public void onComplete(FirebaseError firebaseError, Firebase firebase) {
+                    dialog.dismiss();
+                }
+            });
+            return null;
+        }
+    }
+
+    /**
+     * Retrieve the menu of the restaurant from the Firebase database
+     *
+     * @param restaurantName : the name of the restaurant of which we want to get the menu
+     * @param menu           : the internal representation of a complete menu (Plates + Drinks)
+     */
+    public void retrieveMenu(String restaurantName, ArrayList[] menu) {
+        /**
+         * Retrieve the string representation from the database
+         */
+        RetrieveMenuAsyncTask task = new RetrieveMenuAsyncTask(restaurantName);
+        task.execute(menu);
+    }
+
+    private class RetrieveMenuAsyncTask extends AsyncTask<ArrayList[], Void, Void> {
+
+        private String restaurantName;
+
+        public RetrieveMenuAsyncTask(String restaurantName) {
+            this.restaurantName = restaurantName;
+        }
+
+        @Override
+        protected Void doInBackground(ArrayList[]... params) {
+            final ArrayList<Plate> plates = params[0][Menu.PLATES];
+            plates.clear();
+            Firebase ref = firebase.child(MENU).child(this.restaurantName).child(PLATES);
+            ref.addChildEventListener(new ChildEventListener() {
+                @Override
+                public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                    plates.add(dataSnapshot.getValue(Plate.class));
+                }
+
+                @Override
+                public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+                }
+
+                @Override
+                public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+                }
+
+                @Override
+                public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+                }
+
+                @Override
+                public void onCancelled(FirebaseError firebaseError) {
+
+                }
+            });
+
+            final ArrayList<Drink> drinks = params[0][Menu.DRINKS];
+            drinks.clear();
+            ref = firebase.child(MENU).child(this.restaurantName).child(DRINKS);
+            ref.addChildEventListener(new ChildEventListener() {
+                @Override
+                public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                    drinks.add(dataSnapshot.getValue(Drink.class));
+                }
+
+                @Override
+                public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+                }
+
+                @Override
+                public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+                }
+
+                @Override
+                public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+                }
+
+                @Override
+                public void onCancelled(FirebaseError firebaseError) {
+
+                }
+            });
+            return null;
         }
     }
 
@@ -595,51 +723,7 @@ public class DatabaseUtils {
         }
     }
 
-    /**
-     * Retrieve the menu of the restaurant from the Firebase database
-     *
-     * @param restaurantName : the name of the restaurant of which we want to get the menu
-     * @param menu           : the internal representation of a complete menu (Plates + Drinks)
-     */
-    public void retrieveMenu(String restaurantName, final ArrayList[] menu) {
-        String children[] = new String[2];
-        children[0] = MENU;
-        children[1] = restaurantName;
 
-        /**
-         * Retrieve the string representation from the database
-         */
-        RetrieveAsyncTask task = new RetrieveAsyncTask();
-        task.execute(children);
-        String data;
-        try {
-            data = task.get();
-        } catch (Exception e) {
-            e.printStackTrace();
-            Toast.makeText(context, R.string.NoNetwork, Toast.LENGTH_LONG).show();
-            return;
-        }
-
-        if (data == null) {
-            Toast.makeText(context, R.string.ErrorNetwork, Toast.LENGTH_LONG).show();
-            return;
-        }
-
-        /**
-         * Use the string representation to re-create the menu
-         */
-        JSONArray jsonArray;
-        try {
-            jsonArray = new JSONArray(data);
-        } catch (JSONException e) {
-            e.printStackTrace();
-            jsonArray = null;
-        }
-
-        if (jsonArray != null) {
-            Menu.restoreMenu(jsonArray, menu);
-        }
-    }
 
 
 
