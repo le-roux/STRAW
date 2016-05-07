@@ -892,4 +892,35 @@ public class DatabaseUtils {
         return reservations;
 
     }
+    /**
+     * Retrieve the list of all the managers
+     *
+     * @
+     * @return : An ArrayList of Manager or null if it's not possible to retrieve proper data.
+     */
+    public ArrayList<Manager> retrieveListManager() {
+        ArrayList<Manager> managers = new ArrayList<>();
+        String children;
+        children = MANAGER;
+        RetrieveAsyncTask task = new RetrieveAsyncTask();
+        task.execute(children);
+        String data;
+        try {
+            data = task.get();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+        try {
+            JSONArray jsonArray = new JSONArray(data);
+            for (int i = 0; i < jsonArray.length(); i++) {
+                managers.add(new Manager(jsonArray.getString(i)));
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return managers;
+
+    }
 }
