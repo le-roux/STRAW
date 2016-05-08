@@ -4,6 +4,9 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import straw.polito.it.straw.data.Manager;
 import straw.polito.it.straw.data.User;
 
@@ -14,6 +17,7 @@ public class SharedPreferencesHandler {
 
     //Key used for indexing the current manager in the sharedPreferences
     public static final String MANAGER = "Manager";
+    public static final String MANAGERLIST = "ManagerList";
     public static final String USER = "User";
 
     private SharedPreferences sharedPreferences;
@@ -36,6 +40,7 @@ public class SharedPreferencesHandler {
         }
     }
 
+
     /**
      * Save the profile of the current manager in the sharedPreferences
      * @param description : the stringified version of the JSONObject describing the manager profile
@@ -45,6 +50,7 @@ public class SharedPreferencesHandler {
         editor.putString(MANAGER, description);
         editor.apply();
     }
+
 
     /**
      *

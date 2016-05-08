@@ -43,27 +43,24 @@ public class ManagerList {
         }
         return list;
     }
-    public static JSONArray saveListMan(ArrayList listman) {
-        JSONArray jsonArray = new JSONArray();
-        int index = 0;
-        try {
-            jsonArray.put(index, listman.size());
 
-            index++;
-            for (int i = 0; i < listman.size(); i++) {
-                jsonArray.put(index, listman.get(i).toString());
-                index++;
-            }
-        } catch (JSONException e) {
+    public static JSONArray saveManager(Manager man) {
+        JSONArray jsonArray = new JSONArray();
+        try {
+            jsonArray.put(man.toJSONObject());
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return jsonArray;
     }
-    public static void saveListManInSharedPreferences(Context context, ArrayList listman) {
+
+
+    public static void saveManInSharedPreferences(Context context, Manager man) {
         SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
-        editor.putString(LISTMAN, saveListMan(listman).toString());
+        editor.putString(LISTMAN, saveManager(man).toString());
         editor.commit();
     }
+
     public static JSONArray getListManFromSharedPreferences(Context context) {
         JSONArray jsonArray;
         try {

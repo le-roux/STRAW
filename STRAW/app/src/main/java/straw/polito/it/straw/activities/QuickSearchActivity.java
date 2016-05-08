@@ -19,9 +19,11 @@ import straw.polito.it.straw.R;
 import straw.polito.it.straw.adapter.RestaurantListAdapter;
 import straw.polito.it.straw.data.Manager;
 import straw.polito.it.straw.StrawApplication;
+import straw.polito.it.straw.data.ManagerList;
 import straw.polito.it.straw.utils.CustomOnItemSelectedListener;
 import straw.polito.it.straw.utils.Logger;
 import straw.polito.it.straw.utils.DatabaseUtils;
+import straw.polito.it.straw.utils.SharedPreferencesHandler;
 
 public class QuickSearchActivity extends AppCompatActivity {
 
@@ -32,12 +34,38 @@ public class QuickSearchActivity extends AppCompatActivity {
     private StrawApplication application;
     public static final String MANAGER = "Manager";
 
+   // public static final String MANAGERLIST = "ManagerList";
+    private SharedPreferencesHandler sharedPreferencesHandler;
+    private SharedPreferences sharedPreferences;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quick_search);
+        this.sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        restaurant_list = new ArrayList<>();
+        //sharedPreferencesHandler = ((StrawApplication)getApplication()).getSharedPreferencesHandler();
+        /*
+        String description = "";
+        JSONArray jsonArray;
+        try {
+            jsonArray = new JSONArray(sharedPreferences.getString(ManagerList.LISTMAN,""));
+        } catch (JSONException e) {
+            e.printStackTrace();
+            jsonArray = new JSONArray();
+        }
+        for (int i = 0; i < jsonArray.length(); i++) {
+            try {
+                description = jsonArray.get(i).toString();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            this.restaurant_list.add(new Manager(description));
+        }
+
+        */
 
 
+        //sharedPreferencesHandler = ((StrawApplication)getApplication()).getSharedPreferencesHandler();
 
         //this.application = (StrawApplication)getApplication();
         //DatabaseUtils databaseUtils = this.application.getDatabaseUtils();
@@ -46,14 +74,19 @@ public class QuickSearchActivity extends AppCompatActivity {
         //restaurant_list.addAll(databaseUtils.retrieveListManager());
 
 
-        restaurant_list = new ArrayList<>();
         init_list();
+        //Manager man = new Manager();
+        //man = sharedPreferencesHandler.getManagerList();
+        //restaurant_list.add(man);
+
         mShared= PreferenceManager.getDefaultSharedPreferences(this);
+
         if(mShared.contains("Manager")) {
             String ss = mShared.getString("Manager", "Error");
             Manager man=new Manager(ss);
             restaurant_list.add(man);
         }
+
 
 
         /*test*/

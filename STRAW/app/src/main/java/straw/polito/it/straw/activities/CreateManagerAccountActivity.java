@@ -2,6 +2,7 @@ package straw.polito.it.straw.activities;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -25,6 +26,10 @@ import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.Spinner;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -35,6 +40,8 @@ import straw.polito.it.straw.R;
 
 import straw.polito.it.straw.StrawApplication;
 import straw.polito.it.straw.data.Manager;
+import straw.polito.it.straw.data.ManagerList;
+import straw.polito.it.straw.data.Menu;
 import straw.polito.it.straw.data.Review;
 import straw.polito.it.straw.utils.DatabaseUtils;
 import straw.polito.it.straw.utils.ImageManager;
@@ -65,12 +72,17 @@ public class CreateManagerAccountActivity extends AppCompatActivity {
     private static final int IMAGE_REQ = 1;
     private static final int CAMERA_REQ = 2;
     public static final String NUMBER_OF_ELEMENTS = "ElementsNb";
+    JSONArray jsonArray;
     Manager man;
     boolean sw;
+    Context context;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_account);
+        Context context = this;
+        this.jsonArray = new JSONArray();
+        //this.jsonArray = ManagerList.getListManFromSharedPreferences(this);
         sharedPreferencesHandler = ((StrawApplication)getApplication()).getSharedPreferencesHandler();
         initialize();
 
@@ -181,6 +193,12 @@ public class CreateManagerAccountActivity extends AppCompatActivity {
                      * Set the new profile as the current manager.
                      */
                     sharedPreferencesHandler.storeCurrentManager(man.toJSONObject());
+                    JSONObject jo = man.toJSONObjectTrans();
+                    //jsonArray.put(jo);
+                    //ManagerList.saveManInSharedPreferences(context,man);
+                    //JSONObject jo = man.toJSONObjectTrans();
+                    //jsonArray.put(jo.toString());
+
                     /**
                      * Save the profile in the database, log the manager and launch the profile activity.
                      */
@@ -191,6 +209,7 @@ public class CreateManagerAccountActivity extends AppCompatActivity {
                     dialog.show();
                     DatabaseUtils databaseUtils = ((StrawApplication)getApplication()).getDatabaseUtils();
                     String password = c_pwd.getText().toString();
+
                     if (getIntent().hasExtra(ProfileManagerActivity.MANAGER)) {
                         /**
                          * Update the existing profile
@@ -202,6 +221,7 @@ public class CreateManagerAccountActivity extends AppCompatActivity {
                          */
                         databaseUtils.createUser(man.getEmail(), password, SharedPreferencesHandler.MANAGER, dialog);
                     }
+
                 } else {
                     return;
                 }
@@ -312,4 +332,14 @@ public class CreateManagerAccountActivity extends AppCompatActivity {
             ImageManager.setImage(getApplicationContext(), photo, imageString);
         }
     }
+
+
+
+
+
+
+
+
+
+
 }
