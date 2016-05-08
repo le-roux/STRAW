@@ -52,6 +52,7 @@ public class DatabaseUtils {
     public static final String USER = "user";
     public static final String RESERVATIONS = "reservations";
     public static final String RESTAURANTS = "restaurants";
+    public static final String NAMECHECK = "restaurantsName";
     public static final String PLATES = "plates";
     public static final String DRINKS = "drinks";
 
@@ -73,9 +74,9 @@ public class DatabaseUtils {
      *
      * @param manager : the manager profile to save
      */
-    public void saveManagerProfile(Manager manager, String uid, boolean logIn, String password, ProgressDialog dialog) {
+    public void saveManagerProfile(Manager manager, String uid, boolean logIn, ProgressDialog dialog) {
         //TODO save in sharedPreferences here
-        SaveManagerAsyncTask task = new SaveManagerAsyncTask(uid, logIn, password, dialog);
+        SaveManagerAsyncTask task = new SaveManagerAsyncTask(uid, logIn, dialog);
         task.execute(manager);
     }
 
@@ -87,7 +88,7 @@ public class DatabaseUtils {
      * @param manager : The manager profile to store.
      */
     public void saveManagerProfile(Manager manager) {
-        saveManagerProfile(manager, null, false, "", null);
+        saveManagerProfile(manager, null, false, null);
     }
 
 
@@ -98,41 +99,52 @@ public class DatabaseUtils {
          * Firebase database.
          */
         private String uid;
-        private boolean logIn;
-        private String password;
+        private boolean changeActivity;
         private ProgressDialog dialog;
 
-        public SaveManagerAsyncTask(String uid, boolean logIn, String password, ProgressDialog dialog) {
+        public SaveManagerAsyncTask(String uid, boolean changeActivity, ProgressDialog dialog) {
             this.uid = uid;
-            this.logIn = logIn;
-            this.password = password;
+            this.changeActivity = changeActivity;
             this.dialog = dialog;
         }
 
         @Override
         protected Void doInBackground(final Manager... params) {
             /**
-             * The uid is unknown, retrieve it according to the current authenticated user.
+             * The uid is unknown, retrieve the one of the current authenticated user.
              */
             if (this.uid == null) {
-                this.uid = firebase.getAuth().getUid();
+                AuthData auth = firebase.getAuth();
+                if (auth == null) {
+                    /**
+                     * There is not current authenticated user
+                     */
+                    if (dialog != null)
+                        dialog.dismiss();
+                    return null;
+                }
+                /**
+                 * Get the uid of the current authenticated user
+                 */
+                this.uid = auth.getUid();
             }
+
             /**
              * Check if the restaurant name is already used
              */
-            Firebase ref = firebase.child(RESTAURANTS).child(params[0].getRes_name());
-            ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            Firebase ref = firebase.child(NAMECHECK).child(params[0].getRes_name());
+            ref.setValue(this.uid, new Firebase.CompletionListener() {
                 @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    Logger.d("actual storage");
-                    if (dataSnapshot.exists()) {
-                        Toast.makeText(context, R.string.NameAlreadyUsed, Toast.LENGTH_LONG).show();
-                    } else {
+                public void onComplete(FirebaseError firebaseError, Firebase resultRef) {
+                    if (firebaseError == null) {
                         /**
-                         * The actual storage of the data
+                         * This restaurant name is available, store the data in the database.
                          */
                         if (dialog != null)
-                            dialog.setMessage(context.getResources().getString(R.string.StoringData));
+                            dialog.setMessage(context.getString(R.string.StoringData) + " 0/2");
+                        /**
+                         * Save the data in the manager part (with uid as key)
+                         */
                         Firebase ref = firebase.child(MANAGER).child(uid);
                         ref.setValue(params[0], new Firebase.CompletionListener() {
                             @Override
@@ -142,12 +154,14 @@ public class DatabaseUtils {
                                      * No error, continue the sequence
                                      */
                                     if (dialog != null) {
-                                        String message = context.getResources().getString(R.string.StoringData) + " 1/2";
+                                        String message = context.getString(R.string.StoringData) + " 1/2";
                                         dialog.setMessage(message);
                                     }
+                                    /**
+                                     * Store the data in the restaurant part (with restaurant name
+                                     * as key).
+                                     */
                                     Firebase ref = firebase.child(RESTAURANTS).child(params[0].getRes_name());
-                                    Logger.d("res name : " + params[0].getRes_name());
-                                    Logger.d(ref.toString());
                                     ref.setValue(params[0], new Firebase.CompletionListener() {
                                         @Override
                                         public void onComplete(FirebaseError firebaseError, Firebase firebase) {
@@ -156,48 +170,81 @@ public class DatabaseUtils {
                                                  * No error, continue the sequence
                                                  */
                                                 if (dialog != null) {
-                                                    String message = context.getResources().getString(R.string.StoringData) + " 2/2";
-                                                    dialog.setMessage(message);
+                                                    dialog.dismiss();
                                                 }
-                                                if (logIn) {
-                                                    String emailAddress = params[0].getEmail();
-                                                    logIn(emailAddress, password, false, dialog);
+                                                if (changeActivity) {
+                                                    /**
+                                                     * Launch the profile activity
+                                                     */
+                                                    Intent intent = new Intent(context, ProfileManagerActivity.class);
+                                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                                    context.startActivity(intent);
                                                 }
                                             } else {
                                                 /**
                                                  * An error occurred when trying to save the profile
+                                                 * in the restaurant part.
                                                  */
-                                                Logger.d(firebaseError.getMessage());
+                                                String message = firebaseError.getMessage();
                                                 if (dialog != null)
-                                                    dialog.dismiss();
-                                                Toast.makeText(context, firebaseError.getMessage(), Toast.LENGTH_LONG).show();
+                                                    dialog.setMessage(message);
+                                                else
+                                                    Toast.makeText(context, message, Toast.LENGTH_LONG).show();
+                                                /**
+                                                 * Erase the data already stored :
+                                                 *  1 - data in the manager part
+                                                 *  2 - entry in the namecheck part
+                                                 */
+                                                Firebase ref = firebase.child(MANAGER).child(uid);
+                                                ref.setValue(null, new Firebase.CompletionListener() {
+                                                    @Override
+                                                    public void onComplete(FirebaseError firebaseError, Firebase firebase) {
+                                                        Firebase ref = firebase.child(NAMECHECK).child(params[0].getRes_name());
+                                                        ref.setValue(null, new Firebase.CompletionListener() {
+                                                            @Override
+                                                            public void onComplete(FirebaseError firebaseError, Firebase firebase) {
+                                                                if (dialog != null)
+                                                                    dialog.dismiss();
+                                                            }
+                                                        });
+                                                    }
+                                                });
                                             }
                                         }
                                     });
                                 } else {
                                     /**
-                                     * An error occurred when trying to save the profile
+                                     * An error occurred when trying to save the profile in the
+                                     * manager part.
                                      */
-                                    Logger.d(firebaseError.getMessage());
+                                    String message = firebaseError.getMessage();
                                     if (dialog != null)
-                                        dialog.dismiss();
-                                    Toast.makeText(context, firebaseError.getMessage(), Toast.LENGTH_LONG).show();
+                                        dialog.setMessage(message);
+                                    else
+                                        Toast.makeText(context, message, Toast.LENGTH_LONG).show();
+                                    /**
+                                     * Erase the data already stored :
+                                     *  1 - entry in the namecheck part
+                                     */
+                                    Firebase ref = firebase.child(NAMECHECK).child(params[0].getRes_name());
+                                    ref.setValue(null, new Firebase.CompletionListener() {
+                                        @Override
+                                        public void onComplete(FirebaseError firebaseError, Firebase firebase) {
+                                            if (dialog != null)
+                                                dialog.dismiss();
+                                        }
+                                    });
                                 }
                             }
                         });
+                    } else {
+                        if (dialog != null)
+                            dialog.dismiss();
+                        Toast.makeText(context, R.string.NameAlreadyUsed, Toast.LENGTH_LONG).show();
+                        Logger.d(firebaseError.getMessage());
                     }
                 }
-
-                @Override
-                public void onCancelled(FirebaseError firebaseError) {
-                    if (dialog != null)
-                        dialog.dismiss();
-                    Toast.makeText(context, firebaseError.getMessage(), Toast.LENGTH_LONG).show();
-                }
             });
-            Logger.d("return from saveManager");
-            if (!logIn && dialog != null)
-                dialog.dismiss();
             return null;
         }
     }
@@ -208,30 +255,43 @@ public class DatabaseUtils {
      * @param user : the profile to store
      * @return : return true
      */
-    public void saveCustomerProfile(User user, String uid, boolean logIn, String password, ProgressDialog dialog) {
-        SaveCustomerAsyncTask task = new SaveCustomerAsyncTask(uid, logIn, password, dialog);
+    public void saveCustomerProfile(User user, String uid, boolean logIn, ProgressDialog dialog) {
+        SaveCustomerAsyncTask task = new SaveCustomerAsyncTask(uid, logIn, dialog);
         task.execute(user);
     }
 
     private class SaveCustomerAsyncTask extends AsyncTask<User, Void, Void> {
 
         private String uid;
-        private boolean logIn;
-        private String password;
+        private boolean changeActivity;
         private ProgressDialog dialog;
 
-        public SaveCustomerAsyncTask(String uid, boolean logIn, String password, ProgressDialog dialog) {
+        public SaveCustomerAsyncTask(String uid, boolean changeActivity, ProgressDialog dialog) {
             this.uid = uid;
-            this.logIn = logIn;
-            this.password = password;
+            this.changeActivity = changeActivity;
             this.dialog = dialog;
         }
 
         @Override
         protected Void doInBackground(final User... params) {
             if (this.uid == null) {
-                this.uid = firebase.getAuth().getUid();
+                AuthData auth = firebase.getAuth();
+                if (auth == null) {
+                    /**
+                     * There is no current authenticated user
+                     */
+                    if (dialog != null)
+                        dialog.dismiss();
+                    Toast.makeText(context, context.getString(R.string.NoAuth), Toast.LENGTH_LONG).show();
+                    return null;
+                } else {
+                    this.uid = auth.getUid();
+                }
             }
+
+            /**
+             * Store the data in the database
+             */
             Firebase ref = firebase.child(USER).child(this.uid);
             ref.setValue(params[0], new Firebase.CompletionListener() {
                 @Override
@@ -240,11 +300,14 @@ public class DatabaseUtils {
                         /**
                          * Everything worked well
                          */
-                        if (logIn)
-                            logIn(params[0].getEmail(), password, false, dialog);
+                        if (dialog != null)
+                            dialog.dismiss();
+                        if (changeActivity) {
+                            Intent intent = new Intent(context, ProfileUserActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            context.startActivity(intent);
+                        }
                         else {
-                            if (dialog != null)
-                                dialog.dismiss();
                             Toast.makeText(context, context.getResources().getString(R.string.ProfileCreationSuccessful), Toast.LENGTH_LONG).show();
                         }
                     } else {
@@ -294,22 +357,34 @@ public class DatabaseUtils {
             firebase.createUser(params[0], params[1], new Firebase.ValueResultHandler<Map<String, Object>>() {
                 @Override
                 public void onSuccess(Map<String, Object> result) {
-                    Logger.d("creation successfull");
+                    Logger.d("creation successful");
                     /**
                      * Display a message telling the user that everything worked fine
                      */
                     dialog.setMessage(context.getResources().getString(R.string.m_c));
-                    /**
-                     * Store the profile in the database and logIn
-                     */
-                    String uid = (String) result.get("uid");
-                    if (params[2].equals(SharedPreferencesHandler.MANAGER)) {
-                        Manager manager = sharedPreferencesHandler.getCurrentManager();
-                        saveManagerProfile(manager, uid, true, params[1], dialog);
-                    } else {
-                        User user = sharedPreferencesHandler.getCurrentUser();
-                        saveCustomerProfile(user, uid, true, params[1], dialog);
-                    }
+                    firebase.authWithPassword(params[0], params[1], new Firebase.AuthResultHandler() {
+                        @Override
+                        public void onAuthenticated(AuthData authData) {
+                            /**
+                             * Store the profile in the database and launch the next activity
+                             */
+                            String uid = authData.getUid();
+                            if (params[2].equals(SharedPreferencesHandler.MANAGER)) {
+                                Manager manager = sharedPreferencesHandler.getCurrentManager();
+                                saveManagerProfile(manager, uid, true, dialog);
+                            } else {
+                                User user = sharedPreferencesHandler.getCurrentUser();
+                                saveCustomerProfile(user, uid, true, dialog);
+                            }
+                        }
+                        @Override
+                        public void onAuthenticationError(FirebaseError firebaseError) {
+                            if (dialog != null)
+                                dialog.dismiss();
+                            Toast.makeText(context, R.string.error_log_in, Toast.LENGTH_LONG).show();
+                        }
+                    });
+
                 }
 
                 @Override
