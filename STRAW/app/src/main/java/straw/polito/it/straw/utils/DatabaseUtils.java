@@ -362,6 +362,9 @@ public class DatabaseUtils {
                      * Display a message telling the user that everything worked fine
                      */
                     dialog.setMessage(context.getResources().getString(R.string.m_c));
+                    /**
+                     * Authenticate the user with the newly created account
+                     */
                     firebase.authWithPassword(params[0], params[1], new Firebase.AuthResultHandler() {
                         @Override
                         public void onAuthenticated(AuthData authData) {
@@ -384,12 +387,15 @@ public class DatabaseUtils {
                             Toast.makeText(context, R.string.error_log_in, Toast.LENGTH_LONG).show();
                         }
                     });
-
                 }
 
                 @Override
                 public void onError(FirebaseError firebaseError) {
-                    dialog.dismiss();
+                    /**
+                     * Error when trying to create a new account
+                     */
+                    if (dialog != null)
+                        dialog.dismiss();
                     Toast.makeText(context, firebaseError.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             });
@@ -398,7 +404,8 @@ public class DatabaseUtils {
     }
 
     /**
-     * Try to authenticate the user according to it's login and password.
+     * Try to authenticate the user according to it's login and password and retrieve it's profile
+     * if asked.
      *
      * @param emailAddress    : the login of the requested account
      * @param password        : the password of the requested account
@@ -437,7 +444,7 @@ public class DatabaseUtils {
                 @Override
                 public void onAuthenticated(AuthData authData) {
                     Logger.d("Login successfull");
-                    String text = context.getResources().getString(R.string.log_in) + " - " + context.getResources().getString(R.string.RetrievingData);
+                    String text = context.getString(R.string.log_in) + " - " + context.getString(R.string.RetrievingData);
                     dialog.setMessage(text);
                     if (!retrieveProfile) {
                         Logger.d("Take local profile");
@@ -761,19 +768,36 @@ public class DatabaseUtils {
         }
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+    /**
+     * Retrieve the list of all the managers
+     *
+     * @
+     * @return : An ArrayList of Manager or null if it's not possible to retrieve proper data.
+     */
+    public ArrayList<Manager> retrieveListManager() {
+        ArrayList<Manager> managers = new ArrayList<>();
+        String children;
+        children = MANAGER;
+        RetrieveAsyncTask task = new RetrieveAsyncTask();
+        task.execute(children);
+        String data;
+        try {
+            data = task.get();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+        try {
+            JSONArray jsonArray = new JSONArray(data);
+            for (int i = 0; i < jsonArray.length(); i++) {
+                managers.add(new Manager(jsonArray.getString(i)));
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return managers;
+    }
 
     /**
      * Allows to retrieve a String from the Firebase database in a secondary thread.
@@ -781,25 +805,12 @@ public class DatabaseUtils {
     private class RetrieveAsyncTask extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... params) {
-            /**
-             * Check if the network is available
-             */
-            if (networkInfo == null || !networkInfo.isConnectedOrConnecting()) {
-                publishProgress();
-                return null;
-            } else {
-                Firebase ref = firebase;
-                for (String string : params)
-                    ref = ref.child(string);
-                String data = "";
-                ref.addValueEventListener(new RetrieverListener(data));
-                return data;
-            }
-        }
-
-        @Override
-        protected void onProgressUpdate(Void... values) {
-            Toast.makeText(context, R.string.NoNetwork, Toast.LENGTH_LONG).show();
+            Firebase ref = firebase;
+            for (String string : params)
+                ref = ref.child(string);
+            String data = "";
+            ref.addValueEventListener(new RetrieverListener(data));
+            return data;
         }
     }
 
@@ -826,6 +837,8 @@ public class DatabaseUtils {
 
         }
     }
+
+
 
 
 
@@ -967,35 +980,5 @@ public class DatabaseUtils {
         return reservations;
 
     }
-    /**
-     * Retrieve the list of all the managers
-     *
-     * @
-     * @return : An ArrayList of Manager or null if it's not possible to retrieve proper data.
-     */
-    public ArrayList<Manager> retrieveListManager() {
-        ArrayList<Manager> managers = new ArrayList<>();
-        String children;
-        children = MANAGER;
-        RetrieveAsyncTask task = new RetrieveAsyncTask();
-        task.execute(children);
-        String data;
-        try {
-            data = task.get();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-        try {
-            JSONArray jsonArray = new JSONArray(data);
-            for (int i = 0; i < jsonArray.length(); i++) {
-                managers.add(new Manager(jsonArray.getString(i)));
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return null;
-        }
-        return managers;
 
-    }
 }
