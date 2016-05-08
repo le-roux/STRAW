@@ -161,6 +161,7 @@
     <string name="ProfileCreationSuccessful">Profile created successfully</string>
     <string name="LoggingIn">Logging In</string>
     <string name="NoAuth">No user authenticated, please login</string>
+    <string name="RewindChange">Error - Undoing previous changes</string>
     <string name="RetrievingData">Retrieving data</string>
     <string name="NameAlreadyUsed">This name already exists</string>
     <string name="NoMatchingProfile">No matching profile</string>

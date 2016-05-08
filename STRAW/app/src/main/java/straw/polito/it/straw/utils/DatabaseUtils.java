@@ -74,9 +74,9 @@ public class DatabaseUtils {
      *
      * @param manager : the manager profile to save
      */
-    public void saveManagerProfile(Manager manager, String uid, boolean logIn, ProgressDialog dialog) {
+    public void saveManagerProfile(Manager manager, String uid, String password, boolean logIn, ProgressDialog dialog) {
         //TODO save in sharedPreferences here
-        SaveManagerAsyncTask task = new SaveManagerAsyncTask(uid, logIn, dialog);
+        SaveManagerAsyncTask task = new SaveManagerAsyncTask(uid, password, logIn, dialog);
         task.execute(manager);
     }
 
@@ -88,7 +88,7 @@ public class DatabaseUtils {
      * @param manager : The manager profile to store.
      */
     public void saveManagerProfile(Manager manager) {
-        saveManagerProfile(manager, null, false, null);
+        saveManagerProfile(manager, null, null, false, null);
     }
 
 
@@ -99,11 +99,13 @@ public class DatabaseUtils {
          * Firebase database.
          */
         private String uid;
+        private String password;
         private boolean changeActivity;
         private ProgressDialog dialog;
 
-        public SaveManagerAsyncTask(String uid, boolean changeActivity, ProgressDialog dialog) {
+        public SaveManagerAsyncTask(String uid, String password, boolean changeActivity, ProgressDialog dialog) {
             this.uid = uid;
+            this.password = password;
             this.changeActivity = changeActivity;
             this.dialog = dialog;
         }
@@ -238,10 +240,30 @@ public class DatabaseUtils {
                             }
                         });
                     } else {
-                        if (dialog != null)
-                            dialog.dismiss();
-                        Toast.makeText(context, R.string.NameAlreadyUsed, Toast.LENGTH_LONG).show();
-                        Logger.d(firebaseError.getMessage());
+                        if (password != null) {
+                            if (dialog != null)
+                                dialog.setMessage(context.getString(R.string.RewindChange));
+                            firebase.removeUser(params[0].getEmail(), password, new Firebase.ResultHandler() {
+                                @Override
+                                public void onSuccess() {
+                                    Logger.d("account removed");
+                                    if (dialog != null)
+                                        dialog.dismiss();
+                                    Toast.makeText(context, R.string.NameAlreadyUsed, Toast.LENGTH_LONG).show();
+                                }
+
+                                @Override
+                                public void onError(FirebaseError firebaseError) {
+                                    if (dialog != null)
+                                        dialog.dismiss();
+                                    Toast.makeText(context, R.string.NameAlreadyUsed, Toast.LENGTH_LONG).show();
+                                    Toast.makeText(context, firebaseError.getMessage(), Toast.LENGTH_LONG).show();
+                                }
+                            });
+                        } else {
+                            if (dialog != null)
+                                dialog.dismiss();
+                        }
                     }
                 }
             });
@@ -374,7 +396,7 @@ public class DatabaseUtils {
                             String uid = authData.getUid();
                             if (params[2].equals(SharedPreferencesHandler.MANAGER)) {
                                 Manager manager = sharedPreferencesHandler.getCurrentManager();
-                                saveManagerProfile(manager, uid, true, dialog);
+                                saveManagerProfile(manager, uid, params[1], true, dialog);
                             } else {
                                 User user = sharedPreferencesHandler.getCurrentUser();
                                 saveCustomerProfile(user, uid, true, dialog);
