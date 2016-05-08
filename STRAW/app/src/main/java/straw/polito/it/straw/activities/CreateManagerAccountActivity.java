@@ -65,8 +65,6 @@ public class CreateManagerAccountActivity extends AppCompatActivity {
     private static final int IMAGE_REQ = 1;
     private static final int CAMERA_REQ = 2;
     public static final String NUMBER_OF_ELEMENTS = "ElementsNb";
-
-    ArrayList<Manager> arrayManager;
     Manager man;
     boolean sw;
     @Override

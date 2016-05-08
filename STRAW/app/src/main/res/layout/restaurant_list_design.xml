@@ -6,24 +6,19 @@
     android:orientation="horizontal"
     android:padding="5dip" >
 
-    <!--  ListRow Left side Thumbnail image -->
-
-
     <TextView
         android:id="@+id/RestaurantName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/text_list"
         android:text="Restaurant name"
-        android:textSize="20dp"
-
-         />
+        android:textSize="20dp" />
 
 
     <ImageView
         android:id="@+id/RestaurantImage"
-        android:layout_width="50dip"
-        android:layout_height="50dip"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:background="@color/grey"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
@@ -38,14 +33,11 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:text="€€€"
-        android:textColor="@color/colorPrimary"
-        />
-
+        android:textColor="@color/colorPrimary" />
 
 
     <RatingBar
         style="?android:attr/ratingBarStyleSmall"
-
         android:id="@+id/RestaurantReviews"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -54,12 +46,6 @@
         android:layout_alignParentStart="true"
         android:numStars="5"
         android:stepSize="0.5"
-        android:rating="2.5"
-
-        />
-
-
-
-
+        android:rating="2.5" />
 
 </RelativeLayout>

@@ -73,7 +73,6 @@ public class RestaurantListAdapter extends BaseAdapter {
             if(imageString != null)
                 ImageManager.setImage(this.context, photo, imageString);
         }
-
         return convertView;
     }
 }

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
@@ -30,33 +31,39 @@ public class QuickSearchActivity extends AppCompatActivity {
     SharedPreferences mShared;
     private StrawApplication application;
     public static final String MANAGER = "Manager";
-    //private SharedPreferences mShared;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quick_search);
-        this.application = (StrawApplication)getApplication();
-        DatabaseUtils databaseUtils = this.application.getDatabaseUtils();
-        /*
-        init_list();
-        mShared= PreferenceManager.getDefaultSharedPreferences(this);
+
+
+
+        //this.application = (StrawApplication)getApplication();
+        //DatabaseUtils databaseUtils = this.application.getDatabaseUtils();
+        //this.restaurant_list = new ArrayList<>();
+        //init_list();
+        //restaurant_list.addAll(databaseUtils.retrieveListManager());
+
+
         restaurant_list = new ArrayList<>();
-        //this.restaurant_list.add(new Manager());
         init_list();
         mShared= PreferenceManager.getDefaultSharedPreferences(this);
-        //ADD RESTAURANTS FROM SERVER
         if(mShared.contains("Manager")) {
             String ss = mShared.getString("Manager", "Error");
             Manager man=new Manager(ss);
             restaurant_list.add(man);
         }
-       */
 
-        this.restaurant_list = new ArrayList<>();
-        init_list();
-        restaurant_list.addAll(databaseUtils.retrieveListManager());
-        //restaurant_list.add(databaseUtils.retrieveManagerProfile("thibault@gmail.com"));
+
+        /*test*/
+        restaurant_list.add(new Manager());
+        restaurant_list.add(new Manager());
+        restaurant_list.add(new Manager());
+        restaurant_list.add(new Manager());
+        restaurant_list.add(new Manager());
+        restaurant_list.add(new Manager());
+
 
 
         restaurant_listView.setAdapter(new RestaurantListAdapter(getBaseContext(),restaurant_list));
