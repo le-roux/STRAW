@@ -157,30 +157,6 @@ public class CreateManagerAccountActivity extends AppCompatActivity implements A
         c_acc_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                boolean sw = false;
-                if (!email.getText().toString().equals("")) {
-                    man.setEmail(email.getText().toString());
-                } else {
-                    showAlert(getString(R.string.m_email), getString(R.string.error), false);
-                    sw = true;
-                }
-                if (c_pwd.getText().toString().equals("") || !c_pwd.getText().toString().equals(cc_pwd.getText().toString())) {
-                    showAlert(getString(R.string.m_pwd), getString(R.string.error), false);
-                    sw = true;
-                }
-                if (tel.getText().toString().length() > 6) {
-                    man.setTelephone(tel.getText().toString());
-                } else {
-                    showAlert(getString(R.string.m_tel), getString(R.string.error), false);
-                    sw = true;
-                }
-                if (!r_n.getText().toString().equals("")) {
-                    man.setRes_name(r_n.getText().toString());
-                } else {
-                    showAlert(getString(R.string.m_r_n), getString(R.string.error), false);
-                    sw = true;
-                }
-                man.setRes_type(types.get(r_t.getSelectedItemPosition()));
                 if (!addr.getText().toString().equals("")) {
                     Geocoder geocoder = new Geocoder(getApplicationContext());
                     if (geocoder.isPresent()) {
@@ -209,55 +185,10 @@ public class CreateManagerAccountActivity extends AppCompatActivity implements A
                         man.setAddress(addr.getText().toString());
                         man.setLatitude(0);
                         man.setLongitude(0);
+                        validate();
                     }
                 } else {
                     showAlert(getString(R.string.m_addr), getString(R.string.error), false);
-                    sw = true;
-                }
-                if (!seats.getText().toString().equals("") && Integer.parseInt(seats.getText().toString()) > 0) {
-                    man.setSeats(Integer.parseInt(seats.getText().toString()));
-                } else {
-                    showAlert(getString(R.string.m_seats), getString(R.string.error), false);
-                    sw = true;
-                }
-                man.setImage(imageString);
-                if (!sw) {
-                    man.setReviews(new ArrayList<Review>());
-                    /**
-                     * Set the new profile as the current manager.
-                     */
-                    sharedPreferencesHandler.storeCurrentManager(man.toJSONObject());
-                    JSONObject jo = man.toJSONObjectTrans();
-                    //jsonArray.put(jo);
-                    //ManagerList.saveManInSharedPreferences(context,man);
-                    //JSONObject jo = man.toJSONObjectTrans();
-                    //jsonArray.put(jo.toString());
-
-                    /**
-                     * Save the profile in the database, log the manager and launch the profile activity.
-                     */
-                    ProgressDialog dialog= new ProgressDialog(CreateManagerAccountActivity.this, ProgressDialog.STYLE_SPINNER);
-                    dialog.setIndeterminate(true);
-                    dialog.setMessage(getResources().getString(R.string.AccountCreation));
-                    dialog.setCancelable(false);
-                    dialog.show();
-                    DatabaseUtils databaseUtils = ((StrawApplication)getApplication()).getDatabaseUtils();
-                    String password = c_pwd.getText().toString();
-
-                    if (getIntent().hasExtra(ProfileManagerActivity.MANAGER)) {
-                        /**
-                         * Update the existing profile
-                         */
-                        databaseUtils.saveManagerProfile(man);
-                    } else {
-                        /**
-                         * Create a new user and save the profile in the database
-                         */
-                        databaseUtils.createUser(man.getEmail(), password, SharedPreferencesHandler.MANAGER, dialog);
-                    }
-
-                } else {
-                    return;
                 }
             }
         });
@@ -367,12 +298,9 @@ public class CreateManagerAccountActivity extends AppCompatActivity implements A
         }
     }
 
-
     @Override
     public void setAddressNumber(int i) {
-        Logger.d("setAddressNumber");
         if (i < this.addressList.size()) {
-            Logger.d("Address set");
             Address address = this.addressList.get(i);
             double latitude = address.getLatitude();
             double longitude = address.getLongitude();
@@ -380,6 +308,79 @@ public class CreateManagerAccountActivity extends AppCompatActivity implements A
             this.man.setLatitude(latitude);
             this.man.setLongitude(longitude);
             this.man.setAddress(addressString);
+            validate();
+        }
+    }
+
+    public void validate() {
+        boolean sw = false;
+        if (!email.getText().toString().equals("")) {
+            man.setEmail(email.getText().toString());
+        } else {
+            showAlert(getString(R.string.m_email), getString(R.string.error), false);
+            sw = true;
+        }
+        if (c_pwd.getText().toString().equals("") || !c_pwd.getText().toString().equals(cc_pwd.getText().toString())) {
+            showAlert(getString(R.string.m_pwd), getString(R.string.error), false);
+            sw = true;
+        }
+        if (tel.getText().toString().length() > 6) {
+            man.setTelephone(tel.getText().toString());
+        } else {
+            showAlert(getString(R.string.m_tel), getString(R.string.error), false);
+            sw = true;
+        }
+        if (!r_n.getText().toString().equals("")) {
+            man.setRes_name(r_n.getText().toString());
+        } else {
+            showAlert(getString(R.string.m_r_n), getString(R.string.error), false);
+            sw = true;
+        }
+        man.setRes_type(types.get(r_t.getSelectedItemPosition()));
+        if (!seats.getText().toString().equals("") && Integer.parseInt(seats.getText().toString()) > 0) {
+            man.setSeats(Integer.parseInt(seats.getText().toString()));
+        } else {
+            showAlert(getString(R.string.m_seats), getString(R.string.error), false);
+            sw = true;
+        }
+        man.setImage(imageString);
+        if (!sw) {
+            man.setReviews(new ArrayList<Review>());
+            /**
+             * Set the new profile as the current manager.
+             */
+            sharedPreferencesHandler.storeCurrentManager(man.toJSONObject());
+            JSONObject jo = man.toJSONObjectTrans();
+            //jsonArray.put(jo);
+            //ManagerList.saveManInSharedPreferences(context,man);
+            //JSONObject jo = man.toJSONObjectTrans();
+            //jsonArray.put(jo.toString());
+
+            /**
+             * Save the profile in the database, log the manager and launch the profile activity.
+             */
+            ProgressDialog dialog= new ProgressDialog(CreateManagerAccountActivity.this, ProgressDialog.STYLE_SPINNER);
+            dialog.setIndeterminate(true);
+            dialog.setMessage(getResources().getString(R.string.AccountCreation));
+            dialog.setCancelable(false);
+            dialog.show();
+            DatabaseUtils databaseUtils = ((StrawApplication)getApplication()).getDatabaseUtils();
+            String password = c_pwd.getText().toString();
+
+            if (getIntent().hasExtra(ProfileManagerActivity.MANAGER)) {
+                /**
+                 * Update the existing profile
+                 */
+                databaseUtils.saveManagerProfile(man);
+            } else {
+                /**
+                 * Create a new user and save the profile in the database
+                 */
+                databaseUtils.createUser(man.getEmail(), password, SharedPreferencesHandler.MANAGER, dialog);
+            }
+
+        } else {
+            return;
         }
     }
 }

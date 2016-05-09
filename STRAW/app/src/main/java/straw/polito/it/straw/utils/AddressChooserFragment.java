@@ -32,7 +32,6 @@ public class AddressChooserFragment extends DialogFragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Logger.d("item clicked");
                 if (addressContainer != null) {
                     addressContainer.setAddressNumber(position);
                     AddressChooserFragment.this.dismiss();
