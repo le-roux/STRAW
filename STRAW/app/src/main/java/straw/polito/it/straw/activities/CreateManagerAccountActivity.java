@@ -366,7 +366,9 @@ public class CreateManagerAccountActivity extends AppCompatActivity implements A
         }
         man.setImage(imageString);
         if (!sw) {
-            man.setReviews(new ArrayList<Review>());
+            ArrayList<Review> reviews = new ArrayList<>();
+            //reviews.add(new Review("a", 2, "cool"));
+            man.setReviews(reviews);
             /**
              * Set the new profile as the current manager.
              */

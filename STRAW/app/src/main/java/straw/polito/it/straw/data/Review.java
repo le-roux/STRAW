@@ -12,6 +12,12 @@ public class Review {
     private float rate;
     private String description;
 
+    public Review() {
+        this.user = "";
+        this.rate = 0;
+        this.description = "";
+    }
+
     public Review(String user,float rate, String description) {
         this.user = user;
         this.rate = rate;

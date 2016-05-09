@@ -5,6 +5,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import straw.polito.it.straw.utils.Logger;
 
@@ -35,6 +36,7 @@ public class Manager {
     }
 
     public Manager(String man) {
+        this.reviews = new ArrayList<>();
         try {
             JSONObject oj = new JSONObject(man);
             telephone = (String) oj.get("tel");
@@ -50,7 +52,6 @@ public class Manager {
             this.latitude = oj.getDouble(LATITUDE);
             this.longitude = oj.getDouble(LONGITUDE);
             JSONArray jarr = new JSONArray(oj.getString("reviews"));
-            reviews=new ArrayList<>();
             for(int i=0;i<jarr.length();i++){
                 reviews.add(new Review(jarr.getJSONObject(i).toString()));
             }
@@ -180,10 +181,12 @@ public class Manager {
             oj.put(LONGITUDE, this.longitude);
             JSONArray jarr = new JSONArray();
 
-           /* for(Review r:reviews){
-                jarr.put(r.toJSONObject());
-            }*/
-            oj.put("reviews",jarr);
+            if (this.reviews != null) {
+                for (Review r : reviews) {
+                    jarr.put(r.toJSONObject());
+                }
+                oj.put("reviews", jarr);
+            }
             return oj.toString();
         } catch (JSONException e) {
             Logger.d("Error storing the manager");
@@ -209,10 +212,12 @@ public class Manager {
             oj.put(LONGITUDE, this.longitude);
             JSONArray jarr = new JSONArray();
 
-           /* for(Review r:reviews){
-                jarr.put(r.toJSONObject());
-            }*/
-            oj.put("reviews",jarr);
+            if (this.reviews != null) {
+                for (Review r : reviews) {
+                    jarr.put(r.toJSONObject());
+                }
+                oj.put("reviews", jarr);
+            }
             return oj;
         } catch (JSONException e) {
             Logger.d("Error storing the manager");
