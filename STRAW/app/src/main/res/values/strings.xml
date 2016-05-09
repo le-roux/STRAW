@@ -41,6 +41,7 @@
     <string name="Default">Default</string>
     <string name="Menu">- Menu</string>
     <string name="Reservation">- Reservation</string>
+    <string name="ErrorGeocoder">Error geocoder\nPlease retry in few seconds</string>
 
     <!--Strings for the menu part -->
     <string name="Add_plate">Add Plate</string>

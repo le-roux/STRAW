@@ -15,6 +15,8 @@ public class Manager {
 
     private String telephone;
     private String address;
+    private double latitude;
+    private double longitude;
     private String res_name;
     private String res_type;
     private int seats;
@@ -86,6 +88,22 @@ public class Manager {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public double getLatitude() {
+        return this.latitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
+
+    public double getLongitude() {
+        return this.longitude;
     }
 
     public String getRes_name() {

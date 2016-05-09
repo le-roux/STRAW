@@ -9,6 +9,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.location.Address;
+import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -25,17 +27,20 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import straw.polito.it.straw.AddressContainer;
 import straw.polito.it.straw.R;
 
 import straw.polito.it.straw.StrawApplication;
@@ -43,12 +48,13 @@ import straw.polito.it.straw.data.Manager;
 import straw.polito.it.straw.data.ManagerList;
 import straw.polito.it.straw.data.Menu;
 import straw.polito.it.straw.data.Review;
+import straw.polito.it.straw.utils.AddressChooserFragment;
 import straw.polito.it.straw.utils.DatabaseUtils;
 import straw.polito.it.straw.utils.ImageManager;
 import straw.polito.it.straw.utils.Logger;
 import straw.polito.it.straw.utils.SharedPreferencesHandler;
 
-public class CreateManagerAccountActivity extends AppCompatActivity {
+public class CreateManagerAccountActivity extends AppCompatActivity implements AddressContainer {
 
     ImageView photo;
     EditText c_pwd;
@@ -65,6 +71,7 @@ public class CreateManagerAccountActivity extends AppCompatActivity {
     Bitmap bitmap;
 
     String imageString;
+    List<Address> addressList;
 
     List<String> types;
     private String TAG = "CreateManagerAccountActivity";
@@ -80,7 +87,7 @@ public class CreateManagerAccountActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_account);
-        Context context = this;
+        this.context = this;
         this.jsonArray = new JSONArray();
         //this.jsonArray = ManagerList.getListManFromSharedPreferences(this);
         sharedPreferencesHandler = ((StrawApplication)getApplication()).getSharedPreferencesHandler();
@@ -175,7 +182,34 @@ public class CreateManagerAccountActivity extends AppCompatActivity {
                 }
                 man.setRes_type(types.get(r_t.getSelectedItemPosition()));
                 if (!addr.getText().toString().equals("")) {
-                    man.setAddress(addr.getText().toString());
+                    Geocoder geocoder = new Geocoder(getApplicationContext());
+                    if (geocoder.isPresent()) {
+                        try {
+                            addressList = geocoder.getFromLocationName(addr.getText().toString(), 10);
+                            AddressChooserFragment fragment = new AddressChooserFragment();
+                            Bundle args = new Bundle();
+                            String[] addresses = new String[addressList.size()];
+                            String string;
+                            for (int i = 0; i < addressList.size(); i++) {
+                                Address address = addressList.get(i);
+                                string = address.getAddressLine(0) + ' ' + address.getAddressLine(1) + ' ' + address.getAddressLine(2);
+                                addresses[i] = string;
+                            }
+                            args.putStringArray(AddressChooserFragment.ADDRESSES, addresses);
+                            fragment.setArguments(args);
+                            fragment.show(getFragmentManager(), "Address chooser");
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            Logger.d("error geocoder");
+                            Toast.makeText(context, R.string.ErrorGeocoder, Toast.LENGTH_LONG).show();
+                            return;
+                        }
+                    } else {
+                        Logger.d("no geocoder");
+                        man.setAddress(addr.getText().toString());
+                        man.setLatitude(0);
+                        man.setLongitude(0);
+                    }
                 } else {
                     showAlert(getString(R.string.m_addr), getString(R.string.error), false);
                     sw = true;
@@ -334,12 +368,18 @@ public class CreateManagerAccountActivity extends AppCompatActivity {
     }
 
 
-
-
-
-
-
-
-
-
+    @Override
+    public void setAddressNumber(int i) {
+        Logger.d("setAddressNumber");
+        if (i < this.addressList.size()) {
+            Logger.d("Address set");
+            Address address = this.addressList.get(i);
+            double latitude = address.getLatitude();
+            double longitude = address.getLongitude();
+            String addressString = address.getAddressLine(0) + ' ' + address.getAddressLine(1) + ' ' + address.getAddressLine(2);
+            this.man.setLatitude(latitude);
+            this.man.setLongitude(longitude);
+            this.man.setAddress(addressString);
+        }
+    }
 }
