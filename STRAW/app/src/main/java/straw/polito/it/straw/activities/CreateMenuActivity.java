@@ -1,6 +1,7 @@
 package straw.polito.it.straw.activities;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -48,7 +49,6 @@ public class CreateMenuActivity extends AppCompatActivity {
     private Button add_plate_button;
     private Button add_drink_button;
 
-    private SharedPreferences sharedPreferences;
     private Manager manager;
     private StrawApplication application;
 
@@ -61,7 +61,6 @@ public class CreateMenuActivity extends AppCompatActivity {
 
         this.context = this;
         this.context = getApplicationContext();
-        this.sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         this.manager = ((StrawApplication)getApplication()).getSharedPreferencesHandler().getCurrentManager();
         //TO DO : react if this.manager is null
         if(getIntent()!=null) {
@@ -96,12 +95,6 @@ public class CreateMenuActivity extends AppCompatActivity {
         this.goods[Menu.PLATES] = new ArrayList<Food>();
         this.goods[Menu.DRINKS] = new ArrayList<Food>();
 
-        if (savedInstanceState == null) {
-            //No data temporarily stored
-            //Try to retrieve it from the database
-            this.application.getDatabaseUtils().retrieveMenu(this.application.getSharedPreferencesHandler().getCurrentManager().getRes_name(), this.goods);
-        }
-
         //Initialisation of the listView
         food_listView = (ExpandableListView)findViewById(R.id.Plate_list);
         //Listener for the ListView
@@ -124,26 +117,52 @@ public class CreateMenuActivity extends AppCompatActivity {
                 return true;
             }
         });
-        food_listView.setAdapter(new FoodExpandableAdapterRemove(context, goods[Menu.PLATES], goods[Menu.DRINKS]));
+        FoodExpandableAdapterRemove adapter = new FoodExpandableAdapterRemove(context, goods[Menu.PLATES], goods[Menu.DRINKS]);
+        adapter.setSyncWithDatabase(true, application);
+        food_listView.setAdapter(adapter);
+
+        /**
+         * If data has been temporarily stored, onRestoreInstanceState will be called and take care
+         * of their restoration.
+         */
+        if (savedInstanceState == null) {
+            /**
+             * No data temporarily stored, retrieve the menu from the database.
+             */
+            this.application.getDatabaseUtils().retrieveMenu(this.manager.getRes_name(), adapter);
+        }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent result) {
+        /**
+         * Prepare some useful variables
+         */
+        DatabaseUtils databaseUtils = this.application.getDatabaseUtils();
+        String restaurantName = this.manager.getRes_name();
+        /**
+         * Actually get the result
+         */
         if (resultCode == Activity.RESULT_OK) {
-            int type = result.getIntExtra(TYPE, Menu.PLATES);
-            if (requestCode == CreateMenuActivity.EDIT_FOOD) {
-                this.goods[type].set(result.getIntExtra(ID, 0), Food.create(result.getStringExtra(ELEMENT)));
-            } else if(requestCode == CreateMenuActivity.ADD_FOOD) {
-                Food element = Food.create(result.getStringExtra(ELEMENT));
-                if (element != null)
-                    this.goods[type].add(element);
-            }
+            Food element = Food.create(result.getStringExtra(ELEMENT));
+
+            /**
+             * Create an indeterminate ProgressBar dialog to make the user wait
+             */
+            ProgressDialog dialog = new ProgressDialog(CreateMenuActivity.this);
+            dialog.setIndeterminate(true);
+            dialog.setMessage(context.getResources().getString(R.string.SavingMenu));
+            dialog.setCancelable(false);
+            dialog.show();
+            /**
+             * Store or update the data in the database
+             */
+            databaseUtils.saveFood(restaurantName, element, dialog);
+            /**
+             * Update the display
+             */
             ((FoodExpandableAdapter)this.food_listView.getExpandableListAdapter()).notifyDataSetChanged();
         }
-        /**
-         * Store the new data in the database
-         */
-        this.application.getDatabaseUtils().saveMenu(this.application.getSharedPreferencesHandler().getCurrentManager().getRes_name(), Menu.saveMenu(this.goods).toString());
     }
 
     private void init_list() {
@@ -167,16 +186,5 @@ public class CreateMenuActivity extends AppCompatActivity {
         }
         if (jsonArray != null)
             Menu.restoreMenu(jsonArray, this.goods);
-    }
-
-    /**
-     * Save data (menu) for permanent storage (in the Firebase database if possible,
-     * in sharedPreferences otherwise.
-     */
-    @Override
-    public void onStop() {
-        super.onStop();
-        DatabaseUtils utils = ((StrawApplication)getApplication()).getDatabaseUtils();
-        utils.saveMenu(this.manager.getRes_name(), Menu.saveMenu(this.goods).toString());
     }
 }

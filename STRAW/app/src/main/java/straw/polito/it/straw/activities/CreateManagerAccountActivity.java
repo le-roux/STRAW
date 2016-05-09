@@ -1,8 +1,11 @@
 package straw.polito.it.straw.activities;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -10,6 +13,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -24,8 +28,11 @@ import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.Spinner;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -35,11 +42,11 @@ import straw.polito.it.straw.R;
 
 import straw.polito.it.straw.StrawApplication;
 import straw.polito.it.straw.data.Manager;
+import straw.polito.it.straw.data.Menu;
 import straw.polito.it.straw.data.Review;
 import straw.polito.it.straw.utils.DatabaseUtils;
 import straw.polito.it.straw.utils.ImageManager;
 import straw.polito.it.straw.utils.Logger;
-import straw.polito.it.straw.utils.ProgressBarFragment;
 import straw.polito.it.straw.utils.SharedPreferencesHandler;
 
 public class CreateManagerAccountActivity extends AppCompatActivity {
@@ -62,19 +69,34 @@ public class CreateManagerAccountActivity extends AppCompatActivity {
 
     List<String> types;
     private String TAG = "CreateManagerAccountActivity";
+    public static final String MANAGERLIST = "ManagerList";
     private SharedPreferencesHandler sharedPreferencesHandler;
+    private SharedPreferences mShared;
     private static final int IMAGE_REQ = 1;
     private static final int CAMERA_REQ = 2;
     public static final String NUMBER_OF_ELEMENTS = "ElementsNb";
-
-    ArrayList<Manager> arrayManager;
+    JSONArray jsonArray;
     Manager man;
     boolean sw;
+    Context context;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_account);
+        Context context = this;
         sharedPreferencesHandler = ((StrawApplication)getApplication()).getSharedPreferencesHandler();
+        mShared= PreferenceManager.getDefaultSharedPreferences(this);
+        this.jsonArray = new JSONArray();
+        if(mShared.contains("ManagerList")){
+            try{
+                String ss = mShared.getString("ManagerList", "Error");
+                jsonArray = new JSONArray(ss);
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }
         initialize();
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
@@ -93,25 +115,6 @@ public class CreateManagerAccountActivity extends AppCompatActivity {
             setPhoto();
         }
 
-        /*
-        int elementsNb = mShared.getInt(NUMBER_OF_ELEMENTS, 0);
-
-        for (int i = 0; i < elementsNb; i++) {
-            arrayManager.add(new Manager(mShared.getString(String.valueOf(i), "")));
-        }
-
-        if(mShared.contains("Manager")){
-            try {
-                JSONArray jarr=new JSONArray(mShared.getString("Manager","Error"));
-                for (int i=0;i<jarr.length();i++){
-                    JSONObject jo= new JSONObject(jarr.get(i).toString());
-                    arrayManager.add(new Manager(jo.toString()));
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-        */
 
     }
 
@@ -184,16 +187,21 @@ public class CreateManagerAccountActivity extends AppCompatActivity {
                      * Set the new profile as the current manager.
                      */
                     sharedPreferencesHandler.storeCurrentManager(man.toJSONObject());
+                    JSONObject jo = man.toJSONObjectTrans();
+                    jsonArray.put(jo.toString());
+                    sharedPreferencesHandler.storeListManager(jsonArray.toString());
+
                     /**
                      * Save the profile in the database, log the manager and launch the profile activity.
                      */
-                    ProgressBarFragment fragment = new ProgressBarFragment();
-                    Bundle bundle = new Bundle();
-                    bundle.putString(ProgressBarFragment.TEXT, getResources().getString(R.string.AccountCreation));
-                    fragment.setArguments(bundle);
-                    fragment.show(getSupportFragmentManager(), "ProgressBar");
+                    ProgressDialog dialog= new ProgressDialog(CreateManagerAccountActivity.this, ProgressDialog.STYLE_SPINNER);
+                    dialog.setIndeterminate(true);
+                    dialog.setMessage(getResources().getString(R.string.AccountCreation));
+                    dialog.setCancelable(false);
+                    dialog.show();
                     DatabaseUtils databaseUtils = ((StrawApplication)getApplication()).getDatabaseUtils();
                     String password = c_pwd.getText().toString();
+
                     if (getIntent().hasExtra(ProfileManagerActivity.MANAGER)) {
                         /**
                          * Update the existing profile
@@ -203,8 +211,9 @@ public class CreateManagerAccountActivity extends AppCompatActivity {
                         /**
                          * Create a new user and save the profile in the database
                          */
-                        databaseUtils.createUser(man.getEmail(), password, SharedPreferencesHandler.MANAGER, fragment);
+                        databaseUtils.createUser(man.getEmail(), password, SharedPreferencesHandler.MANAGER, dialog);
                     }
+
                 } else {
                     return;
                 }
@@ -315,4 +324,14 @@ public class CreateManagerAccountActivity extends AppCompatActivity {
             ImageManager.setImage(getApplicationContext(), photo, imageString);
         }
     }
+
+
+
+
+
+
+
+
+
+
 }

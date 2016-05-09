@@ -3,6 +3,8 @@ package straw.polito.it.straw.data;
 import android.content.SharedPreferences;
 import android.net.Uri;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -77,6 +79,7 @@ public abstract class Food {
      * Returns a description of the food element, to use in the ListView
      * @return A string describing the content of the food element
      */
+    @JsonIgnore
     public abstract String getDescription();
 
     /**

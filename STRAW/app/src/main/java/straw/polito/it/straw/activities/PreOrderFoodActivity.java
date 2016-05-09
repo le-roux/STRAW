@@ -58,8 +58,6 @@ public class PreOrderFoodActivity extends AppCompatActivity implements PriceCont
         this.price = (PriceDisplay) findViewById(R.id.Price);
         this.listView = (ExpandableListView)findViewById(R.id.list_item);
 
-        DatabaseUtils databaseUtils = ((StrawApplication)getApplication()).getDatabaseUtils();
-        databaseUtils.retrieveMenu(this.reservation.getRestaurant().getRes_name(), this.menu);
         if (this.menu == null) {
             /**
              * The menu can't have been retrieved from the remote database
@@ -105,7 +103,11 @@ public class PreOrderFoodActivity extends AppCompatActivity implements PriceCont
             }
         });
 
-        this.listView.setAdapter(new FoodExpandableAdapterRemove(getApplicationContext(), this.command[Menu.PLATES], this.command[Menu.DRINKS]));
+        FoodExpandableAdapter adapter = new FoodExpandableAdapterRemove(getApplicationContext(), this.command[Menu.PLATES], this.command[Menu.DRINKS]);
+        this.listView.setAdapter(adapter);
+
+        DatabaseUtils databaseUtils = ((StrawApplication)getApplication()).getDatabaseUtils();
+        databaseUtils.retrieveMenu(this.reservation.getRestaurant().getRes_name(), adapter);
     }
 
     @Override

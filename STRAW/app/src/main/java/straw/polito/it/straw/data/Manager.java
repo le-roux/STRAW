@@ -135,6 +135,30 @@ public class Manager {
         }
         return null;
     }
+
+
+    public JSONObject toJSONObjectTrans() {
+        JSONObject oj = new JSONObject();
+        try {
+            oj.put("tel", telephone);
+            oj.put("addr", address);
+            oj.put("r_n", res_name);
+            oj.put("r_t", res_type);
+            oj.put("seats", seats);
+            oj.put("photo", image);
+            oj.put("email", email);
+            JSONArray jarr = new JSONArray();
+
+            /*for(Review r:reviews){
+                jarr.put(r.toJSONObject());
+            }*/
+            oj.put("reviews",jarr);
+            return oj;
+        } catch (JSONException e) {
+            Logger.d("Error storing the manager");
+        }
+        return null;
+    }
 }
 
 

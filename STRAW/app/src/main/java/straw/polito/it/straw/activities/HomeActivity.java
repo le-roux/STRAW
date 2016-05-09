@@ -1,5 +1,6 @@
 package straw.polito.it.straw.activities;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
@@ -10,7 +11,6 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -18,8 +18,6 @@ import org.json.JSONObject;
 import straw.polito.it.straw.R;
 import straw.polito.it.straw.StrawApplication;
 import straw.polito.it.straw.utils.DatabaseUtils;
-import straw.polito.it.straw.utils.Logger;
-import straw.polito.it.straw.utils.ProgressBarFragment;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -49,12 +47,12 @@ public class HomeActivity extends AppCompatActivity {
                 String emailAddress = user_name_editText.getText().toString();
                 String password = pwd_editText.getText().toString();
                 DatabaseUtils databaseUtils = ((StrawApplication)getApplication()).getDatabaseUtils();
-                ProgressBarFragment fragment = new ProgressBarFragment();
-                Bundle bundle = new Bundle();
-                bundle.putString(ProgressBarFragment.TEXT, getResources().getString(R.string.log_in));
-                fragment.setArguments(bundle);
-                fragment.show(getSupportFragmentManager(), "ProgressBar");
-                databaseUtils.logIn(emailAddress, password, true, fragment);
+                ProgressDialog dialog = new ProgressDialog(HomeActivity.this, ProgressDialog.STYLE_SPINNER);
+                dialog.setIndeterminate(true);
+                dialog.setMessage(getResources().getString(R.string.log_in));
+                dialog.setCancelable(false);
+                dialog.show();
+                databaseUtils.logIn(emailAddress, password, true, dialog);
             }
         });
 
@@ -68,7 +66,8 @@ public class HomeActivity extends AppCompatActivity {
         create_user_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), CreateUserAccountActivity.class);
+                //Intent intent = new Intent(getApplicationContext(), CreateUserAccountActivity.class);
+                Intent intent = new Intent(getApplicationContext(), SearchActivity.class);
                 startActivity(intent);
             }
         });
