@@ -12,8 +12,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import straw.polito.it.straw.R;
+import straw.polito.it.straw.StrawApplication;
 import straw.polito.it.straw.data.User;
 import straw.polito.it.straw.utils.ImageManager;
+import straw.polito.it.straw.utils.SharedPreferencesHandler;
 
 public class ProfileUserActivity extends AppCompatActivity {
 
@@ -29,19 +31,18 @@ public class ProfileUserActivity extends AppCompatActivity {
 
     Button edit_profile;
     private String TAG = "ProfileUserActivity";
-    private SharedPreferences mShared;
+    private SharedPreferencesHandler sharedPreferencesHandler;
     User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_user);
-        mShared = PreferenceManager.getDefaultSharedPreferences(this);
+        sharedPreferencesHandler = ((StrawApplication)getApplication()).getSharedPreferencesHandler();
 
         initialize();
 
-        String ss = mShared.getString("User", "Error");
-        user=new User(ss);
+        this.user = sharedPreferencesHandler.getCurrentUser();
         loadPrevInfo(user);
 
         setListeners();
@@ -78,13 +79,12 @@ public class ProfileUserActivity extends AppCompatActivity {
         });
     }
 
-    @Override
+    /*@Override
     protected void onResume() {
         super.onResume();
-
-        user=new User(mShared.getString("User","Error"));
+        user = this.sharedPreferencesHandler.getCurrentUser();
         loadPrevInfo(user);
-    }
+    }*/
 
     private void initialize() {
         photo=(ImageView)findViewById(R.id.photo_imageView);

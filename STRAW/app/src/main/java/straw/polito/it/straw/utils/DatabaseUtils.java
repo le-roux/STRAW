@@ -25,6 +25,7 @@ import straw.polito.it.straw.R;
 import straw.polito.it.straw.StrawApplication;
 import straw.polito.it.straw.activities.ProfileManagerActivity;
 import straw.polito.it.straw.activities.ProfileUserActivity;
+import straw.polito.it.straw.activities.SearchActivity;
 import straw.polito.it.straw.adapter.FoodExpandableAdapter;
 import straw.polito.it.straw.data.Drink;
 import straw.polito.it.straw.data.Food;
@@ -325,7 +326,7 @@ public class DatabaseUtils {
                         if (dialog != null)
                             dialog.dismiss();
                         if (changeActivity) {
-                            Intent intent = new Intent(context, ProfileUserActivity.class);
+                            Intent intent = new Intent(context, SearchActivity.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             context.startActivity(intent);
                         }
