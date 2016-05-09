@@ -63,6 +63,9 @@ public class CreateManagerAccountActivity extends AppCompatActivity implements A
     EditText tel;
     EditText email;
     EditText r_n;
+    EditText min;
+    EditText max;
+    EditText food;
     Spinner r_t;
     EditText addr;
     EditText seats;
@@ -136,6 +139,9 @@ public class CreateManagerAccountActivity extends AppCompatActivity implements A
         addr.setText(man.getAddress());
         seats.setText(String.valueOf(man.getSeats()));
         c_acc_button.setText(getString(R.string.save));
+        min.setText(String.valueOf(man.getMin_price()));
+        max.setText(String.valueOf(man.getMax_price()));
+        food.setText(man.getFood_type());
     }
 
     private void setListeners() {
@@ -221,7 +227,6 @@ public class CreateManagerAccountActivity extends AppCompatActivity implements A
     private void initialize() {
         photo=(ImageView)findViewById(R.id.photo_imageView);
         c_pwd=(EditText)findViewById(R.id.c_pwd_editText);
-
         cc_pwd=(EditText)findViewById(R.id.cc_pwd_editText);
         tel=(EditText)findViewById(R.id.tel_editText);
         r_n=(EditText)findViewById(R.id.diet_editText);
@@ -230,6 +235,9 @@ public class CreateManagerAccountActivity extends AppCompatActivity implements A
         seats=(EditText)findViewById(R.id.seats_editText);
         email=(EditText)findViewById(R.id.email_editText);
         c_acc_button=(Button)findViewById(R.id.create_button);
+        min=(EditText)findViewById(R.id.min_price_editText);
+        max=(EditText)findViewById(R.id.max_price_editText);
+        food=(EditText)findViewById(R.id.f_t_editText);
         setUpPopUpWindow();
         sw=false;
     }
@@ -332,10 +340,28 @@ public class CreateManagerAccountActivity extends AppCompatActivity implements A
             sw = true;
         }
         man.setRes_type(types.get(r_t.getSelectedItemPosition()));
+        if (!food.getText().toString().equals("")) {
+            man.setFood_type(food.getText().toString());
+        } else {
+            showAlert(getString(R.string.m_food), getString(R.string.error), false);
+            sw = true;
+        }
         if (!seats.getText().toString().equals("") && Integer.parseInt(seats.getText().toString()) > 0) {
             man.setSeats(Integer.parseInt(seats.getText().toString()));
         } else {
             showAlert(getString(R.string.m_seats), getString(R.string.error), false);
+            sw = true;
+        }
+        if (!min.getText().toString().equals("") && Double.parseDouble(min.getText().toString()) > 0) {
+            man.setMin_price(Double.parseDouble(min.getText().toString()));
+        } else {
+            showAlert(getString(R.string.m_price), getString(R.string.error), false);
+            sw = true;
+        }
+        if (!max.getText().toString().equals("") && Double.parseDouble(max.getText().toString()) > 0) {
+            man.setMax_price(Double.parseDouble(max.getText().toString()));
+        } else {
+            showAlert(getString(R.string.m_price), getString(R.string.error), false);
             sw = true;
         }
         man.setImage(imageString);
@@ -346,10 +372,8 @@ public class CreateManagerAccountActivity extends AppCompatActivity implements A
              */
             sharedPreferencesHandler.storeCurrentManager(man.toJSONObject());
             JSONObject jo = man.toJSONObjectTrans();
-            //jsonArray.put(jo);
-            //ManagerList.saveManInSharedPreferences(context,man);
-            //JSONObject jo = man.toJSONObjectTrans();
-            //jsonArray.put(jo.toString());
+            jsonArray.put(jo.toString());
+            sharedPreferencesHandler.storeListManager(jsonArray.toString());
 
             /**
              * Save the profile in the database, log the manager and launch the profile activity.
