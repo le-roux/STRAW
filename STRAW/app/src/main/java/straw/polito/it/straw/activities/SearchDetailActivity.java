@@ -71,13 +71,6 @@ public class SearchDetailActivity extends AppCompatActivity {
                 startActivity(i);
             }
         });
-        preorder.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(getBaseContext(),PreOrderFoodActivity.class);
-                startActivity(i);
-            }
-        });
         add_rev.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
