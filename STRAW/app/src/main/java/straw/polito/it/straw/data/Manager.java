@@ -28,6 +28,8 @@ public class Manager {
     private ArrayList<Review> reviews;
 
     public static final String SEATS_AVAILABLE = "SeatsAvailable";
+    public static final String LATITUDE = "latitude";
+    public static final String LONGITUDE = "longitude";
 
     public Manager() {
     }
@@ -45,6 +47,8 @@ public class Manager {
             min_price =oj.getDouble("min");
             max_price =oj.getDouble("max");
             food_type =oj.getString("food");
+            this.latitude = oj.getDouble(LATITUDE);
+            this.longitude = oj.getDouble(LONGITUDE);
             JSONArray jarr = new JSONArray(oj.getString("reviews"));
             reviews=new ArrayList<>();
             for(int i=0;i<jarr.length();i++){
@@ -172,6 +176,8 @@ public class Manager {
             oj.put("min",min_price);
             oj.put("max",max_price);
             oj.put("food",food_type);
+            oj.put(LATITUDE, this.latitude);
+            oj.put(LONGITUDE, this.longitude);
             JSONArray jarr = new JSONArray();
 
            /* for(Review r:reviews){
@@ -199,6 +205,8 @@ public class Manager {
             oj.put("min",min_price);
             oj.put("max",max_price);
             oj.put("food",food_type);
+            oj.put(LATITUDE, this.latitude);
+            oj.put(LONGITUDE, this.longitude);
             JSONArray jarr = new JSONArray();
 
            /* for(Review r:reviews){
@@ -212,15 +220,4 @@ public class Manager {
         return null;
     }
 }
-
-
-
-
-
-
-
-
-
-
-
 
