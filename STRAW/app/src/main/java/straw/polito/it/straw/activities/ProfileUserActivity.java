@@ -79,13 +79,6 @@ public class ProfileUserActivity extends AppCompatActivity {
         });
     }
 
-    /*@Override
-    protected void onResume() {
-        super.onResume();
-        user = this.sharedPreferencesHandler.getCurrentUser();
-        loadPrevInfo(user);
-    }*/
-
     private void initialize() {
         photo=(ImageView)findViewById(R.id.photo_imageView);
         email=(TextView)findViewById(R.id.email_textView);

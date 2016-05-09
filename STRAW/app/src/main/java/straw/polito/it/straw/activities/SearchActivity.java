@@ -19,7 +19,7 @@ public class SearchActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
 
-        this.button_edit = (Button)findViewById(R.id.edit_button_search);
+        this.button_edit = (Button)findViewById(R.id.profileButton);
         button_edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
