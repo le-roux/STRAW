@@ -11,6 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.client.AuthData;
+import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
@@ -28,6 +29,7 @@ import straw.polito.it.straw.R;
 import straw.polito.it.straw.StrawApplication;
 import straw.polito.it.straw.activities.ProfileManagerActivity;
 import straw.polito.it.straw.activities.ProfileUserActivity;
+import straw.polito.it.straw.activities.SearchActivity;
 import straw.polito.it.straw.data.Manager;
 import straw.polito.it.straw.data.Menu;
 import straw.polito.it.straw.data.Reservation;
@@ -244,6 +246,7 @@ public class DatabaseUtils {
              * Check if the restaurant name is already used
              */
             Firebase ref = firebase.child(RESTAURANTS).child(params[0].getRes_name());
+            ref.add
             ref.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -554,7 +557,7 @@ public class DatabaseUtils {
                                      */
                                     User user = dataSnapshot.getValue(User.class);
                                     sharedPreferencesHandler.storeCurrentUser(user.toString());
-                                    Intent intent = new Intent(context, ProfileUserActivity.class);
+                                    Intent intent = new Intent(context, SearchActivity.class);
                                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                     context.startActivity(intent);
                                 } else {
