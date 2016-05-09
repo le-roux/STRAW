@@ -10,105 +10,117 @@
     android:background="@color/background"
     tools:context="straw.polito.it.straw.activities.SearchDetailActivity">
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true">
+    <RelativeLayout
+        android:id="@+id/restaurantCard"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/customborder">
 
-        <FrameLayout
-            android:layout_width="291dp"
-            android:layout_height="137dp"
-            android:layout_gravity="left|top"
-            android:background="@drawable/customborder"
-            android:id="@+id/e">
+        <ImageView
+            android:id="@+id/img"
+            android:layout_width="110dp"
+            android:layout_height="0dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignBottom="@id/ratingBar"/>
 
-            <ImageView
-                android:layout_width="110dp"
-                android:layout_height="match_parent"
-                android:id="@+id/img"
-                android:layout_gravity="left|top" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Medium Text"
-                android:id="@+id/name"
-                android:layout_gravity="right|top" />
-
-            <RatingBar
-                style="?android:attr/ratingBarStyleSmall"
-                android:id="@+id/ratingBar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/RestaurantPrice"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:numStars="5"
-                android:stepSize="0.5"
-                android:rating="2.5"
-                android:layout_gravity="right|center_vertical" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Medium Text"
-                android:id="@+id/price"
-                android:layout_gravity="right|bottom" />
-
-        </FrameLayout>
-
-        <FrameLayout
-            android:layout_width="259dp"
-            android:layout_height="136dp"
-            android:layout_gravity="right|top"
-            android:background="@drawable/customborder">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="@string/menu"
-                android:id="@+id/menu"
-                android:layout_gravity="left|top"
-                android:background="@drawable/customborder_buttons"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="@string/s_book"
-                android:id="@+id/booking"
-                android:layout_gravity="center_horizontal|top"
-                android:background="@drawable/customborder_buttons"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="@string/s_preo"
-                android:id="@+id/preorder"
-                android:layout_gravity="right|top"
-                android:background="@drawable/customborder_buttons"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="@string/s_add_rv"
-                android:id="@+id/add_review"
-                android:layout_gravity="center_horizontal|bottom"
-                android:background="@drawable/customborder_buttons"/>
-        </FrameLayout>
-
-        <ListView
+        <TextView
+            android:id="@+id/name"
             android:layout_width="wrap_content"
-            android:layout_height="134dp"
-            android:id="@+id/reviews"
-            android:background="@drawable/customborder"
-            android:layout_gravity="center_horizontal|bottom" />
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Medium Text"
+            android:layout_toEndOf="@id/img"
+            android:layout_toRightOf="@id/img"
+            android:layout_marginEnd="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"/>
 
-    </FrameLayout>
+        <TextView
+            android:id="@+id/price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Medium Text"
+            android:layout_toEndOf="@id/img"
+            android:layout_toRightOf="@id/img"
+            android:layout_below="@id/name"
+            android:layout_marginEnd="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"/>
+
+        <RatingBar
+            android:id="@+id/ratingBar"
+            style="?android:attr/ratingBarStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/price"
+            android:layout_toEndOf="@id/img"
+            android:layout_toRightOf="@id/img"
+            android:numStars="5"
+            android:stepSize="0.5"
+            android:rating="2.5"
+            android:layout_marginEnd="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/buttonPanel"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignBottom="@id/restaurantCard"
+        android:layout_toEndOf="@id/restaurantCard"
+        android:layout_toRightOf="@id/restaurantCard"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/customborder">
+
+        <LinearLayout
+            android:id="@+id/topPanel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/menu"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textAlignment="center"
+                android:text="@string/menu"
+                android:background="@drawable/customborder_buttons"
+                android:layout_weight="1"/>
+
+            <TextView
+                android:id="@+id/booking"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textAlignment="center"
+                android:text="@string/s_book"
+                android:background="@drawable/customborder_buttons"
+                android:layout_weight="1"/>
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/add_review"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textAlignment="center"
+            android:text="@string/s_add_rv"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/customborder_buttons"/>
+
+    </RelativeLayout>
+
+    <ListView
+        android:id="@+id/reviews"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@drawable/customborder"
+        android:layout_below="@id/restaurantCard"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="@dimen/activity_vertical_margin"/>
+
 </RelativeLayout>
