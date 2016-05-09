@@ -3,7 +3,7 @@ package straw.polito.it.straw.data;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
+import java.util.Comparator;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -224,5 +224,15 @@ public class Manager {
         }
         return null;
     }
+    public static Comparator<Manager> PriceComparator = new Comparator<Manager>() {
+        @Override
+        public int compare(Manager m1, Manager m2) {
+            double p1 = m1.getMin_price();
+            double p2 = m2.getMin_price();
+            return Double.compare(p1,p2);
+        }
+    };
+
+
 }
 

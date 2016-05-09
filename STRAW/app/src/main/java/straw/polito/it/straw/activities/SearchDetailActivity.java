@@ -87,7 +87,7 @@ public class SearchDetailActivity extends AppCompatActivity {
         price=(TextView)findViewById(R.id.price);
         menu=(TextView)findViewById(R.id.menu);
         book=(TextView)findViewById(R.id.booking);
-        preorder=(TextView)findViewById(R.id.preorder);
+        //preorder=(TextView)findViewById(R.id.preorder);
         add_rev=(TextView)findViewById(R.id.add_review);
         review = (ListView) findViewById(R.id.reviews);
     }

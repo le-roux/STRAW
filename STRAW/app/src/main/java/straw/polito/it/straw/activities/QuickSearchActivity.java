@@ -12,22 +12,27 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
+
 import straw.polito.it.straw.R;
 import straw.polito.it.straw.adapter.RestaurantListAdapter;
 import straw.polito.it.straw.data.Manager;
 import straw.polito.it.straw.StrawApplication;
-import straw.polito.it.straw.utils.CustomOnItemSelectedListener;
+
 import straw.polito.it.straw.utils.Logger;
 import straw.polito.it.straw.utils.DatabaseUtils;
 import straw.polito.it.straw.utils.SharedPreferencesHandler;
+import android.widget.AdapterView.OnItemSelectedListener;
 
-public class QuickSearchActivity extends AppCompatActivity {
+
+public class QuickSearchActivity extends AppCompatActivity{
 
     private ArrayList<Manager> restaurant_list;
     private Spinner spinner1;
@@ -35,10 +40,13 @@ public class QuickSearchActivity extends AppCompatActivity {
     SharedPreferences mShared;
     private StrawApplication application;
     private SharedPreferences sharedPreferences;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quick_search);
+
+        Spinner staticSpinner = (Spinner) findViewById(R.id.spinner1);
         restaurant_list = new ArrayList<>();
         init_list();
         mShared= PreferenceManager.getDefaultSharedPreferences(this);
@@ -62,16 +70,9 @@ public class QuickSearchActivity extends AppCompatActivity {
             }
 
         }
-        /*for testing*/
-        restaurant_list.add(new Manager());
-        restaurant_list.add(new Manager());
-        restaurant_list.add(new Manager());
-        restaurant_list.add(new Manager());
-        restaurant_list.add(new Manager());
-        restaurant_list.add(new Manager());
-
-        restaurant_listView.setAdapter(new RestaurantListAdapter(getBaseContext(),restaurant_list));
+        restaurant_listView.setAdapter(new RestaurantListAdapter(getBaseContext(), restaurant_list));
         this.restaurant_listView = (ListView) findViewById(R.id.restaurant_list);
+
         addListenerOnButton();
         addListenerOnSpinnerItemSelection();
 
@@ -90,13 +91,52 @@ public class QuickSearchActivity extends AppCompatActivity {
     private void init_list() {
         this.restaurant_listView = (ListView) findViewById(R.id.restaurant_list);
     }
+
     public void addListenerOnSpinnerItemSelection() {
         spinner1 = (Spinner) findViewById(R.id.spinner1);
-        spinner1.setOnItemSelectedListener(new CustomOnItemSelectedListener());
+        spinner1.setOnItemSelectedListener(new OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                if (position == 0) {
+                    SortByRating(parent, view, id);
+                } else if (position == 1) {
+                    SortByLocation(parent, view, id);
+                } else if (position == 2) {
+                    SortByPrice(parent, view, id);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+    }
+    public void SortByRating(AdapterView<?> parent, View view,long id){
+        Toast.makeText(parent.getContext(),
+                "List of restaurant sort by rating",
+                Toast.LENGTH_SHORT).show();
+
+    }
+    public void SortByLocation(AdapterView<?> parent, View view,long id){
+        Toast.makeText(parent.getContext(),
+                "List of restaurant sort by location",
+                Toast.LENGTH_SHORT).show();
+    }
+    public void SortByPrice(AdapterView<?> parent, View view,long id){
+        Toast.makeText(parent.getContext(),
+                "List of restaurant sort by price",
+                Toast.LENGTH_SHORT).show();
+
+        Collections.sort(restaurant_list,Manager.PriceComparator);
+        ((RestaurantListAdapter) restaurant_listView.getAdapter()).notifyDataSetChanged();
+        
     }
     public void addListenerOnButton() {
         spinner1 = (Spinner) findViewById(R.id.spinner1);
     }
+
 
 
 

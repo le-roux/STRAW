@@ -72,6 +72,15 @@ public class RestaurantListAdapter extends BaseAdapter {
             String imageString = this.list.get(position).getImage();
             if(imageString != null)
                 ImageManager.setImage(this.context, photo, imageString);
+            double p = this.list.get(position).getMin_price();
+            if(p<=6)
+                price.setText("€");
+            else if(p > 6 && p <= 12)
+                price.setText("€€");
+            else if(p > 12 && p < 20)
+                price.setText("€€€");
+            else if(p >= 20)
+                price.setText("€€€€");
         }
         return convertView;
     }
