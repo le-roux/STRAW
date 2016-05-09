@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -12,6 +13,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -40,7 +42,6 @@ import straw.polito.it.straw.R;
 
 import straw.polito.it.straw.StrawApplication;
 import straw.polito.it.straw.data.Manager;
-import straw.polito.it.straw.data.ManagerList;
 import straw.polito.it.straw.data.Menu;
 import straw.polito.it.straw.data.Review;
 import straw.polito.it.straw.utils.DatabaseUtils;
@@ -68,7 +69,9 @@ public class CreateManagerAccountActivity extends AppCompatActivity {
 
     List<String> types;
     private String TAG = "CreateManagerAccountActivity";
+    public static final String MANAGERLIST = "ManagerList";
     private SharedPreferencesHandler sharedPreferencesHandler;
+    private SharedPreferences mShared;
     private static final int IMAGE_REQ = 1;
     private static final int CAMERA_REQ = 2;
     public static final String NUMBER_OF_ELEMENTS = "ElementsNb";
@@ -81,9 +84,19 @@ public class CreateManagerAccountActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_account);
         Context context = this;
-        this.jsonArray = new JSONArray();
-        //this.jsonArray = ManagerList.getListManFromSharedPreferences(this);
         sharedPreferencesHandler = ((StrawApplication)getApplication()).getSharedPreferencesHandler();
+        mShared= PreferenceManager.getDefaultSharedPreferences(this);
+        this.jsonArray = new JSONArray();
+        if(mShared.contains("ManagerList")){
+            try{
+                String ss = mShared.getString("ManagerList", "Error");
+                jsonArray = new JSONArray(ss);
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }
         initialize();
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
@@ -102,25 +115,6 @@ public class CreateManagerAccountActivity extends AppCompatActivity {
             setPhoto();
         }
 
-        /*
-        int elementsNb = mShared.getInt(NUMBER_OF_ELEMENTS, 0);
-
-        for (int i = 0; i < elementsNb; i++) {
-            arrayManager.add(new Manager(mShared.getString(String.valueOf(i), "")));
-        }
-
-        if(mShared.contains("Manager")){
-            try {
-                JSONArray jarr=new JSONArray(mShared.getString("Manager","Error"));
-                for (int i=0;i<jarr.length();i++){
-                    JSONObject jo= new JSONObject(jarr.get(i).toString());
-                    arrayManager.add(new Manager(jo.toString()));
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-        */
 
     }
 
@@ -194,10 +188,8 @@ public class CreateManagerAccountActivity extends AppCompatActivity {
                      */
                     sharedPreferencesHandler.storeCurrentManager(man.toJSONObject());
                     JSONObject jo = man.toJSONObjectTrans();
-                    //jsonArray.put(jo);
-                    //ManagerList.saveManInSharedPreferences(context,man);
-                    //JSONObject jo = man.toJSONObjectTrans();
-                    //jsonArray.put(jo.toString());
+                    jsonArray.put(jo.toString());
+                    sharedPreferencesHandler.storeListManager(jsonArray.toString());
 
                     /**
                      * Save the profile in the database, log the manager and launch the profile activity.
