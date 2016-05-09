@@ -73,7 +73,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@android:color/darker_gray"
-                    android:layout_below="@+id/seats_textView"/>
+                    android:layout_marginTop="27dp"
+                    android:layout_below="@+id/textView7"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true" />
                 <TextView
                     android:id="@+id/email_textView"
                     android:layout_width="wrap_content"
@@ -164,11 +167,9 @@
                     android:inputType="textEmailAddress"
                     android:ems="10"
                     android:id="@+id/email_editText"
-                    android:layout_alignBottom="@+id/email_textView"
-                    android:layout_alignRight="@+id/line"
-                    android:layout_alignEnd="@+id/line"
-                    android:layout_alignLeft="@+id/seats_editText"
-                    android:layout_alignStart="@+id/seats_editText" />
+                    android:layout_below="@+id/line"
+                    android:layout_toRightOf="@+id/r_t_textView"
+                    android:layout_toEndOf="@+id/r_t_textView" />
 
                 <EditText
                     android:layout_width="wrap_content"
@@ -189,6 +190,60 @@
                     android:layout_below="@+id/pwd_textView"
                     android:layout_toRightOf="@+id/r_n_textView"
                     android:layout_toEndOf="@+id/r_n_textView" />
+
+                <TextView
+                    android:id="@+id/price_textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/price"
+                    android:layout_above="@+id/textView7"
+                    android:layout_alignLeft="@+id/seats_textView"
+                    android:layout_alignStart="@+id/seats_textView" />
+
+                <EditText
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:inputType="numberDecimal"
+                    android:ems="10"
+                    android:hint="Min"
+                    android:id="@+id/min_price_editText"
+                    android:layout_below="@+id/seats_editText"
+                    android:layout_toRightOf="@+id/pwd_textView"
+                    android:layout_alignRight="@+id/create_button"
+                    android:layout_alignEnd="@+id/create_button" />
+
+                <EditText
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:inputType="numberDecimal"
+                    android:ems="10"
+                    android:hint="Max"
+                    android:id="@+id/max_price_editText"
+                    android:layout_alignTop="@+id/min_price_editText"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_toRightOf="@+id/photo_imageView"
+                    android:layout_toEndOf="@+id/photo_imageView" />
+
+                <TextView
+                    android:id="@+id/textView7"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/r_t"
+                    android:layout_below="@+id/min_price_editText"
+                    android:layout_alignLeft="@+id/price_textView"
+                    android:layout_alignStart="@+id/price_textView"
+                    android:layout_marginTop="36dp" />
+
+                <EditText
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
+                    android:ems="10"
+                    android:id="@+id/f_t_editText"
+                    android:layout_above="@+id/line"
+                    android:layout_alignLeft="@+id/email_editText"
+                    android:layout_alignStart="@+id/email_editText" />
 
 
             </RelativeLayout>

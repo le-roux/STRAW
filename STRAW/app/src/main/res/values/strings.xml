@@ -22,6 +22,8 @@
     <string name="restaurant">Restaurant</string>
     <string name="canteen">Canteen</string>
     <string name="ta">Take Away</string>
+    <string name="r_t">Food Type</string>
+    <string name="price">Price range</string>
     <string name="c_acc">Create Account</string>
     <string name="error">Error!</string>
     <string name="m_succ">Success!</string>
@@ -32,7 +34,9 @@
     <string name="m_tel">Write a valid telephone number</string>
     <string name="m_r_n">Write a valid restaurant name</string>
     <string name="m_addr">Write a valid address name</string>
+    <string name="m_food">Write a valid food type</string>
     <string name="m_seats">Number of seats must be greater than 1</string>
+    <string name="m_price">Wrong price</string>
     <string name="m_save">Profile saved!</string>
     <string name="save">Save</string>
     <string name="edit_prof">Edit profile</string>

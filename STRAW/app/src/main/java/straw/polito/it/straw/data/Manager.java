@@ -18,6 +18,9 @@ public class Manager {
     private String res_name;
     private String res_type;
     private int seats;
+    private double min_price;
+    private double max_price;
+    private String food_type;
     private String image;
     private String email;
     private ArrayList<Review> reviews;
@@ -37,7 +40,9 @@ public class Manager {
             seats = (int) oj.get("seats");
             image = (String) oj.get("photo");
             email = (String) oj.get("email");
-
+            min_price =oj.getDouble("min");
+            max_price =oj.getDouble("max");
+            food_type =oj.getString("food");
             JSONArray jarr = new JSONArray(oj.getString("reviews"));
             reviews=new ArrayList<>();
             for(int i=0;i<jarr.length();i++){
@@ -112,6 +117,29 @@ public class Manager {
         this.seats = seats;
     }
 
+    public double getMin_price() {
+        return min_price;
+    }
+
+    public void setMin_price(double min_price) {
+        this.min_price = min_price;
+    }
+
+    public double getMax_price() {
+        return max_price;
+    }
+
+    public void setMax_price(double max_price) {
+        this.max_price = max_price;
+    }
+
+    public String getFood_type() {
+        return food_type;
+    }
+
+    public void setFood_type(String food_type) {
+        this.food_type = food_type;
+    }
 
     public String toJSONObject() {
         JSONObject oj = new JSONObject();
@@ -123,9 +151,12 @@ public class Manager {
             oj.put("seats", seats);
             oj.put("photo", image);
             oj.put("email", email);
+            oj.put("min",min_price);
+            oj.put("max",max_price);
+            oj.put("food",food_type);
             JSONArray jarr = new JSONArray();
 
-            /*for(Review r:reviews){
+           /* for(Review r:reviews){
                 jarr.put(r.toJSONObject());
             }*/
             oj.put("reviews",jarr);
@@ -147,9 +178,12 @@ public class Manager {
             oj.put("seats", seats);
             oj.put("photo", image);
             oj.put("email", email);
+            oj.put("min",min_price);
+            oj.put("max",max_price);
+            oj.put("food",food_type);
             JSONArray jarr = new JSONArray();
 
-            /*for(Review r:reviews){
+           /* for(Review r:reviews){
                 jarr.put(r.toJSONObject());
             }*/
             oj.put("reviews",jarr);
