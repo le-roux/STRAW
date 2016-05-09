@@ -51,6 +51,15 @@ public class SharedPreferencesHandler {
         editor.apply();
     }
 
+    /**
+     * Save the list of managers in a JSONArray in the sharedPreferences
+     * @param description : a string describing the JSONarray
+     */
+    public void storeListManager(String description) {
+        SharedPreferences.Editor editor = this.sharedPreferences.edit();
+        editor.putString(MANAGERLIST, description);
+        editor.apply();
+    }
 
     /**
      *
