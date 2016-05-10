@@ -95,11 +95,13 @@ public class AdvancedSearchActivity extends AppCompatActivity implements Address
                         GPSText.setVisibility(View.INVISIBLE);
                         areaSpinner.setVisibility(View.INVISIBLE);
                         address.setVisibility(View.VISIBLE);
+                        break;
                     }
                     default: {
                         GPSText.setVisibility(View.INVISIBLE);
                         address.setVisibility(View.INVISIBLE);
                         areaSpinner.setVisibility(View.VISIBLE);
+                        break;
                     }
                 }
             }
@@ -161,6 +163,7 @@ public class AdvancedSearchActivity extends AppCompatActivity implements Address
         };
         try {
             this.locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+            this.GPSText.setText(R.string.OK);
         } catch (SecurityException e) {
             this.GPSText.setText(R.string.LocationRefused);
         }
