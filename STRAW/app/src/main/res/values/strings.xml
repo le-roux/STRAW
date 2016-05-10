@@ -112,7 +112,7 @@
     <string name="q_search">Quick search</string>
     <string name="see_prof">Profile</string>
     <string name="title_activity_quick_search">QuickSearchActivity</string>
-    <string name="addfilter">Add filter(s)</string>
+    <string name="addfilter">Add filter</string>
     <string-array name="list_sort_by">
         <item>Sort by rating</item>
         <item>Sort by location</item>
