@@ -17,6 +17,7 @@ import straw.polito.it.straw.data.Food;
 import straw.polito.it.straw.data.Reservation;
 import straw.polito.it.straw.utils.DatabaseUtils;
 import straw.polito.it.straw.utils.DateDisplay;
+import straw.polito.it.straw.utils.Logger;
 import straw.polito.it.straw.utils.PriceDisplay;
 import straw.polito.it.straw.utils.TimerDisplay;
 
@@ -49,10 +50,11 @@ public class ConfirmReservationActivity extends AppCompatActivity {
         this.price = (PriceDisplay)findViewById(R.id.Price);
         this.confirmButton = (Button)findViewById(R.id.confirm_button);
 
-        String text = this.reservation.getNumberPeople()
-                + ' '
-                + this.resources.getString(R.string.Persons);
-        this.numberPeople.setText(text);
+        StringBuilder builder = new StringBuilder();
+        builder.append(this.reservation.getNumberPeople())
+                .append(' ')
+                .append(this.resources.getString(R.string.Persons));
+        this.numberPeople.setText(builder.toString());
 
         if (this.reservation.getPlace().equals(Reservation.Place.OUTSIDE))
             this.place.setText(this.resources.getString(R.string.Outside));

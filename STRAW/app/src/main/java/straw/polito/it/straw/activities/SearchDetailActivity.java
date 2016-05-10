@@ -68,6 +68,7 @@ public class SearchDetailActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(getBaseContext(),BookTableActivity.class);
+                i.putExtra(BookTableActivity.RESTAURANT, man.toJSONObject());
                 startActivity(i);
             }
         });

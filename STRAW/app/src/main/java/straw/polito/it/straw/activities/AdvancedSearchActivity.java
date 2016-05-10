@@ -62,6 +62,9 @@ public class AdvancedSearchActivity extends AppCompatActivity implements Address
 
         this.locationManager = (LocationManager)this.getSystemService(Context.LOCATION_SERVICE);
 
+        /**
+         * Initialize the different views.
+         */
         this.radioGroup = (RadioGroup)findViewById(R.id.radioGroup);
         this.address = (EditText)findViewById(R.id.addressText);
         this.GPSText = (TextView)findViewById(R.id.GPSText);
@@ -69,23 +72,11 @@ public class AdvancedSearchActivity extends AppCompatActivity implements Address
         this.restaurantTypeSpinner = (Spinner)findViewById(R.id.spinner);
         this.searchButton = (Button)findViewById(R.id.search_button);
 
-        StrawApplication application = (StrawApplication)getApplication();
-        SharedPreferencesHandler sharedPreferencesHandler = application.getSharedPreferencesHandler();
-        final Area[] areas = sharedPreferencesHandler.getAreaList();
-        this.areaSpinner.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, areas));
-        this.areaSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                latitude = areas[position].getLatitude();
-                longitude = areas[position].getLongitude();
-            }
+        prepareSpinners();
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
+        /**
+         * Display the proper field according to what type of location is selected.
+         */
         this.radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -112,18 +103,10 @@ public class AdvancedSearchActivity extends AppCompatActivity implements Address
             }
         });
 
-        this.restaurantTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                restaurantType = position;
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
+        /**
+         * Ask the user to select the proper address (if needed) and start the transition toward the
+         * next activity (which displays the results of the search).
+         */
         this.searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -139,6 +122,9 @@ public class AdvancedSearchActivity extends AppCompatActivity implements Address
             }
         });
 
+        /**
+         * Set a listener that will acquire the current location once.
+         */
         this.locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
@@ -166,6 +152,10 @@ public class AdvancedSearchActivity extends AppCompatActivity implements Address
 
             }
         };
+
+        /**
+         * Acquire the current location.
+         */
         try {
             this.locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
             this.GPSText.setText(R.string.OK);
@@ -174,6 +164,11 @@ public class AdvancedSearchActivity extends AppCompatActivity implements Address
         }
     }
 
+    /**
+     * Called by the AddressChooserFragment when selecting an address.
+     * Get the proper coordinates and call search().
+     * @param i : the index of the address selected
+     */
     @Override
     public void setAddressNumber(int i) {
         Address address = this.addressList.get(i);
@@ -182,6 +177,10 @@ public class AdvancedSearchActivity extends AppCompatActivity implements Address
         search();
     }
 
+    /**
+     * Launch the activity that displays the results and pass to it the info selected by the
+     * customer.
+     */
     public void search() {
         Intent intent = new Intent(getApplicationContext(), QuickSearchActivity.class);
         Bundle bundle = new Bundle();
@@ -190,6 +189,40 @@ public class AdvancedSearchActivity extends AppCompatActivity implements Address
         bundle.putInt(Manager.TYPE, restaurantType);
         intent.putExtras(bundle);
         startActivity(intent);
+    }
+
+    /**
+     * Set the content and listeners on the different spinners.
+     */
+    public void prepareSpinners() {
+        StrawApplication application = (StrawApplication)getApplication();
+        SharedPreferencesHandler sharedPreferencesHandler = application.getSharedPreferencesHandler();
+        final Area[] areas = sharedPreferencesHandler.getAreaList();
+        this.areaSpinner.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, areas));
+        this.areaSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                latitude = areas[position].getLatitude();
+                longitude = areas[position].getLongitude();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        this.restaurantTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                restaurantType = position;
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
     }
 
     @Override
