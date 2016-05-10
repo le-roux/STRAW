@@ -145,8 +145,8 @@
                     android:spinnerMode="dropdown"
                     android:layout_alignParentRight="true"
                     android:layout_alignParentEnd="true"
-                    android:layout_alignLeft="@+id/uni_editText"
-                    android:layout_alignStart="@+id/uni_editText" />
+                    android:layout_alignLeft="@+id/cc_pwd_editText"
+                    android:layout_alignStart="@+id/cc_pwd_editText" />
 
                 <Spinner
                     android:layout_width="wrap_content"
@@ -160,18 +160,16 @@
                     android:layout_toEndOf="@+id/p_t_textView"
                     android:layout_toRightOf="@+id/p_t_textView" />
 
-                <EditText
-                    android:layout_width="wrap_content"
+                <Spinner
+                    android:id="@+id/areaSpinner"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:inputType="textPersonName"
-                    android:ems="10"
-                    android:id="@+id/uni_editText"
-                    android:layout_alignBaseline="@+id/uni_textView"
-                    android:layout_alignBottom="@+id/uni_textView"
-                    android:layout_alignLeft="@+id/pwd_editText"
-                    android:layout_alignStart="@+id/pwd_editText"
+                    android:layout_above="@id/u_d_textView"
+                    android:layout_alignTop="@id/uni_textView"
+                    android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
-                    android:layout_alignParentEnd="true" />
+                    android:layout_alignLeft="@+id/cc_pwd_editText"
+                    android:layout_alignStart="@+id/cc_pwd_editText"/>
 
                 <Spinner
                     android:layout_width="wrap_content"

@@ -58,7 +58,7 @@ public class AdvancedSearchActivity extends AppCompatActivity implements Address
         StrawApplication application = (StrawApplication)getApplication();
         SharedPreferencesHandler sharedPreferencesHandler = application.getSharedPreferencesHandler();
         final Area[] areas = sharedPreferencesHandler.getAreaList();
-        this.areaSpinner.setAdapter(new ArrayAdapter<>(this, R.layout.text_view, areas));
+        this.areaSpinner.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, areas));
         this.areaSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
