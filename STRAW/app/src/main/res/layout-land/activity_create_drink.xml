@@ -10,6 +10,7 @@
     android:background="@color/background"
     tools:context=".activities.CreateDrinkActivity">
 
+
     <TextView
         android:id="@+id/center"
         android:layout_width="0dp"
@@ -26,55 +27,72 @@
         android:background="@color/colorPrimaryDark"
         android:padding="@dimen/padding"/>
 
-    <EditText
-        android:id="@+id/name_field"
+    <RelativeLayout
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_below="@id/title"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
+        android:layout_toStartOf="@id/center"
         android:layout_toLeftOf="@id/center"
-        android:hint="@string/Name"
-        android:layout_marginTop="@dimen/activity_vertical_margin"/>
-
-    <TextView
-        android:id="@+id/currency_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/Currency"
-        android:textSize="@dimen/Title_size"
-        android:layout_below="@id/name_field"
-        android:layout_toLeftOf="@id/center"
-        android:layout_marginTop="@dimen/activity_vertical_margin"/>
-    <EditText
-        android:id="@+id/price_field"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_toLeftOf="@id/currency_text"
-        android:layout_below="@id/name_field"
-        android:hint="@string/Price"
-        android:inputType="numberDecimal"
         android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:layout_marginBottom="@dimen/activity_vertical_margin"/>
+        android:background="@drawable/customborder">
 
-    <TextView
-        android:id="@+id/volume_unit_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/Volume_unit"
-        android:textSize="@dimen/Title_size"
-        android:layout_below="@id/currency_text"
-        android:layout_toLeftOf="@id/center"
-        android:layout_marginTop="@dimen/activity_vertical_margin"/>
-    <EditText
-        android:id="@+id/volume_field"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_toLeftOf="@id/volume_unit_text"
-        android:layout_below="@id/price_field"
-        android:inputType="numberDecimal"
-        android:hint="@string/Volume"/>
+        <EditText
+            android:id="@+id/name_field"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/Name"
+            android:layout_marginTop="@dimen/activity_vertical_margin"/>
+
+        <TextView
+            android:id="@+id/currency_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/Currency"
+            android:textSize="@dimen/Title_size"
+            android:layout_below="@id/name_field"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="@dimen/activity_vertical_margin"/>
+
+        <EditText
+            android:id="@+id/price_field"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_toLeftOf="@id/currency_text"
+            android:layout_below="@id/name_field"
+            android:hint="@string/Price"
+            android:inputType="numberDecimal"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"/>
+
+        <TextView
+            android:id="@+id/volume_unit_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/Volume_unit"
+            android:textSize="@dimen/Title_size"
+            android:layout_below="@id/currency_text"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="@dimen/activity_vertical_margin"/>
+
+        <EditText
+            android:id="@+id/volume_field"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_toLeftOf="@id/volume_unit_text"
+            android:layout_below="@id/price_field"
+            android:inputType="numberDecimal"
+            android:hint="@string/Volume"/>
+
+    </RelativeLayout>
+
+
 
     <Button
         android:id="@+id/confirm_button"
@@ -104,5 +122,5 @@
         android:layout_marginTop="@dimen/activity_vertical_margin"
         android:layout_marginStart="@dimen/activity_horizontal_margin"
         android:layout_marginLeft="@dimen/activity_horizontal_margin"
-        android:background="@color/grey" />
+        android:background="@color/beige" />
 </RelativeLayout>
