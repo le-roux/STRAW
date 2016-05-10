@@ -116,8 +116,8 @@ public class CreateManagerAccountActivity extends AppCompatActivity implements A
         types.add(getString(R.string.ta));
 
         Ftypes=new ArrayList<>();
-        Ftypes.add(getString(R.string.jap));
         Ftypes.add(getString(R.string.italian));
+        Ftypes.add(getString(R.string.jap));
         Ftypes.add(getString(R.string.pizzeria));
         Ftypes.add(getString(R.string.kebap));
         Ftypes.add(getString(R.string.chinese));
