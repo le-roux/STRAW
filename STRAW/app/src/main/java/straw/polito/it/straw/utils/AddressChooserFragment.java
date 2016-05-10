@@ -16,6 +16,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import straw.polito.it.straw.AddressContainer;
@@ -85,7 +86,7 @@ public class AddressChooserFragment extends DialogFragment {
                 e.printStackTrace();
                 Logger.d("error geocoder");
                 Toast.makeText(activity, R.string.ErrorGeocoder, Toast.LENGTH_LONG).show();
-                return null;
+                return new ArrayList<>();
             }
         } else {
             Logger.d("no geocoder");

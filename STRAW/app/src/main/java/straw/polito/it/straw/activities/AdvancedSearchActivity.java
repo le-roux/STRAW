@@ -50,6 +50,11 @@ public class AdvancedSearchActivity extends AppCompatActivity implements Address
     private static final int ADDRESS = R.id.address;
     private static final int AREA = R.id.area;
 
+    private static final String RADIOINDEX = "radioindex";
+    private static final String AREAINDEX = "areaindex";
+    private static final String ADDRESSNAME = "address";
+    private static final String RESTAURANTTYPE = "restaurantType";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,7 +102,7 @@ public class AdvancedSearchActivity extends AppCompatActivity implements Address
                         address.setVisibility(View.VISIBLE);
                         break;
                     }
-                    default: {
+                    case (AREA): {
                         GPSText.setVisibility(View.INVISIBLE);
                         address.setVisibility(View.INVISIBLE);
                         areaSpinner.setVisibility(View.VISIBLE);
@@ -185,5 +190,21 @@ public class AdvancedSearchActivity extends AppCompatActivity implements Address
         bundle.putInt(Manager.TYPE, restaurantType);
         intent.putExtras(bundle);
         startActivity(intent);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putInt(RADIOINDEX, this.radioGroup.getCheckedRadioButtonId());
+        outState.putInt(AREAINDEX, this.areaSpinner.getSelectedItemPosition());
+        outState.putString(ADDRESSNAME, this.address.getText().toString());
+        outState.putInt(RESTAURANTTYPE, this.restaurantType);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        this.radioGroup.check(savedInstanceState.getInt(RADIOINDEX));
+        this.areaSpinner.setSelection(savedInstanceState.getInt(AREAINDEX));
+        this.address.setText(savedInstanceState.getString(ADDRESSNAME));
+        this.restaurantTypeSpinner.setSelection(savedInstanceState.getInt(RESTAURANTTYPE));
     }
 }
