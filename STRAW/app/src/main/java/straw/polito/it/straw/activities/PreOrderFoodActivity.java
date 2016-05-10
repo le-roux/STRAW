@@ -107,7 +107,7 @@ public class PreOrderFoodActivity extends AppCompatActivity implements PriceCont
         this.listView.setAdapter(adapter);
 
         DatabaseUtils databaseUtils = ((StrawApplication)getApplication()).getDatabaseUtils();
-        databaseUtils.retrieveMenu(this.reservation.getRestaurant().getRes_name(), adapter);
+        databaseUtils.retrieveMenu(this.reservation.getRestaurant(), adapter);
     }
 
     @Override

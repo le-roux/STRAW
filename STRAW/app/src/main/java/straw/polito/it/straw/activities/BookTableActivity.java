@@ -120,7 +120,7 @@ public class BookTableActivity extends AppCompatActivity implements BookTableInt
                 //to remove
                 Manager manager = new Manager();
                 manager.setRes_name("foo");
-                reservation.setRestaurant(manager);
+                reservation.setRestaurant(manager.getRes_name());
                 intent.putExtra(Reservation.RESERVATION, reservation.toString());
                 startActivity(intent);
             }
@@ -184,7 +184,7 @@ public class BookTableActivity extends AppCompatActivity implements BookTableInt
         } else
             this.reservation.setPlace(Place.NO_PREFERENCE);
         SharedPreferencesHandler handler = ((StrawApplication)getApplication()).getSharedPreferencesHandler();
-        this.reservation.setCustomer(handler.getCurrentUser());
+        this.reservation.setCustomer(handler.getCurrentUser().getEmail());
     }
 
     @Override
