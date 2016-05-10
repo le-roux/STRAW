@@ -213,4 +213,6 @@
         <item>Take Away</item>
     </string-array>
     <string name="GPSDisabled">GPS disabled</string>
+    <string name="LocationRefused">Location rights not granted</string>
+    <string name="InvalidAddress">Invalid address</string>
 </resources>

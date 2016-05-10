@@ -1,7 +1,10 @@
 package straw.polito.it.straw.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.location.Address;
+import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -13,6 +16,7 @@ import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -34,6 +38,9 @@ public class AdvancedSearchActivity extends AppCompatActivity implements Address
     private Spinner restaurantTypeSpinner;
     private Button searchButton;
 
+    private LocationManager locationManager;
+    private LocationListener locationListener;
+
     private int restaurantType;
     private List<Address> addressList;
     private double latitude;
@@ -47,6 +54,8 @@ public class AdvancedSearchActivity extends AppCompatActivity implements Address
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_advanced_search);
+
+        this.locationManager = (LocationManager)this.getSystemService(Context.LOCATION_SERVICE);
 
         this.radioGroup = (RadioGroup)findViewById(R.id.radioGroup);
         this.address = (EditText)findViewById(R.id.addressText);
@@ -112,12 +121,49 @@ public class AdvancedSearchActivity extends AppCompatActivity implements Address
             @Override
             public void onClick(View view) {
                 int placeType = radioGroup.getCheckedRadioButtonId();
-                if (placeType == ADDRESS)
-                    addressList = AddressChooserFragment.showAddressChooser(AdvancedSearchActivity.this, address.getText().toString());
+                if (placeType == ADDRESS) {
+                    if (address.getText().toString().equals("")) {
+                        Toast.makeText(getApplicationContext(), R.string.InvalidAddress, Toast.LENGTH_LONG).show();
+                    } else
+                        addressList = AddressChooserFragment.showAddressChooser(AdvancedSearchActivity.this, address.getText().toString());
+                }
                 else
                     search();
             }
         });
+
+        this.locationListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+                latitude = location.getLatitude();
+                longitude = location.getLongitude();
+                try {
+                    locationManager.removeUpdates(locationListener);
+                } catch (SecurityException e) {
+                    Logger.d("Location rights have been removed");
+                }
+            }
+
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+
+            }
+
+            @Override
+            public void onProviderEnabled(String provider) {
+
+            }
+
+            @Override
+            public void onProviderDisabled(String provider) {
+
+            }
+        };
+        try {
+            this.locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+        } catch (SecurityException e) {
+            this.GPSText.setText(R.string.LocationRefused);
+        }
     }
 
     @Override

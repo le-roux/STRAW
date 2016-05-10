@@ -61,11 +61,21 @@ public class AddressChooserFragment extends DialogFragment {
                 AddressChooserFragment fragment = new AddressChooserFragment();
                 Bundle args = new Bundle();
                 String[] addresses = new String[addressList.size()];
-                String string;
                 for (int i = 0; i < addressList.size(); i++) {
                     Address address = addressList.get(i);
-                    string = address.getAddressLine(0) + ' ' + address.getAddressLine(1) + ' ' + address.getAddressLine(2);
-                    addresses[i] = string;
+                    StringBuilder builder = new StringBuilder();
+                    if (address.getAddressLine(0) != null) {
+                        builder.append(address.getAddressLine(0));
+                    }
+                    if (address.getAddressLine(1) != null) {
+                        builder.append(' ')
+                                .append(address.getAddressLine(1));
+                    }
+                    if (address.getAddressLine(2) != null) {
+                        builder.append(' ')
+                                .append(address.getAddressLine(2));
+                    }
+                    addresses[i] = builder.toString();
                 }
                 args.putStringArray(AddressChooserFragment.ADDRESSES, addresses);
                 fragment.setArguments(args);
