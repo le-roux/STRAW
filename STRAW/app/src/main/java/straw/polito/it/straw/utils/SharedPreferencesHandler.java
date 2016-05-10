@@ -7,6 +7,8 @@ import android.preference.PreferenceManager;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
 import straw.polito.it.straw.data.Manager;
 import straw.polito.it.straw.data.User;
 
@@ -82,5 +84,15 @@ public class SharedPreferencesHandler {
         SharedPreferences.Editor editor = this.sharedPreferences.edit();
         editor.putString(USER, description);
         editor.apply();
+    }
+
+    /**
+     * Temporary, it must move later on the database
+     */
+    public Area[] getAreaList() {
+        Area[] areas = new Area[2];
+        areas[0] = new Area("Polito", 45.0345, 7.3942);
+        areas[1] = new Area("Polimi", 45.2840, 9.1338);
+        return areas;
     }
 }

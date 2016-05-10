@@ -923,7 +923,7 @@ public class DatabaseUtils {
      * @param reservation : the reservation to store.
      */
     public void saveReservation(Reservation reservation) {
-        Logger.d("save reservation : " + reservation.getRestaurant().getRes_name());
+        Logger.d("save reservation : " + reservation.getRestaurant());
         StoreReservationAsyncTask task = new StoreReservationAsyncTask();
         task.execute(reservation);
     }
@@ -932,7 +932,7 @@ public class DatabaseUtils {
 
         @Override
         protected Void doInBackground(Reservation... params) {
-            Firebase ref = firebase.child(RESERVATIONS).child(params[0].getRestaurant().getRes_name());
+            Firebase ref = firebase.child(RESERVATIONS).child(params[0].getRestaurant());
             String id = ref.push().getKey();
             ref.child(id).setValue(params[0], new Firebase.CompletionListener() {
                 @Override

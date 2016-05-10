@@ -38,6 +38,7 @@ import straw.polito.it.straw.data.User;
 import straw.polito.it.straw.utils.DatabaseUtils;
 import straw.polito.it.straw.utils.Logger;
 import straw.polito.it.straw.utils.SharedPreferencesHandler;
+import straw.polito.it.straw.utils.Area;
 
 public class CreateUserAccountActivity extends AppCompatActivity {
 
@@ -45,7 +46,7 @@ public class CreateUserAccountActivity extends AppCompatActivity {
     EditText c_pwd;
     EditText cc_pwd;
     EditText email;
-    EditText uni;
+    Spinner areaSpinner;
     Spinner u_d;
     Spinner u_t;
     Spinner p_t;
@@ -53,6 +54,7 @@ public class CreateUserAccountActivity extends AppCompatActivity {
     PopupWindow popUp;
 
     Bitmap bitmap;
+    Area[] areas;
 
     Uri photo_uri;
 
@@ -71,6 +73,10 @@ public class CreateUserAccountActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_user);
         sharedPreferencesHandler = ((StrawApplication)getApplication()).getSharedPreferencesHandler();
+
+        StrawApplication application = (StrawApplication)getApplication();
+        SharedPreferencesHandler sharedPreferencesHandler = application.getSharedPreferencesHandler();
+        this.areas = sharedPreferencesHandler.getAreaList();
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         initialize();
@@ -95,7 +101,12 @@ public class CreateUserAccountActivity extends AppCompatActivity {
             Log.v(TAG, "Error on loading the photo! " + e.getMessage());
         }
         email.setText(user.getEmail());
-        uni.setText(user.getUniversity());
+        for (int i = 0; i < areas.length; i++) {
+            if (areas[i].getName().equals(user.getUniversity())) {
+                areaSpinner.setSelection(i);
+                break;
+            }
+        }
         u_d.setSelection(u_d_list.indexOf(user.getDiet()));
         u_t.setSelection(u_t_list.indexOf(user.getDiet()));
         p_t.setSelection(p_t_list.indexOf(user.getDiet()));
@@ -106,7 +117,8 @@ public class CreateUserAccountActivity extends AppCompatActivity {
         photo=(ImageView)findViewById(R.id.photo_imageView);
         c_pwd=(EditText)findViewById(R.id.pwd_editText);
         cc_pwd=(EditText)findViewById(R.id.cc_pwd_editText);
-        uni=(EditText)findViewById(R.id.uni_editText);
+        areaSpinner = (Spinner)findViewById(R.id.areaSpinner);
+
         u_t=(Spinner)findViewById(R.id.u_t_spinner);
         u_d=(Spinner)findViewById(R.id.u_d_spinner);
         p_t=(Spinner)findViewById(R.id.p_t_spinner);
@@ -132,6 +144,7 @@ public class CreateUserAccountActivity extends AppCompatActivity {
         u_t.setAdapter(new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_list_item_1, u_t_list));
         u_d.setAdapter(new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_list_item_1, u_d_list));
         p_t.setAdapter(new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_list_item_1, p_t_list));
+        areaSpinner.setAdapter(new ArrayAdapter<>(getBaseContext(), android.R.layout.simple_list_item_1, areas));
 
     }
     private void setListeners() {
@@ -157,12 +170,13 @@ public class CreateUserAccountActivity extends AppCompatActivity {
                     showAlert(getString(R.string.m_pwd), getString(R.string.error), false);
                     sw = true;
                 }
-                if (!uni.getText().toString().equals("")) {
+                /*if (!uni.getText().toString().equals("")) {
                     user.setUniversity(uni.getText().toString());
                 } else {
                     showAlert(getString(R.string.uni), getString(R.string.error), false);
                     sw = true;
-                }
+                }*/
+                user.setUniversity(areas[areaSpinner.getSelectedItemPosition()].getName());
                 user.setDiet(u_d_list.get(u_d.getSelectedItemPosition()));
                 user.setType(u_t_list.get(u_t.getSelectedItemPosition()));
                 user.setPref_time(p_t_list.get(p_t.getSelectedItemPosition()));

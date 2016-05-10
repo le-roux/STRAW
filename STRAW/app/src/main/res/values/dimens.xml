@@ -15,6 +15,7 @@
     <dimen name="Icon_size_horizontal">50dp</dimen>
 
     <dimen name="ProgressWheelSize">80dp</dimen>
+    <dimen name="AddressSlot">70dp</dimen>
 
     <dimen name="DoubleLine_ContentSize_Button">120dp</dimen>
 

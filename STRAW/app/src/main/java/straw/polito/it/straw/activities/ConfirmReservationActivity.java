@@ -41,11 +41,6 @@ public class ConfirmReservationActivity extends AppCompatActivity {
         this.resources = getResources();
         this.reservation = Reservation.create(intent.getStringExtra(Reservation.RESERVATION));
 
-        //TO DO : remove this
-        if (this.reservation.getRestaurant().getRes_name() == null) {
-            this.reservation.getRestaurant().setRes_name("foo");
-        }
-
         this.numberPeople = (TextView)findViewById(R.id.number_people);
         this.place = (TextView)findViewById(R.id.place);
         this.date = (DateDisplay)findViewById(R.id.Date);

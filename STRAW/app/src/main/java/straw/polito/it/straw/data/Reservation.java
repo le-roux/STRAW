@@ -9,7 +9,6 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import straw.polito.it.straw.DateDisplayer;
-import straw.polito.it.straw.R;
 import straw.polito.it.straw.TimeDisplayer;
 import straw.polito.it.straw.utils.Logger;
 
@@ -22,8 +21,8 @@ public class Reservation implements TimeDisplayer, DateDisplayer{
     private GregorianCalendar time;
     private ArrayList<Food> plates;
     private ArrayList<Food> drinks;
-    private Manager restaurant;
-    private User customer;
+    private String restaurant;
+    private String customer;
     public enum Place {INSIDE, OUTSIDE, NO_PREFERENCE};
     public static final int INSIDE = 0;
     public static final int OUTSIDE = 1;
@@ -172,19 +171,19 @@ public class Reservation implements TimeDisplayer, DateDisplayer{
         }
     }
 
-    public void setRestaurant(Manager restaurant) {
+    public void setRestaurant(String restaurant) {
         this.restaurant = restaurant;
     }
 
-    public Manager getRestaurant() {
+    public String getRestaurant() {
         return this.restaurant;
     }
 
-    public void setCustomer (User customer) {
+    public void setCustomer (String customer) {
         this.customer = customer;
     }
 
-    public User getCustomer() {
+    public String getCustomer() {
         return this.customer;
     }
 
@@ -206,15 +205,8 @@ public class Reservation implements TimeDisplayer, DateDisplayer{
             jsonObject.put(HOUR, this.getHourOfDay());
             jsonObject.put(MINUTES, this.getMinutes());
             jsonObject.put(PLACE, this.getPlaceInt());
-            if (this.getRestaurant() != null)
-                jsonObject.put(RESTAURANT, this.getRestaurant().toJSONObject());
-            else {
-                Manager manager = new Manager();
-                manager.setRes_name("foo");
-                jsonObject.put(RESTAURANT, (manager.toJSONObject()));
-                Logger.d("Warning : new restaurant created when saving reservation");
-            }
-            jsonObject.put(CUSTOMER, this.getCustomer().toString());
+            jsonObject.put(RESTAURANT, this.getRestaurant());
+            jsonObject.put(CUSTOMER, this.getCustomer());
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -248,9 +240,9 @@ public class Reservation implements TimeDisplayer, DateDisplayer{
             reservation.setTime(year, month, day, hour, minutes);
             reservation.setPlace(jsonObject.getInt(PLACE));
             Logger.d("create : " + jsonObject.getString(RESTAURANT));
-            reservation.setRestaurant(new Manager(jsonObject.getString(RESTAURANT)));
-            Logger.d("create : " + reservation.getRestaurant().getRes_name());
-            reservation.setCustomer(new User(jsonObject.getString(CUSTOMER)));
+            reservation.setRestaurant(jsonObject.getString(RESTAURANT));
+            Logger.d("create : " + reservation.getRestaurant());
+            reservation.setCustomer(jsonObject.getString(CUSTOMER));
         } catch (JSONException e) {
             e.printStackTrace();
             Logger.d("null");

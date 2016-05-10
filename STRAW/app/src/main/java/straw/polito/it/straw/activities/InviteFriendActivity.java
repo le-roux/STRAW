@@ -72,7 +72,7 @@ public class InviteFriendActivity extends AppCompatActivity implements MessageSe
                 .append(' ')
                 .append(resources.getString(R.string.InvitationMessage))
                 .append(' ')
-                .append(reservation.getRestaurant().getRes_name())
+                .append(reservation.getRestaurant())
                 .append(' ')
                 .append(resources.getString(R.string.on))
                 .append(' ')

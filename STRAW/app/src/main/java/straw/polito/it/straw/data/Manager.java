@@ -32,6 +32,12 @@ public class Manager {
     public static final String LATITUDE = "latitude";
     public static final String LONGITUDE = "longitude";
 
+    public static final String TYPE = "Type";
+    public static final int BAR = 0;
+    public static final int RESTAURANT = 1;
+    public static final int CANTEEN = 2;
+    public static final int TAKEAWAY = 3;
+
     public Manager() {
     }
 

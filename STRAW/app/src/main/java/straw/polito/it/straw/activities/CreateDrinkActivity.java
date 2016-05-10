@@ -3,6 +3,8 @@ package straw.polito.it.straw.activities;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
@@ -76,7 +78,8 @@ public class CreateDrinkActivity extends AppCompatActivity {
         this.volume_field = (EditText)findViewById(R.id.volume_field);
         this.add_button = (Button)findViewById(R.id.confirm_button);
         this.image = (ImageView)findViewById(R.id.photo_imageView);
-
+        Uri uri = Uri.parse(ImageManager.URI_NO_PHOTO);
+        ImageManager.setImage(this, this.image, ImageManager.getImageFromUri(getApplicationContext(), uri));
         this.context = getApplicationContext();
 
         if (savedInstanceState != null)

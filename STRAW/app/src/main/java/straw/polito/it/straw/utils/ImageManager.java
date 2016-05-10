@@ -20,6 +20,8 @@ import java.util.Date;
  */
 public class ImageManager {
 
+    public static final String URI_NO_PHOTO = "android.resource://straw.polito.it.straw/drawable/no_image";
+
     private static File getOutputMediaFile(Context context, String fileName) {
         File mediaStorageDir = new File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), fileName);
 

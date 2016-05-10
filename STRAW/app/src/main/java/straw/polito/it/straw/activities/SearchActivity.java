@@ -10,10 +10,10 @@ import straw.polito.it.straw.R;
 
 public class SearchActivity extends AppCompatActivity {
 
+    private Button button_edit;
+    private Button button_quicksearch;
+    private Button advancedSearchButton;
 
-
-    Button button_edit;
-    Button button_quicksearch;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,6 +32,14 @@ public class SearchActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), QuickSearchActivity.class);
+                startActivity(intent);
+            }
+        });
+        this.advancedSearchButton = (Button)findViewById(R.id.advanced_search_button);
+        this.advancedSearchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), AdvancedSearchActivity.class);
                 startActivity(intent);
             }
         });

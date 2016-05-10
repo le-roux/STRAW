@@ -20,71 +20,6 @@
         android:background="@color/colorPrimaryDark"
         android:padding="@dimen/padding"/>
 
-    <EditText
-        android:id="@+id/name_field"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/title"
-        android:hint="@string/Name"
-        android:layout_marginTop="@dimen/activity_vertical_margin"/>
-
-    <TextView
-        android:id="@+id/currency_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/Currency"
-        android:textSize="@dimen/Title_size"
-        android:layout_below="@id/name_field"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginTop="@dimen/activity_vertical_margin"/>
-
-    <EditText
-        android:id="@+id/price_field"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
-        android:layout_toStartOf="@id/currency_text"
-        android:layout_toLeftOf="@id/currency_text"
-        android:layout_below="@id/name_field"
-        android:hint="@string/Price"
-        android:inputType="numberDecimal"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:layout_marginBottom="@dimen/activity_vertical_margin"/>
-
-    <EditText
-        android:id="@+id/ingredients_field"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/price_field"
-        android:inputType="text"
-        android:hint="@string/Ingredients"/>
-
-    <CheckBox
-        android:id="@+id/vegan_checkbox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/ingredients_field"
-        android:layout_marginStart="@dimen/activity_horizontal_margin"
-        android:layout_marginLeft="@dimen/activity_horizontal_margin"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:text="@string/Vegan"
-        android:textSize="@dimen/Content_size"/>
-
-    <CheckBox
-        android:id="@+id/glutenfree_checkbox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/ingredients_field"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginEnd="@dimen/activity_horizontal_margin"
-        android:layout_marginRight="@dimen/activity_horizontal_margin"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:text="@string/Gluten_free"
-        android:textSize="@dimen/Content_size"/>
-
     <Button
         android:id="@+id/confirm_button"
         android:layout_width="match_parent"
@@ -95,12 +30,88 @@
         android:padding="@dimen/padding"
         android:layout_marginTop="@dimen/activity_vertical_margin"/>
 
-    <ImageView
-        android:id="@+id/photo_imageView"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_below="@id/title"
         android:layout_above="@id/confirm_button"
-        android:layout_below="@id/vegan_checkbox"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:background="@color/grey"/>
+        android:background="@drawable/customborder"
+        android:layout_marginTop="@dimen/activity_vertical_margin">
+
+        <EditText
+            android:id="@+id/name_field"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/title"
+            android:hint="@string/Name"
+            android:layout_marginTop="@dimen/activity_vertical_margin"/>
+
+        <TextView
+            android:id="@+id/currency_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/Currency"
+            android:textSize="@dimen/Title_size"
+            android:layout_below="@id/name_field"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="@dimen/activity_vertical_margin"/>
+
+        <EditText
+            android:id="@+id/price_field"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_toStartOf="@id/currency_text"
+            android:layout_toLeftOf="@id/currency_text"
+            android:layout_below="@id/name_field"
+            android:hint="@string/Price"
+            android:inputType="numberDecimal"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"/>
+
+        <EditText
+            android:id="@+id/ingredients_field"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/price_field"
+            android:inputType="text"
+            android:hint="@string/Ingredients"/>
+
+        <CheckBox
+            android:id="@+id/vegan_checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/ingredients_field"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:text="@string/Vegan"
+            android:textSize="@dimen/Content_size"/>
+
+        <CheckBox
+            android:id="@+id/glutenfree_checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/ingredients_field"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginEnd="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:text="@string/Gluten_free"
+            android:textSize="@dimen/Content_size"/>
+
+        <ImageView
+            android:id="@+id/photo_imageView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_below="@id/vegan_checkbox"
+            android:layout_alignParentBottom="true"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:background="@color/beige"/>
+
+    </RelativeLayout>
+
 </RelativeLayout>

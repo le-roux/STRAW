@@ -168,30 +168,8 @@ public class CreateManagerAccountActivity extends AppCompatActivity implements A
             @Override
             public void onClick(View v) {
                 if (!addr.getText().toString().equals("")) {
-                    Geocoder geocoder = new Geocoder(getApplicationContext());
-                    if (geocoder.isPresent()) {
-                        try {
-                            addressList = geocoder.getFromLocationName(addr.getText().toString(), 10);
-                            AddressChooserFragment fragment = new AddressChooserFragment();
-                            Bundle args = new Bundle();
-                            String[] addresses = new String[addressList.size()];
-                            String string;
-                            for (int i = 0; i < addressList.size(); i++) {
-                                Address address = addressList.get(i);
-                                string = address.getAddressLine(0) + ' ' + address.getAddressLine(1) + ' ' + address.getAddressLine(2);
-                                addresses[i] = string;
-                            }
-                            args.putStringArray(AddressChooserFragment.ADDRESSES, addresses);
-                            fragment.setArguments(args);
-                            fragment.show(getFragmentManager(), "Address chooser");
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                            Logger.d("error geocoder");
-                            Toast.makeText(context, R.string.ErrorGeocoder, Toast.LENGTH_LONG).show();
-                            return;
-                        }
-                    } else {
-                        Logger.d("no geocoder");
+                    addressList = AddressChooserFragment.showAddressChooser(CreateManagerAccountActivity.this, addr.getText().toString());
+                    if (addressList == null) {
                         man.setAddress(addr.getText().toString());
                         man.setLatitude(0);
                         man.setLongitude(0);

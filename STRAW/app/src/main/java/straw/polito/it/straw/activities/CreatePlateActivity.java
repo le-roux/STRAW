@@ -241,5 +241,7 @@ public class CreatePlateActivity extends AppCompatActivity {
         this.glutenfree_checkbox = (CheckBox)findViewById(R.id.glutenfree_checkbox);
         this.add_button = (Button)findViewById(R.id.confirm_button);
         this.image = (ImageView)findViewById(R.id.photo_imageView);
+        Uri uri = Uri.parse(ImageManager.URI_NO_PHOTO);
+        ImageManager.setImage(this, this.image, ImageManager.getImageFromUri(getApplicationContext(), uri));
     }
 }
