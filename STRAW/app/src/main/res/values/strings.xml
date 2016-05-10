@@ -46,6 +46,13 @@
     <string name="Menu">- Menu</string>
     <string name="Reservation">- Reservation</string>
     <string name="ErrorGeocoder">Error geocoder\nPlease retry in few seconds</string>
+    <string name="jap">Japanese</string>
+    <string name="italian">Italian</string>
+    <string name="pizzeria">Pizzeria</string>
+    <string name="kebap">Kebap</string>
+    <string name="chinese">Chinese</string>
+    <string name="other">Other</string>
+
 
     <!--Strings for the menu part -->
     <string name="Add_plate">Add Plate</string>
@@ -107,9 +114,15 @@
     <string name="title_activity_quick_search">QuickSearchActivity</string>
     <string name="addfilter">Add filter(s)</string>
     <string-array name="list_sort_by">
-        <item>sort by rating</item>
-        <item>sort by location</item>
-        <item>sort by price</item>
+        <item>Sort by rating</item>
+        <item>Sort by location</item>
+        <item>Sort by price</item>
+    </string-array>
+    <string-array name="list_type">
+        <item>Restaurant</item>
+        <item>Canteen</item>
+        <item>Take Away</item>
+        <item>Bar</item>
     </string-array>
 
     <!--Strings for the user creation part -->

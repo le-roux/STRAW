@@ -235,15 +235,16 @@
                     android:layout_alignStart="@+id/price_textView"
                     android:layout_marginTop="36dp" />
 
-                <EditText
+                <Spinner
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:inputType="text"
-                    android:ems="10"
-                    android:id="@+id/f_t_editText"
-                    android:layout_above="@+id/line"
-                    android:layout_alignLeft="@+id/email_editText"
-                    android:layout_alignStart="@+id/email_editText" />
+                    android:id="@+id/f_t_spinner"
+
+                    android:spinnerMode="dropdown"
+                    android:layout_alignBaseline="@+id/textView7"
+                    android:layout_alignBottom="@+id/textView7"
+                    android:layout_toRightOf="@+id/r_t_textView"
+                    android:layout_toEndOf="@+id/r_t_textView" />
 
 
             </RelativeLayout>
