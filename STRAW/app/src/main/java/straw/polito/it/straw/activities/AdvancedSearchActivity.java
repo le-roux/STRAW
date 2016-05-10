@@ -183,11 +183,9 @@ public class AdvancedSearchActivity extends AppCompatActivity implements Address
      */
     public void search() {
         Intent intent = new Intent(getApplicationContext(), QuickSearchActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putDouble(Manager.LATITUDE, latitude);
-        bundle.putDouble(Manager.LONGITUDE, longitude);
-        bundle.putInt(Manager.TYPE, restaurantType);
-        intent.putExtras(bundle);
+        intent.putExtra(Manager.LATITUDE, latitude);
+        intent.putExtra(Manager.LONGITUDE, longitude);
+        intent.putExtra(Manager.TYPE, restaurantType);
         startActivity(intent);
     }
 

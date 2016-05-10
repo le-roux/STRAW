@@ -23,15 +23,18 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import straw.polito.it.straw.R;
 import straw.polito.it.straw.adapter.RestaurantListAdapter;
 import straw.polito.it.straw.data.Manager;
 import straw.polito.it.straw.StrawApplication;
 
+import straw.polito.it.straw.data.User;
 import straw.polito.it.straw.utils.Logger;
 import straw.polito.it.straw.utils.DatabaseUtils;
 import straw.polito.it.straw.utils.SharedPreferencesHandler;
+import straw.polito.it.straw.utils.Area;
 import android.widget.AdapterView.OnItemSelectedListener;
 
 
@@ -46,12 +49,40 @@ public class QuickSearchActivity extends AppCompatActivity{
     private StrawApplication application;
     private SharedPreferences sharedPreferences;
     private Button filtersButton;
+    private double latitude;
+    private double longitude;
+    private int restaurantType;
     //private TextView t1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quick_search);
+        this.application = (StrawApplication)getApplication();
+
+        Intent intent = getIntent();
+        if (intent.hasExtra(Manager.LATITUDE)) {
+            /**
+             * Retrieve the info provided by AdvancedSearch activity
+             */
+            this.latitude = intent.getDoubleExtra(Manager.LATITUDE, 0);
+            this.longitude = intent.getDoubleExtra(Manager.LONGITUDE, 0);
+            this.restaurantType = intent.getIntExtra(Manager.TYPE, 0);
+        } else {
+            /**
+             * Retrieve the info associated with the user profile
+             */
+            User user = this.application.getSharedPreferencesHandler().getCurrentUser();
+            Area[] areas = this.application.getSharedPreferencesHandler().getAreaList();
+            for (Area area : areas) {
+                if (area.getName().equals(user.getUniversity())) {
+                    this.latitude = area.getLatitude();
+                    this.longitude = area.getLongitude();
+                    break;
+                }
+            }
+        }
+
         this.filtersButton = (Button) findViewById(R.id.addfilter);
         Spinner staticSpinner = (Spinner) findViewById(R.id.spinner1);
         //TextView t1 = (TextView) findViewById(R.id.typeFood);
@@ -140,6 +171,9 @@ public class QuickSearchActivity extends AppCompatActivity{
         Toast.makeText(parent.getContext(),
                 "List of restaurant sort by location",
                 Toast.LENGTH_SHORT).show();
+
+        Collections.sort(restaurant_list,Manager.getDistanceComparator(latitude, longitude));
+        ((RestaurantListAdapter) restaurant_listView.getAdapter()).notifyDataSetChanged();
     }
     public void SortByPrice(AdapterView<?> parent, View view,long id){
         Toast.makeText(parent.getContext(),
