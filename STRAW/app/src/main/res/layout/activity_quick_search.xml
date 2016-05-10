@@ -56,7 +56,7 @@
                 android:layout_alignParentEnd="true" />
 
             <Spinner
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="18dp"
                 android:id="@+id/spinner1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -66,6 +66,41 @@
                 android:layout_alignParentEnd="true"
                 android:layout_alignLeft="@+id/addfilter"
                  />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/typeFood"
+                android:textColor="@color/text_list"
+                android:text="Type of food:"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_marginLeft="10dp"
+                android:textSize="18dp"
+                />
+
+
+            <Spinner
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/spinner2"
+                android:entries="@array/list_type"
+                android:textColor="@color/text_list"
+                android:layout_alignTop="@+id/spinner1"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Every type"
+                android:id="@+id/typeOfFood"
+                android:layout_below="@+id/typeFood"
+                android:layout_alignLeft="@+id/typeFood"
+                android:layout_alignStart="@+id/typeFood" />
+
+
         </RelativeLayout>
 
         <RelativeLayout

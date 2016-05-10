@@ -1,7 +1,9 @@
 package straw.polito.it.straw.activities;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -10,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -36,17 +39,21 @@ public class QuickSearchActivity extends AppCompatActivity{
 
     private ArrayList<Manager> restaurant_list;
     private Spinner spinner1;
+    private Spinner spinner2;
     private ListView restaurant_listView;
     SharedPreferences mShared;
     private StrawApplication application;
     private SharedPreferences sharedPreferences;
+    private Button filtersButton;
+    //private TextView t1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quick_search);
-
+        this.filtersButton = (Button) findViewById(R.id.addfilter);
         Spinner staticSpinner = (Spinner) findViewById(R.id.spinner1);
+        //TextView t1 = (TextView) findViewById(R.id.typeFood);
         restaurant_list = new ArrayList<>();
         init_list();
         mShared= PreferenceManager.getDefaultSharedPreferences(this);
@@ -84,6 +91,14 @@ public class QuickSearchActivity extends AppCompatActivity{
                 startActivity(i);
             }
         });
+        filtersButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectImage();
+            }
+        });
+
+
     }
     public RestaurantListAdapter getAdapter() {
         return (RestaurantListAdapter)this.restaurant_listView.getAdapter();
@@ -94,6 +109,8 @@ public class QuickSearchActivity extends AppCompatActivity{
 
     public void addListenerOnSpinnerItemSelection() {
         spinner1 = (Spinner) findViewById(R.id.spinner1);
+        spinner2 = (Spinner) findViewById(R.id.spinner2);
+
         spinner1.setOnItemSelectedListener(new OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -112,6 +129,7 @@ public class QuickSearchActivity extends AppCompatActivity{
 
             }
         });
+
     }
     public void SortByRating(AdapterView<?> parent, View view,long id){
         Toast.makeText(parent.getContext(),
@@ -131,13 +149,56 @@ public class QuickSearchActivity extends AppCompatActivity{
 
         Collections.sort(restaurant_list,Manager.PriceComparator);
         ((RestaurantListAdapter) restaurant_listView.getAdapter()).notifyDataSetChanged();
-        
     }
     public void addListenerOnButton() {
         spinner1 = (Spinner) findViewById(R.id.spinner1);
     }
 
+    private void selectImage() {
+        final CharSequence[] options = {"No filter",getString(R.string.pizzeria), getString(R.string.italian),getString(R.string.jap),getString(R.string.kebap),getString(R.string.chinese),getString(R.string.other), "Cancel"};
+        AlertDialog.Builder builder = new AlertDialog.Builder(QuickSearchActivity.this);
+        builder.setTitle("Choose a filter");
+        builder.setItems(options, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int item) {
+                if (options[item].equals("No filter")) {
+                    TextView t1 = (TextView) findViewById(R.id.typeOfFood);
+                    t1.setText("Every type");
+                }
+                else if (options[item].equals("Pizzeria")) {
+                    TextView t1 = (TextView) findViewById(R.id.typeOfFood);
+                    t1.setText(R.string.pizzeria);
+                }
+                else if (options[item].equals("Italian")) {
+                    TextView t1 = (TextView) findViewById(R.id.typeOfFood);
+                    t1.setText(R.string.italian);
 
 
+                }
+                else if (options[item].equals("Japanese")){
+                    TextView t1 = (TextView) findViewById(R.id.typeOfFood);
+                    t1.setText(R.string.jap);
+
+                }
+                else if (options[item].equals("Kebap")) {
+                    TextView t1 = (TextView) findViewById(R.id.typeOfFood);
+                    t1.setText(R.string.kebap);
+
+                }
+                else if (options[item].equals("Chinese")) {
+                    TextView t1 = (TextView) findViewById(R.id.typeOfFood);
+                    t1.setText(R.string.chinese);
+
+                }
+                else if (options[item].equals("Other")) {
+                    TextView t1 = (TextView) findViewById(R.id.typeOfFood);
+                    t1.setText(R.string.other);
+                } else if (options[item].equals("Cancel")) {
+                    dialog.dismiss();
+                }
+            }
+        });
+        builder.show();
+    }
 
 }

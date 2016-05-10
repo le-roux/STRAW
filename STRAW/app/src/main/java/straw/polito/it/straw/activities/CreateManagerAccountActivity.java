@@ -65,7 +65,7 @@ public class CreateManagerAccountActivity extends AppCompatActivity implements A
     EditText r_n;
     EditText min;
     EditText max;
-    EditText food;
+    Spinner food;
     Spinner r_t;
     EditText addr;
     EditText seats;
@@ -78,13 +78,12 @@ public class CreateManagerAccountActivity extends AppCompatActivity implements A
     List<Address> addressList;
 
     List<String> types;
+    List<String> Ftypes;
     private String TAG = "CreateManagerAccountActivity";
-    public static final String MANAGERLIST = "ManagerList";
     private SharedPreferencesHandler sharedPreferencesHandler;
     private SharedPreferences mShared;
     private static final int IMAGE_REQ = 1;
     private static final int CAMERA_REQ = 2;
-    public static final String NUMBER_OF_ELEMENTS = "ElementsNb";
     JSONArray jsonArray;
     Manager man;
     boolean sw;
@@ -94,7 +93,6 @@ public class CreateManagerAccountActivity extends AppCompatActivity implements A
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_account);
         this.context = this;
-        //this.jsonArray = ManagerList.getListManFromSharedPreferences(this);
         sharedPreferencesHandler = ((StrawApplication)getApplication()).getSharedPreferencesHandler();
         mShared= PreferenceManager.getDefaultSharedPreferences(this);
         this.jsonArray = new JSONArray();
@@ -116,6 +114,16 @@ public class CreateManagerAccountActivity extends AppCompatActivity implements A
         types.add(getString(R.string.restaurant));
         types.add(getString(R.string.canteen));
         types.add(getString(R.string.ta));
+
+        Ftypes=new ArrayList<>();
+        Ftypes.add(getString(R.string.jap));
+        Ftypes.add(getString(R.string.italian));
+        Ftypes.add(getString(R.string.pizzeria));
+        Ftypes.add(getString(R.string.kebap));
+        Ftypes.add(getString(R.string.chinese));
+        Ftypes.add(getString(R.string.other));
+
+
         setListeners();
         if(getIntent().hasExtra("manager")){
             Log.v(TAG,getIntent().getExtras().getString("manager"));
@@ -141,7 +149,7 @@ public class CreateManagerAccountActivity extends AppCompatActivity implements A
         c_acc_button.setText(getString(R.string.save));
         min.setText(String.valueOf(man.getMin_price()));
         max.setText(String.valueOf(man.getMax_price()));
-        food.setText(man.getFood_type());
+        food.setSelection(Ftypes.indexOf(man.getFood_type()));
     }
 
     private void setListeners() {
@@ -154,6 +162,7 @@ public class CreateManagerAccountActivity extends AppCompatActivity implements A
         });
 
         r_t.setAdapter(new ArrayAdapter<>(getBaseContext(), android.R.layout.simple_list_item_1, types));
+        food.setAdapter(new ArrayAdapter<>(getBaseContext(), android.R.layout.simple_list_item_1, Ftypes));
 
         c_acc_button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -237,7 +246,7 @@ public class CreateManagerAccountActivity extends AppCompatActivity implements A
         c_acc_button=(Button)findViewById(R.id.create_button);
         min=(EditText)findViewById(R.id.min_price_editText);
         max=(EditText)findViewById(R.id.max_price_editText);
-        food=(EditText)findViewById(R.id.f_t_editText);
+        food=(Spinner)findViewById(R.id.f_t_spinner);
         setUpPopUpWindow();
         sw=false;
     }
@@ -340,12 +349,15 @@ public class CreateManagerAccountActivity extends AppCompatActivity implements A
             sw = true;
         }
         man.setRes_type(types.get(r_t.getSelectedItemPosition()));
+        man.setFood_type(Ftypes.get(food.getSelectedItemPosition()));
+        /*
         if (!food.getText().toString().equals("")) {
             man.setFood_type(food.getText().toString());
         } else {
             showAlert(getString(R.string.m_food), getString(R.string.error), false);
             sw = true;
         }
+        */
         if (!seats.getText().toString().equals("") && Integer.parseInt(seats.getText().toString()) > 0) {
             man.setSeats(Integer.parseInt(seats.getText().toString()));
         } else {
