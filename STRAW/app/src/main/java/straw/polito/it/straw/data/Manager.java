@@ -10,6 +10,7 @@ import org.json.JSONObject;
 import java.util.Comparator;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Exchanger;
 
 import straw.polito.it.straw.utils.DistanceComparator;
 import straw.polito.it.straw.utils.Logger;
@@ -62,10 +63,16 @@ public class Manager {
             food_type =oj.getString("food");
             this.latitude = oj.getDouble(LATITUDE);
             this.longitude = oj.getDouble(LONGITUDE);
-            JSONArray jarr = new JSONArray(oj.getString("reviews"));
-            for(int i=0;i<jarr.length();i++){
-                reviews.add(new Review(jarr.getJSONObject(i).toString()));
+            try {
+                JSONArray jarr = new JSONArray(oj.getString("reviews"));
+                for(int i=0;i<jarr.length();i++){
+                    reviews.add(new Review(jarr.getJSONObject(i).toString()));
+                }
+            } catch (Exception e){
+                reviews = new ArrayList<>();
             }
+
+            Logger.d("reviews");
         } catch (JSONException e) {
             Logger.d("Error creating the manager");
         }

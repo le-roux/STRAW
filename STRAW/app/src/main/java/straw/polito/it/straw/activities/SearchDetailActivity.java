@@ -41,15 +41,18 @@ public class SearchDetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_detail);
-        man =new Manager(getIntent().getExtras().getString("res"));
+
+        man = new Manager(getIntent().getExtras().getString(RESTAURANT));
         initialize();
+
         name.setText(man.getRes_name());
-        price.setText("SET PRICE");
+        StringBuilder builder = new StringBuilder();
+        builder.append(this.man.getMin_price())
+                .append(" - ")
+                .append(this.man.getMax_price())
+                .append(" €");
+        price.setText(builder.toString());
 
-        ImageManager.setImage(this, img, Uri.parse(man.getImage()).toString() );
-
-        SharedPreferences sp= PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-        man = new Manager(sp.getString("Manager","Error"));
         review.setAdapter(new ReviewAdapter(getBaseContext(),man.getReviews()));
 
         ImageManager.setImage(this, img, man.getImage());

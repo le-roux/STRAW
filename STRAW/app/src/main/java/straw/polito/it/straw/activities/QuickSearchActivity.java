@@ -122,7 +122,7 @@ public class QuickSearchActivity extends AppCompatActivity{
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent i = new Intent(getBaseContext(), SearchDetailActivity.class);
-                i.putExtra("res", restaurant_list.get(position).toJSONObject());
+                i.putExtra(SearchDetailActivity.RESTAURANT, restaurant_list.get(position).toJSONObject());
                 startActivity(i);
             }
         });
