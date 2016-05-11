@@ -46,17 +46,18 @@ public class QuickSearchActivity extends AppCompatActivity{
     private StrawApplication application;
     private SharedPreferences sharedPreferences;
     private Button filtersButton;
-    //private TextView t1;
+    public String FoodFilter;
+    public String PlaceFilter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quick_search);
         this.filtersButton = (Button) findViewById(R.id.addfilter);
-        Spinner staticSpinner = (Spinner) findViewById(R.id.spinner1);
-        //TextView t1 = (TextView) findViewById(R.id.typeFood);
         restaurant_list = new ArrayList<>();
         restaurant_list_tmp = new ArrayList<>();
+        this.FoodFilter = "";
+        this.PlaceFilter = "";
         init_list();
         mShared= PreferenceManager.getDefaultSharedPreferences(this);
         String tmp = "";
@@ -72,12 +73,10 @@ public class QuickSearchActivity extends AppCompatActivity{
                     }
                     restaurant_list.add(new Manager(tmp));
                 }
-
             }
             catch (Exception e) {
                 e.printStackTrace();
             }
-
         }
         restaurant_listView.setAdapter(new RestaurantListAdapter(getBaseContext(), restaurant_list));
         this.restaurant_listView = (ListView) findViewById(R.id.restaurant_list);
@@ -100,6 +99,7 @@ public class QuickSearchActivity extends AppCompatActivity{
             }
         });
     }
+
     public RestaurantListAdapter getAdapter() {
         return (RestaurantListAdapter)this.restaurant_listView.getAdapter();
     }
@@ -129,6 +129,32 @@ public class QuickSearchActivity extends AppCompatActivity{
 
             }
         });
+        spinner2.setOnItemSelectedListener(new OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                if (position == 0) {
+                    PlaceFilter = "";
+                    filter(FoodFilter, PlaceFilter);
+                } else if (position == 1) {
+                    PlaceFilter = "Restaurant";
+                    filter(FoodFilter, PlaceFilter);
+                } else if (position == 2) {
+                    PlaceFilter = "Canteen";
+                    filter(FoodFilter, PlaceFilter);
+                } else if (position == 3) {
+                    PlaceFilter = "Take Away";
+                    filter(FoodFilter, PlaceFilter);
+                } else if (position == 4) {
+                    PlaceFilter = "Bar";
+                    filter(FoodFilter,PlaceFilter);
+                }
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
     }
     public void SortByRating(AdapterView<?> parent, View view,long id){
@@ -145,13 +171,15 @@ public class QuickSearchActivity extends AppCompatActivity{
         Toast.makeText(parent.getContext(),
                 "List of restaurant sort by price",
                 Toast.LENGTH_SHORT).show();
-
-        Collections.sort(restaurant_list,Manager.PriceComparator);
+        Collections.sort(restaurant_list, Manager.PriceComparator);
         ((RestaurantListAdapter) restaurant_listView.getAdapter()).notifyDataSetChanged();
     }
+
     public void addListenerOnButton() {
         spinner1 = (Spinner) findViewById(R.id.spinner1);
+        spinner2 = (Spinner) findViewById(R.id.spinner2);
     }
+
 
     private void selectImage() {
         final CharSequence[] options = {"No filter",getString(R.string.pizzeria), getString(R.string.italian),getString(R.string.jap),getString(R.string.kebap),getString(R.string.chinese),getString(R.string.other), "Cancel"};
@@ -161,89 +189,41 @@ public class QuickSearchActivity extends AppCompatActivity{
             @Override
             public void onClick(DialogInterface dialog, int item) {
                 if (options[item].equals("No filter")) {
+                    FoodFilter = "";
                     TextView t1 = (TextView) findViewById(R.id.typeOfFood);
                     t1.setText("Every type");
-                    restaurant_list.addAll(restaurant_list_tmp);
-                    restaurant_list_tmp.clear();
-                    ((RestaurantListAdapter) restaurant_listView.getAdapter()).notifyDataSetChanged();
-
+                    filter(FoodFilter, PlaceFilter);
                 } else if (options[item].equals("Pizzeria")) {
+                    FoodFilter = "Pizzeria";
                     TextView t1 = (TextView) findViewById(R.id.typeOfFood);
-                    t1.setText(R.string.pizzeria);
-                    restaurant_list.addAll(restaurant_list_tmp);
-                    restaurant_list_tmp.clear();
-                    for (int a = 0; a < restaurant_list.size(); a++) {
-                        if (!restaurant_list.get(a).getFood_type().equals("Pizzeria")) {
-                            restaurant_list_tmp.add(restaurant_list.get(a));
-                            restaurant_list.remove(a);
-                        }
-                    }
-                    ((RestaurantListAdapter) restaurant_listView.getAdapter()).notifyDataSetChanged();
+                    t1.setText("Pizzeria");
+                    filter(FoodFilter, PlaceFilter);
                 } else if (options[item].equals("Italian")) {
+                    FoodFilter = "Italian";
                     TextView t1 = (TextView) findViewById(R.id.typeOfFood);
-                    t1.setText(R.string.italian);
-                    restaurant_list.addAll(restaurant_list_tmp);
-                    restaurant_list_tmp.clear();
-                    for (int a = 0; a < restaurant_list.size(); a++) {
-                        if (!restaurant_list.get(a).getFood_type().equals("Italian")) {
-                            restaurant_list_tmp.add(restaurant_list.get(a));
-                            restaurant_list.remove(a);
-
-                        }
-                    }
-                    ((RestaurantListAdapter) restaurant_listView.getAdapter()).notifyDataSetChanged();
+                    t1.setText(FoodFilter);
+                    filter(FoodFilter, PlaceFilter);
                 } else if (options[item].equals("Japanese")) {
+                    FoodFilter = "Japanese";
                     TextView t1 = (TextView) findViewById(R.id.typeOfFood);
-                    t1.setText(R.string.jap);
-                    restaurant_list.addAll(restaurant_list_tmp);
-                    restaurant_list_tmp.clear();
-                    for (int a = 0; a < restaurant_list.size(); a++) {
-                        if (!restaurant_list.get(a).getFood_type().equals("Japanese")) {
-                            restaurant_list_tmp.add(restaurant_list.get(a));
-                            restaurant_list.remove(a);
-
-                        }
-                    }
-                    ((RestaurantListAdapter) restaurant_listView.getAdapter()).notifyDataSetChanged();
+                    t1.setText("Japanese");
+                    filter(FoodFilter, PlaceFilter);
                 } else if (options[item].equals("Kebap")) {
+                    FoodFilter = "Kebap";
                     TextView t1 = (TextView) findViewById(R.id.typeOfFood);
-                    t1.setText(R.string.kebap);
-                    restaurant_list.addAll(restaurant_list_tmp);
-                    restaurant_list_tmp.clear();
-                    for (int a = 0; a < restaurant_list.size(); a++) {
-                        if (!restaurant_list.get(a).getFood_type().equals("Kebap")) {
-                            restaurant_list_tmp.add(restaurant_list.get(a));
-                            restaurant_list.remove(a);
-
-                        }
-                    }
-                    ((RestaurantListAdapter) restaurant_listView.getAdapter()).notifyDataSetChanged();
+                    t1.setText("Kebap");
+                    filter(FoodFilter, PlaceFilter);
                 } else if (options[item].equals("Chinese")) {
+                    FoodFilter = "Chinese";
                     TextView t1 = (TextView) findViewById(R.id.typeOfFood);
-                    t1.setText(R.string.chinese);
-                    restaurant_list.addAll(restaurant_list_tmp);
-                    restaurant_list_tmp.clear();
-                    for (int a = 0; a < restaurant_list.size(); a++) {
-                        if (!restaurant_list.get(a).getFood_type().equals("Chinese")) {
-                            restaurant_list_tmp.add(restaurant_list.get(a));
-                            restaurant_list.remove(a);
-
-                        }
-                    }
-                    ((RestaurantListAdapter) restaurant_listView.getAdapter()).notifyDataSetChanged();
+                    t1.setText("Chinese");
+                    filter(FoodFilter, PlaceFilter);
                 } else if (options[item].equals("Other")) {
+                    FoodFilter = "Other";
                     TextView t1 = (TextView) findViewById(R.id.typeOfFood);
-                    t1.setText(R.string.other);
-                    restaurant_list.addAll(restaurant_list_tmp);
-                    restaurant_list_tmp.clear();
-                    for (int a = 0; a < restaurant_list.size(); a++) {
-                        if (!restaurant_list.get(a).getFood_type().equals("Other")) {
-                            restaurant_list_tmp.add(restaurant_list.get(a));
-                            restaurant_list.remove(a);
+                    t1.setText("Other");
+                    filter(FoodFilter, PlaceFilter);
 
-                        }
-                    }
-                    ((RestaurantListAdapter) restaurant_listView.getAdapter()).notifyDataSetChanged();
                 } else if (options[item].equals("Cancel")) {
                     dialog.dismiss();
                 }
@@ -252,4 +232,52 @@ public class QuickSearchActivity extends AppCompatActivity{
         builder.show();
     }
 
+    public void filter(String foodfilter, String placefilter){
+        restaurant_list.addAll(restaurant_list_tmp);
+        restaurant_list_tmp.clear();
+        for (int a = 0; a < restaurant_list.size(); a++) {
+            if(foodfilter.equals("") && placefilter.equals("")){
+            }
+            else if(foodfilter.equals("")){
+                if(!restaurant_list.get(a).getRes_type().equals(placefilter)){
+                    restaurant_list_tmp.add(restaurant_list.get(a));
+                    restaurant_list.remove(a);
+                }
+            }
+            else if(placefilter.equals("")){
+                if(!restaurant_list.get(a).getFood_type().equals(foodfilter)){
+                    restaurant_list_tmp.add(restaurant_list.get(a));
+                    restaurant_list.remove(a);
+                }
+            }
+            else{
+                if(restaurant_list.get(a).getRes_type().equals(placefilter) && restaurant_list.get(a).getFood_type().equals(foodfilter)){
+                }
+                else{
+                    restaurant_list_tmp.add(restaurant_list.get(a));
+                    restaurant_list.remove(a);
+                }
+            }
+        }
+        ((RestaurantListAdapter) restaurant_listView.getAdapter()).notifyDataSetChanged();
+    }
+
+
+
+
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+

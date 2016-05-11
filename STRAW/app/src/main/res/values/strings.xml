@@ -119,6 +119,7 @@
         <item>Sort by price</item>
     </string-array>
     <string-array name="list_type">
+        <item>Any place</item>
         <item>Restaurant</item>
         <item>Canteen</item>
         <item>Take Away</item>
