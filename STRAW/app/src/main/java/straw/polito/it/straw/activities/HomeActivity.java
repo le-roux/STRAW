@@ -70,6 +70,9 @@ public class HomeActivity extends AppCompatActivity {
                 //Intent intent = new Intent(getApplicationContext(), CreateUserAccountActivity.class);
                 //Intent intent = new Intent(getApplicationContext(), AdvancedSearchActivity.class);
                 Intent intent = new Intent(getApplicationContext(),SearchActivity.class);
+                //Intent intent = new Intent(getApplicationContext(), CreateUserAccountActivity.class);
+                //Intent intent = new Intent(getApplicationContext(), AdvancedSearchActivity.class);
+
                 startActivity(intent);
             }
         });

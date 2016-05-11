@@ -51,7 +51,7 @@
         <activity android:name=".activities.InviteFriendActivity" />
         <activity android:name=".activities.SearchDetailActivity" />
         <activity android:name=".activities.CreateReviewActivity" />
-        <activity android:name=".activities.AdvancedSearchActivity"></activity>
+        <activity android:name=".activities.AdvancedSearchActivity" />
     </application>
 
 </manifest>

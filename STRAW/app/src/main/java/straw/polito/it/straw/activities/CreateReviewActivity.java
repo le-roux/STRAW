@@ -12,6 +12,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import straw.polito.it.straw.R;
+import straw.polito.it.straw.StrawApplication;
 import straw.polito.it.straw.data.Manager;
 import straw.polito.it.straw.data.Review;
 import straw.polito.it.straw.data.User;
@@ -29,7 +30,8 @@ public class CreateReviewActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_review);
         man=new Manager(getIntent().getExtras().getString("res"));
-        user=new SharedPreferencesHandler(getBaseContext()).getCurrentUser();
+        StrawApplication application = (StrawApplication)getApplication();
+        user = application.getSharedPreferencesHandler().getCurrentUser();
         initialize();
         submit.setOnClickListener(new View.OnClickListener() {
             @Override

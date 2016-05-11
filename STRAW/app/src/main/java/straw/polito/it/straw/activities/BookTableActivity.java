@@ -43,6 +43,8 @@ public class BookTableActivity extends AppCompatActivity implements BookTableInt
 
     private Reservation reservation;
 
+    public static final String RESTAURANT = "restaurant";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,13 +63,23 @@ public class BookTableActivity extends AppCompatActivity implements BookTableInt
 
         this.clock.setIs24HFormat(DateFormat.is24HourFormat(this));
 
+
+        //Date creation/restoration
+        final Manager restaurant = new Manager(getIntent().getStringExtra(RESTAURANT));
+        if(savedInstanceState == null) {
+            this.reservation = new Reservation();
+            this.reservation.setRestaurant(restaurant.getRes_name());
+        } else {
+            this.reservation = Reservation.create(savedInstanceState.getString(Reservation.RESERVATION));
+        }
+
         //Add a listener to launch the NumberPicker dialog to select the number of people in the reservation
         this.numberPeopleNumber.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 DialogFragment fragment = new NumberPickerFragment();
                 Bundle bundle = new Bundle();
-                bundle.putInt(Manager.SEATS_AVAILABLE, 10); //TO DO : Get the exact number
+                bundle.putInt(Manager.SEATS_AVAILABLE, restaurant.getSeats()); //TO DO : Get the exact number
                 fragment.setArguments(bundle);
                 fragment.show(BookTableActivity.this.getFragmentManager(), "NumberPicker");
             }
@@ -116,22 +128,13 @@ public class BookTableActivity extends AppCompatActivity implements BookTableInt
         this.inviteFriendsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                updateData();
                 Intent intent = new Intent(getApplicationContext(), InviteFriendActivity.class);
-                //to remove
-                Manager manager = new Manager();
-                manager.setRes_name("foo");
-                reservation.setRestaurant(manager.getRes_name());
                 intent.putExtra(Reservation.RESERVATION, reservation.toString());
                 startActivity(intent);
             }
         });
 
-        //Date creation/restoration
-        if(savedInstanceState == null) {
-            this.reservation = new Reservation();
-        } else {
-            this.reservation = Reservation.create(savedInstanceState.getString(Reservation.RESERVATION));
-        }
         updateDisplay();
     }
 

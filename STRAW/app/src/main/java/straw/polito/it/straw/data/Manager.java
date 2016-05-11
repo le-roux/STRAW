@@ -1,5 +1,9 @@
 package straw.polito.it.straw.data;
 
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationListener;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -7,6 +11,7 @@ import java.util.Comparator;
 import java.util.ArrayList;
 import java.util.List;
 
+import straw.polito.it.straw.utils.DistanceComparator;
 import straw.polito.it.straw.utils.Logger;
 
 /**
@@ -239,6 +244,9 @@ public class Manager {
         }
     };
 
+    public static DistanceComparator getDistanceComparator(double userLatitude, double userLongitude) {
+        return new DistanceComparator(userLatitude, userLongitude);
+    }
 
 }
 
