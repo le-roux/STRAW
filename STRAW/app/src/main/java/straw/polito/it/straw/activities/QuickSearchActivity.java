@@ -61,12 +61,13 @@ public class QuickSearchActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quick_search);
         this.application = (StrawApplication)getApplication();
-
+        /*
         Intent intent = getIntent();
-        if (intent.hasExtra(Manager.LATITUDE)) {
+        if (intent.hasExtra(Manager.LATITUDE)) { **/
             /**
              * Retrieve the info provided by AdvancedSearch activity
              */
+        /*
             this.latitude = intent.getDoubleExtra(Manager.LATITUDE, 0);
             this.longitude = intent.getDoubleExtra(Manager.LONGITUDE, 0);
             this.restaurantType = intent.getIntExtra(Manager.TYPE, 0);
@@ -74,6 +75,7 @@ public class QuickSearchActivity extends AppCompatActivity{
             /**
              * Retrieve the info associated with the user profile
              */
+        /*
             User user = this.application.getSharedPreferencesHandler().getCurrentUser();
             Area[] areas = this.application.getSharedPreferencesHandler().getAreaList();
             for (Area area : areas) {
@@ -84,6 +86,7 @@ public class QuickSearchActivity extends AppCompatActivity{
                 }
             }
         }
+        */
 
         this.filtersButton = (Button) findViewById(R.id.addfilter);
         restaurant_list = new ArrayList<>();
@@ -199,8 +202,8 @@ public class QuickSearchActivity extends AppCompatActivity{
                 "List of restaurant sort by location",
                 Toast.LENGTH_SHORT).show();
 
-        Collections.sort(restaurant_list,Manager.getDistanceComparator(latitude, longitude));
-        ((RestaurantListAdapter) restaurant_listView.getAdapter()).notifyDataSetChanged();
+        //Collections.sort(restaurant_list,Manager.getDistanceComparator(latitude, longitude));
+        //((RestaurantListAdapter) restaurant_listView.getAdapter()).notifyDataSetChanged();
     }
     public void SortByPrice(AdapterView<?> parent, View view,long id){
         Toast.makeText(parent.getContext(),
