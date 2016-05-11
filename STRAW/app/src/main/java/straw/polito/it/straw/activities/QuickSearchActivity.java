@@ -86,8 +86,6 @@ public class QuickSearchActivity extends AppCompatActivity{
         this.filtersButton = (Button) findViewById(R.id.addfilter);
         Spinner staticSpinner = (Spinner) findViewById(R.id.spinner1);
         //TextView t1 = (TextView) findViewById(R.id.typeFood);
-        restaurant_list = new ArrayList<>();
-        restaurant_list_tmp = new ArrayList<>();
         init_list();
         mShared= PreferenceManager.getDefaultSharedPreferences(this);
         String tmp = "";
@@ -110,7 +108,11 @@ public class QuickSearchActivity extends AppCompatActivity{
             }
 
         }
-        restaurant_listView.setAdapter(new RestaurantListAdapter(getBaseContext(), restaurant_list));
+        restaurant_list = new ArrayList<>();
+        restaurant_list_tmp = new ArrayList<>();
+        RestaurantListAdapter adapter = new RestaurantListAdapter(getApplicationContext(), restaurant_list);
+        this.application.getDatabaseUtils().retrieveRestaurantList(adapter);
+        restaurant_listView.setAdapter(adapter);
         this.restaurant_listView = (ListView) findViewById(R.id.restaurant_list);
 
         addListenerOnButton();

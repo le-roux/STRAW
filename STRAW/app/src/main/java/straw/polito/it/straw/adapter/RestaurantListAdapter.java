@@ -84,4 +84,8 @@ public class RestaurantListAdapter extends BaseAdapter {
         }
         return convertView;
     }
+
+    public ArrayList<Manager> getList() {
+        return this.list;
+    }
 }

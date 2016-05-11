@@ -27,6 +27,7 @@ import straw.polito.it.straw.activities.ProfileManagerActivity;
 import straw.polito.it.straw.activities.ProfileUserActivity;
 import straw.polito.it.straw.activities.SearchActivity;
 import straw.polito.it.straw.adapter.FoodExpandableAdapter;
+import straw.polito.it.straw.adapter.RestaurantListAdapter;
 import straw.polito.it.straw.data.Drink;
 import straw.polito.it.straw.data.Food;
 import straw.polito.it.straw.data.Manager;
@@ -797,29 +798,49 @@ public class DatabaseUtils {
      * @
      * @return : An ArrayList of Manager or null if it's not possible to retrieve proper data.
      */
-    public ArrayList<Manager> retrieveListManager() {
-        ArrayList<Manager> managers = new ArrayList<>();
-        String children;
-        children = MANAGER;
-        RetrieveAsyncTask task = new RetrieveAsyncTask();
-        task.execute(children);
-        String data;
-        try {
-            data = task.get();
-        } catch (Exception e) {
-            e.printStackTrace();
+    public void retrieveRestaurantList(RestaurantListAdapter adapter) {
+        RetrieveRestaurantsAsyncTask task = new RetrieveRestaurantsAsyncTask();
+        task.execute(adapter);
+    }
+
+    private class RetrieveRestaurantsAsyncTask extends AsyncTask<RestaurantListAdapter, Void, Void> {
+
+        @Override
+        protected Void doInBackground(final RestaurantListAdapter... params) {
+            Firebase ref = firebase.child(RESTAURANTS);
+            ref.addChildEventListener(new ChildEventListener() {
+                @Override
+                public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                    Manager restaurant = dataSnapshot.getValue(Manager.class);
+                    params[0].getList().add(restaurant);
+                    params[0].notifyDataSetChanged();
+                }
+
+                @Override
+                public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                    params[0].getList().remove(dataSnapshot.getValue(Manager.class));
+                    params[0].getList().add(dataSnapshot.getValue(Manager.class));
+                    params[0].notifyDataSetChanged();
+                }
+
+                @Override
+                public void onChildRemoved(DataSnapshot dataSnapshot) {
+                    params[0].getList().remove(dataSnapshot.getValue(Manager.class));
+                    params[0].notifyDataSetChanged();
+                }
+
+                @Override
+                public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+                }
+
+                @Override
+                public void onCancelled(FirebaseError firebaseError) {
+
+                }
+            });
             return null;
         }
-        try {
-            JSONArray jsonArray = new JSONArray(data);
-            for (int i = 0; i < jsonArray.length(); i++) {
-                managers.add(new Manager(jsonArray.getString(i)));
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return null;
-        }
-        return managers;
     }
 
     /**
