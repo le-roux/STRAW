@@ -52,6 +52,7 @@
         <activity android:name=".activities.SearchDetailActivity" />
         <activity android:name=".activities.CreateReviewActivity" />
         <activity android:name=".activities.AdvancedSearchActivity" />
+        <activity android:name=".activities.DisplayMenuActivity"></activity>
     </application>
 
 </manifest>

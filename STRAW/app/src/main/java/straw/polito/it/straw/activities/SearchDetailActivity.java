@@ -68,7 +68,7 @@ public class SearchDetailActivity extends AppCompatActivity {
         menu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(getBaseContext(),CreateMenuActivity.class);
+                Intent i = new Intent(getBaseContext(),DisplayMenuActivity.class);
                 i.putExtra("active",false);
                 i.putExtra(RESTAURANT, man.toJSONObject());
                 startActivity(i);

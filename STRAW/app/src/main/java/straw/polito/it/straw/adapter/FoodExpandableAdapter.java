@@ -20,7 +20,7 @@ import straw.polito.it.straw.utils.Logger;
 /**
  * Created by Sylvain on 01/04/2016.
  */
-public abstract class FoodExpandableAdapter extends BaseExpandableListAdapter implements ExpandableListAdapter {
+public class FoodExpandableAdapter extends BaseExpandableListAdapter implements ExpandableListAdapter {
 
     /**
      * List of the food elements managed by the Adapter
@@ -155,6 +155,12 @@ public abstract class FoodExpandableAdapter extends BaseExpandableListAdapter im
         return false;
     }
 
-    protected abstract void setSpecificElement(View convertView, int groupPosition, int childPosition);
-    protected abstract View getConvertView(LayoutInflater layoutInflater);
+    protected void setSpecificElement(View convertView, int groupPosition, int childPosition) {
+        /**
+         * Nothing
+         */
+    }
+    protected View getConvertView(LayoutInflater layoutInflater) {
+        return layoutInflater.inflate(R.layout.activity_display_menu, null);
+    }
 }

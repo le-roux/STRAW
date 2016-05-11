@@ -24,7 +24,6 @@ import java.util.Map;
 import straw.polito.it.straw.R;
 import straw.polito.it.straw.StrawApplication;
 import straw.polito.it.straw.activities.ProfileManagerActivity;
-import straw.polito.it.straw.activities.ProfileUserActivity;
 import straw.polito.it.straw.activities.SearchActivity;
 import straw.polito.it.straw.adapter.FoodExpandableAdapter;
 import straw.polito.it.straw.adapter.RestaurantListAdapter;
@@ -482,7 +481,7 @@ public class DatabaseUtils {
                         User user = sharedPreferencesHandler.getCurrentUser();
                         if (user != null && user.getEmail().equals(params[0])) {
                             dialog.dismiss();
-                            Intent intent = new Intent(context, ProfileUserActivity.class);
+                            Intent intent = new Intent(context, SearchActivity.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             context.startActivity(intent);
                             return;
@@ -514,7 +513,7 @@ public class DatabaseUtils {
                                  */
                                 User user = dataSnapshot.getValue(User.class);
                                 sharedPreferencesHandler.storeCurrentUser(user.toString());
-                                Intent intent = new Intent(context, ProfileUserActivity.class);
+                                Intent intent = new Intent(context, SearchActivity.class);
                                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                 dialog.dismiss();
                                 context.startActivity(intent);

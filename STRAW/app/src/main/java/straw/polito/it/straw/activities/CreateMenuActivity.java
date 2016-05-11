@@ -67,7 +67,6 @@ public class CreateMenuActivity extends AppCompatActivity {
             /**
              * Display menu for customers
              */
-            Logger.d("create menu for display");
             this.manager = new Manager(getIntent().getStringExtra(SearchDetailActivity.RESTAURANT));
             this.add_plate_button = (Button) findViewById(R.id.add_plate_button);
             this.add_drink_button = (Button) findViewById(R.id.add_drink_button);
@@ -77,7 +76,6 @@ public class CreateMenuActivity extends AppCompatActivity {
             /**
              * Create menu
              */
-            Logger.d("create menu for creation");
             this.manager = ((StrawApplication)getApplication()).getSharedPreferencesHandler().getCurrentManager();
             //TO DO : react if this.manager is null
             //Listener for the "Add plate" button
