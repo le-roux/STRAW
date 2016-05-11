@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -31,6 +32,7 @@ public class SearchDetailActivity extends AppCompatActivity {
     private TextView add_rev;
     private ImageView img;
     private ListView review;
+    private RatingBar ratingBar;
     private Manager man;
 
     private static int REQ_CODE_REV=1;
@@ -52,6 +54,8 @@ public class SearchDetailActivity extends AppCompatActivity {
                 .append(this.man.getMax_price())
                 .append(" €");
         price.setText(builder.toString());
+
+        this.ratingBar.setRating(this.man.getRate());
 
         review.setAdapter(new ReviewAdapter(getBaseContext(),man.getReviews()));
 
@@ -82,7 +86,7 @@ public class SearchDetailActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(getBaseContext(),CreateReviewActivity.class);
-                i.putExtra("res",man.toJSONObject());
+                i.putExtra(RESTAURANT,man.toJSONObject());
                 startActivityForResult(i,REQ_CODE_REV);
             }
         });
@@ -97,6 +101,7 @@ public class SearchDetailActivity extends AppCompatActivity {
         //preorder=(TextView)findViewById(R.id.preorder);
         add_rev=(TextView)findViewById(R.id.add_review);
         review = (ListView) findViewById(R.id.reviews);
+        this.ratingBar = (RatingBar)findViewById(R.id.ratingBar);
     }
 
     @Override

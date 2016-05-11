@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -65,7 +66,8 @@ public class RestaurantListAdapter extends BaseAdapter {
         ImageView photo = (ImageView)convertView.findViewById(R.id.RestaurantImage);
         photo.setFocusable(false);
 
-        //RatingBar rb_reviews = (RatingBar)convertView.findViewById(R.id.RestaurantReviews);
+        RatingBar ratingBar = (RatingBar)convertView.findViewById(R.id.RestaurantReviews);
+        ratingBar.setRating(this.list.get(position).getRate());
         if (position < this.list.size()) {
             name.setText(String.valueOf(this.list.get(position).getRes_name()));
 

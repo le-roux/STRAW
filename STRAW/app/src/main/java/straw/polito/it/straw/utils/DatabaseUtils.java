@@ -34,6 +34,7 @@ import straw.polito.it.straw.data.Manager;
 import straw.polito.it.straw.data.Menu;
 import straw.polito.it.straw.data.Plate;
 import straw.polito.it.straw.data.Reservation;
+import straw.polito.it.straw.data.Review;
 import straw.polito.it.straw.data.User;
 
 /**
@@ -57,6 +58,7 @@ public class DatabaseUtils {
     public static final String NAMECHECK = "restaurantsName";
     public static final String PLATES = "plates";
     public static final String DRINKS = "drinks";
+    public static final String REVIEWS = "reviews";
 
     /**
      * A simple constructor, invoked in StrawApplication.onCreate()
@@ -812,6 +814,10 @@ public class DatabaseUtils {
                 @Override
                 public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                     Manager restaurant = dataSnapshot.getValue(Manager.class);
+                    DataSnapshot reviews = dataSnapshot.child(REVIEWS);
+                    for (DataSnapshot review : reviews.getChildren()) {
+                        restaurant.addReview(review.getValue(Review.class));
+                    }
                     params[0].getList().add(restaurant);
                     params[0].notifyDataSetChanged();
                 }
@@ -837,6 +843,42 @@ public class DatabaseUtils {
                 @Override
                 public void onCancelled(FirebaseError firebaseError) {
 
+                }
+            });
+            return null;
+        }
+    }
+
+    /**
+     * Add a review to a restaurant
+     * @param restaurantName : the name of the restaurant
+     * @param review : the review to add
+     */
+    public void addReview(String restaurantName, Review review) {
+        AddReviewAsyncTask task = new AddReviewAsyncTask(restaurantName);
+        task.execute(review);
+    }
+
+    /**
+     * A simple AsyncTask used to save a review in the database
+     */
+    private class AddReviewAsyncTask extends AsyncTask<Review, Void, Void> {
+
+        private String restaurantName;
+
+        public AddReviewAsyncTask(String restaurantName) {
+            this.restaurantName = restaurantName;
+        }
+
+        @Override
+        protected Void doInBackground(Review... params) {
+            Firebase ref = firebase.child(RESTAURANTS).child(this.restaurantName).child(REVIEWS);
+            ref.push().setValue(params[0], new Firebase.CompletionListener() {
+                @Override
+                public void onComplete(FirebaseError firebaseError, Firebase firebase) {
+                    if (firebaseError != null) {
+                        Toast.makeText(context, firebaseError.getMessage(), Toast.LENGTH_LONG).show();
+                    }
                 }
             });
             return null;

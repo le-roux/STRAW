@@ -4,6 +4,8 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -45,6 +47,7 @@ public class Manager {
     public static final int TAKEAWAY = 3;
 
     public Manager() {
+        this.reviews = new ArrayList<>();
     }
 
     public Manager(String man) {
@@ -78,12 +81,18 @@ public class Manager {
         }
     }
 
+    @JsonIgnore
     public ArrayList<Review> getReviews() {
         return reviews;
     }
 
+    @JsonIgnore
     public void setReviews(ArrayList<Review> reviews) {
         this.reviews = reviews;
+    }
+
+    public void addReview(Review review) {
+        this.reviews.add(review);
     }
 
     public String getEmail() {
@@ -182,6 +191,18 @@ public class Manager {
         this.food_type = food_type;
     }
 
+    @JsonIgnore
+    public float getRate() {
+        if (this.reviews.size() != 0) {
+            float rate = 0;
+            for (Review review : this.reviews) {
+                rate += review.getRate();
+            }
+            return rate / this.reviews.size();
+        } else
+            return 0;
+    }
+
     public String toJSONObject() {
         JSONObject oj = new JSONObject();
         try {
@@ -248,6 +269,19 @@ public class Manager {
             double p1 = m1.getMin_price();
             double p2 = m2.getMin_price();
             return Double.compare(p1,p2);
+        }
+    };
+
+    public static Comparator<Manager> RatingComparator = new Comparator<Manager>() {
+        @Override
+        public int compare(Manager lhs, Manager rhs) {
+            if (lhs.getRate() > rhs.getRate()) {
+                return -1;
+            } else if (lhs.getRate() == rhs.getRate()) {
+                return 0;
+            } else {
+                return 1;
+            }
         }
     };
 

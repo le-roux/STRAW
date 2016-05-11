@@ -94,25 +94,6 @@ public class QuickSearchActivity extends AppCompatActivity{
         this.FoodFilter = "";
         this.PlaceFilter = "";
         init_list();
-        /*mShared= PreferenceManager.getDefaultSharedPreferences(this);
-        String tmp = "";
-        if(mShared.contains("ManagerList")){
-            try{
-            String ss = mShared.getString("ManagerList", "Error");
-            JSONArray jarr = new JSONArray(ss);
-                for (int i = 0; i < jarr.length(); i++) {
-                    try {
-                        tmp = jarr.get(i).toString();
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    restaurant_list.add(new Manager(tmp));
-                }
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-            }
-        }*/
         restaurant_list = new ArrayList<>();
         restaurant_list_tmp = new ArrayList<>();
         RestaurantListAdapter adapter = new RestaurantListAdapter(getApplicationContext(), restaurant_list);
@@ -200,14 +181,16 @@ public class QuickSearchActivity extends AppCompatActivity{
         Toast.makeText(parent.getContext(),
                 "List of restaurant sort by rating",
                 Toast.LENGTH_SHORT).show();
+        Collections.sort(restaurant_list, Manager.RatingComparator);
+        ((RestaurantListAdapter) restaurant_listView.getAdapter()).notifyDataSetChanged();
     }
     public void SortByLocation(AdapterView<?> parent, View view,long id){
         Toast.makeText(parent.getContext(),
                 "List of restaurant sort by location",
                 Toast.LENGTH_SHORT).show();
 
-        //Collections.sort(restaurant_list,Manager.getDistanceComparator(latitude, longitude));
-        //((RestaurantListAdapter) restaurant_listView.getAdapter()).notifyDataSetChanged();
+        Collections.sort(restaurant_list,Manager.getDistanceComparator(latitude, longitude));
+        ((RestaurantListAdapter) restaurant_listView.getAdapter()).notifyDataSetChanged();
     }
     public void SortByPrice(AdapterView<?> parent, View view,long id){
         Toast.makeText(parent.getContext(),

@@ -1,22 +1,22 @@
 package straw.polito.it.straw.activities;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RatingBar;
-import android.widget.TextView;
 
 import straw.polito.it.straw.R;
 import straw.polito.it.straw.StrawApplication;
 import straw.polito.it.straw.data.Manager;
 import straw.polito.it.straw.data.Review;
 import straw.polito.it.straw.data.User;
-import straw.polito.it.straw.utils.SharedPreferencesHandler;
+import straw.polito.it.straw.utils.DatabaseUtils;
 
 public class CreateReviewActivity extends AppCompatActivity {
 
@@ -29,20 +29,19 @@ public class CreateReviewActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_review);
-        man=new Manager(getIntent().getExtras().getString("res"));
-        StrawApplication application = (StrawApplication)getApplication();
+        man = new Manager(getIntent().getExtras().getString(SearchDetailActivity.RESTAURANT));
+        final StrawApplication application = (StrawApplication)getApplication();
         user = application.getSharedPreferencesHandler().getCurrentUser();
         initialize();
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                man.getReviews().add(new Review(user.getEmail(),rate.getRating(),desc.getText().toString()));
-                //SAVE IN THE DATABASE
-                //new SharedPreferencesHandler(getBaseContext()).storeCurrentManager(man.toJSONObject());
-                SharedPreferences sp=PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-                sp.edit().putString("Manager",man.toJSONObject()).commit();
+                Review review = new Review(user.getEmail(),rate.getRating(),desc.getText().toString());
+                man.getReviews().add(review);
+                DatabaseUtils databaseUtils = application.getDatabaseUtils();
+                databaseUtils.addReview(man.getRes_name(), review);
                 Intent resultIntent = new Intent();
-                setResult(SearchDetailActivity.RESULT_OK, resultIntent);
+                setResult(Activity.RESULT_OK, resultIntent);
                 finish();
             }
         });

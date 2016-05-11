@@ -63,7 +63,17 @@ public class CreateMenuActivity extends AppCompatActivity {
         this.context = this;
         this.context = getApplicationContext();
 
-        if(getIntent() == null) {
+        if(getIntent().hasExtra(SearchDetailActivity.RESTAURANT)) {
+            /**
+             * Display menu for customers
+             */
+            Logger.d("create menu for display");
+            this.manager = new Manager(getIntent().getStringExtra(SearchDetailActivity.RESTAURANT));
+            this.add_plate_button = (Button) findViewById(R.id.add_plate_button);
+            this.add_drink_button = (Button) findViewById(R.id.add_drink_button);
+            this.add_plate_button.setVisibility(View.INVISIBLE);
+            this.add_drink_button.setVisibility(View.INVISIBLE);
+        } else {
             /**
              * Create menu
              */
@@ -91,16 +101,6 @@ public class CreateMenuActivity extends AppCompatActivity {
                     startActivityForResult(intent, ADD_FOOD);
                 }
             });
-        } else {
-            /**
-             * Display menu for customers
-             */
-            Logger.d("create menu for display");
-            this.manager = new Manager(getIntent().getStringExtra(SearchDetailActivity.RESTAURANT));
-            this.add_plate_button = (Button) findViewById(R.id.add_plate_button);
-            this.add_drink_button = (Button) findViewById(R.id.add_drink_button);
-            this.add_plate_button.setVisibility(View.INVISIBLE);
-            this.add_drink_button.setVisibility(View.INVISIBLE);
         }
         this.goods = new ArrayList[2];
         this.goods[Menu.PLATES] = new ArrayList<Food>();
