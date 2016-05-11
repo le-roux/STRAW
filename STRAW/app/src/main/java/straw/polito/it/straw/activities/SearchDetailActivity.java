@@ -35,6 +35,8 @@ public class SearchDetailActivity extends AppCompatActivity {
 
     private static int REQ_CODE_REV=1;
 
+    public static final String RESTAURANT = "Restaurant";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,6 +63,7 @@ public class SearchDetailActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent i = new Intent(getBaseContext(),CreateMenuActivity.class);
                 i.putExtra("active",false);
+                i.putExtra(RESTAURANT, man.toJSONObject());
                 startActivity(i);
             }
         });

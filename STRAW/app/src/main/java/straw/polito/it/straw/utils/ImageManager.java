@@ -43,13 +43,15 @@ public class ImageManager {
 
     public static void setImage(Context context, ImageView imageView, String image) {
         Bitmap bitmap = null;
-        byte[] bytes = Base64.decode(image, Base64.DEFAULT);
-        bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-        if (bitmap == null)
-            Logger.d("bitmap null");
-        else {
-            Bitmap small = Bitmap.createScaledBitmap(bitmap, 600, 800, false);
-            imageView.setImageBitmap(small);
+        if (image != null) {
+            byte[] bytes = Base64.decode(image, Base64.DEFAULT);
+            bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+            if (bitmap == null)
+                Logger.d("bitmap null");
+            else {
+                Bitmap small = Bitmap.createScaledBitmap(bitmap, 600, 800, false);
+                imageView.setImageBitmap(small);
+            }
         }
     }
 

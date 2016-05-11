@@ -27,6 +27,7 @@ import straw.polito.it.straw.data.Manager;
 import straw.polito.it.straw.data.Menu;
 import straw.polito.it.straw.data.Plate;
 import straw.polito.it.straw.utils.DatabaseUtils;
+import straw.polito.it.straw.utils.Logger;
 
 
 public class CreateMenuActivity extends AppCompatActivity {
@@ -61,9 +62,14 @@ public class CreateMenuActivity extends AppCompatActivity {
 
         this.context = this;
         this.context = getApplicationContext();
-        this.manager = ((StrawApplication)getApplication()).getSharedPreferencesHandler().getCurrentManager();
-        //TO DO : react if this.manager is null
-        if(getIntent()!=null) {
+
+        if(getIntent() == null) {
+            /**
+             * Create menu
+             */
+            Logger.d("create menu for creation");
+            this.manager = ((StrawApplication)getApplication()).getSharedPreferencesHandler().getCurrentManager();
+            //TO DO : react if this.manager is null
             //Listener for the "Add plate" button
             this.add_plate_button = (Button) findViewById(R.id.add_plate_button);
             this.add_plate_button.setOnClickListener(new View.OnClickListener() {
@@ -85,7 +91,12 @@ public class CreateMenuActivity extends AppCompatActivity {
                     startActivityForResult(intent, ADD_FOOD);
                 }
             });
-        }else{
+        } else {
+            /**
+             * Display menu for customers
+             */
+            Logger.d("create menu for display");
+            this.manager = new Manager(getIntent().getStringExtra(SearchDetailActivity.RESTAURANT));
             this.add_plate_button = (Button) findViewById(R.id.add_plate_button);
             this.add_drink_button = (Button) findViewById(R.id.add_drink_button);
             this.add_plate_button.setVisibility(View.INVISIBLE);
