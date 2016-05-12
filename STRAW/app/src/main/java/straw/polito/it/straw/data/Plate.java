@@ -84,7 +84,7 @@ public class Plate extends Food {
             jsonObject.putOpt(Food.TYPE, PLATE);
             jsonObject.putOpt(Food.NAME, this.getName());
             jsonObject.put(Food.PRICE, this.getPrice());
-            jsonObject.putOpt(Food.IMAGE_URI, this.getImageURI());
+            jsonObject.putOpt(Food.IMAGE, this.getImage());
             jsonObject.put(VEGAN, this.isVegan());
             jsonObject.put(GLUTEN_FREE, this.isGlutenFree());
             jsonObject.putOpt(INGREDIENTS, this.ingredients);

@@ -113,10 +113,9 @@ public class FoodExpandableAdapter extends BaseExpandableListAdapter implements 
         //Fill the View with the proper data
         if (groupPosition < 2) {
             if (childPosition < this.groups[groupPosition].size()) {
-                String uri = this.groups[groupPosition].get(childPosition).getImageURI();
-                if (uri != null) {
-                    String imageString = ImageManager.getImageFromUri(context, Uri.parse(uri));
-                    ImageManager.setImage(this.context, imageView, imageString);
+                String image = this.groups[groupPosition].get(childPosition).getImage();
+                if (image != null) {
+                    ImageManager.setImage(this.context, imageView, image);
                 }
                 title.setText(this.groups[groupPosition].get(childPosition).getName());
                 description.setText(this.groups[groupPosition].get(childPosition).getDescription());

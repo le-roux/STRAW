@@ -18,13 +18,13 @@ import org.json.JSONObject;
 public abstract class Food {
     private String name;
     private double price;
-    private String imageURI;
+    private String image;
 
     //Keys for storing and retrieving the data in any dictionary
     public static final String NAME = "NAME";
     public static final String TYPE = "TYPE";
     public static final String PRICE = "PRICE";
-    public static final String IMAGE_URI = "IMAGE_URI";
+    public static final String IMAGE = "IMAGE";
 
     //Default values
     private static final String DEFAULT_NAME ="Default";
@@ -34,12 +34,12 @@ public abstract class Food {
      * Complete constructor
      * @param name
      * @param price
-     * @param imageURI
+     * @param image
      */
-    public Food(String name, double price, String imageURI) {
+    public Food(String name, double price, String image) {
         this.name = name;
         this.price = price;
-        this.imageURI = imageURI;
+        this.image = image;
     }
 
     /**
@@ -48,7 +48,7 @@ public abstract class Food {
     public Food() {
         this.name = "Default";
         this.price = 0d;
-        this.imageURI = null;
+        this.image = null;
     }
 
     public void setName(String name) {
@@ -67,12 +67,12 @@ public abstract class Food {
         return this.price;
     }
 
-    public void setImageURI(String imageURI) {
-        this.imageURI = imageURI;
+    public void setImage(String image) {
+        this.image = image;
     }
 
-    public String getImageURI() {
-        return this.imageURI;
+    public String getImage() {
+        return this.image;
     }
 
     /**
@@ -120,9 +120,9 @@ public abstract class Food {
                 food.setPrice(DEFAULT_PRICE);
             }
             try {
-                food.setImageURI(jsonObject.getString(IMAGE_URI));
+                food.setImage(jsonObject.getString(IMAGE));
             } catch (JSONException e) {
-                food.setImageURI(null);
+                food.setImage(null);
             }
             return food;
         } else {

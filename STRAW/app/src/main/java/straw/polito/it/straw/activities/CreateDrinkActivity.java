@@ -165,14 +165,8 @@ public class CreateDrinkActivity extends AppCompatActivity {
         this.name_field.setText(this.drink.getName());
         this.price_field.setText(String.valueOf(this.drink.getPrice()));
         this.volume_field.setText(String.valueOf(this.drink.getVolume()));
-        String uri = this.drink.getImageURI();
-        if (uri != null)
-            this.fileUri = Uri.parse(uri);
-        else {
-            this.fileUri = null;
-            String imageString = ImageManager.getImageFromUri(context, this.fileUri);
-            ImageManager.setImage(this.context, this.image, imageString);
-        }
+        String image = this.drink.getImage();
+        ImageManager.setImage(this.context, this.image, image);
     }
 
     /**
@@ -202,9 +196,9 @@ public class CreateDrinkActivity extends AppCompatActivity {
 
         //Image
         if(this.fileUri != null)
-            this.drink.setImageURI(this.fileUri.toString());
+            this.drink.setImage(ImageManager.getImageFromUri(this, this.fileUri));
         else
-            this.drink.setImageURI(null);
+            this.drink.setImage(null);
     }
 
     /**

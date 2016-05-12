@@ -54,7 +54,7 @@ public class Drink extends Food {
             jsonObject.putOpt(Food.TYPE, DRINK);
             jsonObject.putOpt(Food.NAME, this.getName());
             jsonObject.put(Food.PRICE, this.getPrice());
-            jsonObject.putOpt(Food.IMAGE_URI, this.getImageURI());
+            jsonObject.putOpt(Food.IMAGE, this.getImage());
             jsonObject.put(VOLUME, this.getVolume());
         } catch (JSONException e) {
             e.printStackTrace();

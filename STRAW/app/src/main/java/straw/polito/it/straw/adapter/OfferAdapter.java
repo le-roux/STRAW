@@ -76,7 +76,6 @@ public class OfferAdapter extends BaseAdapter {
 
         //Fill the View with the proper data
         if (position < this.offer.size()) {
-            String uri = this.offer.get(position).getImageURI();
             title.setText(this.offer.get(position).getName());
             price.setText(String.valueOf(this.offer.get(position).getPrice()) + " €");
         }

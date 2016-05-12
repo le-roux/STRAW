@@ -143,11 +143,9 @@ public class CreatePlateActivity extends AppCompatActivity {
         this.vegan_checkbox.setActivated(this.plate.isVegan());
         this.glutenfree_checkbox.setActivated(this.plate.isGlutenFree());
 
-        String uri = this.plate.getImageURI();
-        if (uri != null) {
-            this.fileUri = Uri.parse(uri);
-            String imageString = ImageManager.getImageFromUri(context, this.fileUri);
-            ImageManager.setImage(this.context, this.image, imageString);
+        String image = this.plate.getImage();
+        if (image != null) {
+            ImageManager.setImage(this.context, this.image, image);
         }
         else {
             this.fileUri = null;
@@ -181,9 +179,9 @@ public class CreatePlateActivity extends AppCompatActivity {
 
         //Image URI
         if(this.fileUri != null)
-            this.plate.setImageURI(this.fileUri.toString());
+            this.plate.setImage(ImageManager.getImageFromUri(this, this.fileUri));
         else
-            this.plate.setImageURI(null);
+            this.plate.setImage(null);
     }
 
     private void setPopupWindow() {
