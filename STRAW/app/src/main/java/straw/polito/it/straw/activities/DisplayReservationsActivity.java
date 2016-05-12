@@ -1,5 +1,6 @@
 package straw.polito.it.straw.activities;
 
+import android.app.ProgressDialog;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -13,9 +14,11 @@ import java.util.ArrayList;
 
 import straw.polito.it.straw.BaseAdapterContainer;
 import straw.polito.it.straw.R;
+import straw.polito.it.straw.StrawApplication;
 import straw.polito.it.straw.adapter.ReservationAdapter;
 import straw.polito.it.straw.data.Drink;
 import straw.polito.it.straw.data.Food;
+import straw.polito.it.straw.data.Manager;
 import straw.polito.it.straw.data.Plate;
 import straw.polito.it.straw.data.Reservation;
 
@@ -23,50 +26,27 @@ public class DisplayReservationsActivity extends AppCompatActivity implements Ba
 
     private ListView reservationList_View;
     private ArrayList<Reservation> reservationList;
-    private SharedPreferences sharedPreferences;
-
-    public static final String RESERVATION_NUMBER = "ReservationNumber";
+    private Manager manager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_reservations);
-        this.sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
         this.reservationList = new ArrayList<>();
-        if (savedInstanceState == null) {
-            String description = "";
-            JSONArray jsonArray;
-            try {
-                jsonArray = new JSONArray(this.sharedPreferences.getString(Reservation.RESERVATION, ""));
-            } catch (JSONException e) {
-                e.printStackTrace();
-                jsonArray = new JSONArray();
-            }
-            for (int i = 0; i < jsonArray.length(); i++) {
-                try {
-                    description = jsonArray.get(i).toString();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                this.reservationList.add(Reservation.create(description));
-            }
-
-            //For test purpose only
-            if (jsonArray.length() == 0) {
-                ArrayList<Food> plates = new ArrayList<>();
-                plates.add(new Plate());
-                ArrayList<Food> drinks = new ArrayList<>();
-                drinks.add(new Drink());
-                this.reservationList.add(new Reservation(2, plates, drinks));
-                this.reservationList.add(new Reservation(4, plates, drinks));
-                this.reservationList.add(new Reservation(2, plates, drinks));
-            }
-        }
 
         this.reservationList_View = (ListView)findViewById(R.id.reservations_list);
-        this.reservationList_View.setAdapter(new ReservationAdapter(getApplicationContext(),
-                this.reservationList, this));
+        ReservationAdapter adapter = new ReservationAdapter(getApplicationContext(),
+                this.reservationList, this);
+        this.reservationList_View.setAdapter(adapter);
+        StrawApplication application = (StrawApplication)getApplication();
+        this.manager = application.getSharedPreferencesHandler().getCurrentManager();
+        ProgressDialog dialog = new ProgressDialog(this);
+        dialog.setMessage(this.getString(R.string.RetrievingReservations));
+        dialog.setIndeterminate(true);
+        dialog.setCancelable(false);
+        dialog.show();
+        application.getDatabaseUtils().retrieveReservations(this.manager.getRes_name(), adapter, dialog);
     }
 
     @Override
@@ -93,7 +73,7 @@ public class DisplayReservationsActivity extends AppCompatActivity implements Ba
     @Override
     public void onStop() {
         super.onStop();
-        SharedPreferences.Editor editor = this.sharedPreferences.edit();
+        /*SharedPreferences.Editor editor = this.sharedPreferences.edit();
         JSONArray jsonArray = new JSONArray();
         for (int i = 0; i < this.reservationList.size(); i++) {
             try {
@@ -103,6 +83,6 @@ public class DisplayReservationsActivity extends AppCompatActivity implements Ba
             }
         }
         editor.putString(Reservation.RESERVATION, jsonArray.toString());
-        editor.commit();
+        editor.commit();*/
     }
 }

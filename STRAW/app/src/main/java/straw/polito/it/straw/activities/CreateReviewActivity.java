@@ -25,6 +25,7 @@ public class CreateReviewActivity extends AppCompatActivity {
     private Button submit;
     private Manager man;
     private User user;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

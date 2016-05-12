@@ -60,6 +60,10 @@ public class ReservationAdapter extends BaseAdapter {
         return 0;
     }
 
+    public ArrayList<Reservation> getReservationList() {
+        return this.reservationList;
+    }
+
     @Override
     public View getView(final int position, View convertView, final ViewGroup parent) {
         if (convertView == null) {

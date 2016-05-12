@@ -1,5 +1,7 @@
 package straw.polito.it.straw.data;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -67,6 +69,7 @@ public class Reservation implements TimeDisplayer, DateDisplayer{
         this.numberPeople = numberPeople;
     }
 
+    @JsonIgnore
     public String getFoodList() {
         StringBuilder builder = new StringBuilder();
         for (Food plate : this.plates) {
@@ -98,6 +101,7 @@ public class Reservation implements TimeDisplayer, DateDisplayer{
         this.drinks = drinks;
     }
 
+    @JsonIgnore
     public GregorianCalendar getTime() {
         return this.time;
     }
@@ -106,8 +110,16 @@ public class Reservation implements TimeDisplayer, DateDisplayer{
         return this.time.get(Calendar.HOUR_OF_DAY);
     }
 
+    public void setHourOfDay(int hourOfDay) {
+        this.time.set(Calendar.HOUR_OF_DAY, hourOfDay);
+    }
+
     public int getMinutes() {
         return this.time.get(Calendar.MINUTE);
+    }
+
+    public void setMinutes(int minutes) {
+        this.time.set(Calendar.MINUTE, minutes);
     }
 
     @Override
@@ -119,17 +131,32 @@ public class Reservation implements TimeDisplayer, DateDisplayer{
         return this.time.get(Calendar.MONTH);
     }
 
+    public void setMonth(int month) {
+        this.time.set(Calendar.MONTH, month);
+    }
+
     public int getDay() {
         return this.time.get(Calendar.DAY_OF_MONTH);
     }
+
+    public void setDay(int day) {
+        this.time.set(Calendar.DAY_OF_MONTH, day);
+    }
+
     public int getYear() {
         return this.time.get(Calendar.YEAR);
     }
 
+    public void setYear(int year) {
+        this.time.set(Calendar.YEAR, year);
+    }
+
+    @JsonIgnore
     public void setTime(GregorianCalendar gregorianCalendar) {
         this.time = gregorianCalendar;
     }
 
+    @JsonIgnore
     public void setTime(int hour, int minute) {
         int year = this.time.get(Calendar.YEAR);
         int month = this.time.get(Calendar.MONTH);
@@ -137,14 +164,17 @@ public class Reservation implements TimeDisplayer, DateDisplayer{
         this.time.set(year, month, day, hour, minute);
     }
 
+    @JsonIgnore
     public void setTime(int year, int month, int day, int hour, int minute) {
         this.time.set(year, month, day, hour, minute);
     }
 
+    @JsonIgnore
     public void setDate(int year, int month, int day) {
         this.time.set(year, month, day);
     }
 
+    @JsonIgnore
     public void setPlace(Place place) {
         this.place = place;
     }
@@ -161,6 +191,7 @@ public class Reservation implements TimeDisplayer, DateDisplayer{
         return this.place;
     }
 
+    @JsonIgnore
     private int getPlaceInt() {
         switch (this.place) {
             case INSIDE:

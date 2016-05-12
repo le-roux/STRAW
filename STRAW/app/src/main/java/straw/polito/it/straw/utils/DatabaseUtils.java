@@ -26,6 +26,7 @@ import straw.polito.it.straw.StrawApplication;
 import straw.polito.it.straw.activities.ProfileManagerActivity;
 import straw.polito.it.straw.activities.SearchActivity;
 import straw.polito.it.straw.adapter.FoodExpandableAdapter;
+import straw.polito.it.straw.adapter.ReservationAdapter;
 import straw.polito.it.straw.adapter.RestaurantListAdapter;
 import straw.polito.it.straw.data.Drink;
 import straw.polito.it.straw.data.Food;
@@ -1029,7 +1030,7 @@ public class DatabaseUtils {
                     if (firebaseError == null)
                         Toast.makeText(context, R.string.ReservationSent, Toast.LENGTH_LONG).show();
                     else
-                        Toast.makeText(context, R.string.ErrorNetwork, Toast.LENGTH_LONG).show();
+                        Toast.makeText(context, firebaseError.getMessage(), Toast.LENGTH_LONG).show();
                 }
             });
             return null;
@@ -1040,7 +1041,6 @@ public class DatabaseUtils {
      * Retrieve a reservation from the Firebase database.
      *
      * @param restaurantName : the name of the restaurant in which the reservation has been done.
-     * @param customerEmail  : the email address of the customer who did the reservation.
      * @return : the reservation retrieved or null if it's not possible to retrieve proper data.
      */
     public Reservation retrieveReservation(String restaurantName, String customerEmail) {
@@ -1066,31 +1066,58 @@ public class DatabaseUtils {
      * @param restaurantName : the name of the restaurant.
      * @return : An ArrayList of Reservation or null if it's not possible to retrieve proper data.
      */
-    public ArrayList<Reservation> retrieveReservations(String restaurantName) {
-        ArrayList<Reservation> reservations = new ArrayList<>();
-        String[] children = new String[2];
-        children[0] = RESERVATIONS;
-        children[1] = restaurantName;
-        RetrieveAsyncTask task = new RetrieveAsyncTask();
-        task.execute(children);
-        String data;
-        try {
-            data = task.get();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-        try {
-            JSONArray jsonArray = new JSONArray(data);
-            for (int i = 0; i < jsonArray.length(); i++) {
-                reservations.add(Reservation.create(jsonArray.getString(i)));
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return null;
-        }
-        return reservations;
+    public void retrieveReservations(String restaurantName, ReservationAdapter adapter, ProgressDialog dialog) {
+        RetrieveReservationsAsyncTask task = new RetrieveReservationsAsyncTask(restaurantName, dialog);
+        task.execute(adapter);
+    }
 
+    private class RetrieveReservationsAsyncTask extends AsyncTask<ReservationAdapter, Void, Void> {
+
+        private String restaurantName;
+        private ProgressDialog dialog;
+
+        public RetrieveReservationsAsyncTask(String restaurantName, ProgressDialog dialog) {
+            this.restaurantName = restaurantName;
+            this.dialog = dialog;
+        }
+
+        @Override
+        protected Void doInBackground(final ReservationAdapter... params) {
+            Firebase ref = firebase.child(RESERVATIONS).child(this.restaurantName);
+            params[0].getReservationList().clear();
+            params[0].notifyDataSetChanged();
+            ref.addChildEventListener(new ChildEventListener() {
+                @Override
+                public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                    Reservation reservation = dataSnapshot.getValue(Reservation.class);
+                    params[0].getReservationList().add(reservation);
+                    params[0].notifyDataSetChanged();
+                    if (dialog != null)
+                        dialog.dismiss();
+                }
+
+                @Override
+                public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+                }
+
+                @Override
+                public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+                }
+
+                @Override
+                public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+                }
+
+                @Override
+                public void onCancelled(FirebaseError firebaseError) {
+
+                }
+            });
+            return null;
+        }
     }
 
 }
