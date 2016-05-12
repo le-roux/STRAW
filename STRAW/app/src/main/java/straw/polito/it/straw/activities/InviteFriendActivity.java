@@ -4,11 +4,15 @@ import android.app.DialogFragment;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
+import android.text.InputType;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,6 +39,11 @@ public class InviteFriendActivity extends AppCompatActivity implements MessageSe
     private User user;
     private SharedPreferences sharedPreferences;
     private UserAdapter userAdapter;
+    private Button addButton;
+    private EditText addressInput;
+    private ArrayList<String> addresses;
+
+    private static final String ADDRESSES = "addresses";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,15 +61,49 @@ public class InviteFriendActivity extends AppCompatActivity implements MessageSe
         this.time = (TimerDisplay)findViewById(R.id.Time);
         this.friendsList = (ListView)findViewById(R.id.list_friends);
         this.sendInvitationsButton = (Button)findViewById(R.id.SendInvitationButton);
+        this.addButton = (Button)findViewById(R.id.add_button);
+        this.addressInput = (EditText)findViewById(R.id.new_friend);
+        this.addressInput.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
 
-        this.userAdapter = new UserAdapter(this.getApplicationContext(), this.user.getFriends());
-        this.friendsList.setAdapter(this.userAdapter);
+        this.restaurantName.setText(this.reservation.getRestaurant());
+        this.calendar.setDate(this.reservation.getYear(), this.reservation.getMonth(), this.reservation.getDay());
+        this.time.setTime(this.reservation.getHourOfDay(), this.reservation.getMinutes());
+
+        if (savedInstanceState == null)
+            this.addresses = new ArrayList<>();
+        else
+            this.addresses = savedInstanceState.getStringArrayList(ADDRESSES);
+
+        final ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, this.addresses);
+        this.friendsList.setAdapter(adapter);
+        this.addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String address = addressInput.getText().toString();
+                if (!address.equals("")) {
+                    addresses.add(address);
+                    addressInput.setText("");
+                    adapter.notifyDataSetChanged();
+                }
+            }
+        });
+
+        //this.userAdapter = new UserAdapter(this.getApplicationContext(), this.user.getFriends());
+        //this.friendsList.setAdapter(this.userAdapter);
 
         this.sendInvitationsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DialogFragment fragment = new InvitationSenderFragment();
-                fragment.show(getFragmentManager(), "messagePicker");
+                //DialogFragment fragment = new InvitationSenderFragment();
+                //fragment.show(getFragmentManager(), "messagePicker");
+                Intent intent = new Intent(Intent.ACTION_SEND);
+                intent.setData(Uri.parse("mailto:"));
+                intent.setType("text/html");
+                String[] dest = new String[addresses.size()];
+                intent.putExtra(Intent.EXTRA_EMAIL, addresses.toArray(dest));
+                intent.putExtra(Intent.EXTRA_SUBJECT, getResources().getString(R.string.STRAWInvitation));
+                intent.putExtra(Intent.EXTRA_TEXT, getMessage());
+                startActivity(intent);
             }
         });
     }
@@ -109,5 +152,10 @@ public class InviteFriendActivity extends AppCompatActivity implements MessageSe
                 .append(getResources().getString(R.string.InvitationsSent));
         Toast toast = Toast.makeText(getApplicationContext(), builder.toString(), Toast.LENGTH_SHORT);
         toast.show();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putStringArrayList(ADDRESSES, addresses);
     }
 }

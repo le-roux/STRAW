@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import straw.polito.it.straw.R;
+import straw.polito.it.straw.RestaurantFilter;
 import straw.polito.it.straw.StrawApplication;
 import straw.polito.it.straw.activities.ProfileManagerActivity;
 import straw.polito.it.straw.activities.SearchActivity;
@@ -819,17 +820,19 @@ public class DatabaseUtils {
      * @
      * @return : An ArrayList of Manager or null if it's not possible to retrieve proper data.
      */
-    public void retrieveRestaurantList(RestaurantListAdapter adapter, ProgressDialog dialog) {
-        RetrieveRestaurantsAsyncTask task = new RetrieveRestaurantsAsyncTask(dialog);
+    public void retrieveRestaurantList(RestaurantListAdapter adapter, ProgressDialog dialog, RestaurantFilter filter) {
+        RetrieveRestaurantsAsyncTask task = new RetrieveRestaurantsAsyncTask(dialog, filter);
         task.execute(adapter);
     }
 
     private class RetrieveRestaurantsAsyncTask extends AsyncTask<RestaurantListAdapter, Void, Void> {
 
         private ProgressDialog dialog;
+        private RestaurantFilter filter;
 
-        public RetrieveRestaurantsAsyncTask(ProgressDialog dialog) {
+        public RetrieveRestaurantsAsyncTask(ProgressDialog dialog, RestaurantFilter filter) {
             this.dialog = dialog;
+            this.filter = filter;
         }
 
         @Override
@@ -847,6 +850,7 @@ public class DatabaseUtils {
                     }
                     params[0].getList().add(restaurant);
                     params[0].notifyDataSetChanged();
+                    filter.filter();
                 }
 
                 @Override

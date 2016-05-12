@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import straw.polito.it.straw.R;
+import straw.polito.it.straw.RestaurantFilter;
 import straw.polito.it.straw.StrawApplication;
 import straw.polito.it.straw.adapter.RestaurantListAdapter;
 import straw.polito.it.straw.data.Manager;
@@ -26,7 +27,7 @@ import straw.polito.it.straw.data.User;
 import straw.polito.it.straw.utils.Area;
 
 
-public class QuickSearchActivity extends AppCompatActivity{
+public class QuickSearchActivity extends AppCompatActivity implements RestaurantFilter{
 
     private ArrayList<Manager> restaurant_list;
     private ArrayList<Manager> restaurant_list_tmp;
@@ -64,6 +65,7 @@ public class QuickSearchActivity extends AppCompatActivity{
                 if (area.getName().equals(user.getUniversity())) {
                     this.latitude = area.getLatitude();
                     this.longitude = area.getLongitude();
+                    this.restaurantType = -1;
                     break;
                 }
             }
@@ -85,8 +87,8 @@ public class QuickSearchActivity extends AppCompatActivity{
         dialog.show();
         RestaurantListAdapter adapter = new RestaurantListAdapter(getApplicationContext(), restaurant_list);
         RestaurantListAdapter adapter2 = new RestaurantListAdapter(getApplicationContext(), restaurant_list_tmp);
-        this.application.getDatabaseUtils().retrieveRestaurantList(adapter, dialog);
-        this.application.getDatabaseUtils().retrieveRestaurantList(adapter2, dialog);
+        this.application.getDatabaseUtils().retrieveRestaurantList(adapter, dialog, this);
+        this.application.getDatabaseUtils().retrieveRestaurantList(adapter2, dialog, this);
         restaurant_listView.setAdapter(adapter);
         this.restaurant_listView = (ListView) findViewById(R.id.restaurant_list);
 
@@ -165,6 +167,32 @@ public class QuickSearchActivity extends AppCompatActivity{
 
             }
         });
+
+        /**
+         * Initial value
+         */
+        spinner2.setSelection(this.restaurantType + 1);
+        switch(this.restaurantType) {
+            case(0): {
+                PlaceFilter = "Restaurant";
+                break;
+            }
+            case (1): {
+                PlaceFilter = "Canteen";
+                break;
+            }
+            case (2): {
+                PlaceFilter = "Take Away";
+                break;
+            }
+            case (3): {
+                PlaceFilter = "Bar";
+                break;
+            } default: {
+                PlaceFilter = "";
+                break;
+            }
+        }
 
     }
     public void SortByRating(AdapterView<?> parent, View view,long id){
@@ -248,7 +276,8 @@ public class QuickSearchActivity extends AppCompatActivity{
         builder.show();
     }
 
-    public void filter(){
+    @Override
+    public void filter() {
         restaurant_list.clear();
         if(FoodFilter.equals("") && PlaceFilter.equals("")){
             restaurant_list.addAll(restaurant_list_tmp);

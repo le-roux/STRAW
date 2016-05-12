@@ -210,10 +210,10 @@
     <string name="WhatToEat">What do you want to eat ?</string>
     <string name="Search">Search</string>
     <string-array name="list_restaurant_type">
-        <item>Bar</item>
         <item>Restaurant</item>
         <item>Canteen</item>
         <item>Take Away</item>
+        <item>Bar</item>
     </string-array>
     <string name="GPSDisabled">GPS disabled</string>
     <string name="LocationRefused">Location rights not granted</string>
