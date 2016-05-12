@@ -14,6 +14,7 @@ import java.util.ArrayList;
 
 import straw.polito.it.straw.R;
 import straw.polito.it.straw.data.User;
+import straw.polito.it.straw.utils.ImageManager;
 
 /**
  * Created by Sylvain on 25/04/2016.
@@ -53,7 +54,7 @@ public class UserAdapter extends BaseAdapter {
             this.checkBoxes.add(checkBox);
         }
         ImageView imageView = (ImageView)convertView.findViewById(R.id.photo_imageView);
-        imageView.setImageURI(Uri.parse(this.users.get(position).getImage()));
+        ImageManager.setImage(context, imageView, this.users.get(position).getImage());
         TextView userName = (TextView)convertView.findViewById(R.id.User_name);
         userName.setText(this.users.get(position).getEmail());
         return convertView;

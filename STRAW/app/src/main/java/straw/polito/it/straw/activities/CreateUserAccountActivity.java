@@ -36,6 +36,7 @@ import straw.polito.it.straw.R;
 import straw.polito.it.straw.StrawApplication;
 import straw.polito.it.straw.data.User;
 import straw.polito.it.straw.utils.DatabaseUtils;
+import straw.polito.it.straw.utils.ImageManager;
 import straw.polito.it.straw.utils.Logger;
 import straw.polito.it.straw.utils.SharedPreferencesHandler;
 import straw.polito.it.straw.utils.Area;
@@ -93,13 +94,7 @@ public class CreateUserAccountActivity extends AppCompatActivity {
     }
 
     private void loadPrevInfo(User user) {
-        try {
-            photo_uri=Uri.parse(user.getImage());
-            bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), Uri.parse(user.getImage()));
-            photo.setImageBitmap(bitmap);
-        } catch (IOException e) {
-            Log.v(TAG, "Error on loading the photo! " + e.getMessage());
-        }
+        ImageManager.setImage(getApplicationContext(), photo, user.getImage());
         email.setText(user.getEmail());
         for (int i = 0; i < areas.length; i++) {
             if (areas[i].getName().equals(user.getUniversity())) {
@@ -180,7 +175,7 @@ public class CreateUserAccountActivity extends AppCompatActivity {
                 user.setDiet(u_d_list.get(u_d.getSelectedItemPosition()));
                 user.setType(u_t_list.get(u_t.getSelectedItemPosition()));
                 user.setPref_time(p_t_list.get(p_t.getSelectedItemPosition()));
-                user.setImage( photo_uri.toString());
+                user.setImage(ImageManager.getImageFromUri(getApplicationContext(), photo_uri));
 
                 if (!sw) {
                     /**
