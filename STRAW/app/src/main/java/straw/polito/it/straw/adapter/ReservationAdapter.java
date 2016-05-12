@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,6 +31,7 @@ public class ReservationAdapter extends BaseAdapter {
     private ArrayList<Reservation> reservationList;
     private static Context context;
     private DisplayReservationsActivity parentActivity;
+    private ImageView statusImage;
 
     public static final String ADAPTER = "Adapter";
 
@@ -77,6 +79,8 @@ public class ReservationAdapter extends BaseAdapter {
         TimerDisplay timerDisplay = (TimerDisplay)convertView.findViewById(R.id.Timer);
         TextView plates = (TextView) convertView.findViewById(R.id.plates);
         TextView moreOptions = (TextView) convertView.findViewById(R.id.moreOptionsLink);
+        this.statusImage = (ImageView)convertView.findViewById(R.id.state);
+        this.statusImage.setVisibility(View.INVISIBLE);
 
         moreOptions.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -131,7 +135,7 @@ public class ReservationAdapter extends BaseAdapter {
             }
         });
 
-        Button accept_button = (Button) convertView.findViewById(R.id.AcceptButton);
+        final Button accept_button = (Button) convertView.findViewById(R.id.AcceptButton);
         accept_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -145,6 +149,8 @@ public class ReservationAdapter extends BaseAdapter {
                     public void onClick(DialogInterface dialog, int item) {
                         if (options[item].equals(context.getString(R.string.Yes))) {
                             reservationList.remove(position);
+                            //accept_button.setVisibility(View.INVISIBLE);
+                            //statusImage.setVisibility(View.VISIBLE);
                             ReservationAdapter.this.notifyDataSetChanged();
                             Toast.makeText(context, context.getString(R.string.OrderAcceptedToast),
                                     Toast.LENGTH_LONG).show();
