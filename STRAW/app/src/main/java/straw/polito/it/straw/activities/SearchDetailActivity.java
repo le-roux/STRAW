@@ -1,9 +1,8 @@
 package straw.polito.it.straw.activities;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
+import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
@@ -38,7 +37,10 @@ public class SearchDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_detail);
 
-        man = new Manager(getIntent().getExtras().getString(RESTAURANT));
+        if (savedInstanceState == null)
+            man = new Manager(getIntent().getExtras().getString(RESTAURANT));
+        else
+            this.man = new Manager(savedInstanceState.getString(RESTAURANT));
         initialize();
 
         name.setText(man.getRes_name());
@@ -102,5 +104,11 @@ public class SearchDetailActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         this.man.addReview(new Review(data.getStringExtra(Review.REVIEW)));
         ((ReviewAdapter)this.review.getAdapter()).notifyDataSetChanged();
+        this.ratingBar.setRating(this.man.getRate());
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putString(RESTAURANT, this.man.toJSONObject());
     }
 }
