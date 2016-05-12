@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.CheckBox;
 import android.widget.ExpandableListAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -156,11 +157,10 @@ public class FoodExpandableAdapter extends BaseExpandableListAdapter implements 
     }
 
     protected void setSpecificElement(View convertView, int groupPosition, int childPosition) {
-        /**
-         * Nothing
-         */
+        CheckBox checkbox = (CheckBox)convertView.findViewById(R.id.checkbox);
+        checkbox.setVisibility(View.INVISIBLE);
     }
     protected View getConvertView(LayoutInflater layoutInflater) {
-        return layoutInflater.inflate(R.layout.activity_display_menu, null);
+        return layoutInflater.inflate(R.layout.menu_item, null);
     }
 }
