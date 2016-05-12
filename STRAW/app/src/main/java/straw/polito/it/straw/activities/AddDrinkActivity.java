@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.widget.TextView;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 
 import java.util.ArrayList;
 
@@ -25,7 +26,12 @@ public class AddDrinkActivity extends AddFoodActivity {
 
     @Override
     protected ArrayList<Food> getMenu() {
-        JSONArray jsonArray = Menu.getMenuFromSharedPreferences(this.getApplicationContext());
+        JSONArray jsonArray;
+        try {
+            jsonArray = new JSONArray(getIntent().getStringExtra(Menu.MENU));
+        } catch (JSONException e) {
+            return new ArrayList<>();
+        }
         ArrayList<Food> drinks = Menu.getDrinks(jsonArray);
         return drinks;
     }

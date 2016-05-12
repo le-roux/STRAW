@@ -1,41 +1,29 @@
 package straw.polito.it.straw.activities;
 
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 import straw.polito.it.straw.R;
+import straw.polito.it.straw.StrawApplication;
 import straw.polito.it.straw.adapter.RestaurantListAdapter;
 import straw.polito.it.straw.data.Manager;
-import straw.polito.it.straw.StrawApplication;
-
 import straw.polito.it.straw.data.User;
-import straw.polito.it.straw.utils.Logger;
-import straw.polito.it.straw.utils.DatabaseUtils;
-import straw.polito.it.straw.utils.SharedPreferencesHandler;
 import straw.polito.it.straw.utils.Area;
-import android.widget.AdapterView.OnItemSelectedListener;
 
 
 public class QuickSearchActivity extends AppCompatActivity{
@@ -45,16 +33,13 @@ public class QuickSearchActivity extends AppCompatActivity{
     private Spinner spinner1;
     private Spinner spinner2;
     private ListView restaurant_listView;
-    SharedPreferences mShared;
     private StrawApplication application;
-    private SharedPreferences sharedPreferences;
     private Button filtersButton;
     public String FoodFilter;
     public String PlaceFilter;
     private double latitude;
     private double longitude;
     private int restaurantType;
-    //private TextView t1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,8 +78,13 @@ public class QuickSearchActivity extends AppCompatActivity{
         init_list();
         restaurant_list = new ArrayList<>();
         restaurant_list_tmp = new ArrayList<>();
+        ProgressDialog dialog = new ProgressDialog(this);
+        dialog.setMessage(this.getString(R.string.RetrievingRestaurants));
+        dialog.setIndeterminate(true);
+        dialog.setCancelable(false);
+        dialog.show();
         RestaurantListAdapter adapter = new RestaurantListAdapter(getApplicationContext(), restaurant_list);
-        this.application.getDatabaseUtils().retrieveRestaurantList(adapter);
+        this.application.getDatabaseUtils().retrieveRestaurantList(adapter, dialog);
         restaurant_listView.setAdapter(adapter);
         this.restaurant_listView = (ListView) findViewById(R.id.restaurant_list);
 

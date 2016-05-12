@@ -84,6 +84,18 @@ public class Menu
         return drinks;
     }
 
+    public static ArrayList<Food> convertFood(JSONArray jsonArray) {
+        ArrayList<Food> foods = new ArrayList<>();
+        try {
+            for (int i = 0; i < jsonArray.length(); i++) {
+                foods.add(Food.create(jsonArray.get(i).toString()));
+            }
+        } catch (JSONException e) {
+            return foods;
+        }
+        return foods;
+    }
+
     /**
      * Structure of the record :
      * JSONArray

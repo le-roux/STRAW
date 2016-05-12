@@ -58,16 +58,16 @@ public class PreOrderFoodActivity extends AppCompatActivity implements PriceCont
         this.price = (PriceDisplay) findViewById(R.id.Price);
         this.listView = (ExpandableListView)findViewById(R.id.list_item);
 
-        if (this.menu == null) {
+        /*if (this.menu == null) {
             /**
              * The menu can't have been retrieved from the remote database
              */
-            JSONArray data = Menu.getMenuFromSharedPreferences(this.getApplicationContext());
+            /*JSONArray data = Menu.getMenuFromSharedPreferences(this.getApplicationContext());
             this.menu = new ArrayList[2];
             this.menu[Menu.PLATES] = new ArrayList<>();
             this.menu[Menu.DRINKS] = new ArrayList<>();
             Menu.restoreMenu(data, this.menu);
-        }
+        }*/
 
         this.command = new ArrayList[2];
         this.command[Menu.PLATES] = new ArrayList();
@@ -78,6 +78,7 @@ public class PreOrderFoodActivity extends AppCompatActivity implements PriceCont
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), AddPlateActivity.class);
+                intent.putExtra(Menu.MENU, menu[Menu.PLATES].toString());
                 startActivityForResult(intent, ADD_PLATE_REQUEST_CODE);
             }
         });
@@ -87,6 +88,7 @@ public class PreOrderFoodActivity extends AppCompatActivity implements PriceCont
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), AddDrinkActivity.class);
+                intent.putExtra(Menu.MENU, menu[Menu.DRINKS].toString());
                 startActivityForResult(intent, ADD_DRINK_REQUEST_CODE);
             }
         });
@@ -106,8 +108,11 @@ public class PreOrderFoodActivity extends AppCompatActivity implements PriceCont
         FoodExpandableAdapter adapter = new FoodExpandableAdapterRemove(getApplicationContext(), this.command[Menu.PLATES], this.command[Menu.DRINKS]);
         this.listView.setAdapter(adapter);
 
+        this.menu = new ArrayList[2];
+        this.menu[Menu.PLATES] = new ArrayList<>();
+        this.menu[Menu.DRINKS] = new ArrayList<>();
         DatabaseUtils databaseUtils = ((StrawApplication)getApplication()).getDatabaseUtils();
-        databaseUtils.retrieveMenu(this.reservation.getRestaurant(), adapter);
+        databaseUtils.retrieveMenu(this.reservation.getRestaurant(), this.menu);
     }
 
     @Override

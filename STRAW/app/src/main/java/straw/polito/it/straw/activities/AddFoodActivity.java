@@ -8,15 +8,17 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import java.util.ArrayList;
 
 import straw.polito.it.straw.PriceContainer;
 import straw.polito.it.straw.R;
-import straw.polito.it.straw.adapter.FoodAdapter;
 import straw.polito.it.straw.adapter.FoodAdapterCheckbox;
-import straw.polito.it.straw.adapter.FoodExpandableAdapter;
-import straw.polito.it.straw.adapter.FoodExpandableAdapterCheckbox;
 import straw.polito.it.straw.data.Food;
+import straw.polito.it.straw.data.Menu;
+import straw.polito.it.straw.utils.Logger;
 import straw.polito.it.straw.utils.PriceDisplay;
 
 public abstract class AddFoodActivity extends AppCompatActivity implements PriceContainer {
@@ -31,12 +33,22 @@ public abstract class AddFoodActivity extends AppCompatActivity implements Price
         super.onCreate(savedInstanceState);
         setContentView();
 
-        this.menu = getMenu();
+        JSONArray jsonArray;
+        try {
+            jsonArray = new JSONArray(getIntent().getStringExtra(Menu.MENU));
+            this.menu = Menu.convertFood(jsonArray);
+            Logger.d("size = " + this.menu.size());
+            Logger.d(jsonArray.toString());
+        } catch (JSONException e) {
+            Logger.d("error");
+            this.menu = new ArrayList<>();
+        }
 
         this.menu_view = (ListView)findViewById(R.id.list_item);
         this.price = (PriceDisplay)findViewById(R.id.Price);
         this.addButton = (Button)findViewById(R.id.add_button);
 
+        Logger.d("menu size : " + this.menu.size());
         this.menu_view.setAdapter(new FoodAdapterCheckbox(this, this.menu));
 
         this.addButton.setOnClickListener(new View.OnClickListener() {

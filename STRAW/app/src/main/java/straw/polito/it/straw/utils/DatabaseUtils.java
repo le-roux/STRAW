@@ -706,35 +706,52 @@ public class DatabaseUtils {
      * Retrieve the menu of the restaurant from the Firebase database
      *
      * @param restaurantName : the name of the restaurant of which we want to get the menu
-     * @param menu           : the internal representation of a complete menu (Plates + Drinks)
+     * @param adapter           : the adapter that displays the menu
      */
-    public void retrieveMenu(String restaurantName, FoodExpandableAdapter menu) {
+    public void retrieveMenu(String restaurantName, FoodExpandableAdapter adapter) {
         /**
          * Retrieve the string representation from the database
          */
+        RetrieveMenuAsyncTask task = new RetrieveMenuAsyncTask(restaurantName, adapter);
+        ArrayList<Food>[] menu = new ArrayList[2];
+        menu[Menu.PLATES] = (ArrayList<Food>)adapter.getGroup(Menu.PLATES);
+        menu[Menu.DRINKS] = (ArrayList<Food>)adapter.getGroup(Menu.DRINKS);
+        task.execute(menu);
+    }
+
+    public void retrieveMenu(String restaurantName, ArrayList<Food>[] menu) {
         RetrieveMenuAsyncTask task = new RetrieveMenuAsyncTask(restaurantName);
         task.execute(menu);
     }
 
-    private class RetrieveMenuAsyncTask extends AsyncTask<FoodExpandableAdapter, Void, Void> {
+    private class RetrieveMenuAsyncTask extends AsyncTask<ArrayList<Food>[], Void, Void> {
 
         private String restaurantName;
+        private FoodExpandableAdapter adapter;
 
         public RetrieveMenuAsyncTask(String restaurantName) {
             this.restaurantName = restaurantName;
+            this.adapter = null;
+        }
+
+        public RetrieveMenuAsyncTask(String restaurantName, FoodExpandableAdapter adapter) {
+            this.restaurantName = restaurantName;
+            this.adapter = adapter;
         }
 
         @Override
-        protected Void doInBackground(final FoodExpandableAdapter... params) {
-            final ArrayList<Plate> plates = (ArrayList<Plate>)params[0].getGroup(Menu.PLATES);
+        protected Void doInBackground(ArrayList<Food>[]... params) {
+            final ArrayList<Food> plates = (ArrayList<Food>)params[0][Menu.PLATES];
             plates.clear();
-            params[0].notifyDataSetChanged();
+            if (this.adapter != null)
+                this.adapter.notifyDataSetChanged();
             Firebase ref = firebase.child(MENU).child(this.restaurantName).child(PLATES);
             ref.addChildEventListener(new ChildEventListener() {
                 @Override
                 public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                     plates.add(dataSnapshot.getValue(Plate.class));
-                    params[0].notifyDataSetChanged();
+                    if (adapter != null)
+                        adapter.notifyDataSetChanged();
                 }
 
                 @Override
@@ -758,15 +775,17 @@ public class DatabaseUtils {
                 }
             });
 
-            final ArrayList<Drink> drinks = (ArrayList<Drink>)params[0].getGroup(Menu.DRINKS);
+            final ArrayList<Food> drinks = (ArrayList<Food>)params[0][Menu.DRINKS];
             drinks.clear();
-            params[0].notifyDataSetChanged();
+            if (adapter != null)
+                adapter.notifyDataSetChanged();
             ref = firebase.child(MENU).child(this.restaurantName).child(DRINKS);
             ref.addChildEventListener(new ChildEventListener() {
                 @Override
                 public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                     drinks.add(dataSnapshot.getValue(Drink.class));
-                    params[0].notifyDataSetChanged();
+                    if (adapter != null)
+                        adapter.notifyDataSetChanged();
                 }
 
                 @Override
@@ -799,12 +818,18 @@ public class DatabaseUtils {
      * @
      * @return : An ArrayList of Manager or null if it's not possible to retrieve proper data.
      */
-    public void retrieveRestaurantList(RestaurantListAdapter adapter) {
-        RetrieveRestaurantsAsyncTask task = new RetrieveRestaurantsAsyncTask();
+    public void retrieveRestaurantList(RestaurantListAdapter adapter, ProgressDialog dialog) {
+        RetrieveRestaurantsAsyncTask task = new RetrieveRestaurantsAsyncTask(dialog);
         task.execute(adapter);
     }
 
     private class RetrieveRestaurantsAsyncTask extends AsyncTask<RestaurantListAdapter, Void, Void> {
+
+        private ProgressDialog dialog;
+
+        public RetrieveRestaurantsAsyncTask(ProgressDialog dialog) {
+            this.dialog = dialog;
+        }
 
         @Override
         protected Void doInBackground(final RestaurantListAdapter... params) {
@@ -812,6 +837,8 @@ public class DatabaseUtils {
             ref.addChildEventListener(new ChildEventListener() {
                 @Override
                 public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                    if (dialog != null)
+                        dialog.dismiss();
                     Manager restaurant = dataSnapshot.getValue(Manager.class);
                     DataSnapshot reviews = dataSnapshot.child(REVIEWS);
                     for (DataSnapshot review : reviews.getChildren()) {

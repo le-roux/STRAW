@@ -2,25 +2,19 @@ package straw.polito.it.straw.activities;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-
 import straw.polito.it.straw.R;
 import straw.polito.it.straw.adapter.ReviewAdapter;
 import straw.polito.it.straw.data.Manager;
-import straw.polito.it.straw.data.Review;
 import straw.polito.it.straw.utils.ImageManager;
-import straw.polito.it.straw.utils.SharedPreferencesHandler;
 
 public class SearchDetailActivity extends AppCompatActivity {
 
@@ -28,7 +22,6 @@ public class SearchDetailActivity extends AppCompatActivity {
     private TextView price;
     private TextView menu;
     private TextView book;
-    private TextView preorder;
     private TextView add_rev;
     private ImageView img;
     private ListView review;
@@ -98,7 +91,6 @@ public class SearchDetailActivity extends AppCompatActivity {
         price=(TextView)findViewById(R.id.price);
         menu=(TextView)findViewById(R.id.menu);
         book=(TextView)findViewById(R.id.booking);
-        //preorder=(TextView)findViewById(R.id.preorder);
         add_rev=(TextView)findViewById(R.id.add_review);
         review = (ListView) findViewById(R.id.reviews);
         this.ratingBar = (RatingBar)findViewById(R.id.ratingBar);

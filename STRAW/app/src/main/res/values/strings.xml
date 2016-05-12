@@ -188,6 +188,7 @@
     <string name="SavingMenuSuccessful">Menu successfully saved</string>
     <string name="SavingPlates">Saving plates</string>
     <string name="SavingDrinks">Saving drinks</string>
+    <string name="RetrievingRestaurants">We are looking for the best results</string>
 
     <!--Strings for the search detail part-->
     <string name="s_menu">Menu</string>
