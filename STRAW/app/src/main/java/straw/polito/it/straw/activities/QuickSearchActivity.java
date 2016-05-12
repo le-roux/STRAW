@@ -61,13 +61,11 @@ public class QuickSearchActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quick_search);
         this.application = (StrawApplication)getApplication();
-
         Intent intent = getIntent();
         if (intent.hasExtra(Manager.LATITUDE)) {
             /**
              * Retrieve the info provided by AdvancedSearch activity
              */
-
             this.latitude = intent.getDoubleExtra(Manager.LATITUDE, 0);
             this.longitude = intent.getDoubleExtra(Manager.LONGITUDE, 0);
             this.restaurantType = intent.getIntExtra(Manager.TYPE, 0);
@@ -75,7 +73,6 @@ public class QuickSearchActivity extends AppCompatActivity{
             /**
              * Retrieve the info associated with the user profile
              */
-
             User user = this.application.getSharedPreferencesHandler().getCurrentUser();
             Area[] areas = this.application.getSharedPreferencesHandler().getAreaList();
             for (Area area : areas) {
@@ -167,9 +164,10 @@ public class QuickSearchActivity extends AppCompatActivity{
                     filter(FoodFilter, PlaceFilter);
                 } else if (position == 4) {
                     PlaceFilter = "Bar";
-                    filter(FoodFilter,PlaceFilter);
+                    filter(FoodFilter, PlaceFilter);
                 }
             }
+
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
 
@@ -260,22 +258,16 @@ public class QuickSearchActivity extends AppCompatActivity{
     public void filter(String foodfilter, String placefilter){
         restaurant_list.addAll(restaurant_list_tmp);
         restaurant_list_tmp.clear();
-        for (int a = 0; a < restaurant_list.size(); a++) {
-            if(foodfilter.equals("") && placefilter.equals("")){
-            }
-            else if(foodfilter.equals("")){
-                if(!restaurant_list.get(a).getRes_type().equals(placefilter)){
-                    restaurant_list_tmp.add(restaurant_list.get(a));
-                    restaurant_list.remove(a);
-                }
-            }
-            else if(placefilter.equals("")){
-                if(!restaurant_list.get(a).getFood_type().equals(foodfilter)){
-                    restaurant_list_tmp.add(restaurant_list.get(a));
-                    restaurant_list.remove(a);
-                }
-            }
-            else{
+        if(foodfilter.equals("") && placefilter.equals("")){
+        }
+        else if(foodfilter.equals("")){
+            Placefilter(placefilter);
+        }
+        else if(placefilter.equals("")){
+            Foodfilter(foodfilter);
+        }
+        else{
+            for (int a = 0; a < restaurant_list.size(); a++) {
                 if(restaurant_list.get(a).getRes_type().equals(placefilter) && restaurant_list.get(a).getFood_type().equals(foodfilter)){
                 }
                 else{
@@ -287,7 +279,22 @@ public class QuickSearchActivity extends AppCompatActivity{
         ((RestaurantListAdapter) restaurant_listView.getAdapter()).notifyDataSetChanged();
     }
 
-
+    public void Foodfilter(String foodfilter){
+        for (int a = 0; a < restaurant_list.size(); a++) {
+            if(!restaurant_list.get(a).getFood_type().equals(foodfilter)){
+                restaurant_list_tmp.add(restaurant_list.get(a));
+                restaurant_list.remove(a);
+            }
+        }
+    }
+    public void Placefilter(String placefilter){
+        for (int a = 0; a < restaurant_list.size(); a++) {
+            if(!restaurant_list.get(a).getRes_type().equals(placefilter)){
+                restaurant_list_tmp.add(restaurant_list.get(a));
+                restaurant_list.remove(a);
+            }
+        }
+    }
 
 
 
