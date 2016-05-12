@@ -12,6 +12,8 @@ public class Review {
     private float rate;
     private String description;
 
+    public static final String REVIEW = "review";
+
     public Review() {
         this.user = "";
         this.rate = 0;

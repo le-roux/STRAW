@@ -42,6 +42,7 @@ public class CreateReviewActivity extends AppCompatActivity {
                 DatabaseUtils databaseUtils = application.getDatabaseUtils();
                 databaseUtils.addReview(man.getRes_name(), review);
                 Intent resultIntent = new Intent();
+                resultIntent.putExtra(Review.REVIEW, review.toString());
                 setResult(Activity.RESULT_OK, resultIntent);
                 finish();
             }

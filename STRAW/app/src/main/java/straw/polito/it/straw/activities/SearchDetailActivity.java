@@ -14,6 +14,7 @@ import android.widget.TextView;
 import straw.polito.it.straw.R;
 import straw.polito.it.straw.adapter.ReviewAdapter;
 import straw.polito.it.straw.data.Manager;
+import straw.polito.it.straw.data.Review;
 import straw.polito.it.straw.utils.ImageManager;
 
 public class SearchDetailActivity extends AppCompatActivity {
@@ -99,10 +100,7 @@ public class SearchDetailActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-      //  if(requestCode==REQ_CODE_REV){
-        SharedPreferences sp= PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-        man = new Manager(sp.getString("Manager","Error"));
-        review.setAdapter(new ReviewAdapter(getBaseContext(),man.getReviews()));
-       // }
+        this.man.addReview(new Review(data.getStringExtra(Review.REVIEW)));
+        ((ReviewAdapter)this.review.getAdapter()).notifyDataSetChanged();
     }
 }

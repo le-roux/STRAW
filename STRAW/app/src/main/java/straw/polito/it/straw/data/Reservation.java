@@ -23,6 +23,7 @@ public class Reservation implements TimeDisplayer, DateDisplayer{
     private GregorianCalendar time;
     private ArrayList<Food> plates;
     private ArrayList<Food> drinks;
+    private String foodList;
     private String restaurant;
     private String customer;
     public enum Place {INSIDE, OUTSIDE, NO_PREFERENCE};
@@ -59,6 +60,7 @@ public class Reservation implements TimeDisplayer, DateDisplayer{
         this.drinks = drinks;
         this.time = new GregorianCalendar();
         this.place = place;
+        this.foodList = null;
     }
 
     public int getNumberPeople() {
@@ -69,34 +71,44 @@ public class Reservation implements TimeDisplayer, DateDisplayer{
         this.numberPeople = numberPeople;
     }
 
-    @JsonIgnore
     public String getFoodList() {
-        StringBuilder builder = new StringBuilder();
-        for (Food plate : this.plates) {
-            builder.append(plate.getName())
-                    .append(", ");
+        if (this.foodList == null) {
+            StringBuilder builder = new StringBuilder();
+            for (Food plate : this.plates) {
+                builder.append(plate.getName())
+                        .append(", ");
+            }
+            for (Food drink : this.drinks) {
+                builder.append(drink.getName())
+                        .append(", ");
+            }
+            if (builder.length() > 2)
+                builder.delete(builder.length() - 2, builder.length() - 1);
+            this.foodList = builder.toString();
         }
-        for (Food drink : this.drinks) {
-            builder.append(drink.getName())
-                    .append(", ");
-        }
-        if (builder.length() > 2)
-            builder.delete(builder.length() - 2, builder.length() - 1);
-        return builder.toString();
+        return this.foodList;
     }
 
+    public void setFoodList(String foodList) {
+        this.foodList = foodList;
+    }
+
+    @JsonIgnore
     public ArrayList<Food> getPlates() {
         return this.plates;
     }
 
+    @JsonIgnore
     public ArrayList<Food> getDrinks() {
         return this.drinks;
     }
 
+    @JsonIgnore
     public void setPlates(ArrayList<Food> plates) {
         this.plates = plates;
     }
 
+    @JsonIgnore
     public void setDrinks(ArrayList<Food> drinks) {
         this.drinks = drinks;
     }
