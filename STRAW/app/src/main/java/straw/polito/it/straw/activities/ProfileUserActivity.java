@@ -61,6 +61,7 @@ public class ProfileUserActivity extends AppCompatActivity {
                 //TODO RESERVATION HISTORY
             }
         });
+        res_h.setVisibility(View.INVISIBLE);
 
         rev_h.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -68,12 +69,14 @@ public class ProfileUserActivity extends AppCompatActivity {
                 //TODO REVIEW HISTORY
             }
         });
+        rev_h.setVisibility(View.INVISIBLE);
         friends.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
               //TODO FRIEND LIST
             }
         });
+        friends.setVisibility(View.INVISIBLE);
     }
 
     private void initialize() {
