@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.EditText;
 
 import straw.polito.it.straw.R;
+import straw.polito.it.straw.StrawApplication;
 import straw.polito.it.straw.UserContainer;
 import straw.polito.it.straw.data.Friend;
 
@@ -40,6 +41,7 @@ public class FriendCreationFragment extends DialogFragment{
                         Friend friend = new Friend(name, phoneNumber, emailAddress);
                         UserContainer container = (UserContainer)getActivity();
                         container.getUser().addFriend(friend);
+                        ((StrawApplication)getActivity().getApplication()).getDatabaseUtils().addFriend(friend);
                     }
                 })
                 .setNegativeButton(getString(R.string.Cancel), null);

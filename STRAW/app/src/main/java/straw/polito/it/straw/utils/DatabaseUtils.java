@@ -31,6 +31,7 @@ import straw.polito.it.straw.adapter.ReservationAdapter;
 import straw.polito.it.straw.adapter.RestaurantListAdapter;
 import straw.polito.it.straw.data.Drink;
 import straw.polito.it.straw.data.Food;
+import straw.polito.it.straw.data.Friend;
 import straw.polito.it.straw.data.Manager;
 import straw.polito.it.straw.data.Menu;
 import straw.polito.it.straw.data.Plate;
@@ -60,6 +61,7 @@ public class DatabaseUtils {
     public static final String PLATES = "plates";
     public static final String DRINKS = "drinks";
     public static final String REVIEWS = "reviews";
+    public static final String FRIENDS = "friends";
 
     /**
      * A simple constructor, invoked in StrawApplication.onCreate()
@@ -514,6 +516,10 @@ public class DatabaseUtils {
                                  * the proper activity.
                                  */
                                 User user = dataSnapshot.getValue(User.class);
+                                for (DataSnapshot data : dataSnapshot.child(FRIENDS).getChildren()) {
+                                    Friend friend = data.getValue(Friend.class);
+                                    user.addFriend(friend);
+                                }
                                 sharedPreferencesHandler.storeCurrentUser(user.toString());
                                 Intent intent = new Intent(context, SearchActivity.class);
                                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -1124,4 +1130,15 @@ public class DatabaseUtils {
         }
     }
 
+    public void addFriend(Friend friend) {
+        String id = firebase.getAuth().getUid();
+        Firebase ref = firebase.child(USER).child(id).child(FRIENDS);
+        ref.push().setValue(friend, new Firebase.CompletionListener() {
+            @Override
+            public void onComplete(FirebaseError firebaseError, Firebase firebase) {
+                if (firebaseError != null)
+                    Toast.makeText(context, firebaseError.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+    }
 }

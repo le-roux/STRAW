@@ -1,5 +1,7 @@
 package straw.polito.it.straw.data;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -117,10 +119,12 @@ public class User {
         this.image = image;
     }
 
+    @JsonIgnore
     public ArrayList<Friend> getFriends() {
         return this.friends;
     }
 
+    @JsonIgnore
     public void setFriends(ArrayList<Friend> friends) {
         this.friends = friends;
     }

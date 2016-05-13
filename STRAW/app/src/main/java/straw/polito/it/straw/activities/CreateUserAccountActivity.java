@@ -175,7 +175,8 @@ public class CreateUserAccountActivity extends AppCompatActivity {
                 user.setDiet(u_d_list.get(u_d.getSelectedItemPosition()));
                 user.setType(u_t_list.get(u_t.getSelectedItemPosition()));
                 user.setPref_time(p_t_list.get(p_t.getSelectedItemPosition()));
-                user.setImage(ImageManager.getImageFromUri(getApplicationContext(), photo_uri));
+                if (photo_uri != null)
+                    user.setImage(ImageManager.getImageFromUri(getApplicationContext(), photo_uri));
 
                 if (!sw) {
                     /**
