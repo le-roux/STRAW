@@ -44,7 +44,6 @@ public class DisplayReservationsActivity extends AppCompatActivity implements Ba
         ProgressDialog dialog = new ProgressDialog(this);
         dialog.setMessage(this.getString(R.string.RetrievingReservations));
         dialog.setIndeterminate(true);
-        dialog.setCancelable(false);
         dialog.show();
         application.getDatabaseUtils().retrieveReservations(this.manager.getRes_name(), adapter, dialog);
     }
