@@ -28,6 +28,18 @@ public class Friend {
         this.emailAddress = emailAddress;
     }
 
+    public Friend (String description) {
+        JSONObject jsonObject;
+        try {
+            jsonObject = new JSONObject(description);
+            this.setName(jsonObject.getString(NAME));
+            this.setPhoneNumber(jsonObject.getString(PHONE_NUMBER));
+            this.setEmailAddress(jsonObject.getString(EMAIL_ADDRESS));
+        } catch (JSONException e) {
+            Logger.d("Error reconstructing friend from string representation");
+        }
+    }
+
     public String getName() {
         return this.name;
     }

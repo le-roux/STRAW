@@ -1,5 +1,8 @@
 package straw.polito.it.straw.data;
 
+import android.util.Log;
+
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -20,7 +23,11 @@ public class User {
     private String phoneNumber;
     private ArrayList<Friend> friends;
 
+    public static final String FRIENDS_LIST = "friendsList";
+
     public User() {
+        Logger.d("new user");
+        this.friends = new ArrayList<>();
     }
 
     public User(String s){
@@ -33,6 +40,10 @@ public class User {
             this.type=jo.getString("type");
             this.pref_time=jo.getString("pref_t");
             this.image=jo.getString("image");
+            JSONArray jsonArray = jo.getJSONArray(FRIENDS_LIST);
+            for (int i = 0; i < jsonArray.length(); i++) {
+                this.friends.add(new Friend(jsonArray.get(i).toString()));
+            }
         } catch (JSONException e) {
             Logger.d(e.getMessage());
         }
@@ -48,9 +59,14 @@ public class User {
             jo.put("type",this.type);
             jo.put("pref_t",this.pref_time);
             jo.put("image",this.image);
+            JSONArray jsonArray = new JSONArray();
+            for (Friend friend : this.friends) {
+                jsonArray.put(friend.toJSONObject());
+            }
+            jo.put(FRIENDS_LIST, jsonArray);
             return jo.toString();
         } catch (JSONException e) {
-            e.printStackTrace();
+            Logger.d("Error when converting user into string");
         }
 
         return null;
