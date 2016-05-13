@@ -1,20 +1,26 @@
 package straw.polito.it.straw.activities;
 
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import straw.polito.it.straw.R;
 import straw.polito.it.straw.StrawApplication;
+import straw.polito.it.straw.UserContainer;
 import straw.polito.it.straw.data.User;
+import straw.polito.it.straw.fragments.AddFriendsFragment;
 import straw.polito.it.straw.utils.ImageManager;
 import straw.polito.it.straw.utils.SharedPreferencesHandler;
 
-public class ProfileUserActivity extends AppCompatActivity {
+public class ProfileUserActivity extends AppCompatActivity implements UserContainer{
 
     ImageView photo;
     TextView email;
@@ -29,6 +35,7 @@ public class ProfileUserActivity extends AppCompatActivity {
     Button edit_profile;
     private String TAG = "ProfileUserActivity";
     private SharedPreferencesHandler sharedPreferencesHandler;
+    private FragmentManager fragmentManager;
     User user;
 
     @Override
@@ -36,6 +43,7 @@ public class ProfileUserActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_user);
         sharedPreferencesHandler = ((StrawApplication)getApplication()).getSharedPreferencesHandler();
+        this.fragmentManager = getFragmentManager();
 
         initialize();
 
@@ -73,10 +81,15 @@ public class ProfileUserActivity extends AppCompatActivity {
         friends.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-              //TODO FRIEND LIST
+                /**
+                 * Display the fragment that allows to manage the list of friends
+                 */
+                FragmentTransaction transaction = fragmentManager.beginTransaction();
+                transaction.replace(R.id.mainLayout, new AddFriendsFragment());
+                transaction.addToBackStack(null);
+                transaction.commit();
             }
         });
-        friends.setVisibility(View.INVISIBLE);
     }
 
     private void initialize() {
@@ -98,5 +111,10 @@ public class ProfileUserActivity extends AppCompatActivity {
         diet.setText(getString(R.string.u_d) + ": " + user.getDiet());
         pref_t.setText(getString(R.string.p_t) + ": " + user.getPref_time());
 
+    }
+
+    @Override
+    public User getUser() {
+        return this.user;
     }
 }
