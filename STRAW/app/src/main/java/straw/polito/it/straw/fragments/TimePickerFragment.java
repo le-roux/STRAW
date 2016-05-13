@@ -1,4 +1,4 @@
-package straw.polito.it.straw.utils;
+package straw.polito.it.straw.fragments;
 
 import android.app.Activity;
 import android.app.Dialog;

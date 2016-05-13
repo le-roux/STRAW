@@ -45,8 +45,6 @@ import straw.polito.it.straw.data.User;
 public class DatabaseUtils {
     private Firebase firebase;
     private Context context;
-    private ConnectivityManager connectivityManager;
-    private NetworkInfo networkInfo;
     private SharedPreferencesHandler sharedPreferencesHandler;
 
     /**
@@ -70,8 +68,6 @@ public class DatabaseUtils {
      */
     public DatabaseUtils(Context context, SharedPreferencesHandler sharedPreferencesHandler) {
         this.context = context;
-        this.connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        this.networkInfo = connectivityManager.getActiveNetworkInfo();
         this.sharedPreferencesHandler = sharedPreferencesHandler;
         this.firebase = new Firebase(StrawApplication.FIREBASEURL);
     }
@@ -472,7 +468,6 @@ public class DatabaseUtils {
             firebase.authWithPassword(params[0], params[1], new Firebase.AuthResultHandler() {
                 @Override
                 public void onAuthenticated(AuthData authData) {
-                    Logger.d("Login successfull");
                     String text = context.getString(R.string.log_in) + " - " + context.getString(R.string.RetrievingData);
                     dialog.setMessage(text);
                     if (!retrieveProfile) {

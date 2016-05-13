@@ -24,7 +24,7 @@ import straw.polito.it.straw.AddressContainer;
 import straw.polito.it.straw.R;
 import straw.polito.it.straw.StrawApplication;
 import straw.polito.it.straw.data.Manager;
-import straw.polito.it.straw.utils.AddressChooserFragment;
+import straw.polito.it.straw.fragments.AddressChooserFragment;
 import straw.polito.it.straw.utils.Area;
 import straw.polito.it.straw.utils.Logger;
 import straw.polito.it.straw.utils.SharedPreferencesHandler;

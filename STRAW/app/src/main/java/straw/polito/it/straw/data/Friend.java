@@ -20,6 +20,9 @@ public class Friend {
     public static final String PHONE_NUMBER = "phoneNumber";
     public static final String EMAIL_ADDRESS = "emailAddress";
 
+    /**
+     * This constructor is needed by Firebase in order to rebuild the Friend objects.
+     */
     public Friend() {
 
     };
@@ -90,6 +93,10 @@ public class Friend {
         return builder.toString();
     }
 
+    /**
+     *
+     * @return : a string describing the 'addresses (email and phone number) of a Friend
+     */
     @JsonIgnore
     public String getAddresses() {
         StringBuilder builder = new StringBuilder();

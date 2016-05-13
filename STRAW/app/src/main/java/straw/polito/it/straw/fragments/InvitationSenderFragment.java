@@ -1,4 +1,4 @@
-package straw.polito.it.straw.utils;
+package straw.polito.it.straw.fragments;
 
 import android.app.AlertDialog;
 import android.app.Dialog;

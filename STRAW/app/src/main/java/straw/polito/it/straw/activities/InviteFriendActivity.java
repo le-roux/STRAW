@@ -24,8 +24,7 @@ import straw.polito.it.straw.data.Reservation;
 import straw.polito.it.straw.data.User;
 import straw.polito.it.straw.fragments.FriendCreationFragment;
 import straw.polito.it.straw.utils.DateDisplay;
-import straw.polito.it.straw.utils.InvitationSenderFragment;
-import straw.polito.it.straw.utils.Logger;
+import straw.polito.it.straw.fragments.InvitationSenderFragment;
 import straw.polito.it.straw.utils.SharedPreferencesHandler;
 import straw.polito.it.straw.utils.TimerDisplay;
 
@@ -128,7 +127,6 @@ public class InviteFriendActivity extends AppCompatActivity implements MessageSe
     @Override
     public String[] getAddresses(boolean email) {
         if (this.singleAddress == INVALID) {
-            Logger.d("several addresses");
             ArrayList<String> addresses = new ArrayList<>();
             for (int i = 0; i < friendAdapter.getCount(); i++) {
                 if (friendAdapter.getCheckboxes().get(i).isChecked()) {
@@ -141,7 +139,6 @@ public class InviteFriendActivity extends AppCompatActivity implements MessageSe
             String[] result = new String[addresses.size()];
             return addresses.toArray(result);
         } else {
-            Logger.d("single address");
             String[] result = new String[1];
             if (email)
                 result[0] = ((Friend) this.friendAdapter.getItem(this.singleAddress)).getEmailAddress();

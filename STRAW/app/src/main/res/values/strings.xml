@@ -164,7 +164,6 @@
     <string name="SMS">SMS</string>
     <string name="Email">Email</string>
     <string name="STRAWInvitation">STRAW Invitation</string>
-    <string name="invite">Invite</string>
 
     <!--Strings for the Pre Order Food part-->
     <string name="PreOrderFood"><u>Pre-order Food</u></string>

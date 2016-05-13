@@ -21,7 +21,7 @@ import straw.polito.it.straw.activities.DisplayReservationsActivity;
 import straw.polito.it.straw.utils.DateDisplay;
 import straw.polito.it.straw.data.Reservation;
 import straw.polito.it.straw.utils.TimerDisplay;
-import straw.polito.it.straw.utils.TimePickerFragment;
+import straw.polito.it.straw.fragments.TimePickerFragment;
 
 /**
  * Created by Sylvain on 07/04/2016.

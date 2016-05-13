@@ -11,7 +11,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Address;
-import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -29,14 +28,11 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -47,9 +43,8 @@ import straw.polito.it.straw.R;
 
 import straw.polito.it.straw.StrawApplication;
 import straw.polito.it.straw.data.Manager;
-import straw.polito.it.straw.data.Menu;
 import straw.polito.it.straw.data.Review;
-import straw.polito.it.straw.utils.AddressChooserFragment;
+import straw.polito.it.straw.fragments.AddressChooserFragment;
 import straw.polito.it.straw.utils.DatabaseUtils;
 import straw.polito.it.straw.utils.ImageManager;
 import straw.polito.it.straw.utils.Logger;
@@ -328,14 +323,6 @@ public class CreateManagerAccountActivity extends AppCompatActivity implements A
         }
         man.setRes_type(types.get(r_t.getSelectedItemPosition()));
         man.setFood_type(Ftypes.get(food.getSelectedItemPosition()));
-        /*
-        if (!food.getText().toString().equals("")) {
-            man.setFood_type(food.getText().toString());
-        } else {
-            showAlert(getString(R.string.m_food), getString(R.string.error), false);
-            sw = true;
-        }
-        */
         if (!seats.getText().toString().equals("") && Integer.parseInt(seats.getText().toString()) > 0) {
             man.setSeats(Integer.parseInt(seats.getText().toString()));
         } else {
@@ -357,7 +344,6 @@ public class CreateManagerAccountActivity extends AppCompatActivity implements A
         man.setImage(imageString);
         if (!sw) {
             ArrayList<Review> reviews = new ArrayList<>();
-            //reviews.add(new Review("a", 2, "cool"));
             man.setReviews(reviews);
             /**
              * Set the new profile as the current manager.
