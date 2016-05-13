@@ -149,6 +149,7 @@
     <string name="NoPreference">No preference</string>
     <string name="When">When ?</string>
     <string name="InviteFriends">Invite Friend(s)</string>
+    <string name="Invite">Invite</string>
     <string name="PreOrder">Pre-Order</string>
     <string name="ReservationSent">Reservation sent to the restaurant</string>
 
@@ -156,7 +157,6 @@
     <string name="InviteFriendsTitle"><u>Invite Friends</u></string>
     <string name="SendInvitation">Send Invitation(s)</string>
     <string name="InvitationsSent">Invitation(s) sent</string>
-    <string name="Invite">Invite</string>
     <string name="InvitationMessage"> invites you to come at </string>
     <string name="at">at</string>
     <string name="on">on</string>
@@ -164,6 +164,7 @@
     <string name="SMS">SMS</string>
     <string name="Email">Email</string>
     <string name="STRAWInvitation">STRAW Invitation</string>
+    <string name="invite">Invite</string>
 
     <!--Strings for the Pre Order Food part-->
     <string name="PreOrderFood"><u>Pre-order Food</u></string>

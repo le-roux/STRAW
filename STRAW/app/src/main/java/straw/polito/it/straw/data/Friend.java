@@ -1,5 +1,7 @@
 package straw.polito.it.straw.data;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -79,19 +81,27 @@ public class Friend {
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append(this.name);
-        if (this.phoneNumber != null) {
+        String address = this.getAddresses();
+        if (!address.equals("")) {
             builder.append(" (")
-                    .append(this.phoneNumber);
-            if (this.emailAddress != null)
-                builder.append(", ")
-                .append(this.emailAddress)
-                .append(')');
-        } else if (this.emailAddress != null) {
-            builder.append(" (")
-                    .append(this.emailAddress)
-                    .append(')');
+                    .append(address)
+                    .append(")");
         }
         return builder.toString();
+    }
+
+    @JsonIgnore
+    public String getAddresses() {
+        StringBuilder builder = new StringBuilder();
+        if (this.phoneNumber != null) {
+            builder.append(this.phoneNumber);
+            if (this.emailAddress != null)
+                builder.append(", ");
+        }
+        if (this.emailAddress != null) {
+            builder.append(this.emailAddress);
+        }
+        return  builder.toString();
     }
 
     /**

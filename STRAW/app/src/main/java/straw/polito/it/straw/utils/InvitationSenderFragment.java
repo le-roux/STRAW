@@ -29,7 +29,7 @@ public class InvitationSenderFragment extends DialogFragment {
                 .setPositiveButton(R.string.SMS, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        String[] addresses = messageSender.getAddresses();
+                        String[] addresses = messageSender.getAddresses(false);
                         String message = messageSender.getMessage();
                         for (String address : addresses) {
                             smsManager.sendTextMessage(address, null, message, null, null);
@@ -40,7 +40,7 @@ public class InvitationSenderFragment extends DialogFragment {
                 .setNeutralButton(R.string.Email, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        String[] addresses = messageSender.getAddresses();
+                        String[] addresses = messageSender.getAddresses(true);
                         Intent intent = new Intent(Intent.ACTION_SEND);
                         intent.setData(Uri.parse("mailto:"));
                         intent.setType("text/html");

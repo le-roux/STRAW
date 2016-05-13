@@ -73,37 +73,24 @@
 
     <Button
         android:id="@+id/add_button"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@id/SendInvitationButton"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:background="@drawable/customborder_buttons"
-        android:text="@string/Add"/>
+        android:text="@string/Add"
+        android:textSize="@dimen/Content_size"/>
 
-    <EditText
-        android:id="@+id/new_friend"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_toStartOf="@id/add_button"
-        android:layout_toLeftOf="@id/add_button"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
-        android:layout_above="@id/SendInvitationButton"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:layout_marginEnd="@dimen/activity_horizontal_margin"
-        android:layout_marginRight="@dimen/activity_horizontal_margin"
-        android:background="@drawable/customborder"
-        android:hint="@string/addr"
-        android:inputType="textEmailAddress"/>
 
     <ListView
         android:id="@+id/list_friends"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/ReservationTime"
-        android:layout_above="@id/new_friend"
+        android:layout_above="@id/add_button"
         android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:background="@color/beige"/>
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        android:background="@drawable/customborder"/>
 
 </RelativeLayout>
