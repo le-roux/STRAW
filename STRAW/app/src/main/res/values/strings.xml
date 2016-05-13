@@ -136,6 +136,8 @@
     <string name="worker">Worker</string>
     <string name="AddFriends"><u>Add new friends to your friend-list</u></string>
     <string name="Done">Done</string>
+    <string name="PhoneNumber">Phone Number</string>
+    <string name="Create">Create</string>
 
     <!--Strings for the Book Table part-->
     <string name="BookTable"><u>Book a table</u></string>

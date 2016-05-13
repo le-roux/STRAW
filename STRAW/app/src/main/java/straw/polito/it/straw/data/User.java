@@ -18,7 +18,7 @@ public class User {
     private String pref_time;
     private String image;
     private String phoneNumber;
-    private ArrayList<User> friends;
+    private ArrayList<Friend> friends;
 
     public User() {
     }
@@ -104,12 +104,12 @@ public class User {
         this.image = image;
     }
 
-    public ArrayList<User> getFriends() {
+    public ArrayList<Friend> getFriends() {
         return this.friends;
     }
 
-    public void addFriend(User user) {
-        this.friends.add(user);
+    public void addFriend(Friend friend) {
+        this.friends.add(friend);
     }
 
     public void removeFriend(User user) {

@@ -1,6 +1,5 @@
 package straw.polito.it.straw.activities;
 
-import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
@@ -9,12 +8,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import java.util.ArrayList;
 
 import straw.polito.it.straw.R;
 import straw.polito.it.straw.StrawApplication;
 import straw.polito.it.straw.UserContainer;
+import straw.polito.it.straw.data.Friend;
 import straw.polito.it.straw.data.User;
 import straw.polito.it.straw.fragments.AddFriendsFragment;
 import straw.polito.it.straw.utils.ImageManager;
@@ -33,11 +34,13 @@ public class ProfileUserActivity extends AppCompatActivity implements UserContai
     TextView friends;
 
     Button edit_profile;
-    private String TAG = "ProfileUserActivity";
     private SharedPreferencesHandler sharedPreferencesHandler;
     private FragmentManager fragmentManager;
+    private ArrayList<Friend> friendsList;
     User user;
 
+
+    public static final String USER = "user";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,7 +61,7 @@ public class ProfileUserActivity extends AppCompatActivity implements UserContai
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(getBaseContext(), CreateUserAccountActivity.class);
-                i.putExtra("user", user.toString());
+                i.putExtra(USER, user.toString());
                 startActivity(i);
             }
         });
@@ -111,10 +114,17 @@ public class ProfileUserActivity extends AppCompatActivity implements UserContai
         diet.setText(getString(R.string.u_d) + ": " + user.getDiet());
         pref_t.setText(getString(R.string.p_t) + ": " + user.getPref_time());
 
+        this.friendsList = this.user.getFriends();
+
     }
 
     @Override
     public User getUser() {
         return this.user;
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        this.sharedPreferencesHandler.storeCurrentUser(this.user.toString());
     }
 }
