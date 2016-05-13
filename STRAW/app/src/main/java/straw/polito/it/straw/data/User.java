@@ -1,7 +1,5 @@
 package straw.polito.it.straw.data;
 
-import android.util.Log;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -26,7 +24,6 @@ public class User {
     public static final String FRIENDS_LIST = "friendsList";
 
     public User() {
-        Logger.d("new user");
         this.friends = new ArrayList<>();
     }
 
@@ -122,6 +119,10 @@ public class User {
 
     public ArrayList<Friend> getFriends() {
         return this.friends;
+    }
+
+    public void setFriends(ArrayList<Friend> friends) {
+        this.friends = friends;
     }
 
     public void addFriend(Friend friend) {

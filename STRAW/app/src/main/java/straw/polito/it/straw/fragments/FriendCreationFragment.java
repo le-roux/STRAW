@@ -32,7 +32,11 @@ public class FriendCreationFragment extends DialogFragment{
                     public void onClick(DialogInterface dialog, int which) {
                         String name = nameText.getText().toString();
                         String phoneNumber = phoneText.getText().toString();
+                        if (phoneNumber.equals(""))
+                            phoneNumber = null;
                         String emailAddress = emailText.getText().toString();
+                        if (emailAddress.equals(""))
+                            emailAddress = null;
                         Friend friend = new Friend(name, phoneNumber, emailAddress);
                         UserContainer container = (UserContainer)getActivity();
                         container.getUser().addFriend(friend);

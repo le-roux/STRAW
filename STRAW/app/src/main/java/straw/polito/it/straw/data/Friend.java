@@ -29,14 +29,20 @@ public class Friend {
     }
 
     public Friend (String description) {
-        JSONObject jsonObject;
+        JSONObject jsonObject = null;
         try {
             jsonObject = new JSONObject(description);
             this.setName(jsonObject.getString(NAME));
-            this.setPhoneNumber(jsonObject.getString(PHONE_NUMBER));
-            this.setEmailAddress(jsonObject.getString(EMAIL_ADDRESS));
         } catch (JSONException e) {
             Logger.d("Error reconstructing friend from string representation");
+        }
+        try {
+            this.setPhoneNumber(jsonObject.getString(PHONE_NUMBER));
+        } catch (JSONException e) {
+        }
+        try {
+            this.setEmailAddress(jsonObject.getString(EMAIL_ADDRESS));
+        } catch (JSONException e) {
         }
     }
 
@@ -72,16 +78,17 @@ public class Friend {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append(this.name)
-                .append(" (");
+        builder.append(this.name);
         if (this.phoneNumber != null) {
-            builder.append(this.phoneNumber);
+            builder.append(" (")
+                    .append(this.phoneNumber);
             if (this.emailAddress != null)
                 builder.append(", ")
                 .append(this.emailAddress)
                 .append(')');
         } else if (this.emailAddress != null) {
-            builder.append(this.emailAddress)
+            builder.append(" (")
+                    .append(this.emailAddress)
                     .append(')');
         }
         return builder.toString();
