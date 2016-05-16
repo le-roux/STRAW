@@ -26,6 +26,7 @@ public class Reservation implements TimeDisplayer, DateDisplayer{
     private String foodList;
     private String restaurant;
     private String customer;
+    private String id;
     public enum Place {INSIDE, OUTSIDE, NO_PREFERENCE};
     public static final int INSIDE = 0;
     public static final int OUTSIDE = 1;
@@ -229,6 +230,14 @@ public class Reservation implements TimeDisplayer, DateDisplayer{
 
     public String getCustomer() {
         return this.customer;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getId() {
+        return this.id;
     }
 
     public JSONObject save() {

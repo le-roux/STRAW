@@ -15,10 +15,12 @@ import straw.polito.it.straw.StrawApplication;
 import straw.polito.it.straw.adapter.FoodExpandableAdapterRemove;
 import straw.polito.it.straw.data.Food;
 import straw.polito.it.straw.data.Reservation;
+import straw.polito.it.straw.data.User;
 import straw.polito.it.straw.utils.DatabaseUtils;
 import straw.polito.it.straw.utils.DateDisplay;
 import straw.polito.it.straw.utils.Logger;
 import straw.polito.it.straw.utils.PriceDisplay;
+import straw.polito.it.straw.utils.SharedPreferencesHandler;
 import straw.polito.it.straw.utils.TimerDisplay;
 
 public class ConfirmReservationActivity extends AppCompatActivity {
@@ -75,8 +77,20 @@ public class ConfirmReservationActivity extends AppCompatActivity {
         this.confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                 DatabaseUtils databaseUtils = ((StrawApplication)getApplication()).getDatabaseUtils();
-                 databaseUtils.saveReservation(reservation);
+                /**
+                 * Add the reservation to the reservations list of the customer (if it's not
+                 * already in it [if the user clicks more than once on the button]).
+                 */
+                StrawApplication application = (StrawApplication)getApplication();
+                SharedPreferencesHandler sharedPreferencesHandler = application.getSharedPreferencesHandler();
+                User user = sharedPreferencesHandler.getCurrentUser();
+                user.addReservation(reservation);
+                sharedPreferencesHandler.storeCurrentUser(user.toString());
+                /**
+                 * Store the reservation in the database (both for the customer and the restaurant).
+                 */
+                DatabaseUtils databaseUtils = ((StrawApplication)getApplication()).getDatabaseUtils();
+                databaseUtils.saveReservation(reservation);
              }
         });
     }

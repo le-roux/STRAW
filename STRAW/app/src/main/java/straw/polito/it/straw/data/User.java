@@ -22,53 +22,100 @@ public class User {
     private String image;
     private String phoneNumber;
     private ArrayList<Friend> friends;
+    /**
+     * List of the IDs of the reservations done by this customer.
+     */
+    private ArrayList<Reservation> reservations;
 
+    /**
+     * Keys used to store the data in the sharedPreferences
+     */
     public static final String FRIENDS_LIST = "friendsList";
+    public static final String EMAIL_ADDRESS = "email";
+    public static final String UNIVERSITY = "university";
+    public static final String DIET = "diet";
+    public static final String CUSTOMER_TYPE = "type";
+    public static final String PREFERRED_TIME = "prefTime";
+    public static final String IMAGE = "image";
+    public static final String RESERVATIONS = "reservations";
 
+    /**
+     * Basic constructor used by Firebase to create an instance of User when downloading it.
+     */
     public User() {
         this.friends = new ArrayList<>();
+        this.reservations = new ArrayList<>();
     }
 
     public User(String s){
         this.friends = new ArrayList<>();
+        this.reservations = new ArrayList<>();
         try {
-            JSONObject jo=new JSONObject(s);
-            this.email=jo.getString("email");
-            this.university=jo.getString("uni");
-            this.diet=jo.getString("diet");
-            this.type=jo.getString("type");
-            this.pref_time=jo.getString("pref_t");
-            this.image=jo.getString("image");
+            JSONObject jo = new JSONObject(s);
+            this.email = jo.getString(EMAIL_ADDRESS);
+            this.university = jo.getString(UNIVERSITY);
+            this.diet = jo.getString(DIET);
+            this.type = jo.getString(CUSTOMER_TYPE);
+            this.pref_time = jo.getString(PREFERRED_TIME);
+            this.image = jo.getString(IMAGE);
+
+            /**
+             * Retrieve the friends list.
+             */
             JSONArray jsonArray = jo.getJSONArray(FRIENDS_LIST);
             for (int i = 0; i < jsonArray.length(); i++) {
                 this.friends.add(new Friend(jsonArray.get(i).toString()));
+            }
+
+            /**
+             * Retrieve the reservations list.
+             */
+            if (jo.has(RESERVATIONS)) {
+                JSONArray reservationsArray = jo.getJSONArray(RESERVATIONS);
+                for (int i = 0; i < reservationsArray.length(); i++)
+                    this.reservations.add(Reservation.create(reservationsArray.getString(i)));
             }
         } catch (JSONException e) {
             Logger.d(e.getMessage());
         }
     }
 
+    /**
+     * @return : the stringified version of the JSON object representing this user.
+     */
     @Override
     public String toString() {
         JSONObject jo=new JSONObject();
         try {
-            jo.put("email",this.email);
-            jo.put("uni",this.university);
-            jo.put("diet",this.diet);
-            jo.put("type",this.type);
-            jo.put("pref_t",this.pref_time);
-            jo.put("image",this.image);
+            jo.put(EMAIL_ADDRESS, this.email);
+            jo.put(UNIVERSITY, this.university);
+            jo.put(DIET, this.diet);
+            jo.put(CUSTOMER_TYPE, this.type);
+            jo.put(PREFERRED_TIME, this.pref_time);
+            jo.put(IMAGE, this.image);
+
+            /**
+             * Store the friends list.
+             */
             JSONArray jsonArray = new JSONArray();
             for (Friend friend : this.friends) {
                 jsonArray.put(friend.toJSONObject());
             }
             jo.put(FRIENDS_LIST, jsonArray);
+
+            /**
+             * Store the reservation(s) list
+             */
+            JSONArray reservationsArray = new JSONArray();
+            for (Reservation reservation : this.reservations)
+                reservationsArray.put(reservation.toString());
+            jo.put(RESERVATIONS, reservationsArray);
+
             return jo.toString();
         } catch (JSONException e) {
             Logger.d("Error when converting user into string");
+            return null;
         }
-
-        return null;
     }
 
     public String getEmail() {
@@ -143,5 +190,20 @@ public class User {
 
     public String getPhoneNumber() {
         return this.phoneNumber;
+    }
+
+    @JsonIgnore
+    public ArrayList<Reservation> getReservations() {
+        return this.reservations;
+    }
+
+    @JsonIgnore
+    public void setReservations(ArrayList<Reservation> reservations) {
+        this.reservations = reservations;
+    }
+
+    @JsonIgnore
+    public void addReservation(Reservation reservation) {
+        this.reservations.add(reservation);
     }
 }

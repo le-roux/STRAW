@@ -54,6 +54,7 @@ public class DatabaseUtils {
     public static final String MANAGER = "manager";
     public static final String USER = "user";
     public static final String RESERVATIONS = "reservations";
+    public static final String RESTAURANT_RESERVATIONS = "restaurantReservations";
     public static final String RESTAURANTS = "restaurants";
     public static final String NAMECHECK = "restaurantsName";
     public static final String PLATES = "plates";
@@ -506,16 +507,25 @@ public class DatabaseUtils {
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             if (dataSnapshot.exists()) {
                                 /**
-                                 * It's a customer (and not a manager). Retrieve the profile, store
-                                 * it in the sharedPreferences for future access and launch
-                                 * the proper activity.
+                                 * It's a customer (and not a manager). Retrieve the profile.
+                                 * Friends lists will be retrieved manually just after for
+                                 * simplicity.
                                  */
                                 User user = dataSnapshot.getValue(User.class);
+                                /**
+                                 * Retrieve the friends list
+                                 */
                                 for (DataSnapshot data : dataSnapshot.child(FRIENDS).getChildren()) {
                                     Friend friend = data.getValue(Friend.class);
                                     user.addFriend(friend);
                                 }
+                                /**
+                                 * Store the retrieved profile in sharedPreferences for next accesses
+                                 */
                                 sharedPreferencesHandler.storeCurrentUser(user.toString());
+                                /**
+                                 * Launch the next activity : SearchActivity
+                                 */
                                 Intent intent = new Intent(context, SearchActivity.class);
                                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                 dialog.dismiss();
@@ -1026,43 +1036,34 @@ public class DatabaseUtils {
     private class StoreReservationAsyncTask extends AsyncTask<Reservation, Void, Void> {
 
         @Override
-        protected Void doInBackground(Reservation... params) {
-            Firebase ref = firebase.child(RESERVATIONS).child(params[0].getRestaurant());
-            String id = ref.push().getKey();
+        protected Void doInBackground(final Reservation... params) {
+            /**
+             * Store the reservation in global reservations list.
+             */
+            Firebase ref = firebase.child(RESERVATIONS);
+            final String id = ref.push().getKey();
+            params[0].setId(id);
             ref.child(id).setValue(params[0], new Firebase.CompletionListener() {
                 @Override
-                public void onComplete(FirebaseError firebaseError, Firebase firebase) {
-                    if (firebaseError == null)
+                public void onComplete(FirebaseError firebaseError, Firebase firebaseRef) {
+                    if (firebaseError == null) {
+                        /**
+                         * Store the reservation id in the restaurant reservations list.
+                         */
+                        Firebase ref = firebase.child(RESTAURANT_RESERVATIONS).child(params[0].getRestaurant());
+                        ref.push().setValue(id);
+                        /**
+                         * Store the reservation id in the customer reservations list.
+                         */
+                        ref = firebase.child(USER).child(firebase.getAuth().getUid());
+                        ref.child(RESERVATIONS).push().setValue(id);
                         Toast.makeText(context, R.string.ReservationSent, Toast.LENGTH_LONG).show();
-                    else
+                    } else
                         Toast.makeText(context, firebaseError.getMessage(), Toast.LENGTH_LONG).show();
                 }
             });
             return null;
         }
-    }
-
-    /**
-     * Retrieve a reservation from the Firebase database.
-     *
-     * @param restaurantName : the name of the restaurant in which the reservation has been done.
-     * @return : the reservation retrieved or null if it's not possible to retrieve proper data.
-     */
-    public Reservation retrieveReservation(String restaurantName, String customerEmail) {
-        String[] children = new String[3];
-        children[0] = RESERVATIONS;
-        children[1] = restaurantName;
-        children[2] = customerEmail;
-        RetrieveAsyncTask task = new RetrieveAsyncTask();
-        task.execute(children);
-        String data;
-        try {
-            data = task.get();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-        return Reservation.create(data);
     }
 
     /**
@@ -1088,17 +1089,30 @@ public class DatabaseUtils {
 
         @Override
         protected Void doInBackground(final ReservationAdapter... params) {
-            Firebase ref = firebase.child(RESERVATIONS).child(this.restaurantName);
+            Firebase ref = firebase.child(RESTAURANT_RESERVATIONS).child(this.restaurantName);
             params[0].getReservationList().clear();
             params[0].notifyDataSetChanged();
             ref.addChildEventListener(new ChildEventListener() {
                 @Override
                 public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                    Reservation reservation = dataSnapshot.getValue(Reservation.class);
-                    params[0].getReservationList().add(reservation);
-                    params[0].notifyDataSetChanged();
-                    if (dialog != null)
-                        dialog.dismiss();
+                    String reservationId = dataSnapshot.getValue(String.class);
+                    Firebase ref = firebase.child(RESERVATIONS).child(reservationId);
+                    ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            Reservation reservation = dataSnapshot.getValue(Reservation.class);
+                            params[0].getReservationList().add(reservation);
+                            params[0].notifyDataSetChanged();
+                            if (dialog != null)
+                                dialog.dismiss();
+                        }
+
+                        @Override
+                        public void onCancelled(FirebaseError firebaseError) {
+
+                        }
+                    });
+
                 }
 
                 @Override
