@@ -3,6 +3,7 @@ package straw.polito.it.straw.fragments;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.text.format.DateFormat;
@@ -10,12 +11,17 @@ import android.widget.BaseAdapter;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import straw.polito.it.straw.BaseAdapterContainer;
 import straw.polito.it.straw.R;
+import straw.polito.it.straw.StrawApplication;
 import straw.polito.it.straw.TimeContainer;
 import straw.polito.it.straw.TimeDisplayer;
 import straw.polito.it.straw.adapter.ReservationAdapter;
 import straw.polito.it.straw.data.Reservation;
+import straw.polito.it.straw.utils.DatabaseUtils;
 
 /**
  * Created by sylvain on 12/04/2016.
@@ -51,9 +57,28 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
         this.timeDisplayer.setTime(hourOfDay, minute);
         if (this.notifyAdapter) {
             this.adapter.notifyDataSetChanged();
-            if (this.adapter.getClass().equals(ReservationAdapter.class))
+            if (this.adapter.getClass().equals(ReservationAdapter.class)) {
+                /**
+                 * Update the reservation in the database
+                 */
+                StrawApplication application = (StrawApplication)this.activity.getApplication();
+                DatabaseUtils databaseUtils = application.getDatabaseUtils();
+                Map<String, Object> map = new HashMap<>();
+                map.put(Reservation.ID, ((Reservation)this.timeDisplayer).getId());
+                map.put(Reservation.HOUR, ((Reservation)this.timeDisplayer).getHourOfDay());
+                map.put(Reservation.MINUTES, ((Reservation)this.timeDisplayer).getMinutes());
+                map.put(Reservation.STATUS, Reservation.CHANGED);
+                ProgressDialog dialog = new ProgressDialog(this.activity);
+                dialog.setIndeterminate(true);
+                dialog.setMessage(this.activity.getString(R.string.UpdatingReservation));
+                dialog.show();
+                databaseUtils.updateReservation(map, dialog);
+                /**
+                 * Display a message indicating that everything worked fine.
+                 */
                 Toast.makeText(getActivity(), getActivity().getString(R.string.HourChangedToast),
                         Toast.LENGTH_LONG).show();
+            }
         }
     }
 }

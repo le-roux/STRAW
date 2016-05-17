@@ -152,6 +152,7 @@
     <string name="Invite">Invite</string>
     <string name="PreOrder">Pre-Order</string>
     <string name="ReservationSent">Reservation sent to the restaurant</string>
+    <string name="UpdatingReservation">Updating reservation</string>
 
     <!--Strings for the Invite Friends part-->
     <string name="InviteFriendsTitle"><u>Invite Friends</u></string>

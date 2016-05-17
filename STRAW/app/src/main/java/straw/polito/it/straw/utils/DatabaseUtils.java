@@ -1145,6 +1145,11 @@ public class DatabaseUtils {
         task.execute(attributes);
     }
 
+    public void updateReservation(Map<String, Object> attributes, ProgressDialog dialog) {
+        UpdateReservationAsyncTask task = new UpdateReservationAsyncTask(dialog);
+        task.execute(attributes);
+    }
+
     public void updateReservationStatus(String id, int status) {
         Map<String, Object> map = new HashMap<String, Object>();
         map.put(Reservation.ID, id);
@@ -1154,15 +1159,30 @@ public class DatabaseUtils {
 
     private class UpdateReservationAsyncTask extends AsyncTask<Map<String, Object>, Void, Void> {
 
+        private ProgressDialog dialog;
+
+        public UpdateReservationAsyncTask() {
+            this.dialog = null;
+        }
+
+        public UpdateReservationAsyncTask(ProgressDialog dialog) {
+            this.dialog = dialog;
+        }
+
         @Override
         protected Void doInBackground(Map<String, Object>... params) {
             String id = (String)params[0].get(Reservation.ID);
-            if (id == null || id.equals(""))
+            if (id == null || id.equals("")) {
+                if (dialog != null)
+                    dialog.dismiss();
                 return null;
+            }
             Firebase ref = firebase.child(RESERVATIONS).child(id);
             ref.updateChildren(params[0], new Firebase.CompletionListener() {
                 @Override
                 public void onComplete(FirebaseError firebaseError, Firebase firebase) {
+                    if (dialog != null)
+                        dialog.dismiss();
                     if (firebaseError != null)
                         Toast.makeText(context, firebaseError.getMessage(), Toast.LENGTH_LONG).show();
                 }
