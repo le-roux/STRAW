@@ -68,6 +68,7 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
                 map.put(Reservation.HOUR, ((Reservation)this.timeDisplayer).getHourOfDay());
                 map.put(Reservation.MINUTES, ((Reservation)this.timeDisplayer).getMinutes());
                 map.put(Reservation.STATUS, Reservation.CHANGED);
+                ((ReservationAdapter)this.adapter).setIconVisible(ReservationAdapter.WAIT_ICON);
                 ProgressDialog dialog = new ProgressDialog(this.activity);
                 dialog.setIndeterminate(true);
                 dialog.setMessage(this.activity.getString(R.string.UpdatingReservation));

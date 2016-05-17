@@ -78,6 +78,7 @@
         android:layout_marginRight="5dp"
         android:layout_centerVertical="true"
         android:background="@color/cyan_light"
+        android:visibility="invisible"
         android:src="@drawable/check"/>
 
 </RelativeLayout>

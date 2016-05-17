@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,17 +17,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 import straw.polito.it.straw.R;
 import straw.polito.it.straw.StrawApplication;
 import straw.polito.it.straw.activities.DisplayReservationsActivity;
+import straw.polito.it.straw.data.Reservation;
+import straw.polito.it.straw.fragments.TimePickerFragment;
 import straw.polito.it.straw.utils.DatabaseUtils;
 import straw.polito.it.straw.utils.DateDisplay;
-import straw.polito.it.straw.data.Reservation;
 import straw.polito.it.straw.utils.TimerDisplay;
-import straw.polito.it.straw.fragments.TimePickerFragment;
 
 /**
  * Created by Sylvain on 07/04/2016.
@@ -36,10 +35,17 @@ public class ReservationAdapter extends BaseAdapter {
     private ArrayList<Reservation> reservationList;
     private static Context context;
     private DisplayReservationsActivity parentActivity;
-    private ImageView statusImage;
     private DatabaseUtils databaseUtils;
+    private Button acceptButton;
+    private ImageView statusImage;
 
     public static final String ADAPTER = "Adapter";
+    public static final String ACCEPT_ICON = "android.resource://straw.polito.it.straw/drawable/check";
+    //Created by ?? from Noun Project
+    public static final String CANCEL_ICON = "android.resource://straw.polito.it.straw/drawable/discard";
+    //Created by Herbert Spencer from Noun Project
+    public static final String WAIT_ICON = "android.resource://straw.polito.it.straw/drawable/wait";
+    //Created by Arthur Shlain from Noun Project
 
     public ReservationAdapter (Context context) {
         this.reservationList = new ArrayList<Reservation>();
@@ -89,8 +95,27 @@ public class ReservationAdapter extends BaseAdapter {
         TimerDisplay timerDisplay = (TimerDisplay)convertView.findViewById(R.id.Timer);
         TextView plates = (TextView) convertView.findViewById(R.id.plates);
         TextView moreOptions = (TextView) convertView.findViewById(R.id.moreOptionsLink);
+        this.acceptButton = (Button) convertView.findViewById(R.id.AcceptButton);
         this.statusImage = (ImageView)convertView.findViewById(R.id.state);
-        this.statusImage.setVisibility(View.INVISIBLE);
+
+        switch(this.reservationList.get(position).getStatus()) {
+            case (Reservation.PENDING) : {
+                setIconVisible(null);
+                break;
+            }
+            case (Reservation.ACCEPTED) : {
+                setIconVisible(ACCEPT_ICON);
+                break;
+            }
+            case (Reservation.DISCARDED) : {
+                setIconVisible(CANCEL_ICON);
+                break;
+            }
+            case (Reservation.CHANGED) : {
+                setIconVisible(WAIT_ICON);
+                break;
+            }
+        }
 
         moreOptions.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -124,6 +149,7 @@ public class ReservationAdapter extends BaseAdapter {
                                         databaseUtils.updateReservationStatus(reservationList.get(position).getId(), Reservation.DISCARDED);
                                         //reservationList.remove(position);
                                         ReservationAdapter.this.notifyDataSetChanged();
+                                        setIconVisible(CANCEL_ICON);
                                         Toast.makeText(context, context.getString(R.string.OrderRefusedToast),
                                                 Toast.LENGTH_LONG).show();
                                         return;
@@ -146,8 +172,7 @@ public class ReservationAdapter extends BaseAdapter {
             }
         });
 
-        final Button accept_button = (Button) convertView.findViewById(R.id.AcceptButton);
-        accept_button.setOnClickListener(new View.OnClickListener() {
+        acceptButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 AlertDialog.Builder builder_accept = new AlertDialog.Builder(view.getRootView().getContext());
@@ -160,9 +185,7 @@ public class ReservationAdapter extends BaseAdapter {
                     public void onClick(DialogInterface dialog, int item) {
                         if (options[item].equals(context.getString(R.string.Yes))) {
                             databaseUtils.updateReservationStatus(reservationList.get(position).getId(), Reservation.ACCEPTED);
-                            //reservationList.remove(position);
-                            //accept_button.setVisibility(View.INVISIBLE);
-                            //statusImage.setVisibility(View.VISIBLE);
+                            setIconVisible(ACCEPT_ICON);
                             ReservationAdapter.this.notifyDataSetChanged();
                             Toast.makeText(context, context.getString(R.string.OrderAcceptedToast),
                                     Toast.LENGTH_LONG).show();
@@ -213,5 +236,16 @@ public class ReservationAdapter extends BaseAdapter {
         fragment.setArguments(bundle);
         fragment.show(this.parentActivity.getFragmentManager(), "timePicker");
         //TODO : update reservation if time change
+    }
+
+    public void setIconVisible(String icon) {
+        if (icon == null) {
+            this.acceptButton.setVisibility(View.VISIBLE);
+            this.statusImage.setVisibility(View.INVISIBLE);
+        } else {
+            this.statusImage.setImageURI(Uri.parse(icon));
+            this.statusImage.setVisibility(View.VISIBLE);
+            this.acceptButton.setVisibility(View.INVISIBLE);
+        }
     }
 }
