@@ -27,25 +27,38 @@ public class Reservation implements TimeDisplayer, DateDisplayer{
     private String restaurant;
     private String customer;
     private String id;
+    private int status;
     public enum Place {INSIDE, OUTSIDE, NO_PREFERENCE};
+
     public static final int INSIDE = 0;
     public static final int OUTSIDE = 1;
     public static final int NO_PREFERENCE = 2;
 
+    /**
+     * Possible values for the "status" attribute.
+     */
+    public static final int PENDING = 0;
+    public static final int ACCEPTED = 1;
+    public static final int DISCARDED = 2;
+    public static final int CHANGED = 3;
+
     private Place place;
 
-    public static final String NUMBER_PEOPLE = "NumberPeople";
-    public static final String DAY = "Day";
-    public static final String MONTH = "Month";
-    public static final String YEAR = "Year";
-    public static final String HOUR = "Hour";
-    public static final String MINUTES = "Minutes";
+    public static final String NUMBER_PEOPLE = "numberPeople";
+    public static final String DAY = "day";
+    public static final String MONTH = "month";
+    public static final String YEAR = "year";
+    public static final String HOUR = "hourOfDay";
+    public static final String MINUTES = "minutes";
     public static final String PLATES = "Plates";
     public static final String DRINKS = "Drinks";
     public static final String RESERVATION = "Reservation";
-    public static final String RESTAURANT = "Restaurant";
-    public static final String CUSTOMER = "Customer";
-    public static  final String PLACE = "Place";
+    public static final String RESTAURANT = "restaurant";
+    public static final String CUSTOMER = "customer";
+    public static  final String PLACE = "place";
+    public static final String STATUS = "status";
+    public static final String ID = "id";
+    public static final String FOOD_LIST = "foodList";
 
     public Reservation() {
         this(0, new ArrayList<Food>(), new ArrayList<Food>(), Place.NO_PREFERENCE);
@@ -62,6 +75,7 @@ public class Reservation implements TimeDisplayer, DateDisplayer{
         this.time = new GregorianCalendar();
         this.place = place;
         this.foodList = null;
+        this.status = PENDING;
     }
 
     public int getNumberPeople() {
@@ -238,6 +252,14 @@ public class Reservation implements TimeDisplayer, DateDisplayer{
 
     public String getId() {
         return this.id;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    public int getStatus() {
+        return this.status;
     }
 
     public JSONObject save() {

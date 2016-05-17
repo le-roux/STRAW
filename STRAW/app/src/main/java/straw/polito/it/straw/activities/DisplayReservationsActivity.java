@@ -36,7 +36,7 @@ public class DisplayReservationsActivity extends AppCompatActivity implements Ba
         this.reservationList = new ArrayList<>();
 
         this.reservationList_View = (ListView)findViewById(R.id.reservations_list);
-        ReservationAdapter adapter = new ReservationAdapter(getApplicationContext(),
+        ReservationAdapter adapter = new ReservationAdapter(this,
                 this.reservationList, this);
         this.reservationList_View.setAdapter(adapter);
         StrawApplication application = (StrawApplication)getApplication();

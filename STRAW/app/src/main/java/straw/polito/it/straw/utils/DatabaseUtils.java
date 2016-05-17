@@ -19,6 +19,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 import straw.polito.it.straw.R;
@@ -1133,6 +1134,37 @@ public class DatabaseUtils {
                 @Override
                 public void onCancelled(FirebaseError firebaseError) {
 
+                }
+            });
+            return null;
+        }
+    }
+
+    public void updateReservation(Map<String, Object> attributes) {
+        UpdateReservationAsyncTask task = new UpdateReservationAsyncTask();
+        task.execute(attributes);
+    }
+
+    public void updateReservationStatus(String id, int status) {
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put(Reservation.ID, id);
+        map.put(Reservation.STATUS, status);
+        updateReservation(map);
+    }
+
+    private class UpdateReservationAsyncTask extends AsyncTask<Map<String, Object>, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Map<String, Object>... params) {
+            String id = (String)params[0].get(Reservation.ID);
+            if (id == null || id.equals(""))
+                return null;
+            Firebase ref = firebase.child(RESERVATIONS).child(id);
+            ref.updateChildren(params[0], new Firebase.CompletionListener() {
+                @Override
+                public void onComplete(FirebaseError firebaseError, Firebase firebase) {
+                    if (firebaseError != null)
+                        Toast.makeText(context, firebaseError.getMessage(), Toast.LENGTH_LONG).show();
                 }
             });
             return null;

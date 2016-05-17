@@ -12,7 +12,7 @@ import straw.polito.it.straw.utils.SharedPreferencesHandler;
  */
 public class StrawApplication extends Application {
 
-    public static String FIREBASEURL = "https://vivid-fire-6651.firebaseio.com/";
+    public static String FIREBASEURL = "https://straw.firebaseio.com/";
     private DatabaseUtils databaseUtils;
     private SharedPreferencesHandler sharedPreferencesHandler;
 

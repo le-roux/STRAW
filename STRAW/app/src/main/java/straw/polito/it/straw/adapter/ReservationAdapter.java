@@ -1,5 +1,6 @@
 package straw.polito.it.straw.adapter;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DialogFragment;
 import android.content.Context;
@@ -15,9 +16,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import straw.polito.it.straw.R;
+import straw.polito.it.straw.StrawApplication;
 import straw.polito.it.straw.activities.DisplayReservationsActivity;
+import straw.polito.it.straw.utils.DatabaseUtils;
 import straw.polito.it.straw.utils.DateDisplay;
 import straw.polito.it.straw.data.Reservation;
 import straw.polito.it.straw.utils.TimerDisplay;
@@ -32,12 +37,15 @@ public class ReservationAdapter extends BaseAdapter {
     private static Context context;
     private DisplayReservationsActivity parentActivity;
     private ImageView statusImage;
+    private DatabaseUtils databaseUtils;
 
     public static final String ADAPTER = "Adapter";
 
     public ReservationAdapter (Context context) {
         this.reservationList = new ArrayList<Reservation>();
         this.context = context;
+        StrawApplication application = (StrawApplication)((Activity)context).getApplication();
+        this.databaseUtils = application.getDatabaseUtils();
     }
 
     public ReservationAdapter(Context context, ArrayList<Reservation> reservationList,
@@ -45,6 +53,8 @@ public class ReservationAdapter extends BaseAdapter {
         this.reservationList = reservationList;
         this.context = context;
         this.parentActivity = activity;
+        StrawApplication application = (StrawApplication)((Activity)context).getApplication();
+        this.databaseUtils = application.getDatabaseUtils();
     }
 
     @Override
@@ -75,7 +85,7 @@ public class ReservationAdapter extends BaseAdapter {
 
         //Get the views of the item
         TextView numberPeople = (TextView) convertView.findViewById(R.id.number_people);
-        DateDisplay dateDisplay = (DateDisplay) convertView.findViewById(R.id.Date);
+        final DateDisplay dateDisplay = (DateDisplay) convertView.findViewById(R.id.Date);
         TimerDisplay timerDisplay = (TimerDisplay)convertView.findViewById(R.id.Timer);
         TextView plates = (TextView) convertView.findViewById(R.id.plates);
         TextView moreOptions = (TextView) convertView.findViewById(R.id.moreOptionsLink);
@@ -111,7 +121,8 @@ public class ReservationAdapter extends BaseAdapter {
                                 @Override
                                 public void onClick(DialogInterface dialog, int item) {
                                     if (options[item].equals(context.getString(R.string.Yes))) {
-                                        reservationList.remove(position);
+                                        databaseUtils.updateReservationStatus(reservationList.get(position).getId(), Reservation.DISCARDED);
+                                        //reservationList.remove(position);
                                         ReservationAdapter.this.notifyDataSetChanged();
                                         Toast.makeText(context, context.getString(R.string.OrderRefusedToast),
                                                 Toast.LENGTH_LONG).show();
@@ -148,7 +159,8 @@ public class ReservationAdapter extends BaseAdapter {
                     @Override
                     public void onClick(DialogInterface dialog, int item) {
                         if (options[item].equals(context.getString(R.string.Yes))) {
-                            reservationList.remove(position);
+                            databaseUtils.updateReservationStatus(reservationList.get(position).getId(), Reservation.ACCEPTED);
+                            //reservationList.remove(position);
                             //accept_button.setVisibility(View.INVISIBLE);
                             //statusImage.setVisibility(View.VISIBLE);
                             ReservationAdapter.this.notifyDataSetChanged();
@@ -200,5 +212,6 @@ public class ReservationAdapter extends BaseAdapter {
         bundle.putBoolean(ReservationAdapter.ADAPTER, true);
         fragment.setArguments(bundle);
         fragment.show(this.parentActivity.getFragmentManager(), "timePicker");
+        //TODO : update reservation if time change
     }
 }
