@@ -147,8 +147,8 @@ public class ReservationAdapter extends BaseAdapter {
                                 public void onClick(DialogInterface dialog, int item) {
                                     if (options[item].equals(context.getString(R.string.Yes))) {
                                         databaseUtils.updateReservationStatus(reservationList.get(position).getId(), Reservation.DISCARDED);
-                                        //reservationList.remove(position);
                                         ReservationAdapter.this.notifyDataSetChanged();
+                                        reservationList.get(position).setStatus(Reservation.DISCARDED);
                                         setIconVisible(CANCEL_ICON);
                                         Toast.makeText(context, context.getString(R.string.OrderRefusedToast),
                                                 Toast.LENGTH_LONG).show();
@@ -185,6 +185,7 @@ public class ReservationAdapter extends BaseAdapter {
                     public void onClick(DialogInterface dialog, int item) {
                         if (options[item].equals(context.getString(R.string.Yes))) {
                             databaseUtils.updateReservationStatus(reservationList.get(position).getId(), Reservation.ACCEPTED);
+                            reservationList.get(position).setStatus(Reservation.ACCEPTED);
                             setIconVisible(ACCEPT_ICON);
                             ReservationAdapter.this.notifyDataSetChanged();
                             Toast.makeText(context, context.getString(R.string.OrderAcceptedToast),

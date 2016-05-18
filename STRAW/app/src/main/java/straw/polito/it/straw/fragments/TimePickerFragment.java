@@ -56,7 +56,6 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
         this.timeDisplayer.setIs24HFormat(DateFormat.is24HourFormat(this.activity));
         this.timeDisplayer.setTime(hourOfDay, minute);
         if (this.notifyAdapter) {
-            this.adapter.notifyDataSetChanged();
             if (this.adapter.getClass().equals(ReservationAdapter.class)) {
                 /**
                  * Update the reservation in the database
@@ -75,11 +74,16 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
                 dialog.show();
                 databaseUtils.updateReservation(map, dialog);
                 /**
+                 * Update the status of the reservation
+                 */
+                ((Reservation)this.timeDisplayer).setStatus(Reservation.CHANGED);
+                /**
                  * Display a message indicating that everything worked fine.
                  */
                 Toast.makeText(getActivity(), getActivity().getString(R.string.HourChangedToast),
                         Toast.LENGTH_LONG).show();
             }
+            this.adapter.notifyDataSetChanged();
         }
     }
 }
