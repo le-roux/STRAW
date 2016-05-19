@@ -15,7 +15,7 @@
     <dimen name="Icon_size_horizontal">50dp</dimen>
 
     <dimen name="Icon_size_vertical_big">80dp</dimen>
-    <dimen name="Icon_size_horizontal_big">100dp</dimen>
+    <dimen name="Icon_size_horizontal_big">80dp</dimen>
 
     <dimen name="ProgressWheelSize">80dp</dimen>
     <dimen name="AddressSlot">70dp</dimen>

@@ -28,8 +28,8 @@ public class ReservationAdapterCustomer extends ReservationAdapter {
 
     @Override
     protected void setSpecificItems(View view, int position) {
-        TextView moreItems = (TextView)view.findViewById(R.id.moreOptionsLink);
-        moreItems.setVisibility(View.GONE);
+        TextView restaurantName = (TextView)view.findViewById(R.id.RestaurantName);
+        restaurantName.setText(((Reservation)this.getItem(position)).getRestaurant());
     }
 
     @Override
@@ -58,6 +58,6 @@ public class ReservationAdapterCustomer extends ReservationAdapter {
 
     @Override
     protected View setSpecificView(LayoutInflater layoutInflater) {
-        return layoutInflater.inflate(R.layout.reservation, null);
+        return layoutInflater.inflate(R.layout.reservation_customer, null);
     }
 }
