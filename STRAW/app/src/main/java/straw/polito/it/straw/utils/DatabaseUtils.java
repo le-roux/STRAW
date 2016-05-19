@@ -1024,13 +1024,18 @@ public class DatabaseUtils {
      *
      * @param reservation : the reservation to store.
      */
-    public void saveReservation(Reservation reservation) {
-        Logger.d("save reservation : " + reservation.getRestaurant());
-        StoreReservationAsyncTask task = new StoreReservationAsyncTask();
+    public void saveReservation(Reservation reservation, ProgressDialog dialog) {
+        StoreReservationAsyncTask task = new StoreReservationAsyncTask(dialog);
         task.execute(reservation);
     }
 
     private class StoreReservationAsyncTask extends AsyncTask<Reservation, Void, Void> {
+
+        private ProgressDialog dialog;
+
+        public StoreReservationAsyncTask(ProgressDialog dialog) {
+            this.dialog = dialog;
+        }
 
         @Override
         protected Void doInBackground(final Reservation... params) {
@@ -1053,8 +1058,21 @@ public class DatabaseUtils {
                          * Store the reservation id in the customer reservations list.
                          */
                         ref = firebase.child(USER).child(firebase.getAuth().getUid());
-                        ref.child(RESERVATIONS).push().setValue(id);
-                        Toast.makeText(context, R.string.ReservationSent, Toast.LENGTH_LONG).show();
+                        ref.child(RESERVATIONS).push().setValue(id, new Firebase.CompletionListener() {
+                            @Override
+                            public void onComplete(FirebaseError firebaseError, Firebase firebase) {
+                                if (dialog != null)
+                                    dialog.dismiss();
+                                if (firebaseError == null) {
+                                    Toast.makeText(context, R.string.ReservationSent, Toast.LENGTH_LONG).show();
+                                    Intent intent = new Intent(context, SearchActivity.class);
+                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    context.startActivity(intent);
+                                }
+                                else
+                                    Toast.makeText(context, firebaseError.getMessage(), Toast.LENGTH_LONG).show();
+                            }
+                        });
                     } else
                         Toast.makeText(context, firebaseError.getMessage(), Toast.LENGTH_LONG).show();
                 }
