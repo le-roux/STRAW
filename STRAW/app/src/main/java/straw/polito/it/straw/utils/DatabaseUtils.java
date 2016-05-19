@@ -3,8 +3,6 @@ package straw.polito.it.straw.utils;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.widget.Toast;
 
@@ -14,9 +12,6 @@ import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
-
-import org.json.JSONArray;
-import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,6 +24,7 @@ import straw.polito.it.straw.activities.ProfileManagerActivity;
 import straw.polito.it.straw.activities.SearchActivity;
 import straw.polito.it.straw.adapter.FoodExpandableAdapter;
 import straw.polito.it.straw.adapter.ReservationAdapter;
+import straw.polito.it.straw.adapter.ReservationAdapterManager;
 import straw.polito.it.straw.adapter.RestaurantListAdapter;
 import straw.polito.it.straw.data.Drink;
 import straw.polito.it.straw.data.Food;
@@ -1073,23 +1069,23 @@ public class DatabaseUtils {
      * @param restaurantName : the name of the restaurant.
      * @return : An ArrayList of Reservation or null if it's not possible to retrieve proper data.
      */
-    public void retrieveReservations(String restaurantName, ReservationAdapter adapter, ProgressDialog dialog) {
-        RetrieveReservationsAsyncTask task = new RetrieveReservationsAsyncTask(restaurantName, dialog);
+    public void retrieveRestaurantReservations(String restaurantName, ReservationAdapterManager adapter, ProgressDialog dialog) {
+        RetrieveRestaurantReservationsAsyncTask task = new RetrieveRestaurantReservationsAsyncTask(restaurantName, dialog);
         task.execute(adapter);
     }
 
-    private class RetrieveReservationsAsyncTask extends AsyncTask<ReservationAdapter, Void, Void> {
+    private class RetrieveRestaurantReservationsAsyncTask extends AsyncTask<ReservationAdapterManager, Void, Void> {
 
         private String restaurantName;
         private ProgressDialog dialog;
 
-        public RetrieveReservationsAsyncTask(String restaurantName, ProgressDialog dialog) {
+        public RetrieveRestaurantReservationsAsyncTask(String restaurantName, ProgressDialog dialog) {
             this.restaurantName = restaurantName;
             this.dialog = dialog;
         }
 
         @Override
-        protected Void doInBackground(final ReservationAdapter... params) {
+        protected Void doInBackground(final ReservationAdapterManager... params) {
             Firebase ref = firebase.child(RESTAURANT_RESERVATIONS).child(this.restaurantName);
             params[0].getReservationList().clear();
             params[0].notifyDataSetChanged();
@@ -1114,6 +1110,63 @@ public class DatabaseUtils {
                         }
                     });
 
+                }
+
+                @Override
+                public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+                }
+
+                @Override
+                public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+                }
+
+                @Override
+                public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+                }
+
+                @Override
+                public void onCancelled(FirebaseError firebaseError) {
+
+                }
+            });
+            return null;
+        }
+    }
+
+    public void retrieveCurrentCustomerReservations(ReservationAdapter adapter) {
+        RetrieveCustomerReservationAsyncTask task = new RetrieveCustomerReservationAsyncTask();
+        task.execute(adapter);
+    }
+
+    private class RetrieveCustomerReservationAsyncTask extends AsyncTask<ReservationAdapter, Void, Void> {
+
+        @Override
+        protected Void doInBackground(final ReservationAdapter... params) {
+            String uId = firebase.getAuth().getUid();
+            Firebase ref = firebase.child(USER).child(uId).child(RESERVATIONS);
+            ref.addChildEventListener(new ChildEventListener() {
+                @Override
+                public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                    String reservationId = dataSnapshot.getValue(String.class);
+                    params[0].getReservationList().clear();
+                    params[0].notifyDataSetChanged();
+                    Firebase ref = firebase.child(RESERVATIONS).child(reservationId);
+                    ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            Reservation reservation = dataSnapshot.getValue(Reservation.class);
+                            params[0].getReservationList().add(reservation);
+                            params[0].notifyDataSetChanged();
+                        }
+
+                        @Override
+                        public void onCancelled(FirebaseError firebaseError) {
+
+                        }
+                    });
                 }
 
                 @Override
