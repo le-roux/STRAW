@@ -73,7 +73,9 @@
         android:layout_toRightOf="@id/restaurantCard"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:background="@drawable/customborder">
+        android:background="@drawable/customborder"
+        android:layout_marginLeft="5dp"
+        >
 
         <LinearLayout
             android:id="@+id/topPanel"

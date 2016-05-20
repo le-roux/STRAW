@@ -832,9 +832,9 @@ public class DatabaseUtils {
      * @
      * @return : An ArrayList of Manager or null if it's not possible to retrieve proper data.
      */
-    public void retrieveRestaurantList(RestaurantListAdapter adapter, ProgressDialog dialog, RestaurantFilter filter) {
+    public void retrieveRestaurantList(RestaurantListAdapter adapter, RestaurantListAdapter adapterForFilter, ProgressDialog dialog, RestaurantFilter filter) {
         RetrieveRestaurantsAsyncTask task = new RetrieveRestaurantsAsyncTask(dialog, filter);
-        task.execute(adapter);
+        task.execute(adapter,adapterForFilter);
     }
 
     private class RetrieveRestaurantsAsyncTask extends AsyncTask<RestaurantListAdapter, Void, Void> {
@@ -861,21 +861,28 @@ public class DatabaseUtils {
                         restaurant.addReview(review.getValue(Review.class));
                     }
                     params[0].getList().add(restaurant);
+                    params[1].getList().add(restaurant);
                     params[0].notifyDataSetChanged();
+                    params[1].notifyDataSetChanged();
                     filter.filter();
                 }
 
                 @Override
                 public void onChildChanged(DataSnapshot dataSnapshot, String s) {
                     params[0].getList().remove(dataSnapshot.getValue(Manager.class));
+                    params[1].getList().remove(dataSnapshot.getValue(Manager.class));
                     params[0].getList().add(dataSnapshot.getValue(Manager.class));
+                    params[1].getList().add(dataSnapshot.getValue(Manager.class));
                     params[0].notifyDataSetChanged();
+                    params[1].notifyDataSetChanged();
                 }
 
                 @Override
                 public void onChildRemoved(DataSnapshot dataSnapshot) {
                     params[0].getList().remove(dataSnapshot.getValue(Manager.class));
+                    params[1].getList().remove(dataSnapshot.getValue(Manager.class));
                     params[0].notifyDataSetChanged();
+                    params[1].notifyDataSetChanged();
                 }
 
                 @Override

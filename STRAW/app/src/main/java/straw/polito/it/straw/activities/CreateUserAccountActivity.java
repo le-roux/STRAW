@@ -131,6 +131,7 @@ public class CreateUserAccountActivity extends AppCompatActivity {
 
         u_d_list.add(getString(R.string.Vegan));
         u_d_list.add(getString(R.string.Gluten_free));
+        u_d_list.add(getString(R.string.Nothing));
 
         for(int i=0;i<5;i++){
             p_t_list.add((11+i)+":00");

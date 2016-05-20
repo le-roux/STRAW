@@ -63,6 +63,7 @@
     <string name="Price">Price</string>
     <string name="Vegan">Vegan</string>
     <string name="Gluten_free">Gluten Free</string>
+    <string name="Nothing">Not any particular diet</string>
     <string name="Choose_photo">Choose photo</string>
     <string name="Take_photo">Take photo</string>
     <string name="Ingredients">Ingredients</string>

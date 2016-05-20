@@ -78,17 +78,14 @@ public class QuickSearchActivity extends AppCompatActivity implements Restaurant
         this.FoodFilter = "";
         this.PlaceFilter = "";
         init_list();
-        restaurant_list = new ArrayList<>();
-        restaurant_list_tmp = new ArrayList<>();
         ProgressDialog dialog = new ProgressDialog(this);
         dialog.setMessage(this.getString(R.string.RetrievingRestaurants));
         dialog.setIndeterminate(true);
         dialog.setCancelable(false);
         dialog.show();
         RestaurantListAdapter adapter = new RestaurantListAdapter(getApplicationContext(), restaurant_list);
-        RestaurantListAdapter adapter2 = new RestaurantListAdapter(getApplicationContext(), restaurant_list_tmp);
-        this.application.getDatabaseUtils().retrieveRestaurantList(adapter, dialog, this);
-        this.application.getDatabaseUtils().retrieveRestaurantList(adapter2, dialog, this);
+        RestaurantListAdapter adapterForFilter = new RestaurantListAdapter(getApplicationContext(), restaurant_list_tmp);
+        this.application.getDatabaseUtils().retrieveRestaurantList(adapter, adapterForFilter, dialog, this);
         restaurant_listView.setAdapter(adapter);
         this.restaurant_listView = (ListView) findViewById(R.id.restaurant_list);
 
@@ -109,6 +106,7 @@ public class QuickSearchActivity extends AppCompatActivity implements Restaurant
                 selectImage();
             }
         });
+
     }
 
     public RestaurantListAdapter getAdapter() {
@@ -166,6 +164,7 @@ public class QuickSearchActivity extends AppCompatActivity implements Restaurant
             public void onNothingSelected(AdapterView<?> parent) {
 
             }
+
         });
 
         /**

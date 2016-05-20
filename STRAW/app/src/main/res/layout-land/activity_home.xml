@@ -11,7 +11,7 @@
     tools:context=".activities.HomeActivity">
 
     <RelativeLayout
-        android:layout_width="300sp"
+        android:layout_width="220sp"
         android:layout_height="270sp"
         android:id="@+id/create_relativeLayout"
         android:background="@drawable/customborder"
@@ -25,21 +25,19 @@
             android:text="@string/c_user"
             android:id="@+id/c_user_button"
             android:background="@drawable/customborder_buttons"
-            android:layout_centerVertical="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="68dp" />
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/c_man"
             android:id="@+id/c_man_button"
-            android:layout_alignBottom="@+id/c_user_button"
-            android:layout_toRightOf="@+id/c_user_button"
-            android:layout_toEndOf="@+id/c_user_button"
-            android:layout_marginLeft="27dp"
-            android:layout_marginStart="27dp"
-            android:background="@drawable/customborder_buttons"/>
+            android:background="@drawable/customborder_buttons"
+            android:layout_marginTop="22dp"
+            android:layout_below="@+id/c_user_button"
+            android:layout_centerHorizontal="true" />
     </RelativeLayout>
 
     <TextView
@@ -64,7 +62,9 @@
         android:layout_alignTop="@+id/create_relativeLayout"
         android:layout_toRightOf="@+id/create_relativeLayout"
         android:layout_toEndOf="@+id/create_relativeLayout"
-        android:layout_alignBottom="@+id/create_relativeLayout">
+        android:layout_alignBottom="@+id/create_relativeLayout"
+        android:layout_marginLeft="5dp"
+        >
 
         <EditText
             android:layout_width="wrap_content"
