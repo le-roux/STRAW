@@ -18,6 +18,7 @@ import straw.polito.it.straw.UserContainer;
 import straw.polito.it.straw.data.Friend;
 import straw.polito.it.straw.data.User;
 import straw.polito.it.straw.fragments.AddFriendsFragment;
+import straw.polito.it.straw.fragments.CustomerReservationsFragment;
 import straw.polito.it.straw.utils.ImageManager;
 import straw.polito.it.straw.utils.SharedPreferencesHandler;
 
@@ -69,10 +70,12 @@ public class ProfileUserActivity extends AppCompatActivity implements UserContai
         res_h.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO RESERVATION HISTORY
+                FragmentTransaction transaction = fragmentManager.beginTransaction();
+                transaction.replace(R.id.mainLayout, new CustomerReservationsFragment());
+                transaction.addToBackStack(null);
+                transaction.commit();
             }
         });
-        res_h.setVisibility(View.INVISIBLE);
 
         rev_h.setOnClickListener(new View.OnClickListener() {
             @Override

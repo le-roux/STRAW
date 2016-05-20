@@ -1,5 +1,6 @@
 package straw.polito.it.straw.activities;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -89,8 +90,13 @@ public class ConfirmReservationActivity extends AppCompatActivity {
                 /**
                  * Store the reservation in the database (both for the customer and the restaurant).
                  */
+                ProgressDialog dialog = new ProgressDialog(ConfirmReservationActivity.this);
+                dialog.setIndeterminate(true);
+                dialog.setMessage(ConfirmReservationActivity.this.getString(R.string.SendingReservation));
+                dialog.setCancelable(false);
+                dialog.show();
                 DatabaseUtils databaseUtils = ((StrawApplication)getApplication()).getDatabaseUtils();
-                databaseUtils.saveReservation(reservation);
+                databaseUtils.saveReservation(reservation, dialog);
              }
         });
     }

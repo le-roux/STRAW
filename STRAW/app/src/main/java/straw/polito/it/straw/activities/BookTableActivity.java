@@ -17,7 +17,7 @@ import straw.polito.it.straw.R;
 import straw.polito.it.straw.StrawApplication;
 import straw.polito.it.straw.TimeContainer;
 import straw.polito.it.straw.TimeDisplayer;
-import straw.polito.it.straw.adapter.ReservationAdapter;
+import straw.polito.it.straw.adapter.ReservationAdapterManager;
 import straw.polito.it.straw.data.Manager;
 import straw.polito.it.straw.data.Reservation;
 import straw.polito.it.straw.data.Reservation.Place;
@@ -89,7 +89,7 @@ public class BookTableActivity extends AppCompatActivity implements BookTableInt
             public void onClick(View view) {
                 DialogFragment fragment = new TimePickerFragment();
                 Bundle bundle = new Bundle();
-                bundle.putBoolean(ReservationAdapter.ADAPTER, false);
+                bundle.putBoolean(ReservationAdapterManager.ADAPTER, false);
                 fragment.setArguments(bundle);
                 fragment.show(getFragmentManager(), "timePicker");
             }
