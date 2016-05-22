@@ -140,6 +140,7 @@
     <string name="PhoneNumber">Phone Number</string>
     <string name="Create">Create</string>
 
+
     <!--Strings for the Book Table part-->
     <string name="BookTable"><u>Book a table</u></string>
     <string name="HowManyPeople">How many people ?</string>
@@ -207,6 +208,7 @@
     <string name="write_rev">Rate and write a brief description</string>
     <string name="WriteReview">Write your review here...</string>
     <string name="submit">Submit</string>
+    <string name="nav">Navigate</string>
 
     <!--Strings for the advanced search part-->
     <string name="AdvancedSearch"><u>Advanced Search</u></string>
