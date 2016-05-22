@@ -25,7 +25,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textAlignment="center"
-            android:text="@string/ident"
+            android:text="@string/notyet"
             android:id="@+id/id_textView"
             android:layout_above="@+id/id_relativeLayout"
             android:layout_centerHorizontal="true"
@@ -69,7 +69,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textAlignment="center"
-            android:text="@string/notyet"
+            android:text="@string/ident"
             android:id="@+id/notyet_textView"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
@@ -95,7 +95,8 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
             android:layout_alignLeft="@+id/pwd_editText"
-            android:layout_alignStart="@+id/pwd_editText"/>
+            android:layout_alignStart="@+id/pwd_editText"
+            android:text="and@gmail.com" />
 
         <EditText
             android:layout_width="wrap_content"
@@ -105,7 +106,8 @@
             android:id="@+id/pwd_editText"
             android:layout_below="@+id/user_name_editText"
             android:layout_alignLeft="@+id/remember_checkBox"
-            android:layout_alignStart="@+id/remember_checkBox" />
+            android:layout_alignStart="@+id/remember_checkBox"
+            android:text="and" />
 
         <Button
             android:layout_width="wrap_content"

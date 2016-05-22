@@ -11,11 +11,14 @@ import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
+import com.firebase.client.Query;
 import com.firebase.client.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.sql.RowSetEvent;
 
 import straw.polito.it.straw.R;
 import straw.polito.it.straw.RestaurantFilter;
@@ -516,6 +519,11 @@ public class DatabaseUtils {
                                     Friend friend = data.getValue(Friend.class);
                                     user.addFriend(friend);
                                 }
+
+                                for(DataSnapshot data : dataSnapshot.child(REVIEWS).getChildren()){
+                                    Review rev = data.getValue(Review.class);
+                                    user.addReview(rev);
+                                }
                                 /**
                                  * Store the retrieved profile in sharedPreferences for next accesses
                                  */
@@ -900,8 +908,8 @@ public class DatabaseUtils {
      * @param restaurantName : the name of the restaurant
      * @param review : the review to add
      */
-    public void addReview(String restaurantName, Review review) {
-        AddReviewAsyncTask task = new AddReviewAsyncTask(restaurantName);
+    public void addReview(String restaurantName,String userEmail, Review review) {
+        AddReviewAsyncTask task = new AddReviewAsyncTask(restaurantName,userEmail);
         task.execute(review);
     }
 
@@ -911,22 +919,37 @@ public class DatabaseUtils {
     private class AddReviewAsyncTask extends AsyncTask<Review, Void, Void> {
 
         private String restaurantName;
+        private String userEmail;
 
-        public AddReviewAsyncTask(String restaurantName) {
+        public AddReviewAsyncTask(String restaurantName,String userEmail) {
             this.restaurantName = restaurantName;
+            this.userEmail = userEmail;
         }
 
         @Override
-        protected Void doInBackground(Review... params) {
+        protected Void doInBackground(final Review... params) {
             Firebase ref = firebase.child(RESTAURANTS).child(this.restaurantName).child(REVIEWS);
             ref.push().setValue(params[0], new Firebase.CompletionListener() {
                 @Override
                 public void onComplete(FirebaseError firebaseError, Firebase firebase) {
                     if (firebaseError != null) {
                         Toast.makeText(context, firebaseError.getMessage(), Toast.LENGTH_LONG).show();
+                    }else{
+
                     }
                 }
             });
+
+            ref = firebase.child(USER).child(firebase.getAuth().getUid()).child(REVIEWS);
+            ref.push().setValue(params[0], new Firebase.CompletionListener() {
+                @Override
+                public void onComplete(FirebaseError firebaseError, Firebase firebaseRef) {
+                    if (firebaseError != null) {
+                        Toast.makeText(context, firebaseError.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                }
+            });
+
             return null;
         }
     }
@@ -934,73 +957,48 @@ public class DatabaseUtils {
     /**
      * Allows to retrieve a String from the Firebase database in a secondary thread.
      */
-    private class RetrieveAsyncTask extends AsyncTask<String, Void, String> {
+    private class RetrieveAsyncTask extends AsyncTask<String, Void, User> {
+
         @Override
-        protected String doInBackground(String... params) {
+        protected User doInBackground(String... params) {
             Firebase ref = firebase;
             for (String string : params)
                 ref = ref.child(string);
-            String data = "";
-            ref.addValueEventListener(new RetrieverListener(data));
-            return data;
+            ref.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    /**
+                     * It's a customer (and not a manager). Retrieve the profile.
+                     * Friends lists will be retrieved manually just after for
+                     * simplicity.
+                     */
+                    User user = dataSnapshot.getValue(User.class);
+                    /**
+                     * Retrieve the friends list
+                     */
+                    for (DataSnapshot data : dataSnapshot.child(FRIENDS).getChildren()) {
+                        Friend friend = data.getValue(Friend.class);
+                        user.addFriend(friend);
+                    }
+
+                    for(DataSnapshot data : dataSnapshot.child(REVIEWS).getChildren()){
+                        Review rev = data.getValue(Review.class);
+                        user.addReview(rev);
+                    }
+                    /**
+                     * Store the retrieved profile in sharedPreferences for next accesses
+                     */
+                    sharedPreferencesHandler.storeCurrentUser(user.toString());
+                }
+
+                @Override
+                public void onCancelled(FirebaseError firebaseError) {
+
+                }
+            });
+            return sharedPreferencesHandler.getCurrentUser();
         }
     }
-
-    /**
-     * A simple class used to retrieve a String from the Firebase database.
-     */
-    private class RetrieverListener implements ValueEventListener {
-
-        private String data;
-
-        public RetrieverListener(String data) {
-            this.data = data;
-        }
-
-        @Override
-        public void onDataChange(DataSnapshot dataSnapshot) {
-            if (dataSnapshot != null && dataSnapshot.getValue() != null) {
-                data = dataSnapshot.getValue(String.class);
-            }
-        }
-
-        @Override
-        public void onCancelled(FirebaseError firebaseError) {
-
-        }
-    }
-
-
-
-
-
-
-
-
-    /**
-     * Retrieve the full profile of a manager (identified by the manager email address) from
-     * Firebase database.
-     *
-     * @param managerEmail : used as the key to find the manager profile.
-     * @return : The manager profile retrieved from the database, or null if it's not possible
-     * to retrieve proper data.
-     */
-    public Manager retrieveManagerProfile(String managerEmail) {
-        String children[] = new String[2];
-        children[0] = MANAGER;
-        children[1] = managerEmail;
-        RetrieveAsyncTask task = new RetrieveAsyncTask();
-        task.execute(children);
-        String data;
-        try {
-            data = task.get();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-        return new Manager(data);
-    }
-
 
 
     /**
@@ -1010,22 +1008,21 @@ public class DatabaseUtils {
      * @param userEmail : used as the key to find the profile.
      * @return : the profile, or null if it's not possible to retrieve proper data.
      */
-    public User retrieveUserProfile(String userEmail) {
+    public User retrieveUserProfile() {
         String[] children = new String[2];
         children[0] = USER;
-        children[1] = userEmail;
+        children[1] = firebase.getAuth().getUid();
         RetrieveAsyncTask task = new RetrieveAsyncTask();
         task.execute(children);
-        String data;
+        User data;
         try {
             data = task.get();
         } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
-        return new User(data);
+        return data;
     }
-
     /**
      * Store a reservation in the database.
      *

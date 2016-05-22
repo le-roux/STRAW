@@ -16,10 +16,13 @@ import straw.polito.it.straw.R;
 import straw.polito.it.straw.StrawApplication;
 import straw.polito.it.straw.UserContainer;
 import straw.polito.it.straw.data.Friend;
+import straw.polito.it.straw.data.Review;
 import straw.polito.it.straw.data.User;
 import straw.polito.it.straw.fragments.AddFriendsFragment;
 import straw.polito.it.straw.fragments.CustomerReservationsFragment;
+import straw.polito.it.straw.utils.DatabaseUtils;
 import straw.polito.it.straw.utils.ImageManager;
+import straw.polito.it.straw.utils.Logger;
 import straw.polito.it.straw.utils.SharedPreferencesHandler;
 
 public class ProfileUserActivity extends AppCompatActivity implements UserContainer{
@@ -80,10 +83,19 @@ public class ProfileUserActivity extends AppCompatActivity implements UserContai
         rev_h.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO REVIEW HISTORY
+
+                /*DatabaseUtils db=((StrawApplication)getApplication()).getDatabaseUtils();
+                Logger.d("User: "+user.toString());
+                User u = db.retrieveUserProfile(user.getEmail());
+                Logger.d("New User: "+u.toString());*/
+                FragmentTransaction transaction = fragmentManager.beginTransaction();
+                transaction.replace(R.id.mainLayout, new ReviewsFragment());
+                transaction.addToBackStack(null);
+                transaction.commit();
+
             }
         });
-        rev_h.setVisibility(View.INVISIBLE);
+
         friends.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

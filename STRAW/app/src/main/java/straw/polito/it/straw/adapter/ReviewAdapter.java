@@ -24,11 +24,12 @@ public class ReviewAdapter extends BaseAdapter {
 
     private Context context;
     private ArrayList<Review> reviews;
+    private boolean sw;
 
-    public ReviewAdapter(Context context, ArrayList<Review> r) {
+    public ReviewAdapter(Context context, ArrayList<Review> r,boolean sw) {
         this.context=context;
         this.reviews=r;
-        Log.v("ReviewAdapter","CREATED "+r.size());
+        this.sw=sw;
     }
 
     @Override
@@ -53,8 +54,10 @@ public class ReviewAdapter extends BaseAdapter {
 
         RatingBar rate = (RatingBar) convertView.findViewById(R.id.rate);
         TextView desc = (TextView) convertView.findViewById(R.id.desc);
-
-
+        TextView res = (TextView) convertView.findViewById(R.id.res_name);
+        if(sw) {
+            res.setText(reviews.get(position).getRestaurant());
+        }
         desc.setText(reviews.get(position).getDescription());
         rate.setRating(reviews.get(position).getRate());
         return convertView;

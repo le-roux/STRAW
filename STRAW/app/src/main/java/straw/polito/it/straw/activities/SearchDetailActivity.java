@@ -53,7 +53,7 @@ public class SearchDetailActivity extends AppCompatActivity {
 
         this.ratingBar.setRating(this.man.getRate());
 
-        review.setAdapter(new ReviewAdapter(getBaseContext(),man.getReviews()));
+        review.setAdapter(new ReviewAdapter(getBaseContext(),man.getReviews(),false));
 
         ImageManager.setImage(this, img, man.getImage());
 

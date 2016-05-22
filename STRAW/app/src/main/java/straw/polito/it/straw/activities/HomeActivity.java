@@ -34,6 +34,7 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         mShared= PreferenceManager.getDefaultSharedPreferences(this);
+
         initialize();
         setListeners();
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);

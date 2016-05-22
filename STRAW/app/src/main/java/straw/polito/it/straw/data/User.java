@@ -22,6 +22,7 @@ public class User {
     private String image;
     private String phoneNumber;
     private ArrayList<Friend> friends;
+    private ArrayList<Review> reviews;
     /**
      * List of the IDs of the reservations done by this customer.
      */
@@ -38,6 +39,7 @@ public class User {
     public static final String PREFERRED_TIME = "prefTime";
     public static final String IMAGE = "image";
     public static final String RESERVATIONS = "reservations";
+    public static final String REVIEWS = "reviews";
 
     /**
      * Basic constructor used by Firebase to create an instance of User when downloading it.
@@ -45,11 +47,13 @@ public class User {
     public User() {
         this.friends = new ArrayList<>();
         this.reservations = new ArrayList<>();
+        this.reviews = new ArrayList<>();
     }
 
     public User(String s){
         this.friends = new ArrayList<>();
         this.reservations = new ArrayList<>();
+        this.reviews = new ArrayList<>();
         try {
             JSONObject jo = new JSONObject(s);
             this.email = jo.getString(EMAIL_ADDRESS);
@@ -75,8 +79,13 @@ public class User {
                 for (int i = 0; i < reservationsArray.length(); i++)
                     this.reservations.add(Reservation.create(reservationsArray.getString(i)));
             }
+            if (jo.has(REVIEWS)) {
+                JSONArray rev = jo.getJSONArray(REVIEWS);
+                for (int i = 0; i < rev.length(); i++)
+                    this.reviews.add(new Review(rev.get(i).toString()));
+            }
         } catch (JSONException e) {
-            Logger.d(e.getMessage());
+            Logger.d("Creating user error "+e.getMessage());
         }
     }
 
@@ -110,6 +119,11 @@ public class User {
             for (Reservation reservation : this.reservations)
                 reservationsArray.put(reservation.toString());
             jo.put(RESERVATIONS, reservationsArray);
+
+            JSONArray reviewsArray = new JSONArray();
+            for (Review rev : this.reviews)
+                reviewsArray.put(rev.toString());
+            jo.put(REVIEWS, reviewsArray);
 
             return jo.toString();
         } catch (JSONException e) {
@@ -179,6 +193,9 @@ public class User {
     public void addFriend(Friend friend) {
         this.friends.add(friend);
     }
+    public void addReview(Review rev) {
+        this.reviews.add(rev);
+    }
 
     public void removeFriend(User user) {
         this.friends.remove(user);
@@ -205,5 +222,13 @@ public class User {
     @JsonIgnore
     public void addReservation(Reservation reservation) {
         this.reservations.add(reservation);
+    }
+    @JsonIgnore
+    public ArrayList<Review> getReviews() {
+        return reviews;
+    }
+    @JsonIgnore
+    public void setReviews(ArrayList<Review> reviews) {
+        this.reviews = reviews;
     }
 }

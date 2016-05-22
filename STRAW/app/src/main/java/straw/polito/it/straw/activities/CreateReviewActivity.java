@@ -1,6 +1,7 @@
 package straw.polito.it.straw.activities;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -17,6 +18,7 @@ import straw.polito.it.straw.data.Manager;
 import straw.polito.it.straw.data.Review;
 import straw.polito.it.straw.data.User;
 import straw.polito.it.straw.utils.DatabaseUtils;
+import straw.polito.it.straw.utils.SharedPreferencesHandler;
 
 public class CreateReviewActivity extends AppCompatActivity {
 
@@ -37,10 +39,14 @@ public class CreateReviewActivity extends AppCompatActivity {
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Review review = new Review(user.getEmail(),rate.getRating(),desc.getText().toString());
+                Review review = new Review(user.getEmail(),rate.getRating(),desc.getText().toString(),man.getRes_name());
                 man.getReviews().add(review);
+                user.getReviews().add(review);
+                application.getSharedPreferencesHandler().storeCurrentUser(user.toString());
+
                 DatabaseUtils databaseUtils = application.getDatabaseUtils();
-                databaseUtils.addReview(man.getRes_name(), review);
+                databaseUtils.addReview(man.getRes_name(),user.getEmail(), review);
+
                 Intent resultIntent = new Intent();
                 resultIntent.putExtra(Review.REVIEW, review.toString());
                 setResult(Activity.RESULT_OK, resultIntent);
