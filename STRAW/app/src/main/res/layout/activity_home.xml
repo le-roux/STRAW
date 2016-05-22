@@ -95,8 +95,7 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
             android:layout_alignLeft="@+id/pwd_editText"
-            android:layout_alignStart="@+id/pwd_editText"
-            android:text="and@gmail.com" />
+            android:layout_alignStart="@+id/pwd_editText" />
 
         <EditText
             android:layout_width="wrap_content"
@@ -106,8 +105,7 @@
             android:id="@+id/pwd_editText"
             android:layout_below="@+id/user_name_editText"
             android:layout_alignLeft="@+id/remember_checkBox"
-            android:layout_alignStart="@+id/remember_checkBox"
-            android:text="and" />
+            android:layout_alignStart="@+id/remember_checkBox" />
 
         <Button
             android:layout_width="wrap_content"
