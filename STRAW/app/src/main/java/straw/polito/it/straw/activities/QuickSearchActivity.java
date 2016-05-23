@@ -1,6 +1,7 @@
 package straw.polito.it.straw.activities;
 
 import android.app.AlertDialog;
+import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
@@ -18,20 +19,26 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.OnMapReadyCallback;
+
 import java.util.ArrayList;
 import java.util.Collections;
 
+import straw.polito.it.straw.AdapterFragment;
 import straw.polito.it.straw.R;
 import straw.polito.it.straw.RestaurantFilter;
 import straw.polito.it.straw.StrawApplication;
 import straw.polito.it.straw.adapter.RestaurantListAdapter;
 import straw.polito.it.straw.data.Manager;
 import straw.polito.it.straw.data.User;
+import straw.polito.it.straw.fragments.RestaurantMapFragment;
 import straw.polito.it.straw.fragments.RestaurantsListFragment;
 import straw.polito.it.straw.utils.Area;
 
 
-public class QuickSearchActivity extends AppCompatActivity implements RestaurantFilter{
+public class QuickSearchActivity extends AppCompatActivity implements RestaurantFilter, OnMapReadyCallback{
 
     private ArrayList<Manager> restaurant_list;
     private ArrayList<Manager> restaurant_list_tmp;
@@ -44,7 +51,7 @@ public class QuickSearchActivity extends AppCompatActivity implements Restaurant
     private double latitude;
     private double longitude;
     private int restaurantType;
-    private RestaurantsListFragment fragment;
+    private AdapterFragment fragment;
     private FragmentManager fragmentManager;
 
     @Override
@@ -58,7 +65,7 @@ public class QuickSearchActivity extends AppCompatActivity implements Restaurant
         this.fragmentManager = this.getFragmentManager();
         this.fragment = new RestaurantsListFragment();
         FragmentTransaction transaction = this.fragmentManager.beginTransaction();
-        transaction.replace(R.id.id_relativeLayoutQuickSearch2, this.fragment);
+        transaction.replace(R.id.id_relativeLayoutQuickSearch2, (Fragment)this.fragment);
         transaction.addToBackStack(null);
         transaction.commit();
 
@@ -104,7 +111,7 @@ public class QuickSearchActivity extends AppCompatActivity implements Restaurant
 
         addListenerOnButton();
         addListenerOnSpinnerItemSelection();
-        
+
         filtersButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -112,6 +119,13 @@ public class QuickSearchActivity extends AppCompatActivity implements Restaurant
             }
         });
 
+        Button mapButton = (Button)findViewById(R.id.mapButton);
+        mapButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setMapFragment();
+            }
+        });
     }
 
     public RestaurantListAdapter getAdapter() {
@@ -317,6 +331,19 @@ public class QuickSearchActivity extends AppCompatActivity implements Restaurant
             }
         }
         ((RestaurantListAdapter) fragment.getAdapter()).notifyDataSetChanged();
+    }
+
+    public void setMapFragment() {
+        this.fragment = new RestaurantMapFragment();
+        FragmentTransaction transaction = this.fragmentManager.beginTransaction();
+        transaction.replace(R.id.id_relativeLayoutQuickSearch2, ((RestaurantMapFragment)this.fragment).getFragment());
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+
     }
 }
 

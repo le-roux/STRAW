@@ -11,6 +11,7 @@ import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import straw.polito.it.straw.AdapterFragment;
 import straw.polito.it.straw.R;
 import straw.polito.it.straw.activities.SearchDetailActivity;
 import straw.polito.it.straw.adapter.RestaurantListAdapter;
@@ -19,7 +20,7 @@ import straw.polito.it.straw.data.Manager;
 /**
  * Created by Sylvain on 23/05/2016.
  */
-public class RestaurantsListFragment extends Fragment {
+public class RestaurantsListFragment extends Fragment implements AdapterFragment{
 
     private RestaurantListAdapter adapter;
     private ListView listView;
@@ -41,8 +42,8 @@ public class RestaurantsListFragment extends Fragment {
         return this.listView;
     }
 
-    public void setAdapter(RestaurantListAdapter adapter) {
-        this.adapter = adapter;
+    public void setAdapter(Adapter adapter) {
+        this.adapter = (RestaurantListAdapter)adapter;
         if (this.listView != null)
             this.listView.setAdapter(this.adapter);
     }

@@ -9,6 +9,9 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-feature
+        android:glEsVersion="0x00020000"
+        android:required="true"/>
 
     <application
         android:name=".StrawApplication"
@@ -54,6 +57,9 @@
         <activity android:name=".activities.CreateReviewActivity" />
         <activity android:name=".activities.AdvancedSearchActivity" />
         <activity android:name=".activities.DisplayMenuActivity" />
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyBsbhunCMTX16FfIrSZozwcBiBToTXxipo"/>
     </application>
 
 </manifest>

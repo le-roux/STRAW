@@ -103,6 +103,14 @@
 
         </RelativeLayout>
 
+        <Button
+            android:id="@+id/mapButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/id_relativeLayoutQuickSearch"
+            android:background="@drawable/customborder_buttons"
+            android:text="@string/map"/>
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -110,29 +118,13 @@
             android:background="@drawable/customborder"
             android:orientation="vertical" android:padding="20dp"
             android:layout_marginTop="10dp"
-            android:layout_below="@+id/id_relativeLayoutQuickSearch"
+            android:layout_below="@+id/mapButton"
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true">
 
         </RelativeLayout>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
     </RelativeLayout>
-
-
-
 
 </android.support.design.widget.CoordinatorLayout>
