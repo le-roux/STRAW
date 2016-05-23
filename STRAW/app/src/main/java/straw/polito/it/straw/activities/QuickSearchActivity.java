@@ -1,6 +1,8 @@
 package straw.polito.it.straw.activities;
 
 import android.app.AlertDialog;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -11,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,6 +27,7 @@ import straw.polito.it.straw.StrawApplication;
 import straw.polito.it.straw.adapter.RestaurantListAdapter;
 import straw.polito.it.straw.data.Manager;
 import straw.polito.it.straw.data.User;
+import straw.polito.it.straw.fragments.RestaurantsListFragment;
 import straw.polito.it.straw.utils.Area;
 
 
@@ -33,7 +37,6 @@ public class QuickSearchActivity extends AppCompatActivity implements Restaurant
     private ArrayList<Manager> restaurant_list_tmp;
     private Spinner spinner1;
     private Spinner spinner2;
-    private ListView restaurant_listView;
     private StrawApplication application;
     private Button filtersButton;
     public String FoodFilter;
@@ -41,12 +44,24 @@ public class QuickSearchActivity extends AppCompatActivity implements Restaurant
     private double latitude;
     private double longitude;
     private int restaurantType;
+    private RestaurantsListFragment fragment;
+    private FragmentManager fragmentManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quick_search);
         this.application = (StrawApplication)getApplication();
+        /**
+         * Prepare the fragment to display
+         */
+        this.fragmentManager = this.getFragmentManager();
+        this.fragment = new RestaurantsListFragment();
+        FragmentTransaction transaction = this.fragmentManager.beginTransaction();
+        transaction.replace(R.id.id_relativeLayoutQuickSearch2, this.fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+
         Intent intent = getIntent();
         if (intent.hasExtra(Manager.LATITUDE)) {
             /**
@@ -77,7 +92,6 @@ public class QuickSearchActivity extends AppCompatActivity implements Restaurant
         restaurant_list_tmp = new ArrayList<>();
         this.FoodFilter = "";
         this.PlaceFilter = "";
-        init_list();
         ProgressDialog dialog = new ProgressDialog(this);
         dialog.setMessage(this.getString(R.string.RetrievingRestaurants));
         dialog.setIndeterminate(true);
@@ -86,20 +100,11 @@ public class QuickSearchActivity extends AppCompatActivity implements Restaurant
         RestaurantListAdapter adapter = new RestaurantListAdapter(getApplicationContext(), restaurant_list);
         RestaurantListAdapter adapterForFilter = new RestaurantListAdapter(getApplicationContext(), restaurant_list_tmp);
         this.application.getDatabaseUtils().retrieveRestaurantList(adapter, adapterForFilter, dialog, this);
-        restaurant_listView.setAdapter(adapter);
-        this.restaurant_listView = (ListView) findViewById(R.id.restaurant_list);
+        this.fragment.setAdapter(adapter);
 
         addListenerOnButton();
         addListenerOnSpinnerItemSelection();
-
-        restaurant_listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent i = new Intent(getBaseContext(), SearchDetailActivity.class);
-                i.putExtra(SearchDetailActivity.RESTAURANT, restaurant_list.get(position).toJSONObject());
-                startActivity(i);
-            }
-        });
+        
         filtersButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -110,10 +115,7 @@ public class QuickSearchActivity extends AppCompatActivity implements Restaurant
     }
 
     public RestaurantListAdapter getAdapter() {
-        return (RestaurantListAdapter)this.restaurant_listView.getAdapter();
-    }
-    private void init_list() {
-        this.restaurant_listView = (ListView) findViewById(R.id.restaurant_list);
+        return (RestaurantListAdapter)this.fragment.getAdapter();
     }
 
     public void addListenerOnSpinnerItemSelection() {
@@ -199,7 +201,7 @@ public class QuickSearchActivity extends AppCompatActivity implements Restaurant
                 "List of restaurant sort by rating",
                 Toast.LENGTH_SHORT).show();
         Collections.sort(restaurant_list, Manager.RatingComparator);
-        ((RestaurantListAdapter) restaurant_listView.getAdapter()).notifyDataSetChanged();
+        ((RestaurantListAdapter) fragment.getAdapter()).notifyDataSetChanged();
     }
     public void SortByLocation(AdapterView<?> parent, View view,long id){
         Toast.makeText(parent.getContext(),
@@ -207,14 +209,14 @@ public class QuickSearchActivity extends AppCompatActivity implements Restaurant
                 Toast.LENGTH_SHORT).show();
 
         Collections.sort(restaurant_list,Manager.getDistanceComparator(latitude, longitude));
-        ((RestaurantListAdapter) restaurant_listView.getAdapter()).notifyDataSetChanged();
+        ((RestaurantListAdapter) fragment.getAdapter()).notifyDataSetChanged();
     }
     public void SortByPrice(AdapterView<?> parent, View view,long id){
         Toast.makeText(parent.getContext(),
                 "List of restaurant sort by price",
                 Toast.LENGTH_SHORT).show();
         Collections.sort(restaurant_list, Manager.PriceComparator);
-        ((RestaurantListAdapter) restaurant_listView.getAdapter()).notifyDataSetChanged();
+        ((RestaurantListAdapter) fragment.getAdapter()).notifyDataSetChanged();
     }
 
     public void addListenerOnButton() {
@@ -235,7 +237,7 @@ public class QuickSearchActivity extends AppCompatActivity implements Restaurant
                     TextView t1 = (TextView) findViewById(R.id.typeOfFood);
                     t1.setText("Every type");
                     filter();
-                    ((RestaurantListAdapter) restaurant_listView.getAdapter()).notifyDataSetChanged();
+                    ((RestaurantListAdapter) fragment.getAdapter()).notifyDataSetChanged();
                 } else if (options[item].equals("Pizzeria")) {
                     FoodFilter = "Pizzeria";
                     TextView t1 = (TextView) findViewById(R.id.typeOfFood);
@@ -294,7 +296,7 @@ public class QuickSearchActivity extends AppCompatActivity implements Restaurant
                 }
             }
         }
-        ((RestaurantListAdapter) restaurant_listView.getAdapter()).notifyDataSetChanged();
+        ((RestaurantListAdapter) fragment.getAdapter()).notifyDataSetChanged();
     }
 
     public void Foodfilter(){
@@ -304,7 +306,7 @@ public class QuickSearchActivity extends AppCompatActivity implements Restaurant
                 restaurant_list.add(restaurant_list_tmp.get(a));
             }
         }
-        ((RestaurantListAdapter) restaurant_listView.getAdapter()).notifyDataSetChanged();
+        ((RestaurantListAdapter) fragment.getAdapter()).notifyDataSetChanged();
     }
 
     public void Placefilter(){
@@ -314,7 +316,7 @@ public class QuickSearchActivity extends AppCompatActivity implements Restaurant
                 restaurant_list.add(restaurant_list_tmp.get(a));
             }
         }
-        ((RestaurantListAdapter) restaurant_listView.getAdapter()).notifyDataSetChanged();
+        ((RestaurantListAdapter) fragment.getAdapter()).notifyDataSetChanged();
     }
 }
 

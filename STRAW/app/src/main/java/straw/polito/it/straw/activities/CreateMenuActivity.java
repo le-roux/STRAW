@@ -129,6 +129,9 @@ public class CreateMenuActivity extends AppCompatActivity {
         FoodExpandableAdapterRemove adapter = new FoodExpandableAdapterRemove(context, goods[Menu.PLATES], goods[Menu.DRINKS]);
         adapter.setSyncWithDatabase(true, application);
         food_listView.setAdapter(adapter);
+        for (int i = 0; i < adapter.getGroupCount(); i++) {
+            this.food_listView.expandGroup(i);
+        }
 
         /**
          * If data has been temporarily stored, onRestoreInstanceState will be called and take care
