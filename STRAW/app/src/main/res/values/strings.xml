@@ -216,6 +216,7 @@
     <string name="WriteReview">Write your review here...</string>
     <string name="submit">Submit</string>
     <string name="nav">Navigate</string>
+    <string name="on_map">On map</string>
 
     <!--Strings for the advanced search part-->
     <string name="AdvancedSearch"><u>Advanced Search</u></string>
