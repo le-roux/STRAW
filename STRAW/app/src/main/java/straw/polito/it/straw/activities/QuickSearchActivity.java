@@ -1,27 +1,25 @@
 package straw.polito.it.straw.activities;
 
 import android.app.AlertDialog;
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Button;
-import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -38,7 +36,7 @@ import straw.polito.it.straw.fragments.RestaurantsListFragment;
 import straw.polito.it.straw.utils.Area;
 
 
-public class QuickSearchActivity extends AppCompatActivity implements RestaurantFilter, OnMapReadyCallback{
+public class QuickSearchActivity extends FragmentActivity implements RestaurantFilter{
 
     private ArrayList<Manager> restaurant_list;
     private ArrayList<Manager> restaurant_list_tmp;
@@ -52,6 +50,7 @@ public class QuickSearchActivity extends AppCompatActivity implements Restaurant
     private double longitude;
     private int restaurantType;
     private AdapterFragment fragment;
+    private RestaurantMapFragment mapFragment;
     private FragmentManager fragmentManager;
 
     @Override
@@ -62,7 +61,7 @@ public class QuickSearchActivity extends AppCompatActivity implements Restaurant
         /**
          * Prepare the fragment to display
          */
-        this.fragmentManager = this.getFragmentManager();
+        this.fragmentManager = this.getSupportFragmentManager();
         this.fragment = new RestaurantsListFragment();
         FragmentTransaction transaction = this.fragmentManager.beginTransaction();
         transaction.replace(R.id.id_relativeLayoutQuickSearch2, (Fragment)this.fragment);
@@ -334,16 +333,11 @@ public class QuickSearchActivity extends AppCompatActivity implements Restaurant
     }
 
     public void setMapFragment() {
-        this.fragment = new RestaurantMapFragment();
+        this.mapFragment = RestaurantMapFragment.createInstance();
         FragmentTransaction transaction = this.fragmentManager.beginTransaction();
-        transaction.replace(R.id.id_relativeLayoutQuickSearch2, ((RestaurantMapFragment)this.fragment).getFragment());
+        transaction.replace(R.id.id_relativeLayoutQuickSearch2, this.mapFragment.getFragment());
         transaction.addToBackStack(null);
         transaction.commit();
-    }
-
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-
     }
 }
 
