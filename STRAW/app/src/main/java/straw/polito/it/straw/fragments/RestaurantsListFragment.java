@@ -1,6 +1,6 @@
 package straw.polito.it.straw.fragments;
 
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -50,5 +50,10 @@ public class RestaurantsListFragment extends Fragment implements AdapterFragment
 
     public Adapter getAdapter() {
         return this.adapter;
+    }
+
+    @Override
+    public void notifyDataSetChanged() {
+        this.adapter.notifyDataSetChanged();
     }
 }
