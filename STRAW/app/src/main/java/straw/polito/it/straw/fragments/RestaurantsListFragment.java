@@ -51,4 +51,9 @@ public class RestaurantsListFragment extends Fragment implements AdapterFragment
     public Adapter getAdapter() {
         return this.adapter;
     }
+
+    @Override
+    public void notifyDataSetChanged() {
+        this.adapter.notifyDataSetChanged();
+    }
 }

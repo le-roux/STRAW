@@ -9,8 +9,11 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
+
 import straw.polito.it.straw.AdapterFragment;
 import straw.polito.it.straw.adapter.RestaurantListAdapter;
+import straw.polito.it.straw.data.Manager;
 
 /**
  * Created by Sylvain on 27/05/2016.
@@ -19,9 +22,15 @@ public class RestaurantMapFragment implements AdapterFragment, OnMapReadyCallbac
     private GoogleMap mMap;
     private RestaurantListAdapter adapter;
     private SupportMapFragment fragment;
+    private LatLng userPosition;
 
-    public static RestaurantMapFragment createInstance() {
+    private RestaurantMapFragment() {
+        //Do nothing
+    }
+
+    public static RestaurantMapFragment createInstance(double latitude, double longitude) {
         RestaurantMapFragment fragment = new RestaurantMapFragment();
+        fragment.setUserPosition(new LatLng(latitude, longitude));
         fragment.setFragment(SupportMapFragment.newInstance());
         fragment.getFragment().getMapAsync(fragment);
         return fragment;
@@ -30,15 +39,13 @@ public class RestaurantMapFragment implements AdapterFragment, OnMapReadyCallbac
     @Override
     public void setAdapter(Adapter adapter) {
         this.adapter = (RestaurantListAdapter)adapter;
+        this.notifyDataSetChanged();
+        this.resetView();
     }
 
     @Override
     public Adapter getAdapter() {
         return this.adapter;
-    }
-
-    public void setMap(GoogleMap map) {
-        this.mMap = map;
     }
 
     private void setFragment(SupportMapFragment fragment) {
@@ -49,12 +56,36 @@ public class RestaurantMapFragment implements AdapterFragment, OnMapReadyCallbac
         return this.fragment;
     }
 
+    private void setUserPosition(LatLng userPosition) {
+        this.userPosition = userPosition;
+    }
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
         this.mMap = googleMap;
-        // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
-        this.mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        this.mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        this.notifyDataSetChanged();
+        this.resetView();
+    }
+
+    @Override
+    public void notifyDataSetChanged() {
+        if (this.mMap != null && this.adapter != null) {
+            this.mMap.clear();
+            ArrayList<Manager> restaurantsList = this.adapter.getList();
+            for (Manager manager : restaurantsList) {
+                LatLng position = new LatLng(manager.getLatitude(), manager.getLongitude());
+                this.mMap.addMarker(new MarkerOptions().position(position).title(manager.getRes_name()));
+            }
+        }
+    }
+
+    /**
+     * Recenter the view on the search location, with a default zoom
+     */
+    private void resetView() {
+        if (this.mMap != null && this.userPosition != null) {
+            this.mMap.moveCamera(CameraUpdateFactory.newLatLng(this.userPosition));
+            this.mMap.moveCamera(CameraUpdateFactory.zoomTo(15f));
+        }
     }
 }
