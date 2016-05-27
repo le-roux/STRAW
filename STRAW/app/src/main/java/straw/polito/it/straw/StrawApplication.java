@@ -13,6 +13,8 @@ import straw.polito.it.straw.utils.SharedPreferencesHandler;
 public class StrawApplication extends Application {
 
     public static String FIREBASEURL = "https://straw.firebaseio.com/";
+    public static String serverAPIKey = "AIzaSyBB7AlcpdUG9MoOJ1e4vemmPklMjElanKU";
+    public static String senderID = "478407627881";
     private DatabaseUtils databaseUtils;
     private SharedPreferencesHandler sharedPreferencesHandler;
 

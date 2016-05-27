@@ -23,6 +23,7 @@ public class Manager {
     private double longitude;
     private String res_name;
     private String res_type;
+    private String tokenGCM;
     private int seats;
     private double min_price;
     private double max_price;
@@ -46,6 +47,7 @@ public class Manager {
     public static final String PRICE_MIN = "min";
     public static final String PRICE_MAX = "max";
     public static final String FOOD_TYPE = "foodType";
+    public static final String TOKEN_GCM = "token_gcm";
 
     public static final int BAR = 0;
     public static final int RESTAURANT = 1;
@@ -69,6 +71,7 @@ public class Manager {
             this.email = oj.getString(EMAIL_ADDRESS);
             this.min_price = oj.getDouble(PRICE_MIN);
             this.max_price = oj.getDouble(PRICE_MAX);
+            this.tokenGCM = oj.getString(TOKEN_GCM);
             this.food_type = oj.getString(FOOD_TYPE);
             this.latitude = oj.getDouble(LATITUDE);
             this.longitude = oj.getDouble(LONGITUDE);
@@ -83,6 +86,14 @@ public class Manager {
         } catch (JSONException e) {
             Logger.d("Error creating the manager");
         }
+    }
+
+    public String getTokenGCM() {
+        return tokenGCM;
+    }
+
+    public void setTokenGCM(String tokenGCM) {
+        this.tokenGCM = tokenGCM;
     }
 
     @JsonIgnore
@@ -237,6 +248,7 @@ public class Manager {
             oj.put(PRICE_MIN,min_price);
             oj.put(PRICE_MAX,max_price);
             oj.put(FOOD_TYPE,food_type);
+            oj.put(TOKEN_GCM,tokenGCM);
             oj.put(LATITUDE, this.latitude);
             oj.put(LONGITUDE, this.longitude);
             JSONArray jarr = new JSONArray();
@@ -268,6 +280,7 @@ public class Manager {
             oj.put(PRICE_MIN,min_price);
             oj.put(PRICE_MAX,max_price);
             oj.put(FOOD_TYPE,food_type);
+            oj.put(TOKEN_GCM,tokenGCM);
             oj.put(LATITUDE, this.latitude);
             oj.put(LONGITUDE, this.longitude);
             JSONArray jarr = new JSONArray();

@@ -2,15 +2,22 @@ package straw.polito.it.straw.activities;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Environment;
+import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -26,6 +33,9 @@ import android.widget.PopupWindow;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.google.android.gms.gcm.GoogleCloudMessaging;
+import com.google.android.gms.iid.InstanceID;
+
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -36,6 +46,7 @@ import java.util.List;
 import straw.polito.it.straw.R;
 import straw.polito.it.straw.StrawApplication;
 import straw.polito.it.straw.data.User;
+import straw.polito.it.straw.services.RegistrationIntentService;
 import straw.polito.it.straw.utils.DatabaseUtils;
 import straw.polito.it.straw.utils.ImageManager;
 import straw.polito.it.straw.utils.Logger;
@@ -73,6 +84,8 @@ public class CreateUserAccountActivity extends AppCompatActivity {
     private boolean sw;
     private boolean onEdit;
     private String old_email;
+    private BroadcastReceiver mRegistrationBroadcastReceiver;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -101,6 +114,8 @@ public class CreateUserAccountActivity extends AppCompatActivity {
             setListeners();
             setPhoto();
         }
+        Intent intent = new Intent(this, RegistrationIntentService.class);
+        startService(intent);
 
     }
 
@@ -157,7 +172,17 @@ public class CreateUserAccountActivity extends AppCompatActivity {
         u_d.setAdapter(new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_list_item_1, u_d_list));
         p_t.setAdapter(new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_list_item_1, p_t_list));
         areaSpinner.setAdapter(new ArrayAdapter<>(getBaseContext(), android.R.layout.simple_list_item_1, areas));
-
+        mRegistrationBroadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+                boolean sentToken = sharedPreferences.getBoolean("tokenSW", false);
+                if (sentToken) {
+                   user.setTokenGCM(sharedPreferences.getString("tokenGCM","Error"));
+                }
+            }
+        };
+        LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,new IntentFilter("complete"));
     }
     private void setListeners() {
 
@@ -226,7 +251,6 @@ public class CreateUserAccountActivity extends AppCompatActivity {
                         String oldpassword = c_pwd.getText().toString();
                         String password = cc_pwd.getText().toString();
                         databaseUtils.editUser(old_email,emailAddress, oldpassword,password, SharedPreferencesHandler.USER, dialog);
-
                     }
                 } else {
                     return;
@@ -237,7 +261,13 @@ public class CreateUserAccountActivity extends AppCompatActivity {
 
     }
 
-    private void showAlert(String message,String title, final boolean ex){
+    @Override
+    protected void onPause() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mRegistrationBroadcastReceiver);
+        super.onPause();
+    }
+
+    private void showAlert(String message, String title, final boolean ex){
         AlertDialog alertDialog = new AlertDialog.Builder(CreateUserAccountActivity.this).create();
         alertDialog.setTitle(title);
         alertDialog.setMessage(message);

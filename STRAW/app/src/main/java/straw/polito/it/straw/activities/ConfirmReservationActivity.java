@@ -3,6 +3,8 @@ package straw.polito.it.straw.activities;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -10,6 +12,26 @@ import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.android.gms.gcm.GoogleCloudMessaging;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLEncoder;
 
 import straw.polito.it.straw.R;
 import straw.polito.it.straw.StrawApplication;
@@ -23,6 +45,7 @@ import straw.polito.it.straw.utils.Logger;
 import straw.polito.it.straw.utils.PriceDisplay;
 import straw.polito.it.straw.utils.SharedPreferencesHandler;
 import straw.polito.it.straw.utils.TimerDisplay;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class ConfirmReservationActivity extends AppCompatActivity {
 
@@ -33,7 +56,7 @@ public class ConfirmReservationActivity extends AppCompatActivity {
     private ExpandableListView list_item;
     private PriceDisplay price;
     private Button confirmButton;
-
+    private String tokenTo;
     private Reservation reservation;
     private Resources resources;
 
@@ -42,6 +65,7 @@ public class ConfirmReservationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_confirm_reservation);
         Intent intent = getIntent();
+        this.tokenTo=intent.getExtras().getString("tokenGCM");
         this.resources = getResources();
         this.reservation = Reservation.create(intent.getStringExtra(Reservation.RESERVATION));
 
@@ -97,7 +121,62 @@ public class ConfirmReservationActivity extends AppCompatActivity {
                 dialog.show();
                 DatabaseUtils databaseUtils = ((StrawApplication)getApplication()).getDatabaseUtils();
                 databaseUtils.saveReservation(reservation, dialog);
+                post();
              }
         });
+    }
+
+    public void post(){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    URL object = new URL("https://gcm-http.googleapis.com/gcm/send");
+
+                    HttpURLConnection con = (HttpURLConnection) object.openConnection();
+                    con.setDoOutput(true);
+                    con.setDoInput(true);
+                    con.setRequestProperty("Content-Type", "application/json");
+                    con.setRequestProperty("Authorization", "key="+StrawApplication.serverAPIKey);
+                    con.setRequestMethod("POST");
+
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("to",tokenTo);
+                    JSONObject res = new JSONObject();
+                    res.put("reservation",reservation.toString());
+                    jsonObject.put("data",res);
+                    Logger.d("Request "+jsonObject.toString());
+                    OutputStreamWriter wr = new OutputStreamWriter(con.getOutputStream());
+                    wr.write(jsonObject.toString());
+                    wr.flush();
+                    wr.close();
+
+                    StringBuilder sb = new StringBuilder();
+                    int HttpResult = con.getResponseCode();
+                    if (HttpResult == HttpURLConnection.HTTP_OK) {
+                        BufferedReader br = new BufferedReader(
+                                new InputStreamReader(con.getInputStream(), "utf-8"));
+                        String line = null;
+                        while ((line = br.readLine()) != null) {
+                            sb.append(line + "\n");
+                        }
+                        br.close();
+                        Logger.d("LOL " + sb.toString());
+                    } else {
+                        Logger.d("LEL " +con.getResponseMessage());
+                    }
+
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+        }).start();
+
     }
 }
