@@ -330,7 +330,7 @@ public class QuickSearchActivity extends FragmentActivity implements RestaurantF
      * Replace the currently displayed fragment by a RestaurantMapFragment
      */
     public void setMapFragment() {
-        this.fragment = RestaurantMapFragment.createInstance(this.latitude, this.longitude);
+        this.fragment = RestaurantMapFragment.createInstance(this.latitude, this.longitude, this);
         this.fragment.setAdapter(this.adapter);
         FragmentTransaction transaction = this.fragmentManager.beginTransaction();
         transaction.replace(R.id.id_relativeLayoutQuickSearch2, ((RestaurantMapFragment)this.fragment).getFragment());

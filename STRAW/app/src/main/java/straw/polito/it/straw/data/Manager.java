@@ -163,6 +163,19 @@ public class Manager {
         this.res_type = res_type;
     }
 
+    @JsonIgnore
+    public int getType() {
+        if (this.res_type.equals("Restaurant"))
+            return RESTAURANT;
+        if (this.res_type.equals("Canteen"))
+            return CANTEEN;
+        if (this.res_type.equals("Take Away"))
+            return TAKEAWAY;
+        if (this.res_type.equals("Bar"))
+            return BAR;
+        return -1;
+    }
+
     public int getSeats() {
         return seats;
     }
