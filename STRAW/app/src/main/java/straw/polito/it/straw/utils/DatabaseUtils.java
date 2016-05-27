@@ -350,6 +350,58 @@ public class DatabaseUtils {
         }
     }
 
+    public void editUser(String emailAddress,String newEmail,String oldPassword, String password, String type, ProgressDialog dialog) {
+        EditUserAsyncTask task = new EditUserAsyncTask(dialog);
+        String[] params = new String[5];
+        params[0] = emailAddress;
+        params[1] = newEmail;
+        params[2] = oldPassword;
+        params[3] = password;
+        params[4] = type;
+        task.execute(params);
+    }
+    private class EditUserAsyncTask extends AsyncTask<String, Void, Void> {
+        private ProgressDialog dialog;
+
+        public EditUserAsyncTask(ProgressDialog dialog) {
+            this.dialog = dialog;
+        }
+
+        @Override
+        protected Void doInBackground(final String[] params) {
+            firebase.changeEmail(params[0], params[2], params[1], new Firebase.ResultHandler() {
+                @Override
+                public void onSuccess() {
+                    Logger.d("Mail changed!");
+                }
+
+                @Override
+                public void onError(FirebaseError firebaseError) {
+                    Toast.makeText(context, firebaseError.getMessage(), Toast.LENGTH_LONG).show();
+                }
+            });
+
+            firebase.changePassword(params[0], params[2], params[3], new Firebase.ResultHandler() {
+                @Override
+                public void onSuccess() {
+                    Logger.d("Password changed!");
+                }
+
+                @Override
+                public void onError(FirebaseError firebaseError) {
+                    Toast.makeText(context, firebaseError.getMessage(), Toast.LENGTH_LONG).show();
+                }
+            });
+            if(params[4].equals(SharedPreferencesHandler.MANAGER)){
+                Manager manager = sharedPreferencesHandler.getCurrentManager();
+                saveManagerProfile(manager, firebase.getAuth().getUid(), params[1], false, dialog);
+            }else{
+                User user = sharedPreferencesHandler.getCurrentUser();
+                saveCustomerProfile(user, firebase.getAuth().getUid(), false, dialog);
+            }
+            return null;
+        }
+    }
     /**
      * Create a new user in the Firebase database
      *
@@ -1005,7 +1057,7 @@ public class DatabaseUtils {
      * Retrieve the full profile of a user (identified by the user email address) from the
      * Firebase database.
      *
-     * @param userEmail : used as the key to find the profile.
+     * @param  : used as the key to find the profile.
      * @return : the profile, or null if it's not possible to retrieve proper data.
      */
     public User retrieveUserProfile() {
@@ -1274,6 +1326,19 @@ public class DatabaseUtils {
             public void onComplete(FirebaseError firebaseError, Firebase firebase) {
                 if (firebaseError != null)
                     Toast.makeText(context, firebaseError.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+    public void sendResetRequest(String email){
+        firebase.resetPassword(email, new Firebase.ResultHandler() {
+            @Override
+            public void onSuccess() {
+                Toast.makeText(context, context.getResources().getString(R.string.forget_mail), Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onError(FirebaseError firebaseError) {
+                Toast.makeText(context, firebaseError.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
     }

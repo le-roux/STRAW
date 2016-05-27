@@ -1,7 +1,10 @@
 <resources>
     <!--Strings for the manager account management part-->
     <string name="app_name">STRAW</string>
+    <string name="title">Discover the best place to eat. Booking your table. Order your food, Stay with friends</string>
     <string name="error_log_in">Error Logging In</string>
+    <string name="log_out">- Log out</string>
+    <string name="forget_mail">A mail was sent to you with the new password!</string>
     <string name="ident">Identification</string>
     <string name="notyet">Not yet a member?</string>
     <string name="user_n">User Name</string>
@@ -11,6 +14,8 @@
     <string name="c_user">Create user</string>
     <string name="c_man">Create manager</string>
     <string name="email">Email</string>
+    <string name="n_pwd">New Password</string>
+    <string name="o_pwd">Old Password</string>
     <string name="c_pwd">New Password</string>
     <string name="cc_pwd">Confirm Password</string>
     <string name="addr">Address</string>
@@ -185,6 +190,7 @@
     <!--Strings for the database part-->
     <string name="NoNetwork">Network is not available\nPlease check your connection</string>
     <string name="AccountCreation">Account creation</string>
+    <string name="AccountEdition">Account edition</string>
     <string name="ProfileCreationSuccessful">Profile created successfully</string>
     <string name="LoggingIn">Logging In</string>
     <string name="NoAuth">No user authenticated, please login</string>

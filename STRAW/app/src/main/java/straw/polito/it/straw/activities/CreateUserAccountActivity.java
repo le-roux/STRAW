@@ -24,6 +24,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import java.io.File;
 import java.io.IOException;
@@ -43,32 +44,35 @@ import straw.polito.it.straw.utils.Area;
 
 public class CreateUserAccountActivity extends AppCompatActivity {
 
-    ImageView photo;
-    EditText c_pwd;
-    EditText cc_pwd;
-    EditText email;
-    Spinner areaSpinner;
-    Spinner u_d;
-    Spinner u_t;
-    Spinner p_t;
-    Button c_acc_button;
-    PopupWindow popUp;
+    private ImageView photo;
+    private EditText c_pwd;
+    private EditText cc_pwd;
+    private EditText email;
+    private Spinner areaSpinner;
+    private Spinner u_d;
+    private Spinner u_t;
+    private Spinner p_t;
+    private Button c_acc_button;
+    private TextView n_pwd;
+    private TextView o_pwd;
+    private PopupWindow popUp;
 
-    Bitmap bitmap;
-    Area[] areas;
+    private Bitmap bitmap;
+    private Area[] areas;
 
-    Uri photo_uri;
+    private Uri photo_uri;
 
-    List<String> u_t_list;
-    List<String> u_d_list;
-    List<String> p_t_list;
+    private List<String> u_t_list;
+    private List<String> u_d_list;
+    private List<String> p_t_list;
     private String TAG = "CreateUserAccountActivity";
     private SharedPreferencesHandler sharedPreferencesHandler;
     private static final int IMAGE_REQ = 1;
     private static final int CAMERA_REQ = 2;
-    User user;
-    boolean sw;
-
+    private User user;
+    private boolean sw;
+    private boolean onEdit;
+    private String old_email;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,14 +84,21 @@ public class CreateUserAccountActivity extends AppCompatActivity {
         this.areas = sharedPreferencesHandler.getAreaList();
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
-        initialize();
-        setListeners();
+
         if(getIntent().hasExtra("user")){
             Log.v(TAG,getIntent().getExtras().getString("user"));
             user=new User(getIntent().getExtras().getString("user"));
+            onEdit=true;
+            old_email=user.getEmail();
+            initialize();
+            setListeners();
             loadPrevInfo(user);
+
         }else{
             user=new User();
+            onEdit=false;
+            initialize();
+            setListeners();
             setPhoto();
         }
 
@@ -120,7 +131,12 @@ public class CreateUserAccountActivity extends AppCompatActivity {
         email=(EditText)findViewById(R.id.email_editText);
         c_acc_button=(Button)findViewById(R.id.create_button);
         setUpPopUpWindow();
-
+        o_pwd= (TextView) findViewById(R.id.pwd_textView);
+        n_pwd= (TextView) findViewById(R.id.c_pwd_textView);
+        if(onEdit){
+            o_pwd.setText(getString(R.string.o_pwd));
+            n_pwd.setText(getString(R.string.n_pwd));
+        }
         u_t_list=new ArrayList<>();
         u_d_list=new ArrayList<>();
         p_t_list=new ArrayList<>();
@@ -162,16 +178,12 @@ public class CreateUserAccountActivity extends AppCompatActivity {
                     showAlert(getString(R.string.m_email), getString(R.string.error), false);
                     sw = true;
                 }
-                if (c_pwd.getText().toString().equals("") || !c_pwd.getText().toString().equals(cc_pwd.getText().toString())) {
-                    showAlert(getString(R.string.m_pwd), getString(R.string.error), false);
-                    sw = true;
+                if(!onEdit) {
+                    if (c_pwd.getText().toString().equals("") || !c_pwd.getText().toString().equals(cc_pwd.getText().toString())) {
+                        showAlert(getString(R.string.m_pwd), getString(R.string.error), false);
+                        sw = true;
+                    }
                 }
-                /*if (!uni.getText().toString().equals("")) {
-                    user.setUniversity(uni.getText().toString());
-                } else {
-                    showAlert(getString(R.string.uni), getString(R.string.error), false);
-                    sw = true;
-                }*/
                 user.setUniversity(areas[areaSpinner.getSelectedItemPosition()].getName());
                 user.setDiet(u_d_list.get(u_d.getSelectedItemPosition()));
                 user.setType(u_t_list.get(u_t.getSelectedItemPosition()));
@@ -180,23 +192,42 @@ public class CreateUserAccountActivity extends AppCompatActivity {
                     user.setImage(ImageManager.getImageFromUri(getApplicationContext(), photo_uri));
 
                 if (!sw) {
-                    /**
-                     * Save the new profile as the current user
-                     */
-                    sharedPreferencesHandler.storeCurrentUser(user.toString());
-                    /**
-                     * Create the new user account in the database, store the profile, log in and
-                     * launch the proper activity.
-                     */
-                    ProgressDialog dialog = new ProgressDialog(CreateUserAccountActivity.this, ProgressDialog.STYLE_SPINNER);
-                    dialog.setIndeterminate(true);
-                    dialog.setMessage(getResources().getString(R.string.AccountCreation));
-                    dialog.setCancelable(false);
-                    dialog.show();
-                    DatabaseUtils databaseUtils = ((StrawApplication)getApplication()).getDatabaseUtils();
-                    String emailAddress = email.getText().toString();
-                    String password = c_pwd.getText().toString();
-                    databaseUtils.createUser(emailAddress, password, SharedPreferencesHandler.USER, dialog);
+                    if(!onEdit) {
+                        /**
+                         * Save the new profile as the current user
+                         */
+                        sharedPreferencesHandler.storeCurrentUser(user.toString());
+                        /**
+                         * Create the new user account in the database, store the profile, log in and
+                         * launch the proper activity.
+                         */
+                        ProgressDialog dialog = new ProgressDialog(CreateUserAccountActivity.this, ProgressDialog.STYLE_SPINNER);
+                        dialog.setIndeterminate(true);
+                        dialog.setMessage(getResources().getString(R.string.AccountCreation));
+                        dialog.setCancelable(false);
+                        dialog.show();
+                        DatabaseUtils databaseUtils = ((StrawApplication) getApplication()).getDatabaseUtils();
+                        String emailAddress = email.getText().toString();
+                        String password = c_pwd.getText().toString();
+                        databaseUtils.createUser(emailAddress, password, SharedPreferencesHandler.USER, dialog);
+                    }else{
+                        /**
+                         * Save the new profile as the current user
+                         */
+
+                        sharedPreferencesHandler.storeCurrentUser(user.toString());
+                        ProgressDialog dialog = new ProgressDialog(CreateUserAccountActivity.this, ProgressDialog.STYLE_SPINNER);
+                        dialog.setIndeterminate(true);
+                        dialog.setMessage(getResources().getString(R.string.AccountCreation));
+                        dialog.setCancelable(false);
+                        dialog.show();
+                        DatabaseUtils databaseUtils = ((StrawApplication) getApplication()).getDatabaseUtils();
+                        String emailAddress = email.getText().toString();
+                        String oldpassword = c_pwd.getText().toString();
+                        String password = cc_pwd.getText().toString();
+                        databaseUtils.editUser(old_email,emailAddress, oldpassword,password, SharedPreferencesHandler.USER, dialog);
+
+                    }
                 } else {
                     return;
                 }

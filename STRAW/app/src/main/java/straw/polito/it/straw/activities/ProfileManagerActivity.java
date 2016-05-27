@@ -13,49 +13,47 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import straw.polito.it.straw.R;
+import straw.polito.it.straw.StrawApplication;
 import straw.polito.it.straw.data.Manager;
 import straw.polito.it.straw.utils.ImageManager;
+import straw.polito.it.straw.utils.SharedPreferencesHandler;
 
 public class ProfileManagerActivity extends AppCompatActivity {
 
-    ImageView photo;
-    TextView user_n;
-    TextView tel;
-    TextView r_n;
-    TextView addr;
-    TextView seats;
-    TextView menu_link;
-    TextView reservations_link;
-    TextView offerts_link;
-    Button edit_button;
-
+    private ImageView photo;
+    private TextView user_n;
+    private TextView tel;
+    private TextView r_n;
+    private TextView addr;
+    private TextView log_out;
+    private TextView seats;
+    private TextView menu_link;
+    private TextView reservations_link;
+    private TextView offerts_link;
+    private Button edit_button;
+    private SharedPreferencesHandler sharedPreferencesHandler;
     public static final String MANAGER = "manager";
 
     private String TAG = "ProfileManagerActivity";
     private SharedPreferences mShared;
-    Manager man;
+    private Manager man;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_manager);
-        mShared = PreferenceManager.getDefaultSharedPreferences(this);
-
+        sharedPreferencesHandler = ((StrawApplication)getApplication()).getSharedPreferencesHandler();
+        man=sharedPreferencesHandler.getCurrentManager();
         initialize();
-
-        String ss = mShared.getString("Manager", "Error");
-        man=new Manager(ss);
         loadPrevInfo(man);
-
         setListeners();
-
     }
 
     @Override
     protected void onResume() {
         super.onResume();
 
-        man=new Manager(mShared.getString("Manager","Error"));
+        man=sharedPreferencesHandler.getCurrentManager();
         loadPrevInfo(man);
     }
 
@@ -92,6 +90,17 @@ public class ProfileManagerActivity extends AppCompatActivity {
                 startActivity(i);
             }
         });
+        log_out.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sharedPreferencesHandler.removeMemory();
+                Intent intent  = new Intent(getBaseContext(),HomeActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                finish();
+            }
+        });
     }
 
     private void initialize() {
@@ -105,6 +114,7 @@ public class ProfileManagerActivity extends AppCompatActivity {
         this.menu_link = (TextView)findViewById(R.id.reservation_history);
         this.reservations_link = (TextView)findViewById(R.id.review_history);
         offerts_link=(TextView)findViewById(R.id.offers_link_textView);
+        log_out=(TextView)findViewById(R.id.log_out);
     }
     private void loadPrevInfo(Manager man) {
         ImageManager.setImage(this, photo, man.getImage());

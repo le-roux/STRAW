@@ -78,10 +78,9 @@
             android:textColor="@color/link_color"
             android:text="@string/res_h"
             android:focusable="true"
-            android:layout_below="@+id/pref_t_textView"
-            android:layout_centerVertical="true"
-            android:layout_toRightOf="@+id/photo_imageView"
-            android:layout_toEndOf="@+id/photo_imageView" />
+            android:layout_below="@+id/photo_imageView"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
 
         <TextView
             android:id="@+id/review_history"
@@ -92,8 +91,8 @@
             android:text="@string/rev_h"
             android:focusable="true"
             android:layout_below="@+id/reservation_history"
-            android:layout_toRightOf="@+id/photo_imageView"
-            android:layout_toEndOf="@+id/photo_imageView" />
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
 
         <TextView
             android:id="@+id/list_friends"
@@ -104,8 +103,19 @@
             android:text="@string/friends"
             android:focusable="true"
             android:layout_below="@+id/review_history"
-            android:layout_toRightOf="@+id/photo_imageView"
-            android:layout_toEndOf="@+id/photo_imageView" />
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+        <TextView
+            android:id="@+id/log_out"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/Content_size"
+            android:textColor="@color/link_color"
+            android:text="@string/log_out"
+            android:focusable="true"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
     </RelativeLayout>
     <Button
         android:layout_width="match_parent"

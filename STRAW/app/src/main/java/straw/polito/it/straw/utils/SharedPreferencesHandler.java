@@ -95,4 +95,10 @@ public class SharedPreferencesHandler {
         areas[1] = new Area("Polimi", 45.2840, 9.1338);
         return areas;
     }
+    public void removeMemory(){
+        if(this.sharedPreferences.contains("remember")){
+            this.sharedPreferences.edit().remove("remember").apply();
+        }
+
+    }
 }
