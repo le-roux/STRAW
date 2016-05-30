@@ -27,23 +27,22 @@ public class InvitationSenderFragment extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         this.messageSender = (MessageSender)getActivity();
         this.smsManager = SmsManager.getDefault();
+
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setMessage(R.string.SelectMessageType)
                 .setPositiveButton(R.string.SMS, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        /*String[] addresses = messageSender.getAddresses(false);
+                        String[] addresses = messageSender.getAddresses(false);
                         String message = messageSender.getMessage();
                         for (String address : addresses) {
                             smsManager.sendTextMessage(address, null, message, null, null);
                         }
-                        messageSender.displayConfirmationToast(addresses.length);*/
-                        String[] addresses = messageSender.getAddresses(true);
+                        messageSender.displayConfirmationToast(addresses.length);
                         DatabaseUtils databaseUtils = ((StrawApplication)getActivity().getApplication()).getDatabaseUtils();
                         for(String email:addresses){
                             databaseUtils.sendFirendNotification(email);
                         }
-
                     }
                 })
                 .setNeutralButton(R.string.Email, new DialogInterface.OnClickListener() {
@@ -58,6 +57,10 @@ public class InvitationSenderFragment extends DialogFragment {
                         intent.putExtra(Intent.EXTRA_TEXT, messageSender.getMessage());
                         startActivity(intent);
                         messageSender.displayConfirmationToast(addresses.length);
+                        DatabaseUtils databaseUtils = ((StrawApplication)getActivity().getApplication()).getDatabaseUtils();
+                        for(String email:addresses){
+                            databaseUtils.sendFirendNotification(email);
+                        }
                     }
                 })
                 .setNegativeButton(R.string.Cancel, null);
