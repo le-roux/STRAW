@@ -323,8 +323,15 @@ public class DatabaseUtils {
                 public void onComplete(FirebaseError firebaseError, Firebase firebase) {
                     if (firebaseError == null) {
                         /**
-                         * Everything worked well
+                         * Everything worked well : main profile succesfully stored
                          */
+                        //Store the friend list
+                        for (Friend friend : params[0].getFriends())
+                            addFriend(friend);
+                        //Store the reservations ids
+                        for (Reservation reservation : params[0].getReservations()) {
+                            saveReservationIdInCustomer(reservation.getId(), null);
+                        }
                         if (dialog != null)
                             dialog.dismiss();
                         if (changeActivity) {
@@ -1111,28 +1118,32 @@ public class DatabaseUtils {
                         /**
                          * Store the reservation id in the customer reservations list.
                          */
-                        ref = firebase.child(USER).child(firebase.getAuth().getUid());
-                        ref.child(RESERVATIONS).push().setValue(id, new Firebase.CompletionListener() {
-                            @Override
-                            public void onComplete(FirebaseError firebaseError, Firebase firebase) {
-                                if (dialog != null)
-                                    dialog.dismiss();
-                                if (firebaseError == null) {
-                                    Toast.makeText(context, R.string.ReservationSent, Toast.LENGTH_LONG).show();
-                                    Intent intent = new Intent(context, SearchActivity.class);
-                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                    context.startActivity(intent);
-                                }
-                                else
-                                    Toast.makeText(context, firebaseError.getMessage(), Toast.LENGTH_LONG).show();
-                            }
-                        });
+                        saveReservationIdInCustomer(id, dialog);
                     } else
                         Toast.makeText(context, firebaseError.getMessage(), Toast.LENGTH_LONG).show();
                 }
             });
             return null;
         }
+    }
+
+    public void saveReservationIdInCustomer(String id, final ProgressDialog dialog) {
+        Firebase ref = firebase.child(USER).child(firebase.getAuth().getUid());
+        ref.child(RESERVATIONS).push().setValue(id, new Firebase.CompletionListener() {
+            @Override
+            public void onComplete(FirebaseError firebaseError, Firebase firebase) {
+                if (dialog != null)
+                    dialog.dismiss();
+                if (firebaseError == null) {
+                    Toast.makeText(context, R.string.ReservationSent, Toast.LENGTH_LONG).show();
+                    Intent intent = new Intent(context, SearchActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.startActivity(intent);
+                }
+                else
+                    Toast.makeText(context, firebaseError.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     /**
