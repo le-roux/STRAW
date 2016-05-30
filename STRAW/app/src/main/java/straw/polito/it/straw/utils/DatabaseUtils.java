@@ -1,9 +1,11 @@
 package straw.polito.it.straw.utils;
 
+import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.support.v4.app.NotificationCompat;
 import android.widget.Toast;
 
 import com.firebase.client.AuthData;
@@ -11,14 +13,11 @@ import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
-import com.firebase.client.Query;
 import com.firebase.client.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.sql.RowSetEvent;
 
 import straw.polito.it.straw.R;
 import straw.polito.it.straw.RestaurantFilter;
@@ -1005,7 +1004,6 @@ public class DatabaseUtils {
      * Retrieve the full profile of a user (identified by the user email address) from the
      * Firebase database.
      *
-     * @param userEmail : used as the key to find the profile.
      * @return : the profile, or null if it's not possible to retrieve proper data.
      */
     public User retrieveUserProfile() {
@@ -1179,9 +1177,17 @@ public class DatabaseUtils {
                     ref.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
+                            NotificationCompat.Builder builder =
+                                    new NotificationCompat.Builder(context)
+                                    .setSmallIcon(R.drawable.clock)
+                                    .setContentTitle(context.getString(R.string.ReservationUpdated))
+                                    .setContentText("");
+
                             Reservation reservation = dataSnapshot.getValue(Reservation.class);
                             params[0].getReservationList().add(reservation);
                             params[0].notifyDataSetChanged();
+                            NotificationManager notificationManager = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
+                            notificationManager.notify(1, builder.build());
                         }
 
                         @Override
