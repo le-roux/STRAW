@@ -142,6 +142,7 @@ public class ConfirmReservationActivity extends AppCompatActivity {
 
                     JSONObject jsonObject = new JSONObject();
                     jsonObject.put("to",tokenTo);
+                    jsonObject.put("delay_while_idle",true);
                     JSONObject res = new JSONObject();
                     res.put("reservation",reservation.toString());
                     jsonObject.put("data",res);
