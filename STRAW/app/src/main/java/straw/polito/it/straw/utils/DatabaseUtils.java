@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.widget.Toast;
 
+import com.fasterxml.jackson.core.JsonParser;
 import com.firebase.client.AuthData;
 import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
@@ -14,8 +15,19 @@ import com.firebase.client.FirebaseError;
 import com.firebase.client.Query;
 import com.firebase.client.ValueEventListener;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import javax.sql.RowSetEvent;
@@ -329,9 +341,9 @@ public class DatabaseUtils {
                         if (dialog != null)
                             dialog.dismiss();
                         if (changeActivity) {
-                            Intent intent = new Intent(context, SearchActivity.class);
+                          /*  Intent intent = new Intent(context, SearchActivity.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            context.startActivity(intent);
+                            context.startActivity(intent);*/
                         }
                         else {
                             Toast.makeText(context, context.getResources().getString(R.string.ProfileCreationSuccessful), Toast.LENGTH_LONG).show();
@@ -344,6 +356,128 @@ public class DatabaseUtils {
                             dialog.dismiss();
                         Toast.makeText(context, firebaseError.getMessage(), Toast.LENGTH_LONG).show();
                     }
+                }
+            });
+            ref = firebase.child(USER).child(this.uid).child(FRIENDS);
+            User u = (User) params[0];
+            ArrayList<Friend> friends=u.getFriends();
+            for(Friend f:friends){
+                ref.push().setValue(f);
+            }
+            ref = firebase.child(USER).child(this.uid).child(RESERVATIONS);
+            ArrayList<Reservation> res=u.getReservations();
+            for(Reservation r:res){
+                ref.push().setValue(r);
+            }
+            return null;
+        }
+    }
+
+
+    public void updateToken(String uEmail, String newToken, String type ) {
+        UpdateTokenTask task = new UpdateTokenTask();
+        String[] params = new String[3];
+        params[0] = uEmail;
+        params[1] = newToken;
+        params[2] = type;
+        task.execute(params);
+    }
+    private class UpdateTokenTask extends AsyncTask<String, Void, Void> {
+
+        public UpdateTokenTask() {
+        }
+
+        @Override
+        protected Void doInBackground(final String[] params) {
+            if(params[2].equals(USER)) {
+                User u = sharedPreferencesHandler.getCurrentUser();
+                u.setTokenGCM(params[1]);
+                saveCustomerProfile(u, firebase.getAuth().getUid(), false, null);
+                sharedPreferencesHandler.storeCurrentUser(u.toString());
+            }else{
+                Manager man=sharedPreferencesHandler.getCurrentManager();
+                man.setTokenGCM(params[1]);
+                saveManagerProfile(man);
+                sharedPreferencesHandler.storeCurrentManager(man.toString());
+            }
+            return null;
+        }
+    }
+
+    public void sendFirendNotification(String email){
+        SendFirendNotificationTask task = new SendFirendNotificationTask();
+        String[] params = new String[1];
+        params[0] = email;
+        task.execute(params);
+    }
+
+    private class SendFirendNotificationTask extends AsyncTask<String, Void, Void> {
+
+        public SendFirendNotificationTask() {
+        }
+
+        @Override
+        protected Void doInBackground(final String[] params) {
+            Query ref = firebase.child(USER).orderByChild("email").equalTo(params[0]);
+            ref.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    final DataSnapshot it=dataSnapshot.getChildren().iterator().next();
+                    Logger.d("User "+params[0]+" token"+it.child("tokenGCM").getValue().toString());
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                URL object = new URL("https://gcm-http.googleapis.com/gcm/send");
+
+                                HttpURLConnection con = (HttpURLConnection) object.openConnection();
+                                con.setDoOutput(true);
+                                con.setDoInput(true);
+                                con.setRequestProperty("Content-Type", "application/json");
+                                con.setRequestProperty("Authorization", "key="+StrawApplication.serverAPIKey);
+                                con.setRequestMethod("POST");
+
+                                JSONObject jsonObject = new JSONObject();
+                                jsonObject.put("to",it.child("tokenGCM").getValue().toString());
+                                JSONObject res = new JSONObject();
+                                res.put("invitation",params[0]);
+                                jsonObject.put("data",res);
+                                Logger.d("Request "+jsonObject.toString());
+                                OutputStreamWriter wr = new OutputStreamWriter(con.getOutputStream());
+                                wr.write(jsonObject.toString());
+                                wr.flush();
+                                wr.close();
+
+                                StringBuilder sb = new StringBuilder();
+                                int HttpResult = con.getResponseCode();
+                                if (HttpResult == HttpURLConnection.HTTP_OK) {
+                                    BufferedReader br = new BufferedReader(
+                                            new InputStreamReader(con.getInputStream(), "utf-8"));
+                                    String line = null;
+                                    while ((line = br.readLine()) != null) {
+                                        sb.append(line + "\n");
+                                    }
+                                    br.close();
+                                    Logger.d("LOL " + sb.toString());
+                                } else {
+                                    Logger.d("LEL " +con.getResponseMessage());
+                                }
+
+                            } catch (MalformedURLException e) {
+                                e.printStackTrace();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }).start();
+
+                }
+
+                @Override
+                public void onCancelled(FirebaseError firebaseError) {
+                    Toast.makeText(context, firebaseError.getMessage(), Toast.LENGTH_LONG).show();
                 }
             });
             return null;

@@ -15,6 +15,8 @@ import android.widget.TextView;
 import straw.polito.it.straw.R;
 import straw.polito.it.straw.StrawApplication;
 import straw.polito.it.straw.data.Manager;
+import straw.polito.it.straw.data.User;
+import straw.polito.it.straw.utils.DatabaseUtils;
 import straw.polito.it.straw.utils.ImageManager;
 import straw.polito.it.straw.utils.SharedPreferencesHandler;
 
@@ -42,7 +44,17 @@ public class ProfileManagerActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_manager);
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+        SharedPreferencesHandler sharedPreferencesHandler = new SharedPreferencesHandler(getApplicationContext());
         sharedPreferencesHandler = ((StrawApplication)getApplication()).getSharedPreferencesHandler();
+        if(sharedPreferences.contains("tokenGCM")){
+            User u =sharedPreferencesHandler.getCurrentUser();
+            String newToken=sharedPreferences.getString("tokenGCM","Error");
+            if(!u.getTokenGCM().equals(newToken) && !newToken.equals("Error")){
+                DatabaseUtils databaseUtils =((StrawApplication)getApplication()).getDatabaseUtils();
+                databaseUtils.updateToken(u.getEmail(),newToken,DatabaseUtils.MANAGER);
+            }
+        }
         man=sharedPreferencesHandler.getCurrentManager();
         initialize();
         loadPrevInfo(man);

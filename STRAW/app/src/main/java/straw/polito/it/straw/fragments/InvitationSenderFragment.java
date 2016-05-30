@@ -11,6 +11,9 @@ import android.telephony.SmsManager;
 
 import straw.polito.it.straw.MessageSender;
 import straw.polito.it.straw.R;
+import straw.polito.it.straw.StrawApplication;
+import straw.polito.it.straw.data.User;
+import straw.polito.it.straw.utils.DatabaseUtils;
 
 /**
  * Created by Sylvain on 26/04/2016.
@@ -29,12 +32,18 @@ public class InvitationSenderFragment extends DialogFragment {
                 .setPositiveButton(R.string.SMS, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        String[] addresses = messageSender.getAddresses(false);
+                        /*String[] addresses = messageSender.getAddresses(false);
                         String message = messageSender.getMessage();
                         for (String address : addresses) {
                             smsManager.sendTextMessage(address, null, message, null, null);
                         }
-                        messageSender.displayConfirmationToast(addresses.length);
+                        messageSender.displayConfirmationToast(addresses.length);*/
+                        String[] addresses = messageSender.getAddresses(true);
+                        DatabaseUtils databaseUtils = ((StrawApplication)getActivity().getApplication()).getDatabaseUtils();
+                        for(String email:addresses){
+                            databaseUtils.sendFirendNotification(email);
+                        }
+
                     }
                 })
                 .setNeutralButton(R.string.Email, new DialogInterface.OnClickListener() {
