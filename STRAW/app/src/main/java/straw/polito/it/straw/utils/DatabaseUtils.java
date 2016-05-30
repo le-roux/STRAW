@@ -1,9 +1,11 @@
 package straw.polito.it.straw.utils;
 
+import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.support.v4.app.NotificationCompat;
 import android.widget.Toast;
 
 import com.fasterxml.jackson.core.JsonParser;
@@ -29,8 +31,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-
-import javax.sql.RowSetEvent;
 
 import straw.polito.it.straw.R;
 import straw.polito.it.straw.RestaurantFilter;
@@ -341,9 +341,9 @@ public class DatabaseUtils {
                         if (dialog != null)
                             dialog.dismiss();
                         if (changeActivity) {
-                          /*  Intent intent = new Intent(context, SearchActivity.class);
+                            Intent intent = new Intent(context, SearchActivity.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            context.startActivity(intent);*/
+                            context.startActivity(intent);
                         }
                         else {
                             Toast.makeText(context, context.getResources().getString(R.string.ProfileCreationSuccessful), Toast.LENGTH_LONG).show();
@@ -1191,7 +1191,6 @@ public class DatabaseUtils {
      * Retrieve the full profile of a user (identified by the user email address) from the
      * Firebase database.
      *
-     * @param  : used as the key to find the profile.
      * @return : the profile, or null if it's not possible to retrieve proper data.
      */
     public User retrieveUserProfile() {
@@ -1365,9 +1364,17 @@ public class DatabaseUtils {
                     ref.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
+                            NotificationCompat.Builder builder =
+                                    new NotificationCompat.Builder(context)
+                                    .setSmallIcon(R.drawable.clock)
+                                    .setContentTitle(context.getString(R.string.ReservationUpdated))
+                                    .setContentText("");
+
                             Reservation reservation = dataSnapshot.getValue(Reservation.class);
                             params[0].getReservationList().add(reservation);
                             params[0].notifyDataSetChanged();
+                            NotificationManager notificationManager = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
+                            notificationManager.notify(1, builder.build());
                         }
 
                         @Override

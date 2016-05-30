@@ -145,6 +145,7 @@
     <string name="Done">Done</string>
     <string name="PhoneNumber">Phone Number</string>
     <string name="Create">Create</string>
+    <string name="ReservationUpdated">Reservation updated</string>
 
 
     <!--Strings for the Book Table part-->

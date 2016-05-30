@@ -1,7 +1,6 @@
 package straw.polito.it.straw.fragments;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Intent;
 import android.widget.Adapter;
 
@@ -35,6 +34,14 @@ public class RestaurantMapFragment implements AdapterFragment, OnMapReadyCallbac
         this.activity = activity;
     }
 
+
+    /**
+     * Only use this function to create a new instance of this class
+     * @param latitude
+     * @param longitude
+     * @param activity
+     * @return
+     */
     public static RestaurantMapFragment createInstance(double latitude, double longitude, Activity activity) {
         RestaurantMapFragment fragment = new RestaurantMapFragment(activity);
         fragment.setUserPosition(new LatLng(latitude, longitude));
@@ -70,6 +77,10 @@ public class RestaurantMapFragment implements AdapterFragment, OnMapReadyCallbac
     @Override
     public void onMapReady(GoogleMap googleMap) {
         this.mMap = googleMap;
+
+        /**
+         * Set a listener to launch the SearchDetail activity for the proper restaurant
+         */
         this.mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override
             public void onInfoWindowClick(Marker marker) {
@@ -93,6 +104,9 @@ public class RestaurantMapFragment implements AdapterFragment, OnMapReadyCallbac
             int i = 0;
             for (Manager manager : restaurantsList) {
                 i++;
+                /**
+                 * Prepare the info to put in the marker
+                 */
                 LatLng position = new LatLng(manager.getLatitude(), manager.getLongitude());
                 StringBuilder builder = new StringBuilder();
                 builder.append(i)
