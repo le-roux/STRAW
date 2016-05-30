@@ -1,9 +1,13 @@
 package straw.polito.it.straw.activities;
 
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -21,6 +25,7 @@ import org.json.JSONObject;
 
 import straw.polito.it.straw.R;
 import straw.polito.it.straw.StrawApplication;
+import straw.polito.it.straw.services.RegistrationIntentService;
 import straw.polito.it.straw.utils.DatabaseUtils;
 
 public class HomeActivity extends AppCompatActivity {
@@ -34,14 +39,15 @@ public class HomeActivity extends AppCompatActivity {
     private Button create_user_button;
     private TextView forgot;
     private CheckBox remember;
-
+    private BroadcastReceiver mRegistrationBroadcastReceiver;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         mShared= PreferenceManager.getDefaultSharedPreferences(this);
         initialize();
-
+        Intent intent = new Intent(this, RegistrationIntentService.class);
+        startService(intent);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         if(mShared.contains("remember")){
             try {
@@ -123,7 +129,11 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
     }
-
+    @Override
+    protected void onPause() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mRegistrationBroadcastReceiver);
+        super.onPause();
+    }
 
 
     private void initialize() {
@@ -135,6 +145,17 @@ public class HomeActivity extends AppCompatActivity {
         create_user_button=(Button)findViewById(R.id.c_user_button);
         remember = (CheckBox) findViewById(R.id.remember_checkBox);
         forgot =(TextView)findViewById(R.id.forgot);
+        mRegistrationBroadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+                boolean sentToken = sharedPreferences.getBoolean("tokenSW", false);
+                if (sentToken) {
+                    //user.setTokenGCM(sharedPreferences.getString("tokenGCM","Error"));
+                }
+            }
+        };
+        LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,new IntentFilter("complete"));
     }
 
 

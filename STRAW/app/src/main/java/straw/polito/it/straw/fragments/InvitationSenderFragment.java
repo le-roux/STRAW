@@ -11,6 +11,9 @@ import android.telephony.SmsManager;
 
 import straw.polito.it.straw.MessageSender;
 import straw.polito.it.straw.R;
+import straw.polito.it.straw.StrawApplication;
+import straw.polito.it.straw.data.User;
+import straw.polito.it.straw.utils.DatabaseUtils;
 
 /**
  * Created by Sylvain on 26/04/2016.
@@ -24,6 +27,7 @@ public class InvitationSenderFragment extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         this.messageSender = (MessageSender)getActivity();
         this.smsManager = SmsManager.getDefault();
+
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setMessage(R.string.SelectMessageType)
                 .setPositiveButton(R.string.SMS, new DialogInterface.OnClickListener() {
@@ -35,6 +39,10 @@ public class InvitationSenderFragment extends DialogFragment {
                             smsManager.sendTextMessage(address, null, message, null, null);
                         }
                         messageSender.displayConfirmationToast(addresses.length);
+                        DatabaseUtils databaseUtils = ((StrawApplication)getActivity().getApplication()).getDatabaseUtils();
+                        for(String email:addresses){
+                            databaseUtils.sendFirendNotification(email);
+                        }
                     }
                 })
                 .setNeutralButton(R.string.Email, new DialogInterface.OnClickListener() {
@@ -49,6 +57,10 @@ public class InvitationSenderFragment extends DialogFragment {
                         intent.putExtra(Intent.EXTRA_TEXT, messageSender.getMessage());
                         startActivity(intent);
                         messageSender.displayConfirmationToast(addresses.length);
+                        DatabaseUtils databaseUtils = ((StrawApplication)getActivity().getApplication()).getDatabaseUtils();
+                        for(String email:addresses){
+                            databaseUtils.sendFirendNotification(email);
+                        }
                     }
                 })
                 .setNegativeButton(R.string.Cancel, null);

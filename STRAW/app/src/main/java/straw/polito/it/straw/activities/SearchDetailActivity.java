@@ -163,9 +163,15 @@ public class SearchDetailActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        this.man.addReview(new Review(data.getStringExtra(Review.REVIEW)));
-        ((ReviewAdapter)this.review.getAdapter()).notifyDataSetChanged();
-        this.ratingBar.setRating(this.man.getRate());
+        if(requestCode==REQ_CODE_REV) {
+            if(data!=null) {
+                if (data.getExtras().containsKey(Review.REVIEW)) {
+                    this.man.addReview(new Review(data.getStringExtra(Review.REVIEW)));
+                    ((ReviewAdapter) this.review.getAdapter()).notifyDataSetChanged();
+                    this.ratingBar.setRating(this.man.getRate());
+                }
+            }
+        }
     }
 
     @Override

@@ -1,12 +1,18 @@
 package straw.polito.it.straw.activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
 import straw.polito.it.straw.R;
+import straw.polito.it.straw.StrawApplication;
+import straw.polito.it.straw.data.User;
+import straw.polito.it.straw.utils.DatabaseUtils;
+import straw.polito.it.straw.utils.SharedPreferencesHandler;
 
 public class SearchActivity extends AppCompatActivity {
 
@@ -18,6 +24,19 @@ public class SearchActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
+        SharedPreferencesHandler sharedPreferencesHandler = new SharedPreferencesHandler(getApplicationContext());
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+        if(sharedPreferences.contains("tokenGCM")){
+            User u =sharedPreferencesHandler.getCurrentUser();
+            String newToken=sharedPreferences.getString("tokenGCM","Error");
+            if(u.getTokenGCM()!=null){
+                if(!u.getTokenGCM().equals(newToken) && !newToken.equals("Error")){
+                    DatabaseUtils databaseUtils =((StrawApplication)getApplication()).getDatabaseUtils();
+                    databaseUtils.updateToken(u.getEmail(),newToken,DatabaseUtils.USER);
+                }
+            }
+
+        }
 
         this.button_edit = (Button)findViewById(R.id.profileButton);
         button_edit.setOnClickListener(new View.OnClickListener() {

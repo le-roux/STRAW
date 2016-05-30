@@ -29,13 +29,15 @@ public class MyGcmListenerService extends GcmListenerService {
         if(data.containsKey("reservation")){
             String msg = data.getString("reservation");
 
-            sendNotification(msg);
+            sendNotificationReservation(msg);
+        }
+        if(data.containsKey("invitation")){
+            String msg = data.getString("invitation");
+            sendNotificationInvitiation(msg);
         }
 
     }
-    private void sendNotification(String message) {
-        String arr[]=message.split("::::");
-
+    private void sendNotificationReservation(String message) {
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
                         .setSmallIcon(R.drawable.pizza)
@@ -46,10 +48,7 @@ public class MyGcmListenerService extends GcmListenerService {
         mBuilder.setAutoCancel(true);
 
         Intent resultIntent = new Intent(this, DisplayReservationsActivity.class);
-        resultIntent.putExtra("GameID", arr[0]);
-
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-        stackBuilder.addParentStack(HomeActivity.class);
         stackBuilder.addNextIntent(resultIntent);
         PendingIntent resultPendingIntent =
                 stackBuilder.getPendingIntent(
@@ -57,6 +56,22 @@ public class MyGcmListenerService extends GcmListenerService {
                         PendingIntent.FLAG_UPDATE_CURRENT
                 );
         mBuilder.setContentIntent(resultPendingIntent);
+        mBuilder.setLocalOnly(true);
+        NotificationManager mNotificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationManager.notify(0, mBuilder.build());
+        Logger.d("NOTIFICATION CREATED!!!!!!!!!!!!!!!" );
+    }
+    private void sendNotificationInvitiation(String message) {
+
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(this)
+                        .setSmallIcon(R.drawable.pizza)
+                        .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.pizza))
+                        .setContentTitle("STRAW")
+                        .setContentText("Your friend "+message+" has invited you to eat!");
+
+        mBuilder.setAutoCancel(true);
         mBuilder.setLocalOnly(true);
         NotificationManager mNotificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
