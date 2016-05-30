@@ -17,6 +17,7 @@ public class User {
     private String email;
     private String university;
     private String diet;
+    private String tokenGCM;
     private String type;
     private String pref_time;
     private String image;
@@ -40,6 +41,7 @@ public class User {
     public static final String IMAGE = "image";
     public static final String RESERVATIONS = "reservations";
     public static final String REVIEWS = "reviews";
+    public static final String TOKEN_GCM = "token_gcm";
 
     /**
      * Basic constructor used by Firebase to create an instance of User when downloading it.
@@ -62,6 +64,7 @@ public class User {
             this.type = jo.getString(CUSTOMER_TYPE);
             this.pref_time = jo.getString(PREFERRED_TIME);
             this.image = jo.getString(IMAGE);
+            this.tokenGCM = jo.getString(TOKEN_GCM);
 
             /**
              * Retrieve the friends list.
@@ -102,6 +105,7 @@ public class User {
             jo.put(CUSTOMER_TYPE, this.type);
             jo.put(PREFERRED_TIME, this.pref_time);
             jo.put(IMAGE, this.image);
+            jo.put(TOKEN_GCM,this.tokenGCM);
 
             /**
              * Store the friends list.
@@ -174,6 +178,14 @@ public class User {
 
     public String getImage() {
         return image;
+    }
+
+    public String getTokenGCM() {
+        return tokenGCM;
+    }
+
+    public void setTokenGCM(String tokenGCM) {
+        this.tokenGCM = tokenGCM;
     }
 
     public void setImage(String image) {

@@ -27,21 +27,22 @@ import straw.polito.it.straw.utils.SharedPreferencesHandler;
 
 public class ProfileUserActivity extends AppCompatActivity implements UserContainer{
 
-    ImageView photo;
-    TextView email;
-    TextView user_info;
-    TextView diet;
-    TextView pref_t;
+    private ImageView photo;
+    private TextView email;
+    private TextView user_info;
+    private TextView diet;
+    private TextView pref_t;
+    private TextView log_out;
 
-    TextView res_h;
-    TextView rev_h;
-    TextView friends;
+    private TextView res_h;
+    private TextView rev_h;
+    private TextView friends;
 
-    Button edit_profile;
+    private Button edit_profile;
     private SharedPreferencesHandler sharedPreferencesHandler;
     private FragmentManager fragmentManager;
     private ArrayList<Friend> friendsList;
-    User user;
+    private User user;
 
 
     public static final String USER = "user";
@@ -83,11 +84,6 @@ public class ProfileUserActivity extends AppCompatActivity implements UserContai
         rev_h.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                /*DatabaseUtils db=((StrawApplication)getApplication()).getDatabaseUtils();
-                Logger.d("User: "+user.toString());
-                User u = db.retrieveUserProfile(user.getEmail());
-                Logger.d("New User: "+u.toString());*/
                 FragmentTransaction transaction = fragmentManager.beginTransaction();
                 transaction.replace(R.id.mainLayout, new ReviewsFragment());
                 transaction.addToBackStack(null);
@@ -108,6 +104,17 @@ public class ProfileUserActivity extends AppCompatActivity implements UserContai
                 transaction.commit();
             }
         });
+        log_out.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sharedPreferencesHandler.removeMemory();
+                Intent intent  = new Intent(getBaseContext(),HomeActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                finish();
+            }
+        });
     }
 
     private void initialize() {
@@ -120,6 +127,7 @@ public class ProfileUserActivity extends AppCompatActivity implements UserContai
         res_h=(TextView)findViewById(R.id.reservation_history);
         rev_h=(TextView)findViewById(R.id.review_history);
         friends=(TextView)findViewById(R.id.list_friends);
+        log_out=(TextView)findViewById(R.id.log_out);
     }
     private void loadPrevInfo(User user) {
         ImageManager.setImage(this, photo, user.getImage());

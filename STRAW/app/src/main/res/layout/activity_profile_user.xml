@@ -101,6 +101,18 @@
             android:layout_below="@+id/review_history"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"/>
+
+        <TextView
+            android:id="@+id/log_out"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/Content_size"
+            android:textColor="@color/link_color"
+            android:text="@string/log_out"
+            android:focusable="true"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
     </RelativeLayout>
     <Button
         android:layout_width="match_parent"

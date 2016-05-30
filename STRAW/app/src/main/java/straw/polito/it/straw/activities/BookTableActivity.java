@@ -120,6 +120,7 @@ public class BookTableActivity extends AppCompatActivity implements BookTableInt
                 updateData();
                 Intent intent = new Intent(getApplicationContext(), ConfirmReservationActivity.class);
                 intent.putExtra(Reservation.RESERVATION, reservation.toString());
+                intent.putExtra("tokenGCM",restaurant.getTokenGCM());
                 startActivity(intent);
             }
         });

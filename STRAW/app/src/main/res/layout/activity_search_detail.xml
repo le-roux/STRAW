@@ -20,7 +20,7 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="111dp"
             android:layout_gravity="left|top"
             android:background="@drawable/customborder"
             android:id="@+id/e">
@@ -36,10 +36,9 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="name"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:layout_margin="@dimen/activity_horizontal_margin"/>
+                android:layout_centerVertical="true"
+                android:layout_alignLeft="@+id/ratingBar"
+                android:layout_alignStart="@+id/ratingBar" />
 
             <TextView
                 android:id="@+id/price"
@@ -47,12 +46,9 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="price"
-                android:layout_below="@id/name"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:layout_marginEnd="@dimen/activity_horizontal_margin"
-                android:layout_marginRight="@dimen/activity_horizontal_margin"
-                android:layout_marginBottom="@dimen/activity_vertical_margin"/>
+                android:layout_alignBottom="@+id/img"
+                android:layout_alignLeft="@+id/name"
+                android:layout_alignStart="@+id/name" />
 
             <RatingBar
                 android:id="@+id/ratingBar"
@@ -62,62 +58,64 @@
                 android:numStars="5"
                 android:stepSize="0.5"
                 android:rating="2.5"
-                android:layout_below="@id/price"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:layout_marginEnd="@dimen/activity_horizontal_margin"
-                android:layout_marginRight="@dimen/activity_horizontal_margin"
-                android:layout_marginBottom="@dimen/activity_vertical_margin"/>
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/nav"
-                android:id="@+id/navigate"
-                android:layout_alignBottom="@+id/img"
-                android:layout_toLeftOf="@+id/ratingBar"
-                android:layout_toStartOf="@+id/ratingBar"
-                android:background="@drawable/customborder_buttons"/>
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true" />
 
         </RelativeLayout>
 
-        <LinearLayout
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/activity_vertical_margin"
             android:layout_marginBottom="@dimen/activity_vertical_margin"
-            android:background="@drawable/customborder">
+            android:background="@drawable/customborder"
+            android:layout_weight="0.12">
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="167dp"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="@string/on_map"
+                android:id="@+id/navigate"
                 android:textAlignment="center"
-                android:text="@string/menu"
-                android:id="@+id/menu"
-                android:layout_weight="1"
-                android:background="@drawable/customborder_buttons"/>
+                android:background="@drawable/customborder_buttons"
+                android:layout_alignBottom="@+id/img"
+                android:layout_centerHorizontal="true"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_gravity="right|bottom" />
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="163dp"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textAlignment="center"
                 android:text="@string/s_book"
                 android:id="@+id/booking"
                 android:layout_weight="1"
-                android:background="@drawable/customborder_buttons"/>
+                android:background="@drawable/customborder_buttons"
+                android:layout_gravity="right|top" />
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="171dp"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textAlignment="center"
                 android:text="@string/s_add_rv"
                 android:id="@+id/add_review"
                 android:layout_weight="1"
-                android:background="@drawable/customborder_buttons"/>
-        </LinearLayout>
+                android:background="@drawable/customborder_buttons"
+                android:layout_gravity="left|bottom" />
+
+            <TextView
+                android:layout_width="162dp"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textAlignment="center"
+                android:text="@string/menu"
+                android:id="@+id/menu"
+                android:layout_weight="1"
+                android:background="@drawable/customborder_buttons"
+                android:layout_gravity="left|top" />
+        </FrameLayout>
 
         <ListView
             android:id="@+id/reviews"

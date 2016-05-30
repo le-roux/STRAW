@@ -2,9 +2,11 @@ package straw.polito.it.straw.activities;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -16,6 +18,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -45,6 +48,7 @@ import straw.polito.it.straw.StrawApplication;
 import straw.polito.it.straw.data.Manager;
 import straw.polito.it.straw.data.Review;
 import straw.polito.it.straw.fragments.AddressChooserFragment;
+import straw.polito.it.straw.services.RegistrationIntentService;
 import straw.polito.it.straw.utils.DatabaseUtils;
 import straw.polito.it.straw.utils.ImageManager;
 import straw.polito.it.straw.utils.Logger;
@@ -52,37 +56,39 @@ import straw.polito.it.straw.utils.SharedPreferencesHandler;
 
 public class CreateManagerAccountActivity extends AppCompatActivity implements AddressContainer {
 
-    ImageView photo;
-    EditText c_pwd;
-    EditText cc_pwd;
-    EditText tel;
-    EditText email;
-    EditText r_n;
-    EditText min;
-    EditText max;
-    Spinner food;
-    Spinner r_t;
-    EditText addr;
-    EditText seats;
-    Button c_acc_button;
-    PopupWindow popUp;
+    private ImageView photo;
+    private EditText c_pwd;
+    private EditText cc_pwd;
+    private EditText tel;
+    private EditText email;
+    private EditText r_n;
+    private EditText min;
+    private EditText max;
+    private Spinner food;
+    private Spinner r_t;
+    private EditText addr;
+    private EditText seats;
+    private Button c_acc_button;
+    private PopupWindow popUp;
 
-    Bitmap bitmap;
+    private Bitmap bitmap;
 
-    String imageString;
-    List<Address> addressList;
+    private String imageString;
+    private List<Address> addressList;
 
-    List<String> types;
-    List<String> Ftypes;
+    private List<String> types;
+    private List<String> Ftypes;
     private String TAG = "CreateManagerAccountActivity";
     private SharedPreferencesHandler sharedPreferencesHandler;
     private SharedPreferences mShared;
     private static final int IMAGE_REQ = 1;
     private static final int CAMERA_REQ = 2;
-    JSONArray jsonArray;
-    Manager man;
-    boolean sw;
-    Context context;
+    private JSONArray jsonArray;
+    private Manager man;
+    private boolean sw;
+    private Context context;
+    private BroadcastReceiver mRegistrationBroadcastReceiver;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -128,10 +134,26 @@ public class CreateManagerAccountActivity extends AppCompatActivity implements A
             man=new Manager();
             setPhoto();
         }
-
+        mRegistrationBroadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+                boolean sentToken = sharedPreferences.getBoolean("tokenSW", false);
+                if (sentToken) {
+                    man.setTokenGCM(sharedPreferences.getString("tokenGCM","Error"));
+                }
+            }
+        };
+        LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,new IntentFilter("complete"));
+        Intent intent = new Intent(this, RegistrationIntentService.class);
+        startService(intent);
 
     }
-
+    @Override
+    protected void onPause() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mRegistrationBroadcastReceiver);
+        super.onPause();
+    }
     private void loadPrevInfo(Manager man) {
         imageString = man.getImage();
         ImageManager.setImage(getApplicationContext(), photo, imageString);
@@ -222,6 +244,7 @@ public class CreateManagerAccountActivity extends AppCompatActivity implements A
         food=(Spinner)findViewById(R.id.f_t_spinner);
         setUpPopUpWindow();
         sw=false;
+
     }
 
     private void setUpPopUpWindow() {
