@@ -45,14 +45,13 @@ public class ProfileManagerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_manager);
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-        SharedPreferencesHandler sharedPreferencesHandler = new SharedPreferencesHandler(getApplicationContext());
         sharedPreferencesHandler = ((StrawApplication)getApplication()).getSharedPreferencesHandler();
         if(sharedPreferences.contains("tokenGCM")){
-            User u =sharedPreferencesHandler.getCurrentUser();
+            Manager man =sharedPreferencesHandler.getCurrentManager();
             String newToken=sharedPreferences.getString("tokenGCM","Error");
-            if(!u.getTokenGCM().equals(newToken) && !newToken.equals("Error")){
+            if(!man.getTokenGCM().equals(newToken) && !newToken.equals("Error")){
                 DatabaseUtils databaseUtils =((StrawApplication)getApplication()).getDatabaseUtils();
-                databaseUtils.updateToken(u.getEmail(),newToken,DatabaseUtils.MANAGER);
+                databaseUtils.updateToken(man.getEmail(),newToken,DatabaseUtils.MANAGER);
             }
         }
         man=sharedPreferencesHandler.getCurrentManager();
@@ -64,8 +63,9 @@ public class ProfileManagerActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
-        man=sharedPreferencesHandler.getCurrentManager();
+        if(sharedPreferencesHandler.getCurrentManager()!=null) {
+            man = sharedPreferencesHandler.getCurrentManager();
+        }
         loadPrevInfo(man);
     }
 
@@ -95,13 +95,15 @@ public class ProfileManagerActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        offerts_link.setVisibility(View.INVISIBLE);
+        /*
         offerts_link.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent i =new Intent(getBaseContext(),OfferActivity.class);
                 startActivity(i);
             }
-        });
+        });*/
         log_out.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
