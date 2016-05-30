@@ -68,8 +68,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/activity_vertical_margin"
             android:layout_marginBottom="@dimen/activity_vertical_margin"
-            android:background="@drawable/customborder"
-            android:layout_weight="0.12">
+            android:background="@drawable/customborder">
 
             <TextView
                 android:id="@+id/center"
@@ -88,7 +87,10 @@
                 android:layout_alignParentStart="true"
                 android:layout_alignParentLeft="true"
                 android:layout_toStartOf="@id/center"
-                android:layout_toLeftOf="@id/center"/>
+                android:layout_toLeftOf="@id/center"
+                android:layout_marginBottom="@dimen/activity_vertical_margin"
+                android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                android:layout_marginRight="@dimen/activity_horizontal_margin"/>
 
             <TextView
                 android:id="@+id/navigate"
@@ -102,7 +104,9 @@
                 android:layout_alignParentLeft="true"
                 android:layout_toStartOf="@id/center"
                 android:layout_toLeftOf="@id/center"
-                android:layout_below="@id/menu"/>
+                android:layout_below="@id/menu"
+                android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                android:layout_marginRight="@dimen/activity_horizontal_margin"/>
 
             <TextView
                 android:layout_width="0dp"
@@ -115,7 +119,10 @@
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:layout_toEndOf="@id/center"
-                android:layout_toRightOf="@id/center"/>
+                android:layout_toRightOf="@id/center"
+                android:layout_marginBottom="@dimen/activity_vertical_margin"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_marginLeft="@dimen/activity_horizontal_margin"/>
 
             <TextView
                 android:id="@+id/add_review"
@@ -129,7 +136,9 @@
                 android:layout_alignParentRight="true"
                 android:layout_toEndOf="@id/center"
                 android:layout_toRightOf="@id/center"
-                android:layout_below="@id/booking"/>
+                android:layout_below="@id/booking"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_marginLeft="@dimen/activity_horizontal_margin"/>
 
 
         </RelativeLayout>

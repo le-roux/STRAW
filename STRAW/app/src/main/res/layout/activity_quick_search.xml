@@ -109,7 +109,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/id_relativeLayoutQuickSearch"
             android:background="@drawable/customborder_buttons"
-            android:text="@string/map"/>
+            android:text="@string/map"
+            android:layout_marginTop="@dimen/activity_horizontal_margin"/>
 
         <RelativeLayout
             android:layout_width="match_parent"
