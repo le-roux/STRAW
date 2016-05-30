@@ -446,6 +446,7 @@ public class DatabaseUtils {
 
                                 JSONObject jsonObject = new JSONObject();
                                 jsonObject.put("to",it.child("tokenGCM").getValue().toString());
+                                jsonObject.put("delay_while_idle",true);
                                 JSONObject res = new JSONObject();
                                 res.put("invitation",params[0]);
                                 jsonObject.put("data",res);
