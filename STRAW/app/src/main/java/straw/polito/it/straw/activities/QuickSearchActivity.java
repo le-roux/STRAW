@@ -1,6 +1,7 @@
 package straw.polito.it.straw.activities;
 
 import android.app.AlertDialog;
+import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -13,6 +14,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -53,20 +55,18 @@ public class QuickSearchActivity extends FragmentActivity implements RestaurantF
     private AdapterFragment fragment;
     private FragmentManager fragmentManager;
     private RestaurantListAdapter adapter;
+    private int currentFragment;
+    private Button fragmentButton;
+    private ImageView fragmentIcon;
+
+    private static final int LIST = 0;
+    private static final int MAP = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quick_search);
         this.application = (StrawApplication)getApplication();
-        /**
-         * Prepare the fragment to display
-         */
-        this.fragmentManager = this.getSupportFragmentManager();
-        this.fragment = new RestaurantsListFragment();
-        FragmentTransaction transaction = this.fragmentManager.beginTransaction();
-        transaction.replace(R.id.id_relativeLayoutQuickSearch2, (Fragment)this.fragment);
-        transaction.commit();
 
         Intent intent = getIntent();
         if (intent.hasExtra(Manager.LATITUDE)) {
@@ -106,7 +106,6 @@ public class QuickSearchActivity extends FragmentActivity implements RestaurantF
         this.adapter = new RestaurantListAdapter(getApplicationContext(), restaurant_list);
         RestaurantListAdapter adapterForFilter = new RestaurantListAdapter(getApplicationContext(), restaurant_list_tmp);
         this.application.getDatabaseUtils().retrieveRestaurantList(this.adapter, adapterForFilter, dialog, this);
-        this.fragment.setAdapter(this.adapter);
 
         addListenerOnButton();
         addListenerOnSpinnerItemSelection();
@@ -118,13 +117,29 @@ public class QuickSearchActivity extends FragmentActivity implements RestaurantF
             }
         });
 
-        RelativeLayout mapButton = (RelativeLayout) findViewById(R.id.mapCard);
-        mapButton.setOnClickListener(new View.OnClickListener() {
+        this.fragmentButton = (Button)findViewById(R.id.mapButton);
+        this.fragmentButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                setMapFragment();
+                toggleFragment();
             }
         });
+        this.fragmentIcon = (ImageView)findViewById(R.id.mapIcon);
+
+        RelativeLayout fragmentCard = (RelativeLayout) findViewById(R.id.mapCard);
+        fragmentCard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                toggleFragment();
+            }
+        });
+
+        /**
+         * Prepare the fragment to display
+         */
+        this.fragmentManager = this.getSupportFragmentManager();
+        this.currentFragment = MAP;
+        toggleFragment();
     }
 
     public void addListenerOnSpinnerItemSelection() {
@@ -328,14 +343,26 @@ public class QuickSearchActivity extends FragmentActivity implements RestaurantF
     }
 
     /**
-     * Replace the currently displayed fragment by a RestaurantMapFragment
+     * Change the currently displayed fragment to a RestaurantListFragment
+     * or to a RestaurantMapFragment
      */
-    public void setMapFragment() {
-        this.fragment = RestaurantMapFragment.createInstance(this.latitude, this.longitude, this);
-        this.fragment.setAdapter(this.adapter);
+    public void toggleFragment() {
         FragmentTransaction transaction = this.fragmentManager.beginTransaction();
-        transaction.replace(R.id.id_relativeLayoutQuickSearch2, ((RestaurantMapFragment)this.fragment).getFragment());
-        transaction.addToBackStack(null);
+        if (this.currentFragment == MAP) {
+            this.fragment = new RestaurantsListFragment();
+            transaction.replace(R.id.id_relativeLayoutQuickSearch2, (Fragment)this.fragment);
+            this.currentFragment = LIST;
+            this.fragmentButton.setText(R.string.map);
+            this.fragmentIcon.setImageURI(Uri.parse("android.resource://straw.polito.it.straw/drawable/map"));
+        } else {
+            this.fragment = RestaurantMapFragment.createInstance(this.latitude, this.longitude, this);
+            transaction.replace(R.id.id_relativeLayoutQuickSearch2, ((RestaurantMapFragment)this.fragment).getFragment());
+            this.currentFragment = MAP;
+            this.fragmentButton.setText(R.string.list);
+            this.fragmentIcon.setImageURI(Uri.parse("android.resource://straw.polito.it.straw/drawable/list"));
+            //Created by Viktor Vorobyev for Noun Project
+        }
+        this.fragment.setAdapter(this.adapter);
         transaction.commit();
     }
 }

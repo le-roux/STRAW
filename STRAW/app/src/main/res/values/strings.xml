@@ -132,6 +132,7 @@
         <item>Bar</item>
     </string-array>
     <string name="map">Map</string>
+    <string name="list">List</string>
 
     <!--Strings for the user part -->
     <string name="u_t">User Type</string>
