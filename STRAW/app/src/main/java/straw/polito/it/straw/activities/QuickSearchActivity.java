@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -117,7 +118,7 @@ public class QuickSearchActivity extends FragmentActivity implements RestaurantF
             }
         });
 
-        Button mapButton = (Button)findViewById(R.id.mapButton);
+        RelativeLayout mapButton = (RelativeLayout) findViewById(R.id.mapCard);
         mapButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

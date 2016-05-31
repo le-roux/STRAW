@@ -41,18 +41,41 @@
             android:layout_height="0dp"
             android:layout_centerInParent="true"/>
 
-        <Button
-            android:id="@+id/mapButton"
+        <RelativeLayout
+            android:id="@+id/mapCard"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:background="@drawable/customborder_buttons"
-            android:text="@string/map"
             android:layout_marginTop="@dimen/activity_horizontal_margin"
             android:layout_alignParentBottom="true"
             android:layout_alignParentStart="true"
             android:layout_alignParentLeft="true"
             android:layout_toStartOf="@id/center"
-            android:layout_toLeftOf="@id/center"/>
+            android:layout_toLeftOf="@id/center">
+
+            <Button
+                android:id="@+id/mapButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/customborder_buttons"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:layout_toStartOf="@id/mapIcon"
+                android:layout_toLeftOf="@id/mapIcon"
+                android:text="@string/map"
+                android:focusable="false"/>
+
+            <ImageView
+                android:id="@+id/mapIcon"
+                android:layout_width="@dimen/Icon_size_horizontal_big"
+                android:layout_height="0dp"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:background="@drawable/map"
+                android:layout_alignTop="@id/mapButton"
+                android:layout_alignBottom="@id/mapButton"
+                android:focusable="false"/>
+        </RelativeLayout>
 
         <RelativeLayout
             android:id="@+id/id_relativeLayoutQuickSearch"
@@ -65,7 +88,7 @@
             android:layout_alignParentStart="true"
             android:layout_toStartOf="@id/center"
             android:layout_toLeftOf="@id/center"
-            android:layout_above="@id/mapButton">
+            android:layout_above="@id/mapCard">
 
             <Button
                 android:layout_width="wrap_content"
