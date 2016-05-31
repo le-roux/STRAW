@@ -5,6 +5,7 @@ import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.format.DateFormat;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -24,6 +25,7 @@ import straw.polito.it.straw.utils.DatabaseUtils;
 import straw.polito.it.straw.utils.ImageManager;
 import straw.polito.it.straw.utils.Logger;
 import straw.polito.it.straw.utils.SharedPreferencesHandler;
+import straw.polito.it.straw.utils.TimerDisplay;
 
 public class ProfileUserActivity extends AppCompatActivity implements UserContainer{
 
@@ -132,10 +134,11 @@ public class ProfileUserActivity extends AppCompatActivity implements UserContai
     private void loadPrevInfo(User user) {
         ImageManager.setImage(this, photo, user.getImage());
 
+        //TODO use string builders
         email.setText(getString(R.string.email) + ": " + user.getEmail());
         user_info.setText(getString(R.string.u_t) + ": " + user.getType()+" , "+user.getUniversity());
         diet.setText(getString(R.string.u_d) + ": " + user.getDiet());
-        pref_t.setText(getString(R.string.p_t) + ": " + user.getPref_time());
+        pref_t.setText(getString(R.string.p_t) + ": " + TimerDisplay.getTime(this.user.getPrefTimeHour(), this.user.getPrefTimeMinutes(), DateFormat.is24HourFormat(this)));
 
         this.friendsList = this.user.getFriends();
 

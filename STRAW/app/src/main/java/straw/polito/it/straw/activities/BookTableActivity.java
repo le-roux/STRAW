@@ -21,6 +21,7 @@ import straw.polito.it.straw.adapter.ReservationAdapterManager;
 import straw.polito.it.straw.data.Manager;
 import straw.polito.it.straw.data.Reservation;
 import straw.polito.it.straw.data.Reservation.Place;
+import straw.polito.it.straw.data.User;
 import straw.polito.it.straw.fragments.DatePickerFragment;
 import straw.polito.it.straw.fragments.NumberPickerFragment;
 import straw.polito.it.straw.utils.SharedPreferencesHandler;
@@ -60,8 +61,8 @@ public class BookTableActivity extends AppCompatActivity implements BookTableInt
         this.confirmButton = (Button)findViewById(R.id.confirm_button);
         this.inviteFriendsButton = (Button)findViewById(R.id.InviteFriendsButton);
 
+        //Prepare the clock
         this.clock.setIs24HFormat(DateFormat.is24HourFormat(this));
-
 
         //Date creation/restoration
         final Manager restaurant = new Manager(getIntent().getStringExtra(RESTAURANT));
@@ -71,6 +72,11 @@ public class BookTableActivity extends AppCompatActivity implements BookTableInt
         } else {
             this.reservation = Reservation.create(savedInstanceState.getString(Reservation.RESERVATION));
         }
+
+        //Updating the time of the reservation
+        SharedPreferencesHandler handler = ((StrawApplication)this.getApplication()).getSharedPreferencesHandler();
+        User user = handler.getCurrentUser();
+        this.reservation.setTime(user.getPrefTimeHour(), user.getPrefTimeMinutes());
 
         //Add a listener to launch the NumberPicker dialog to select the number of people in the reservation
         this.numberPeopleNumber.setOnClickListener(new View.OnClickListener() {

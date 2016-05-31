@@ -1,6 +1,7 @@
 package straw.polito.it.straw.activities;
 
 import android.app.AlertDialog;
+import android.app.DialogFragment;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -45,15 +46,20 @@ import java.util.List;
 
 import straw.polito.it.straw.R;
 import straw.polito.it.straw.StrawApplication;
+import straw.polito.it.straw.TimeContainer;
+import straw.polito.it.straw.TimeDisplayer;
+import straw.polito.it.straw.adapter.ReservationAdapterManager;
 import straw.polito.it.straw.data.User;
+import straw.polito.it.straw.fragments.TimePickerFragment;
 import straw.polito.it.straw.services.RegistrationIntentService;
 import straw.polito.it.straw.utils.DatabaseUtils;
 import straw.polito.it.straw.utils.ImageManager;
 import straw.polito.it.straw.utils.Logger;
 import straw.polito.it.straw.utils.SharedPreferencesHandler;
 import straw.polito.it.straw.utils.Area;
+import straw.polito.it.straw.utils.TimerDisplay;
 
-public class CreateUserAccountActivity extends AppCompatActivity {
+public class CreateUserAccountActivity extends AppCompatActivity implements TimeContainer {
 
     private ImageView photo;
     private EditText c_pwd;
@@ -62,7 +68,7 @@ public class CreateUserAccountActivity extends AppCompatActivity {
     private Spinner areaSpinner;
     private Spinner u_d;
     private Spinner u_t;
-    private Spinner p_t;
+    private TimerDisplay prefTime;
     private Button c_acc_button;
     private TextView n_pwd;
     private TextView o_pwd;
@@ -130,7 +136,6 @@ public class CreateUserAccountActivity extends AppCompatActivity {
         }
         u_d.setSelection(u_d_list.indexOf(user.getDiet()));
         u_t.setSelection(u_t_list.indexOf(user.getDiet()));
-        p_t.setSelection(p_t_list.indexOf(user.getDiet()));
         c_acc_button.setText(getString(R.string.save));
     }
 
@@ -142,7 +147,7 @@ public class CreateUserAccountActivity extends AppCompatActivity {
 
         u_t=(Spinner)findViewById(R.id.u_t_spinner);
         u_d=(Spinner)findViewById(R.id.u_d_spinner);
-        p_t=(Spinner)findViewById(R.id.p_t_spinner);
+        prefTime = (TimerDisplay)findViewById(R.id.prefTime);
         email=(EditText)findViewById(R.id.email_editText);
         c_acc_button=(Button)findViewById(R.id.create_button);
         setUpPopUpWindow();
@@ -170,7 +175,6 @@ public class CreateUserAccountActivity extends AppCompatActivity {
         }
         u_t.setAdapter(new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_list_item_1, u_t_list));
         u_d.setAdapter(new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_list_item_1, u_d_list));
-        p_t.setAdapter(new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_list_item_1, p_t_list));
         areaSpinner.setAdapter(new ArrayAdapter<>(getBaseContext(), android.R.layout.simple_list_item_1, areas));
         mRegistrationBroadcastReceiver = new BroadcastReceiver() {
             @Override
@@ -185,6 +189,17 @@ public class CreateUserAccountActivity extends AppCompatActivity {
         LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,new IntentFilter("complete"));
     }
     private void setListeners() {
+
+        this.prefTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DialogFragment fragment = new TimePickerFragment();
+                Bundle args = new Bundle();
+                args.putBoolean(ReservationAdapterManager.ADAPTER, false);
+                fragment.setArguments(args);
+                fragment.show(getFragmentManager(), "TimePicker");
+            }
+        });
 
         photo.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -212,7 +227,9 @@ public class CreateUserAccountActivity extends AppCompatActivity {
                 user.setUniversity(areas[areaSpinner.getSelectedItemPosition()].getName());
                 user.setDiet(u_d_list.get(u_d.getSelectedItemPosition()));
                 user.setType(u_t_list.get(u_t.getSelectedItemPosition()));
-                user.setPref_time(p_t_list.get(p_t.getSelectedItemPosition()));
+                user.setPrefTimeHour(prefTime.getHourOfDay());
+                Logger.d("pref hour = " + user.getPrefTimeHour() + " vs " + prefTime.getHourOfDay());
+                user.setPrefTimeMinutes(prefTime.getMinutes());
                 if (photo_uri != null)
                     user.setImage(ImageManager.getImageFromUri(getApplicationContext(), photo_uri));
 
@@ -359,5 +376,10 @@ public class CreateUserAccountActivity extends AppCompatActivity {
                 Logger.d("Error on Activity result! " + e.getMessage());
             }
         }
+    }
+
+    @Override
+    public TimeDisplayer getTimeDisplayer() {
+        return this.prefTime;
     }
 }
