@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import straw.polito.it.straw.BookTableInterface;
 import straw.polito.it.straw.DateContainer;
@@ -114,9 +115,13 @@ public class BookTableActivity extends AppCompatActivity implements BookTableInt
             @Override
             public void onClick(View v) {
                 updateData();
-                Intent intent = new Intent(getApplicationContext(), PreOrderFoodActivity.class);
-                intent.putExtra(Reservation.RESERVATION, reservation.toString());
-                startActivity(intent);
+                if (reservation.getNumberPeople() == 0) {
+                    Toast.makeText(BookTableActivity.this, R.string.EmptyReservation, Toast.LENGTH_LONG).show();
+                } else {
+                    Intent intent = new Intent(getApplicationContext(), PreOrderFoodActivity.class);
+                    intent.putExtra(Reservation.RESERVATION, reservation.toString());
+                    startActivity(intent);
+                }
             }
         });
 
@@ -124,10 +129,14 @@ public class BookTableActivity extends AppCompatActivity implements BookTableInt
             @Override
             public void onClick(View view) {
                 updateData();
-                Intent intent = new Intent(getApplicationContext(), ConfirmReservationActivity.class);
-                intent.putExtra(Reservation.RESERVATION, reservation.toString());
-                intent.putExtra("tokenGCM",restaurant.getTokenGCM());
-                startActivity(intent);
+                if (reservation.getNumberPeople() == 0) {
+                    Toast.makeText(BookTableActivity.this, R.string.EmptyReservation, Toast.LENGTH_LONG).show();
+                } else {
+                    Intent intent = new Intent(getApplicationContext(), ConfirmReservationActivity.class);
+                    intent.putExtra(Reservation.RESERVATION, reservation.toString());
+                    intent.putExtra("tokenGCM", restaurant.getTokenGCM());
+                    startActivity(intent);
+                }
             }
         });
 

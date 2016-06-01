@@ -49,7 +49,6 @@ public class ReservationAdapterManager extends ReservationAdapter {
         bundle.putBoolean(ReservationAdapterManager.ADAPTER, true);
         fragment.setArguments(bundle);
         fragment.show(this.parentActivity.getFragmentManager(), "timePicker");
-        //TODO : update reservation if time change
     }
 
     @Override

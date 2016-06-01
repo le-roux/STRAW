@@ -91,7 +91,14 @@ public class ConfirmReservationActivity extends AppCompatActivity {
             this.place.setText(this.getResources().getString(R.string.NoPreference));
         this.date.setDate(this.reservation.getYear(), this.reservation.getMonth(), this.reservation.getDay());
         this.time.setTime(this.reservation.getHourOfDay(), this.reservation.getMinutes());
-        this.list_item.setAdapter(new FoodExpandableAdapterRemove(getApplicationContext(), this.reservation.getPlates(), this.reservation.getDrinks()));
+        FoodExpandableAdapterRemove adapter = new FoodExpandableAdapterRemove(getApplicationContext(), this.reservation.getPlates(), this.reservation.getDrinks());
+        this.list_item.setAdapter(adapter);
+
+        //Expand all the groups
+        for (int i = 0; i < adapter.getGroupCount(); i++) {
+            this.list_item.expandGroup(i);
+        }
+
         double price = 0;
         for (Food plate : this.reservation.getPlates())
             price += plate.getPrice();

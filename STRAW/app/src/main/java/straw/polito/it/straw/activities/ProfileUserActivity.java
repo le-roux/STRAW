@@ -11,19 +11,13 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-
 import straw.polito.it.straw.R;
 import straw.polito.it.straw.StrawApplication;
 import straw.polito.it.straw.UserContainer;
-import straw.polito.it.straw.data.Friend;
-import straw.polito.it.straw.data.Review;
 import straw.polito.it.straw.data.User;
 import straw.polito.it.straw.fragments.AddFriendsFragment;
 import straw.polito.it.straw.fragments.CustomerReservationsFragment;
-import straw.polito.it.straw.utils.DatabaseUtils;
 import straw.polito.it.straw.utils.ImageManager;
-import straw.polito.it.straw.utils.Logger;
 import straw.polito.it.straw.utils.SharedPreferencesHandler;
 import straw.polito.it.straw.utils.TimerDisplay;
 
@@ -43,11 +37,10 @@ public class ProfileUserActivity extends AppCompatActivity implements UserContai
     private Button edit_profile;
     private SharedPreferencesHandler sharedPreferencesHandler;
     private FragmentManager fragmentManager;
-    private ArrayList<Friend> friendsList;
     private User user;
 
-
     public static final String USER = "user";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -134,14 +127,31 @@ public class ProfileUserActivity extends AppCompatActivity implements UserContai
     private void loadPrevInfo(User user) {
         ImageManager.setImage(this, photo, user.getImage());
 
-        //TODO use string builders
-        email.setText(getString(R.string.email) + ": " + user.getEmail());
-        user_info.setText(getString(R.string.u_t) + ": " + user.getType()+" , "+user.getUniversity());
-        diet.setText(getString(R.string.u_d) + ": " + user.getDiet());
-        pref_t.setText(getString(R.string.p_t) + ": " + TimerDisplay.getTime(this.user.getPrefTimeHour(), this.user.getPrefTimeMinutes(), DateFormat.is24HourFormat(this)));
+        StringBuilder emailBuilder =new StringBuilder();
+        emailBuilder.append(getString(R.string.email))
+                .append(" : ")
+                .append(user.getEmail());
+        email.setText(emailBuilder.toString());
 
-        this.friendsList = this.user.getFriends();
+        StringBuilder infoBuilder = new StringBuilder();
+        infoBuilder.append(getString(R.string.u_t))
+                .append(" : ")
+                .append(user.getType())
+                .append(" , ")
+                .append(user.getUniversity());
+        user_info.setText(infoBuilder.toString());
 
+        StringBuilder dietBuilder = new StringBuilder();
+        dietBuilder.append(getString(R.string.u_d))
+                .append(" : ")
+                .append(user.getDiet());
+        diet.setText(infoBuilder.toString());
+
+        StringBuilder prefBuilder = new StringBuilder();
+        prefBuilder.append(getString(R.string.p_t))
+                .append(" : ")
+                .append(TimerDisplay.getTime(this.user.getPrefTimeHour(), this.user.getPrefTimeMinutes(), DateFormat.is24HourFormat(this)));
+        pref_t.setText(prefBuilder.toString());
     }
 
     @Override
