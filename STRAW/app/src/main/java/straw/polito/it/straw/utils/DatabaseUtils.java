@@ -8,7 +8,6 @@ import android.os.AsyncTask;
 import android.support.v4.app.NotificationCompat;
 import android.widget.Toast;
 
-import com.fasterxml.jackson.core.JsonParser;
 import com.firebase.client.AuthData;
 import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
@@ -29,14 +28,15 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import straw.polito.it.straw.R;
 import straw.polito.it.straw.RestaurantFilter;
 import straw.polito.it.straw.StrawApplication;
+import straw.polito.it.straw.activities.InviteFriendActivity;
 import straw.polito.it.straw.activities.ProfileManagerActivity;
 import straw.polito.it.straw.activities.SearchActivity;
+import straw.polito.it.straw.activities.SearchDetailActivity;
 import straw.polito.it.straw.adapter.FoodExpandableAdapter;
 import straw.polito.it.straw.adapter.ReservationAdapter;
 import straw.polito.it.straw.adapter.ReservationAdapterManager;
@@ -411,16 +411,18 @@ public class DatabaseUtils {
         }
     }
 
-    public void sendFirendNotification(String email){
-        SendFirendNotificationTask task = new SendFirendNotificationTask();
-        String[] params = new String[1];
+    public void sendFriendNotification(String email, String text, String restaurantName){
+        SendFriendNotificationTask task = new SendFriendNotificationTask();
+        String[] params = new String[3];
         params[0] = email;
+        params[1] = text;
+        params[2] = restaurantName;
         task.execute(params);
     }
 
-    private class SendFirendNotificationTask extends AsyncTask<String, Void, Void> {
+    private class SendFriendNotificationTask extends AsyncTask<String, Void, Void> {
 
-        public SendFirendNotificationTask() {
+        public SendFriendNotificationTask() {
         }
 
         @Override
@@ -429,57 +431,61 @@ public class DatabaseUtils {
             ref.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    final DataSnapshot it=dataSnapshot.getChildren().iterator().next();
-                    Logger.d("User "+params[0]+" token"+it.child("tokenGCM").getValue().toString());
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                URL object = new URL("https://gcm-http.googleapis.com/gcm/send");
+                    final DataSnapshot it;
+                    if (dataSnapshot.getChildren().iterator().hasNext()) {
+                        it = dataSnapshot.getChildren().iterator().next();
+                        Logger.d("User " + params[0] + " token" + it.child("tokenGCM").getValue().toString());
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    URL object = new URL("https://gcm-http.googleapis.com/gcm/send");
 
-                                HttpURLConnection con = (HttpURLConnection) object.openConnection();
-                                con.setDoOutput(true);
-                                con.setDoInput(true);
-                                con.setRequestProperty("Content-Type", "application/json");
-                                con.setRequestProperty("Authorization", "key="+StrawApplication.serverAPIKey);
-                                con.setRequestMethod("POST");
+                                    HttpURLConnection con = (HttpURLConnection) object.openConnection();
+                                    con.setDoOutput(true);
+                                    con.setDoInput(true);
+                                    con.setRequestProperty("Content-Type", "application/json");
+                                    con.setRequestProperty("Authorization", "key=" + StrawApplication.serverAPIKey);
+                                    con.setRequestMethod("POST");
 
-                                JSONObject jsonObject = new JSONObject();
-                                jsonObject.put("to",it.child("tokenGCM").getValue().toString());
-                                jsonObject.put("delay_while_idle",true);
-                                JSONObject res = new JSONObject();
-                                res.put("invitation",params[0]);
-                                jsonObject.put("data",res);
-                                Logger.d("Request "+jsonObject.toString());
-                                OutputStreamWriter wr = new OutputStreamWriter(con.getOutputStream());
-                                wr.write(jsonObject.toString());
-                                wr.flush();
-                                wr.close();
+                                    JSONObject jsonObject = new JSONObject();
+                                    jsonObject.put("to", it.child("tokenGCM").getValue().toString());
+                                    jsonObject.put("delay_while_idle", true);
+                                    JSONObject res = new JSONObject();
+                                    res.put("invitation", params[1]);
+                                    res.put(InviteFriendActivity.RESTAURANT, params[2]);
+                                    jsonObject.put("data", res);
+                                    Logger.d("Request " + jsonObject.toString());
+                                    OutputStreamWriter wr = new OutputStreamWriter(con.getOutputStream());
+                                    wr.write(jsonObject.toString());
+                                    wr.flush();
+                                    wr.close();
 
-                                StringBuilder sb = new StringBuilder();
-                                int HttpResult = con.getResponseCode();
-                                if (HttpResult == HttpURLConnection.HTTP_OK) {
-                                    BufferedReader br = new BufferedReader(
-                                            new InputStreamReader(con.getInputStream(), "utf-8"));
-                                    String line = null;
-                                    while ((line = br.readLine()) != null) {
-                                        sb.append(line + "\n");
+                                    StringBuilder sb = new StringBuilder();
+                                    int HttpResult = con.getResponseCode();
+                                    if (HttpResult == HttpURLConnection.HTTP_OK) {
+                                        BufferedReader br = new BufferedReader(
+                                                new InputStreamReader(con.getInputStream(), "utf-8"));
+                                        String line = null;
+                                        while ((line = br.readLine()) != null) {
+                                            sb.append(line + "\n");
+                                        }
+                                        br.close();
+                                        Logger.d("LOL " + sb.toString());
+                                    } else {
+                                        Logger.d("LEL " + con.getResponseMessage());
                                     }
-                                    br.close();
-                                    Logger.d("LOL " + sb.toString());
-                                } else {
-                                    Logger.d("LEL " +con.getResponseMessage());
-                                }
 
-                            } catch (MalformedURLException e) {
-                                e.printStackTrace();
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            } catch (JSONException e) {
-                                e.printStackTrace();
+                                } catch (MalformedURLException e) {
+                                    e.printStackTrace();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
                             }
-                        }
-                    }).start();
+                        }).start();
+                    }
 
                 }
 
@@ -774,6 +780,98 @@ public class DatabaseUtils {
                     Logger.d("error log in : " + firebaseError.getMessage());
                     dialog.dismiss();
                     Toast.makeText(context, R.string.error_log_in, Toast.LENGTH_SHORT).show();
+                }
+            });
+            return null;
+        }
+    }
+
+    public void logInAndReserve(String email, String password, String restaurantName, ProgressDialog dialog) {
+        String[] params = new String[3];
+        params[0] = email;
+        params[1] = password;
+        params[2] = restaurantName;
+        LogInAndReserveAsyncTask task = new LogInAndReserveAsyncTask(dialog);
+        task.execute(params);
+    }
+
+    public class LogInAndReserveAsyncTask extends AsyncTask <String, Void, Void> {
+
+        private ProgressDialog dialog;
+
+        public LogInAndReserveAsyncTask(ProgressDialog dialog) {
+            this.dialog = dialog;
+        }
+
+        @Override
+        protected Void doInBackground(final String... params) {
+            firebase.authWithPassword(params[0], params[1], new Firebase.AuthResultHandler() {
+                @Override
+                public void onAuthenticated(AuthData authData) {
+                    if (dialog != null)
+                        dialog.setMessage(context.getString(R.string.RetrievingData));
+                    Firebase ref = firebase.child(USER).child(authData.getUid());
+                    ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            /**
+                             * It's a customer (and not a manager). Retrieve the profile.
+                             * Friends lists will be retrieved manually just after for
+                             * simplicity.
+                             */
+                            User user = dataSnapshot.getValue(User.class);
+                            /**
+                             * Retrieve the friends list
+                             */
+                            for (DataSnapshot data : dataSnapshot.child(FRIENDS).getChildren()) {
+                                Friend friend = data.getValue(Friend.class);
+                                user.addFriend(friend);
+                            }
+
+                            for(DataSnapshot data : dataSnapshot.child(REVIEWS).getChildren()){
+                                Review rev = data.getValue(Review.class);
+                                user.addReview(rev);
+                            }
+                            /**
+                             * Store the retrieved profile in sharedPreferences for next accesses
+                             */
+                            sharedPreferencesHandler.storeCurrentUser(user.toString());
+                            Firebase ref2 = firebase.child(RESTAURANTS).child(params[2]);
+                            ref2.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    Manager manager = dataSnapshot.getValue(Manager.class);
+                                    Intent intent = new Intent(context, SearchDetailActivity.class);
+                                    intent.putExtra(SearchDetailActivity.RESTAURANT, manager.toString());
+                                    if (dialog != null)
+                                        dialog.dismiss();
+                                    context.startActivity(intent);
+                                }
+
+                                @Override
+                                public void onCancelled(FirebaseError firebaseError) {
+                                    if (dialog != null)
+                                        dialog.dismiss();
+                                    Toast.makeText(context, firebaseError.getMessage(), Toast.LENGTH_LONG).show();
+                                }
+                            });
+
+                        }
+
+                        @Override
+                        public void onCancelled(FirebaseError firebaseError) {
+                            if (dialog != null)
+                                dialog.dismiss();
+                            Toast.makeText(context, firebaseError.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
+
+                @Override
+                public void onAuthenticationError(FirebaseError firebaseError) {
+                    if (dialog != null)
+                        dialog.dismiss();
+                    Toast.makeText(context, firebaseError.getMessage(), Toast.LENGTH_LONG).show();
                 }
             });
             return null;

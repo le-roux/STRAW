@@ -49,23 +49,7 @@ public class HomeActivity extends AppCompatActivity {
         Intent intent = new Intent(this, RegistrationIntentService.class);
         startService(intent);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-        if(mShared.contains("remember")){
-            try {
-                remember.setChecked(true);
-                JSONObject jo = new JSONObject(mShared.getString("remember","Error"));
-                String emailAddress = jo.getString("user");
-                String password =jo.getString("pwd");
-                DatabaseUtils databaseUtils = ((StrawApplication)getApplication()).getDatabaseUtils();
-                ProgressDialog dialog = new ProgressDialog(HomeActivity.this, ProgressDialog.STYLE_SPINNER);
-                dialog.setIndeterminate(true);
-                dialog.setMessage(getResources().getString(R.string.log_in));
-                dialog.setCancelable(false);
-                dialog.show();
-                databaseUtils.logIn(emailAddress, password, true, dialog);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
+        autoLogIn(mShared, remember, (StrawApplication)getApplication());
         setListeners();
     }
 
@@ -156,6 +140,29 @@ public class HomeActivity extends AppCompatActivity {
             }
         };
         LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,new IntentFilter("complete"));
+    }
+
+    public static boolean autoLogIn(SharedPreferences mShared, CheckBox remember, StrawApplication application) {
+        if(mShared.contains("remember")){
+            try {
+                if (remember != null)
+                    remember.setChecked(true);
+                JSONObject jo = new JSONObject(mShared.getString("remember","Error"));
+                String emailAddress = jo.getString("user");
+                String password =jo.getString("pwd");
+                DatabaseUtils databaseUtils = (application.getDatabaseUtils());
+                ProgressDialog dialog = new ProgressDialog(application, ProgressDialog.STYLE_SPINNER);
+                dialog.setIndeterminate(true);
+                dialog.setMessage(application.getResources().getString(R.string.log_in));
+                dialog.setCancelable(false);
+                dialog.show();
+                databaseUtils.logIn(emailAddress, password, true, dialog);
+                return true;
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
     }
 
 

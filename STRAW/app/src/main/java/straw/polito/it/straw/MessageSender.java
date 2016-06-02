@@ -6,5 +6,6 @@ package straw.polito.it.straw;
 public interface MessageSender {
     String[] getAddresses(boolean email);
     String getMessage();
+    String getSubject();
     void displayConfirmationToast(int count);
 }

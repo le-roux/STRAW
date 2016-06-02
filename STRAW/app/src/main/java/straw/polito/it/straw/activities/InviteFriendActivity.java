@@ -43,6 +43,8 @@ public class InviteFriendActivity extends AppCompatActivity implements MessageSe
     private int singleAddress;
     private static final int INVALID = -1;
 
+    public static final String INVITATION = "Invitation";
+    public static final String RESTAURANT = "Restaurant";
     private static final String ADDRESSES = "addresses";
     private static final String USER = "user";
 
@@ -152,6 +154,11 @@ public class InviteFriendActivity extends AppCompatActivity implements MessageSe
     @Override
     public String getMessage() {
         return getInvitationMessage();
+    }
+
+    @Override
+    public String getSubject() {
+        return reservation.getRestaurant();
     }
 
     @Override

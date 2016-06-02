@@ -41,7 +41,7 @@ public class InvitationSenderFragment extends DialogFragment {
                         messageSender.displayConfirmationToast(addresses.length);
                         DatabaseUtils databaseUtils = ((StrawApplication)getActivity().getApplication()).getDatabaseUtils();
                         for(String email:addresses){
-                            databaseUtils.sendFirendNotification(email);
+                            databaseUtils.sendFriendNotification(email, message, messageSender.getSubject());
                         }
                     }
                 })
@@ -59,7 +59,7 @@ public class InvitationSenderFragment extends DialogFragment {
                         messageSender.displayConfirmationToast(addresses.length);
                         DatabaseUtils databaseUtils = ((StrawApplication)getActivity().getApplication()).getDatabaseUtils();
                         for(String email:addresses){
-                            databaseUtils.sendFirendNotification(email);
+                            databaseUtils.sendFriendNotification(email, messageSender.getMessage(), messageSender.getSubject());
                         }
                     }
                 })

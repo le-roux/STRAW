@@ -2,23 +2,19 @@ package straw.polito.it.straw.services;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 
 import com.google.android.gms.gcm.GcmListenerService;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import straw.polito.it.straw.R;
+import straw.polito.it.straw.activities.DisplayInvitationActivity;
 import straw.polito.it.straw.activities.DisplayReservationsActivity;
-import straw.polito.it.straw.activities.HomeActivity;
+import straw.polito.it.straw.activities.InviteFriendActivity;
 import straw.polito.it.straw.utils.Logger;
 
 public class MyGcmListenerService extends GcmListenerService {
@@ -28,12 +24,12 @@ public class MyGcmListenerService extends GcmListenerService {
         Logger.d("Message Received!");
         if(data.containsKey("reservation")){
             String msg = data.getString("reservation");
-
             sendNotificationReservation(msg);
         }
         if(data.containsKey("invitation")){
             String msg = data.getString("invitation");
-            sendNotificationInvitiation(msg);
+            String restaurantName = data.getString("restaurant");
+            sendNotificationInvitation(msg, restaurantName);
         }
 
     }
@@ -62,7 +58,7 @@ public class MyGcmListenerService extends GcmListenerService {
         mNotificationManager.notify(0, mBuilder.build());
         Logger.d("NOTIFICATION CREATED!!!!!!!!!!!!!!!" );
     }
-    private void sendNotificationInvitiation(String message) {
+    private void sendNotificationInvitation(String message, String restaurantName) {
 
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
@@ -71,6 +67,11 @@ public class MyGcmListenerService extends GcmListenerService {
                         .setContentTitle("STRAW")
                         .setContentText("Your friend "+message+" has invited you to eat!");
 
+        Intent resultIntent = new Intent(this, DisplayInvitationActivity.class);
+        resultIntent.putExtra(InviteFriendActivity.INVITATION, message);
+        resultIntent.putExtra(InviteFriendActivity.RESTAURANT, restaurantName);
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+        stackBuilder.addNextIntent(resultIntent);
         mBuilder.setAutoCancel(true);
         mBuilder.setLocalOnly(true);
         NotificationManager mNotificationManager =
