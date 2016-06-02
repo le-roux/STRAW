@@ -26,10 +26,10 @@ public class ReviewAdapter extends BaseAdapter {
     private ArrayList<Review> reviews;
     private boolean sw;
 
-    public ReviewAdapter(Context context, ArrayList<Review> r,boolean sw) {
-        this.context=context;
-        this.reviews=r;
-        this.sw=sw;
+    public ReviewAdapter(Context context, ArrayList<Review> r, boolean sw) {
+        this.context = context;
+        this.reviews = r;
+        this.sw = sw;
     }
 
     @Override
@@ -61,5 +61,9 @@ public class ReviewAdapter extends BaseAdapter {
         desc.setText(reviews.get(position).getDescription());
         rate.setRating(reviews.get(position).getRate());
         return convertView;
+    }
+
+    public ArrayList<Review> getReviewList() {
+        return this.reviews;
     }
 }

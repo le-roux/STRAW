@@ -41,6 +41,7 @@ import straw.polito.it.straw.adapter.FoodExpandableAdapter;
 import straw.polito.it.straw.adapter.ReservationAdapter;
 import straw.polito.it.straw.adapter.ReservationAdapterManager;
 import straw.polito.it.straw.adapter.RestaurantListAdapter;
+import straw.polito.it.straw.adapter.ReviewAdapter;
 import straw.polito.it.straw.data.Drink;
 import straw.polito.it.straw.data.Food;
 import straw.polito.it.straw.data.Friend;
@@ -344,6 +345,10 @@ public class DatabaseUtils {
                         //Store the reservations ids
                         for (Reservation reservation : params[0].getReservations()) {
                             saveReservationIdInCustomer(reservation.getId(), null);
+                        }
+                        //Store the reviews ids
+                        for (Review review : params[0].getReviews()) {
+                            saveReviewIdInCustomer(review.getId(), null);
                         }
                         if (dialog != null)
                             dialog.dismiss();
@@ -1381,6 +1386,25 @@ public class DatabaseUtils {
         });
     }
 
+    public void saveReviewIdInCustomer(String id, final ProgressDialog dialog) {
+        Firebase ref = firebase.child(USER).child(firebase.getAuth().getUid());
+        ref.child(REVIEWS).push().setValue(id, new Firebase.CompletionListener() {
+            @Override
+            public void onComplete(FirebaseError firebaseError, Firebase firebase) {
+                if (dialog != null)
+                    dialog.dismiss();
+                if (firebaseError == null) {
+                    Toast.makeText(context, R.string.ReviewSaved, Toast.LENGTH_LONG).show();
+                    Intent intent = new Intent(context, SearchActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.startActivity(intent);
+                }
+                else
+                    Toast.makeText(context, firebaseError.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
     /**
      * Retrieve all the reservations for a restaurant.
      *
@@ -1486,6 +1510,63 @@ public class DatabaseUtils {
                             params[0].notifyDataSetChanged();
                             NotificationManager notificationManager = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
                             notificationManager.notify(1, builder.build());
+                        }
+
+                        @Override
+                        public void onCancelled(FirebaseError firebaseError) {
+
+                        }
+                    });
+                }
+
+                @Override
+                public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+                }
+
+                @Override
+                public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+                }
+
+                @Override
+                public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+                }
+
+                @Override
+                public void onCancelled(FirebaseError firebaseError) {
+
+                }
+            });
+            return null;
+        }
+    }
+
+    public void retrieveCurrentCustomerReviews(ReviewAdapter adapter) {
+        RetrieveCustomerReviewAsyncTask task = new RetrieveCustomerReviewAsyncTask();
+        task.execute(adapter);
+    }
+
+    private class RetrieveCustomerReviewAsyncTask extends AsyncTask<ReviewAdapter, Void, Void> {
+
+        @Override
+        protected Void doInBackground(final ReviewAdapter... params) {
+            String uId = firebase.getAuth().getUid();
+            Firebase ref = firebase.child(USER).child(uId).child(REVIEWS);
+            ref.addChildEventListener(new ChildEventListener() {
+                @Override
+                public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                    String reviewId = dataSnapshot.getValue(String.class);
+                    params[0].getReviewList().clear();
+                    params[0].notifyDataSetChanged();
+                    Firebase ref = firebase.child(REVIEWS).child(reviewId);
+                    ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            Review review = dataSnapshot.getValue(Review.class);
+                            params[0].getReviewList().add(review);
+                            params[0].notifyDataSetChanged();
                         }
 
                         @Override

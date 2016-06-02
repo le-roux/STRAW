@@ -162,6 +162,7 @@
     <string name="Invite">Invite</string>
     <string name="PreOrder">Pre-Order</string>
     <string name="ReservationSent">Reservation sent to the restaurant</string>
+    <string name="ReviewSaved">Review saved</string>
     <string name="UpdatingReservation">Updating reservation</string>
     <string name="EmptyReservation">Please indicate the number of people</string>
 

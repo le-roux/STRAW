@@ -11,13 +11,13 @@ import android.widget.ListView;
 import straw.polito.it.straw.R;
 import straw.polito.it.straw.StrawApplication;
 import straw.polito.it.straw.UserContainer;
-import straw.polito.it.straw.adapter.ReservationAdapterCustomer;
+import straw.polito.it.straw.adapter.ReviewAdapter;
 import straw.polito.it.straw.utils.DatabaseUtils;
 
 /**
- * Created by Sylvain on 19/05/2016.
+ * Created by Sylvain on 02/06/2016.
  */
-public class CustomerReservationsFragment extends Fragment {
+public class CustomerReviewFragment extends Fragment {
 
     private UserContainer container;
 
@@ -30,8 +30,8 @@ public class CustomerReservationsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_customer_reservations, container, false);
         ListView listView = (ListView)view.findViewById(R.id.list_item);
         DatabaseUtils databaseUtils = ((StrawApplication)getActivity().getApplication()).getDatabaseUtils();
-        ReservationAdapterCustomer adapter = new ReservationAdapterCustomer(getActivity(), this.container.getUser().getReservations(), getActivity());
-        databaseUtils.retrieveCurrentCustomerReservations(adapter);
+        ReviewAdapter adapter = new ReviewAdapter(getActivity(), this.container.getUser().getReviews(), true);
+        databaseUtils.retrieveCurrentCustomerReviews(adapter);
         listView.setAdapter(adapter);
         return view;
     }

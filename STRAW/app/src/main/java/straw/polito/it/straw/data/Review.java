@@ -113,4 +113,12 @@ public class Review {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getId() {
+        return this.id;
+    }
 }

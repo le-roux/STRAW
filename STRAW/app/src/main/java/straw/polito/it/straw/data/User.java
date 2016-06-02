@@ -256,10 +256,12 @@ public class User {
     public void addReservation(Reservation reservation) {
         this.reservations.add(reservation);
     }
+
     @JsonIgnore
     public ArrayList<Review> getReviews() {
         return reviews;
     }
+
     @JsonIgnore
     public void setReviews(ArrayList<Review> reviews) {
         this.reviews = reviews;

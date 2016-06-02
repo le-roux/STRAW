@@ -17,6 +17,7 @@ import straw.polito.it.straw.UserContainer;
 import straw.polito.it.straw.data.User;
 import straw.polito.it.straw.fragments.AddFriendsFragment;
 import straw.polito.it.straw.fragments.CustomerReservationsFragment;
+import straw.polito.it.straw.fragments.CustomerReviewFragment;
 import straw.polito.it.straw.utils.ImageManager;
 import straw.polito.it.straw.utils.SharedPreferencesHandler;
 import straw.polito.it.straw.utils.TimerDisplay;
@@ -80,7 +81,7 @@ public class ProfileUserActivity extends AppCompatActivity implements UserContai
             @Override
             public void onClick(View view) {
                 FragmentTransaction transaction = fragmentManager.beginTransaction();
-                transaction.replace(R.id.mainLayout, new ReviewsFragment());
+                transaction.replace(R.id.mainLayout, new CustomerReviewFragment());
                 transaction.addToBackStack(null);
                 transaction.commit();
 
