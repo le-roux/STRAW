@@ -28,7 +28,7 @@ public class MyGcmListenerService extends GcmListenerService {
         }
         if(data.containsKey("invitation")){
             String msg = data.getString("invitation");
-            String restaurantName = data.getString("restaurant");
+            String restaurantName = data.getString(InviteFriendActivity.RESTAURANT);
             sendNotificationInvitation(msg, restaurantName);
         }
 
@@ -72,6 +72,12 @@ public class MyGcmListenerService extends GcmListenerService {
         resultIntent.putExtra(InviteFriendActivity.RESTAURANT, restaurantName);
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
         stackBuilder.addNextIntent(resultIntent);
+        PendingIntent resultPendingIntent =
+                stackBuilder.getPendingIntent(
+                        (int) System.currentTimeMillis(),
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                );
+        mBuilder.setContentIntent(resultPendingIntent);
         mBuilder.setAutoCancel(true);
         mBuilder.setLocalOnly(true);
         NotificationManager mNotificationManager =

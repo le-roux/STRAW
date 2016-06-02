@@ -10,6 +10,7 @@ import android.widget.TextView;
 import straw.polito.it.straw.R;
 import straw.polito.it.straw.StrawApplication;
 import straw.polito.it.straw.fragments.LogInFragment;
+import straw.polito.it.straw.utils.Logger;
 
 public class DisplayInvitationActivity extends AppCompatActivity {
 
@@ -21,7 +22,7 @@ public class DisplayInvitationActivity extends AppCompatActivity {
         setContentView(R.layout.activity_display_invitation);
 
         String message = getIntent().getStringExtra(InviteFriendActivity.INVITATION);
-        restaurantName = getIntent().getStringExtra(InviteFriendActivity.RESTAURANT);
+        this.restaurantName = getIntent().getStringExtra(InviteFriendActivity.RESTAURANT);
         if (message == null)
             message = getString(R.string.ErrorNetwork);
 

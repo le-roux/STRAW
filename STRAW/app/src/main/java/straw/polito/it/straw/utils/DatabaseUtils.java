@@ -843,6 +843,7 @@ public class DatabaseUtils {
                                     Manager manager = dataSnapshot.getValue(Manager.class);
                                     Intent intent = new Intent(context, SearchDetailActivity.class);
                                     intent.putExtra(SearchDetailActivity.RESTAURANT, manager.toString());
+                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                     if (dialog != null)
                                         dialog.dismiss();
                                     context.startActivity(intent);

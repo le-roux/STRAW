@@ -266,6 +266,10 @@ public class Manager {
         return null;
     }
 
+    @Override
+    public String toString() {
+        return this.toJSONObject();
+    }
 
     public JSONObject toJSONObjectTrans() {
         JSONObject oj = new JSONObject();
