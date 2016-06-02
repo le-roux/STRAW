@@ -1,11 +1,8 @@
 package straw.polito.it.straw.activities;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -18,7 +15,6 @@ import straw.polito.it.straw.data.Manager;
 import straw.polito.it.straw.data.Review;
 import straw.polito.it.straw.data.User;
 import straw.polito.it.straw.utils.DatabaseUtils;
-import straw.polito.it.straw.utils.SharedPreferencesHandler;
 
 public class CreateReviewActivity extends AppCompatActivity {
 

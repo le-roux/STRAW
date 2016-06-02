@@ -11,7 +11,6 @@ public class Review {
     private String user;
     private String restaurant;
     private float rate;
-    private String id;
     private String description;
 
     public static final String REVIEW = "review";
@@ -114,11 +113,4 @@ public class Review {
         this.description = description;
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getId() {
-        return this.id;
-    }
 }

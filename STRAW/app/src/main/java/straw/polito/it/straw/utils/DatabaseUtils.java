@@ -346,9 +346,9 @@ public class DatabaseUtils {
                         for (Reservation reservation : params[0].getReservations()) {
                             saveReservationIdInCustomer(reservation.getId(), null);
                         }
-                        //Store the reviews ids
+                        //Store the reviews
                         for (Review review : params[0].getReviews()) {
-                            saveReviewIdInCustomer(review.getId(), null);
+                            saveReviewInCustomer(review, null);
                         }
                         if (dialog != null)
                             dialog.dismiss();
@@ -370,17 +370,6 @@ public class DatabaseUtils {
                     }
                 }
             });
-            ref = firebase.child(USER).child(this.uid).child(FRIENDS);
-            User u = (User) params[0];
-            ArrayList<Friend> friends=u.getFriends();
-            for(Friend f:friends){
-                ref.push().setValue(f);
-            }
-            ref = firebase.child(USER).child(this.uid).child(RESERVATIONS);
-            ArrayList<Reservation> res=u.getReservations();
-            for(Reservation r:res){
-                ref.push().setValue(r);
-            }
             return null;
         }
     }
@@ -1386,9 +1375,9 @@ public class DatabaseUtils {
         });
     }
 
-    public void saveReviewIdInCustomer(String id, final ProgressDialog dialog) {
+    public void saveReviewInCustomer(Review review, final ProgressDialog dialog) {
         Firebase ref = firebase.child(USER).child(firebase.getAuth().getUid());
-        ref.child(REVIEWS).push().setValue(id, new Firebase.CompletionListener() {
+        ref.child(REVIEWS).push().setValue(review, new Firebase.CompletionListener() {
             @Override
             public void onComplete(FirebaseError firebaseError, Firebase firebase) {
                 if (dialog != null)
@@ -1553,27 +1542,15 @@ public class DatabaseUtils {
         @Override
         protected Void doInBackground(final ReviewAdapter... params) {
             String uId = firebase.getAuth().getUid();
+            params[0].getReviewList().clear();
+            params[0].notifyDataSetChanged();
             Firebase ref = firebase.child(USER).child(uId).child(REVIEWS);
             ref.addChildEventListener(new ChildEventListener() {
                 @Override
                 public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                    String reviewId = dataSnapshot.getValue(String.class);
-                    params[0].getReviewList().clear();
+                    Review review = dataSnapshot.getValue(Review.class);
+                    params[0].getReviewList().add(review);
                     params[0].notifyDataSetChanged();
-                    Firebase ref = firebase.child(REVIEWS).child(reviewId);
-                    ref.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            Review review = dataSnapshot.getValue(Review.class);
-                            params[0].getReviewList().add(review);
-                            params[0].notifyDataSetChanged();
-                        }
-
-                        @Override
-                        public void onCancelled(FirebaseError firebaseError) {
-
-                        }
-                    });
                 }
 
                 @Override
