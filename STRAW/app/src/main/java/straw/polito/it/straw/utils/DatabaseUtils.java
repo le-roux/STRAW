@@ -29,6 +29,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 import straw.polito.it.straw.R;
 import straw.polito.it.straw.RestaurantFilter;
@@ -492,7 +493,7 @@ public class DatabaseUtils {
         }
     }
 
-    public void editUser(String emailAddress,String newEmail,String oldPassword, String password, String type, ProgressDialog dialog) {
+    public boolean editUser(String emailAddress,String newEmail,String oldPassword, String password, String type, ProgressDialog dialog) {
         EditUserAsyncTask task = new EditUserAsyncTask(dialog);
         String[] params = new String[5];
         params[0] = emailAddress;
@@ -500,9 +501,16 @@ public class DatabaseUtils {
         params[2] = oldPassword;
         params[3] = password;
         params[4] = type;
-        task.execute(params);
+        try {
+            return task.execute(params).get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
-    private class EditUserAsyncTask extends AsyncTask<String, Void, Void> {
+    private class EditUserAsyncTask extends AsyncTask<String, Void, Boolean> {
         private ProgressDialog dialog;
 
         public EditUserAsyncTask(ProgressDialog dialog) {
@@ -510,7 +518,8 @@ public class DatabaseUtils {
         }
 
         @Override
-        protected Void doInBackground(final String[] params) {
+        protected Boolean doInBackground(final String[] params) {
+            final boolean[] sw = {true};
             firebase.changeEmail(params[0], params[2], params[1], new Firebase.ResultHandler() {
                 @Override
                 public void onSuccess() {
@@ -520,6 +529,7 @@ public class DatabaseUtils {
                 @Override
                 public void onError(FirebaseError firebaseError) {
                     Toast.makeText(context, firebaseError.getMessage(), Toast.LENGTH_LONG).show();
+                    sw[0] =false;
                 }
             });
 
@@ -532,6 +542,7 @@ public class DatabaseUtils {
                 @Override
                 public void onError(FirebaseError firebaseError) {
                     Toast.makeText(context, firebaseError.getMessage(), Toast.LENGTH_LONG).show();
+                    sw[0] =false;
                 }
             });
             if(params[4].equals(SharedPreferencesHandler.MANAGER)){
@@ -541,8 +552,9 @@ public class DatabaseUtils {
                 User user = sharedPreferencesHandler.getCurrentUser();
                 saveCustomerProfile(user, firebase.getAuth().getUid(), false, dialog);
             }
-            return null;
+            return sw[0];
         }
+
     }
     /**
      * Create a new user in the Firebase database
