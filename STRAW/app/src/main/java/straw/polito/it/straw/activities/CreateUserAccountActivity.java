@@ -157,6 +157,7 @@ public class CreateUserAccountActivity extends AppCompatActivity implements Time
         n_pwd= (TextView) findViewById(R.id.c_pwd_textView);
         if(onEdit){
             o_pwd.setText(getString(R.string.o_pwd));
+            o_pwd.setText(getString(R.string.o_pwd));
             n_pwd.setText(getString(R.string.n_pwd));
         }
         u_t_list=new ArrayList<>();
