@@ -432,7 +432,7 @@ public class CreateManagerAccountActivity extends AppCompatActivity implements A
                 String emailAddress = email.getText().toString();
                 String oldpassword = c_pwd.getText().toString();
                 String password = cc_pwd.getText().toString();
-                databaseUtils.editUser(old_email,emailAddress, oldpassword,password, SharedPreferencesHandler.USER, dialog);
+                databaseUtils.editUser(old_email,emailAddress, oldpassword,password, SharedPreferencesHandler.MANAGER, dialog);
 
             }
 
