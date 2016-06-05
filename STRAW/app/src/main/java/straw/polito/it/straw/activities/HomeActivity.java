@@ -1,5 +1,6 @@
 package straw.polito.it.straw.activities;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -27,6 +28,7 @@ import straw.polito.it.straw.R;
 import straw.polito.it.straw.StrawApplication;
 import straw.polito.it.straw.services.RegistrationIntentService;
 import straw.polito.it.straw.utils.DatabaseUtils;
+import straw.polito.it.straw.utils.Logger;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -49,7 +51,7 @@ public class HomeActivity extends AppCompatActivity {
         Intent intent = new Intent(this, RegistrationIntentService.class);
         startService(intent);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-        autoLogIn(mShared, remember, (StrawApplication)getApplication());
+        autoLogIn(mShared, remember, (StrawApplication)getApplication(), this);
         setListeners();
     }
 
@@ -65,6 +67,18 @@ public class HomeActivity extends AppCompatActivity {
                 dialog.setMessage(getResources().getString(R.string.log_in));
                 dialog.setCancelable(false);
                 dialog.show();
+                if(remember.isChecked()){
+                    JSONObject jo = new JSONObject();
+                    try {
+                        jo.put("user",user_name_editText.getText().toString());
+                        jo.put("pwd",pwd_editText.getText().toString());
+                        mShared.edit().putString("remember",jo.toString()).apply();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }else{
+                    mShared.edit().remove("remember").apply();
+                }
                 databaseUtils.logIn(emailAddress, password, true, dialog);
             }
         });
@@ -81,23 +95,6 @@ public class HomeActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), CreateUserAccountActivity.class);
                 startActivity(intent);
-            }
-        });
-        remember.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked){
-                    JSONObject jo = new JSONObject();
-                    try {
-                        jo.put("user",user_name_editText.getText().toString());
-                        jo.put("pwd",pwd_editText.getText().toString());
-                        mShared.edit().putString("remember",jo.toString()).apply();
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }else{
-                    mShared.edit().remove("remember").apply();
-                }
             }
         });
         forgot.setOnClickListener(new View.OnClickListener() {
@@ -142,16 +139,17 @@ public class HomeActivity extends AppCompatActivity {
         LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,new IntentFilter("complete"));
     }
 
-    public static boolean autoLogIn(SharedPreferences mShared, CheckBox remember, StrawApplication application) {
+    public static boolean autoLogIn(SharedPreferences mShared, CheckBox remember, StrawApplication application, Activity activity) {
         if(mShared.contains("remember")){
             try {
                 if (remember != null)
                     remember.setChecked(true);
                 JSONObject jo = new JSONObject(mShared.getString("remember","Error"));
+                Logger.d("json : " + jo);
                 String emailAddress = jo.getString("user");
                 String password =jo.getString("pwd");
                 DatabaseUtils databaseUtils = (application.getDatabaseUtils());
-                ProgressDialog dialog = new ProgressDialog(application, ProgressDialog.STYLE_SPINNER);
+                ProgressDialog dialog = new ProgressDialog(activity, ProgressDialog.STYLE_SPINNER);
                 dialog.setIndeterminate(true);
                 dialog.setMessage(application.getResources().getString(R.string.log_in));
                 dialog.setCancelable(false);

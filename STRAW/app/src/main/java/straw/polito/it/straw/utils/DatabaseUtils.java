@@ -660,6 +660,7 @@ public class DatabaseUtils {
         @Override
         protected Void doInBackground(final String... params) {
             Logger.d("Ask for login");
+            Logger.d("email : " + params[0] + " password : " + params[1]);
             firebase.authWithPassword(params[0], params[1], new Firebase.AuthResultHandler() {
                 @Override
                 public void onAuthenticated(AuthData authData) {
