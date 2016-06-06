@@ -85,9 +85,9 @@ public class ConfirmReservationActivity extends AppCompatActivity implements Com
                 .append(this.resources.getString(R.string.Persons));
         this.numberPeople.setText(builder.toString());
 
-        if (this.reservation.getPlace().equals(Reservation.Place.OUTSIDE))
+        if (this.reservation.getPlace() == Reservation.OUTSIDE)
             this.place.setText(this.resources.getString(R.string.Outside));
-        else if (this.reservation.getPlace().equals(Reservation.Place.INSIDE))
+        else if (this.reservation.getPlace()== Reservation.INSIDE)
             this.place.setText(this.resources.getString(R.string.Inside));
         else
             this.place.setText(this.getResources().getString(R.string.NoPreference));

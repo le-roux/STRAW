@@ -21,7 +21,6 @@ import straw.polito.it.straw.TimeDisplayer;
 import straw.polito.it.straw.adapter.ReservationAdapterManager;
 import straw.polito.it.straw.data.Manager;
 import straw.polito.it.straw.data.Reservation;
-import straw.polito.it.straw.data.Reservation.Place;
 import straw.polito.it.straw.data.User;
 import straw.polito.it.straw.fragments.DatePickerFragment;
 import straw.polito.it.straw.fragments.NumberPickerFragment;
@@ -175,10 +174,10 @@ public class BookTableActivity extends AppCompatActivity implements BookTableInt
         boolean inside = false;
         boolean outside = false;
         switch(this.reservation.getPlace()) {
-            case INSIDE:
+            case Reservation.INSIDE:
                 inside = true;
                 break;
-            case OUTSIDE:
+            case Reservation.OUTSIDE:
                 outside = true;
                 break;
         }
@@ -194,13 +193,13 @@ public class BookTableActivity extends AppCompatActivity implements BookTableInt
         this.reservation.setTime(this.calendar.getYear(), this.calendar.getMonth(), this.calendar.getDay(), this.clock.getHourOfDay(), this.clock.getMinutes());
         if (this.insideCheckbox.isChecked()) {
             if (this.outsideCheckbox.isChecked())
-                this.reservation.setPlace(Place.NO_PREFERENCE);
+                this.reservation.setPlace(Reservation.NO_PREFERENCE);
             else
-                this.reservation.setPlace(Place.INSIDE);
+                this.reservation.setPlace(Reservation.INSIDE);
         } else if (this.outsideCheckbox.isChecked()) {
-            this.reservation.setPlace(Place.OUTSIDE);
+            this.reservation.setPlace(Reservation.OUTSIDE);
         } else
-            this.reservation.setPlace(Place.NO_PREFERENCE);
+            this.reservation.setPlace(Reservation.NO_PREFERENCE);
         SharedPreferencesHandler handler = ((StrawApplication)getApplication()).getSharedPreferencesHandler();
         this.reservation.setCustomer(handler.getCurrentUser().getEmail());
     }

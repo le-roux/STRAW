@@ -28,7 +28,7 @@ public class Reservation implements TimeDisplayer, DateDisplayer{
     private String customer;
     private String id;
     private int status;
-    public enum Place {INSIDE, OUTSIDE, NO_PREFERENCE};
+    private int place;
 
     public static final int INSIDE = 0;
     public static final int OUTSIDE = 1;
@@ -42,8 +42,6 @@ public class Reservation implements TimeDisplayer, DateDisplayer{
     public static final int DISCARDED = 2;
     public static final int CHANGED = 3;
 
-    private Place place;
-
     public static final String NUMBER_PEOPLE = "numberPeople";
     public static final String DAY = "day";
     public static final String MONTH = "month";
@@ -55,20 +53,20 @@ public class Reservation implements TimeDisplayer, DateDisplayer{
     public static final String RESERVATION = "Reservation";
     public static final String RESTAURANT = "restaurant";
     public static final String CUSTOMER = "customer";
-    public static  final String PLACE = "place";
+    public static final String PLACE = "place";
     public static final String STATUS = "status";
     public static final String ID = "id";
     public static final String FOOD_LIST = "foodList";
 
     public Reservation() {
-        this(0, new ArrayList<Food>(), new ArrayList<Food>(), Place.NO_PREFERENCE);
+        this(0, new ArrayList<Food>(), new ArrayList<Food>(), NO_PREFERENCE);
     }
 
     public Reservation(int numberPeople, ArrayList<Food> plates, ArrayList<Food> drinks) {
-        this(numberPeople, plates, drinks, Place.NO_PREFERENCE);
+        this(numberPeople, plates, drinks, NO_PREFERENCE);
     }
 
-    public Reservation(int numberPeople, ArrayList<Food> plates, ArrayList<Food> drinks, Place place) {
+    public Reservation(int numberPeople, ArrayList<Food> plates, ArrayList<Food> drinks, int place) {
         this.numberPeople = numberPeople;
         this.plates = plates;
         this.drinks = drinks;
@@ -201,33 +199,12 @@ public class Reservation implements TimeDisplayer, DateDisplayer{
         this.time.set(year, month, day);
     }
 
-    @JsonIgnore
-    public void setPlace(Place place) {
+    public void setPlace(int place) {
         this.place = place;
     }
 
-    private void setPlace(int place) {
-        switch(place) {
-            case INSIDE: this.place = Place.INSIDE; break;
-            case OUTSIDE: this.place = Place.OUTSIDE; break;
-            default : this.place = Place.NO_PREFERENCE; break;
-        }
-    }
-
-    public Place getPlace() {
+    public int getPlace() {
         return this.place;
-    }
-
-    @JsonIgnore
-    private int getPlaceInt() {
-        switch (this.place) {
-            case INSIDE:
-                return INSIDE;
-            case OUTSIDE:
-                return OUTSIDE;
-            default:
-                return NO_PREFERENCE;
-        }
     }
 
     public void setRestaurant(String restaurant) {
@@ -279,7 +256,7 @@ public class Reservation implements TimeDisplayer, DateDisplayer{
             jsonObject.put(DAY, this.getDay());
             jsonObject.put(HOUR, this.getHourOfDay());
             jsonObject.put(MINUTES, this.getMinutes());
-            jsonObject.put(PLACE, this.getPlaceInt());
+            jsonObject.put(PLACE, this.getPlace());
             jsonObject.put(RESTAURANT, this.getRestaurant());
             jsonObject.put(CUSTOMER, this.getCustomer());
         } catch (JSONException e) {

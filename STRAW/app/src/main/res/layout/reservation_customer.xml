@@ -29,10 +29,9 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/RestaurantName"
         android:text="@string/Time"
-        android:textSize="22dp"
+        android:textSize="@dimen/Date_size"
         android:textColor="@color/text_list"
-        android:focusable="false"
-        />
+        android:focusable="false"/>
 
     <straw.polito.it.straw.utils.TimerDisplay
         android:id="@+id/Timer"
@@ -41,8 +40,31 @@
         android:layout_alignBottom="@id/Date"
         android:layout_toRightOf="@id/Date"
         android:layout_marginLeft="@dimen/activity_horizontal_margin"
-        android:textSize="22dp"
+        android:textSize="@dimen/Date_size"
         android:textColor="@color/text_list"/>
+
+    <TextView
+        android:id="@+id/placeHeader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/Place"
+        android:textSize="@dimen/Content_size"
+        android:textColor="@color/text_list"
+        android:layout_below="@id/Date"/>
+
+    <TextView
+        android:id="@+id/place"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="foo"
+        android:textSize="@dimen/Content_size"
+        android:textColor="@color/text_list"
+        android:layout_below="@id/Date"
+        android:focusable="false"
+        android:layout_toEndOf="@id/placeHeader"
+        android:layout_toRightOf="@id/placeHeader"
+        android:layout_marginStart="@dimen/padding_small"
+        android:layout_marginLeft="@dimen/padding_small"/>
 
     <TextView
         android:id="@+id/plates"
@@ -51,9 +73,8 @@
         android:text="@string/Plates"
         android:textSize="@dimen/Content_size"
         android:textColor="@color/text_list"
-        android:layout_below="@id/Date"
-        android:focusable="false"
-        />
+        android:layout_below="@id/place"
+        android:focusable="false"/>
 
     <Button
         android:id="@+id/AcceptButton"

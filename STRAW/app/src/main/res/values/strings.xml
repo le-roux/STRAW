@@ -155,7 +155,7 @@
     <string name="BookTable"><u>Book a table</u></string>
     <string name="HowManyPeople">How many people ?</string>
     <string name="Confirm">Confirm</string>
-    <string name="Where">Where ?</string>
+    <string name="Where">Where ? (optional)</string>
     <string name="Inside">Inside</string>
     <string name="Outside">Outside</string>
     <string name="NoPreference">No preference</string>
@@ -167,6 +167,7 @@
     <string name="ReviewSaved">Review saved</string>
     <string name="UpdatingReservation">Updating reservation</string>
     <string name="EmptyReservation">Please indicate the number of people</string>
+    <string name="Place">Place : </string>
 
     <!--Strings for the Invite Friends part-->
     <string name="InviteFriendsTitle"><u>Invite Friends</u></string>
