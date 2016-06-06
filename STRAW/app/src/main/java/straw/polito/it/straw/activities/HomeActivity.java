@@ -151,7 +151,7 @@ public class HomeActivity extends AppCompatActivity {
                 String emailAddress = jo.getString("user");
                 String password =jo.getString("pwd");
                 DatabaseUtils databaseUtils = (application.getDatabaseUtils());
-                ProgressDialog dialog = new ProgressDialog(application, ProgressDialog.STYLE_SPINNER);
+                ProgressDialog dialog = new ProgressDialog(application.getBaseContext(), ProgressDialog.STYLE_SPINNER);
                 dialog.setIndeterminate(true);
                 dialog.setMessage(application.getResources().getString(R.string.log_in));
                 dialog.setCancelable(false);

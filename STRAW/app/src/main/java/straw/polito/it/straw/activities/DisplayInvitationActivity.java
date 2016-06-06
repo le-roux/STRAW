@@ -31,7 +31,7 @@ public class DisplayInvitationActivity extends AppCompatActivity {
 
         if (text != null)
             text.setText(message);
-        if (logIn != null) {
+       if (logIn != null) {
             logIn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
