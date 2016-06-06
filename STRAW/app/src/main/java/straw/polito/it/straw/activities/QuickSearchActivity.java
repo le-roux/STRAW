@@ -196,21 +196,21 @@ public class QuickSearchActivity extends FragmentActivity implements RestaurantF
         /**
          * Initial value
          */
-        spinner2.setSelection(this.restaurantType + 1);
+        spinner2.setSelection(this.restaurantType);
         switch(this.restaurantType) {
-            case(0): {
+            case(1): {
                 PlaceFilter = "Restaurant";
                 break;
             }
-            case (1): {
+            case (2): {
                 PlaceFilter = "Canteen";
                 break;
             }
-            case (2): {
+            case (3): {
                 PlaceFilter = "Take Away";
                 break;
             }
-            case (3): {
+            case (4): {
                 PlaceFilter = "Bar";
                 break;
             } default: {

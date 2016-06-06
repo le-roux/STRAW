@@ -17,6 +17,7 @@
     <string name="n_pwd">New Password</string>
     <string name="o_pwd">Old Password</string>
     <string name="c_pwd">New Password</string>
+    <string name="Password">Password</string>
     <string name="cc_pwd">Confirm Password</string>
     <string name="addr">Address</string>
     <string name="tel">Telephone</string>
@@ -133,6 +134,7 @@
     </string-array>
     <string name="map">Map</string>
     <string name="list">List</string>
+    <string name="All">All</string>
 
     <!--Strings for the user part -->
     <string name="u_t">User Type</string>
