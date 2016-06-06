@@ -37,7 +37,7 @@ public class DisplayInvitationActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     boolean autoLogged;
                     autoLogged = HomeActivity.autoLogIn(PreferenceManager.getDefaultSharedPreferences(DisplayInvitationActivity.this),
-                            null, (StrawApplication)getApplication(), restaurantName);
+                            null, DisplayInvitationActivity.this, restaurantName);
                     if (!autoLogged) {
                         LogInFragment fragment = new LogInFragment();
                         fragment.show(getSupportFragmentManager(), "LogIn");

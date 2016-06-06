@@ -1,5 +1,6 @@
 package straw.polito.it.straw.activities;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -54,7 +55,11 @@ public class HomeActivity extends AppCompatActivity {
         Intent intent = new Intent(this, RegistrationIntentService.class);
         startService(intent);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-        autoLogIn(this.mShared, this.remember, (StrawApplication)getApplication(), null);
+        if (this.mShared.contains(REMEMBER)) {
+            this.user_name_editText.setText(this.mShared.getString(USER, ""));
+            this.pwd_editText.setText(this.mShared.getString(PASSWORD, ""));
+        }
+        autoLogIn(this.mShared, this.remember, this, null);
         setListeners();
     }
 
@@ -151,7 +156,7 @@ public class HomeActivity extends AppCompatActivity {
         LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,new IntentFilter("complete"));
     }
 
-    public static boolean autoLogIn(SharedPreferences mShared, CheckBox remember, StrawApplication application, String restaurantName) {
+    public static boolean autoLogIn(SharedPreferences mShared, CheckBox remember, Activity activity, String restaurantName) {
         if(mShared.contains(REMEMBER)){
             try {
                 if (remember != null)
@@ -161,10 +166,11 @@ public class HomeActivity extends AppCompatActivity {
                 JSONObject jo = new JSONObject(mShared.getString(REMEMBER,"Error"));
                 String emailAddress = jo.getString(USER);
                 String password =jo.getString(PASSWORD);
+                StrawApplication application = (StrawApplication)activity.getApplication();
                 DatabaseUtils databaseUtils = (application.getDatabaseUtils());
 
                 // Prepare a progress dialog to show that the app is not frozen
-                ProgressDialog dialog = new ProgressDialog(application, ProgressDialog.STYLE_SPINNER);
+                ProgressDialog dialog = new ProgressDialog(activity, ProgressDialog.STYLE_SPINNER);
                 dialog.setIndeterminate(true);
                 dialog.setMessage(application.getResources().getString(R.string.log_in));
                 dialog.setCancelable(false);
