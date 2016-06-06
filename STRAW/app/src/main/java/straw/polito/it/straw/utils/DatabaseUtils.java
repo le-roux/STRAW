@@ -31,6 +31,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
+import straw.polito.it.straw.CompletionActivity;
 import straw.polito.it.straw.R;
 import straw.polito.it.straw.RestaurantFilter;
 import straw.polito.it.straw.StrawApplication;
@@ -1326,17 +1327,17 @@ public class DatabaseUtils {
      *
      * @param reservation : the reservation to store.
      */
-    public void saveReservation(Reservation reservation, ProgressDialog dialog) {
-        StoreReservationAsyncTask task = new StoreReservationAsyncTask(dialog);
+    public void saveReservation(Reservation reservation, CompletionActivity activity) {
+        StoreReservationAsyncTask task = new StoreReservationAsyncTask(activity);
         task.execute(reservation);
     }
 
     private class StoreReservationAsyncTask extends AsyncTask<Reservation, Void, Void> {
 
-        private ProgressDialog dialog;
+        private CompletionActivity activity;
 
-        public StoreReservationAsyncTask(ProgressDialog dialog) {
-            this.dialog = dialog;
+        public StoreReservationAsyncTask(CompletionActivity activity) {
+            this.activity = activity;
         }
 
         @Override
@@ -1359,7 +1360,7 @@ public class DatabaseUtils {
                         /**
                          * Store the reservation id in the customer reservations list.
                          */
-                        saveReservationIdInCustomer(id, dialog);
+                        saveReservationIdInCustomer(id, activity);
                     } else
                         Toast.makeText(context, firebaseError.getMessage(), Toast.LENGTH_LONG).show();
                 }
@@ -1368,18 +1369,14 @@ public class DatabaseUtils {
         }
     }
 
-    public void saveReservationIdInCustomer(String id, final ProgressDialog dialog) {
+    public void saveReservationIdInCustomer(String id, final CompletionActivity activity) {
         Firebase ref = firebase.child(USER).child(firebase.getAuth().getUid());
         ref.child(RESERVATIONS).push().setValue(id, new Firebase.CompletionListener() {
             @Override
             public void onComplete(FirebaseError firebaseError, Firebase firebase) {
-                if (dialog != null)
-                    dialog.dismiss();
                 if (firebaseError == null) {
                     Toast.makeText(context, R.string.ReservationSent, Toast.LENGTH_LONG).show();
-                    Intent intent = new Intent(context, SearchActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    context.startActivity(intent);
+                    activity.onComplete();
                 }
                 else
                     Toast.makeText(context, firebaseError.getMessage(), Toast.LENGTH_LONG).show();
