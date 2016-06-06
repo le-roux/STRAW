@@ -8,9 +8,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import straw.polito.it.straw.R;
-import straw.polito.it.straw.StrawApplication;
 import straw.polito.it.straw.fragments.LogInFragment;
-import straw.polito.it.straw.utils.Logger;
 
 public class DisplayInvitationActivity extends AppCompatActivity {
 
