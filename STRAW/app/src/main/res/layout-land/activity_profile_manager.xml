@@ -77,32 +77,8 @@
             android:layout_alignParentEnd="true" />
 
         <TextView
-            android:id="@+id/reservation_history"
-            android:layout_width="200sp"
-            android:layout_height="wrap_content"
-            android:textSize="@dimen/Content_size"
-            android:textColor="@color/link_color"
-            android:text="@string/Menu"
-            android:focusable="true"
-            android:layout_above="@+id/offers_link_textView"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
-
-        <TextView
-            android:id="@+id/review_history"
-            android:layout_width="200sp"
-            android:layout_height="wrap_content"
-            android:textSize="@dimen/Content_size"
-            android:textColor="@color/link_color"
-            android:text="@string/Reservation"
-            android:focusable="true"
-            android:layout_above="@+id/log_out"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
-
-        <TextView
             android:id="@+id/offers_link_textView"
-            android:layout_width="200sp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="@dimen/Content_size"
             android:textColor="@color/link_color"
@@ -123,6 +99,30 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
             />
+
+        <TextView
+            android:id="@+id/review_history"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/Content_size"
+            android:textColor="@color/link_color"
+            android:text="@string/Reservation"
+            android:focusable="true"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <TextView
+            android:id="@+id/reservation_history"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/Content_size"
+            android:textColor="@color/link_color"
+            android:text="@string/Menu"
+            android:focusable="true"
+            android:layout_above="@+id/offers_link_textView"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
     </RelativeLayout>
     <Button
         android:layout_width="match_parent"

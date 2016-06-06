@@ -18,6 +18,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import straw.polito.it.straw.AddressContainer;
@@ -209,6 +210,14 @@ public class AdvancedSearchActivity extends AppCompatActivity implements Address
 
             }
         });
+
+        ArrayList<String> typeList = new ArrayList<>();
+        typeList.add(getString(R.string.All));
+        typeList.add(getString(R.string.restaurant));
+        typeList.add(getString(R.string.canteen));
+        typeList.add(getString(R.string.ta));
+        typeList.add(getString(R.string.bar));
+        this.restaurantTypeSpinner.setAdapter(new ArrayAdapter<>(getBaseContext(), android.R.layout.simple_list_item_1, typeList));
 
         this.restaurantTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override

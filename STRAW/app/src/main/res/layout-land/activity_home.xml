@@ -27,9 +27,9 @@
         android:layout_height="270sp"
         android:id="@+id/create_relativeLayout"
         android:background="@drawable/customborder"
-        android:layout_centerVertical="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true">
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/notyet_textView">
 
         <Button
             android:layout_width="wrap_content"
@@ -60,23 +60,21 @@
         android:text="@string/notyet"
         android:id="@+id/notyet_textView"
         android:background="@drawable/customborder_dark"
-        android:layout_above="@+id/create_relativeLayout"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_toLeftOf="@+id/id_textView"
-        android:layout_toStartOf="@+id/id_textView" />
+        android:layout_toStartOf="@+id/id_relativeLayout"
+        android:layout_toLeftOf="@+id/id_relativeLayout" />
 
     <RelativeLayout
         android:id="@+id/id_relativeLayout"
         android:background="@drawable/customborder"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignTop="@+id/create_relativeLayout"
         android:layout_toRightOf="@+id/create_relativeLayout"
         android:layout_toEndOf="@+id/create_relativeLayout"
         android:layout_alignBottom="@+id/create_relativeLayout"
         android:layout_marginLeft="5dp"
-        >
+        android:layout_below="@+id/notyet_textView">
 
         <EditText
             android:layout_width="wrap_content"

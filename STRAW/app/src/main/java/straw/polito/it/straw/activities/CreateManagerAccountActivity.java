@@ -98,11 +98,6 @@ public class CreateManagerAccountActivity extends AppCompatActivity implements A
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_account);
-        if(getIntent().hasExtra("manager")){
-            inEdit=true;
-        }else{
-            inEdit=false;
-        }
         this.context = this;
         sharedPreferencesHandler = ((StrawApplication)getApplication()).getSharedPreferencesHandler();
         mShared= PreferenceManager.getDefaultSharedPreferences(this);
@@ -137,12 +132,14 @@ public class CreateManagerAccountActivity extends AppCompatActivity implements A
 
         setListeners();
         if(getIntent().hasExtra("manager")){
+            inEdit = true;
             Log.v(TAG,getIntent().getExtras().getString("manager"));
-            man=new Manager(getIntent().getExtras().getString("manager"));
-            old_email=man.getEmail();
+            man = new Manager(getIntent().getExtras().getString("manager"));
+            old_email = man.getEmail();
             loadPrevInfo(man);
         }else{
-            man=new Manager();
+            inEdit = false;
+            man = new Manager();
             setPhoto();
         }
         mRegistrationBroadcastReceiver = new BroadcastReceiver() {
@@ -238,23 +235,22 @@ public class CreateManagerAccountActivity extends AppCompatActivity implements A
         imageString = ImageManager.getImageFromUri(getApplicationContext(), uri);
     }
 
-
     private void initialize() {
-        photo=(ImageView)findViewById(R.id.photo_imageView);
-        c_pwd=(EditText)findViewById(R.id.c_pwd_editText);
-        cc_pwd=(EditText)findViewById(R.id.cc_pwd_editText);
-        tel=(EditText)findViewById(R.id.tel_editText);
-        r_n=(EditText)findViewById(R.id.diet_editText);
-        r_t=(Spinner)findViewById(R.id.r_t_spinner);
-        addr=(EditText)findViewById(R.id.pref_t_textView);
-        seats=(EditText)findViewById(R.id.seats_editText);
-        email=(EditText)findViewById(R.id.email_editText);
-        c_acc_button=(Button)findViewById(R.id.create_button);
-        min=(EditText)findViewById(R.id.min_price_editText);
-        max=(EditText)findViewById(R.id.max_price_editText);
-        food=(Spinner)findViewById(R.id.f_t_spinner);
-        o_pwd= (TextView) findViewById(R.id.pwd_textView);
-        n_pwd= (TextView) findViewById(R.id.cc_pwd_textView);
+        photo = (ImageView)findViewById(R.id.photo_imageView);
+        c_pwd = (EditText)findViewById(R.id.c_pwd_editText);
+        cc_pwd = (EditText)findViewById(R.id.cc_pwd_editText);
+        tel = (EditText)findViewById(R.id.tel_editText);
+        r_n = (EditText)findViewById(R.id.diet_editText);
+        r_t = (Spinner)findViewById(R.id.r_t_spinner);
+        addr = (EditText)findViewById(R.id.pref_t_textView);
+        seats = (EditText)findViewById(R.id.seats_editText);
+        email = (EditText)findViewById(R.id.email_editText);
+        c_acc_button = (Button)findViewById(R.id.create_button);
+        min = (EditText)findViewById(R.id.min_price_editText);
+        max = (EditText)findViewById(R.id.max_price_editText);
+        food = (Spinner)findViewById(R.id.f_t_spinner);
+        o_pwd = (TextView) findViewById(R.id.pwd_textView);
+        n_pwd = (TextView) findViewById(R.id.cc_pwd_textView);
         if(inEdit){
             o_pwd.setText(getString(R.string.o_pwd));
             n_pwd.setText(getString(R.string.n_pwd));
