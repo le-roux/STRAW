@@ -30,7 +30,6 @@ import straw.polito.it.straw.utils.DatabaseUtils;
 
 public class HomeActivity extends AppCompatActivity {
 
-    private static final String TAG = "HomeActivity";
     private SharedPreferences mShared;
     private EditText user_name_editText;
     private EditText pwd_editText;
@@ -40,16 +39,22 @@ public class HomeActivity extends AppCompatActivity {
     private TextView forgot;
     private CheckBox remember;
     private BroadcastReceiver mRegistrationBroadcastReceiver;
+
+    // Keys used for the auto-login part
+    public static final String USER = "user";
+    public static final String PASSWORD = "pwd";
+    public static final String REMEMBER = "remember";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        mShared= PreferenceManager.getDefaultSharedPreferences(this);
+        this.mShared= PreferenceManager.getDefaultSharedPreferences(this);
         initialize();
         Intent intent = new Intent(this, RegistrationIntentService.class);
         startService(intent);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-        autoLogIn(mShared, remember, (StrawApplication)getApplication());
+        autoLogIn(this.mShared, this.remember, (StrawApplication)getApplication(), null);
         setListeners();
     }
 
@@ -57,14 +62,33 @@ public class HomeActivity extends AppCompatActivity {
         log_in_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // Retrieve the entered values
                 String emailAddress = user_name_editText.getText().toString();
                 String password = pwd_editText.getText().toString();
                 DatabaseUtils databaseUtils = ((StrawApplication)getApplication()).getDatabaseUtils();
+
+                // Prepare a progress dialog to show that something is happening
                 ProgressDialog dialog = new ProgressDialog(HomeActivity.this, ProgressDialog.STYLE_SPINNER);
                 dialog.setIndeterminate(true);
                 dialog.setMessage(getResources().getString(R.string.log_in));
                 dialog.setCancelable(false);
                 dialog.show();
+
+                // If the remember checkbox is ticked, save the data in the internal memory
+                if(remember.isChecked()){
+                    JSONObject jo = new JSONObject();
+                    try {
+                        jo.put(USER, user_name_editText.getText().toString());
+                        jo.put(PASSWORD, pwd_editText.getText().toString());
+                        mShared.edit().putString(REMEMBER, jo.toString()).apply();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }else{
+                    mShared.edit().remove(REMEMBER).apply();
+                }
+
+                // Perform the login and change of activity
                 databaseUtils.logIn(emailAddress, password, true, dialog);
             }
         });
@@ -72,10 +96,11 @@ public class HomeActivity extends AppCompatActivity {
         create_man_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i= new Intent(getBaseContext(),CreateManagerAccountActivity.class);
+                Intent i = new Intent(getBaseContext(),CreateManagerAccountActivity.class);
                 startActivity(i);
             }
         });
+
         create_user_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -83,28 +108,12 @@ public class HomeActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        remember.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked){
-                    JSONObject jo = new JSONObject();
-                    try {
-                        jo.put("user",user_name_editText.getText().toString());
-                        jo.put("pwd",pwd_editText.getText().toString());
-                        mShared.edit().putString("remember",jo.toString()).apply();
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }else{
-                    mShared.edit().remove("remember").apply();
-                }
-            }
-        });
+
         forgot.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String email=user_name_editText.getText().toString();
-                if(email!= null || !email.equals("")) {
+                String email = user_name_editText.getText().toString();
+                if(!email.equals("")) {
                     DatabaseUtils databaseUtils = ((StrawApplication) getApplication()).getDatabaseUtils();
                     databaseUtils.sendResetRequest(user_name_editText.getText().toString());
                 }else{
@@ -122,13 +131,13 @@ public class HomeActivity extends AppCompatActivity {
 
     private void initialize() {
 
-        user_name_editText=(EditText)findViewById(R.id.user_name_editText);
-        pwd_editText=(EditText)findViewById(R.id.pwd_editText);
-        log_in_button=(Button)findViewById(R.id.log_in_button);
-        create_man_button=(Button)findViewById(R.id.c_man_button);
-        create_user_button=(Button)findViewById(R.id.c_user_button);
+        user_name_editText = (EditText)findViewById(R.id.user_name_editText);
+        pwd_editText = (EditText)findViewById(R.id.pwd_editText);
+        log_in_button = (Button)findViewById(R.id.log_in_button);
+        create_man_button = (Button)findViewById(R.id.c_man_button);
+        create_user_button = (Button)findViewById(R.id.c_user_button);
         remember = (CheckBox) findViewById(R.id.remember_checkBox);
-        forgot =(TextView)findViewById(R.id.forgot);
+        forgot = (TextView)findViewById(R.id.forgot);
         mRegistrationBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -142,21 +151,30 @@ public class HomeActivity extends AppCompatActivity {
         LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,new IntentFilter("complete"));
     }
 
-    public static boolean autoLogIn(SharedPreferences mShared, CheckBox remember, StrawApplication application) {
-        if(mShared.contains("remember")){
+    public static boolean autoLogIn(SharedPreferences mShared, CheckBox remember, StrawApplication application, String restaurantName) {
+        if(mShared.contains(REMEMBER)){
             try {
                 if (remember != null)
                     remember.setChecked(true);
-                JSONObject jo = new JSONObject(mShared.getString("remember","Error"));
-                String emailAddress = jo.getString("user");
-                String password =jo.getString("pwd");
+
+                // Retrieve the saved values
+                JSONObject jo = new JSONObject(mShared.getString(REMEMBER,"Error"));
+                String emailAddress = jo.getString(USER);
+                String password =jo.getString(PASSWORD);
                 DatabaseUtils databaseUtils = (application.getDatabaseUtils());
+
+                // Prepare a progress dialog to show that the app is not frozen
                 ProgressDialog dialog = new ProgressDialog(application, ProgressDialog.STYLE_SPINNER);
                 dialog.setIndeterminate(true);
                 dialog.setMessage(application.getResources().getString(R.string.log_in));
                 dialog.setCancelable(false);
                 dialog.show();
-                databaseUtils.logIn(emailAddress, password, true, dialog);
+
+                // Perform the login and change activity
+                if (restaurantName != null) // Log in requested by an invitation
+                    databaseUtils.logInAndReserve(emailAddress, password, restaurantName, dialog);
+                else // Normal log in
+                    databaseUtils.logIn(emailAddress, password, true, dialog);
                 return true;
             } catch (JSONException e) {
                 e.printStackTrace();
