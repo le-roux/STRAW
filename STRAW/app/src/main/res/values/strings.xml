@@ -213,6 +213,7 @@
     <string name="SavingDrinks">Saving drinks</string>
     <string name="RetrievingRestaurants">We are looking for the best results</string>
     <string name="RetrievingReservations">Let us see who want to come</string>
+    <string name="NoReservation">No reservation for now</string>
 
     <!--Strings for the search detail part-->
     <string name="s_menu">Menu</string>

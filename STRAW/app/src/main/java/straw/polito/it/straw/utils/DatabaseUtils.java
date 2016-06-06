@@ -70,12 +70,15 @@ public class DatabaseUtils {
     public static final String USER = "user";
     public static final String RESERVATIONS = "reservations";
     public static final String RESTAURANT_RESERVATIONS = "restaurantReservations";
+    public static final String RESTAURANT_RESERVATIONS_NB = "restaurantReservationsNumber";
     public static final String RESTAURANTS = "restaurants";
     public static final String NAMECHECK = "restaurantsName";
     public static final String PLATES = "plates";
     public static final String DRINKS = "drinks";
     public static final String REVIEWS = "reviews";
     public static final String FRIENDS = "friends";
+
+    public static final String RESERVATION_NB = "reservationNb";
 
     /**
      * A simple constructor, invoked in StrawApplication.onCreate()
@@ -608,6 +611,14 @@ public class DatabaseUtils {
                             if (params[2].equals(SharedPreferencesHandler.MANAGER)) {
                                 Manager manager = sharedPreferencesHandler.getCurrentManager();
                                 saveManagerProfile(manager, uid, params[1], true, dialog);
+                                Firebase ref = firebase.child(RESTAURANT_RESERVATIONS_NB).child(manager.getRes_name()).child(RESERVATION_NB);
+                                ref.setValue(0, new Firebase.CompletionListener() {
+                                    @Override
+                                    public void onComplete(FirebaseError firebaseError, Firebase firebase) {
+                                        if (firebaseError != null)
+                                            Logger.d("reservation nb creation error : " + firebaseError.getMessage());
+                                    }
+                                });
                             } else {
                                 User user = sharedPreferencesHandler.getCurrentUser();
                                 saveCustomerProfile(user, uid, true, dialog);
@@ -1357,6 +1368,21 @@ public class DatabaseUtils {
                          */
                         Firebase ref = firebase.child(RESTAURANT_RESERVATIONS).child(params[0].getRestaurant());
                         ref.push().setValue(id);
+                        ref = firebase.child(RESTAURANT_RESERVATIONS_NB).child(params[0].getRestaurant()).child(RESERVATION_NB);
+                        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                int reservationNb = dataSnapshot.getValue(Integer.class);
+                                Firebase tmp = firebase.child(RESTAURANT_RESERVATIONS_NB).child(params[0].getRestaurant()).child(RESERVATION_NB);
+                                reservationNb++;
+                                tmp.setValue(reservationNb);
+                            }
+
+                            @Override
+                            public void onCancelled(FirebaseError firebaseError) {
+
+                            }
+                        });
                         /**
                          * Store the reservation id in the customer reservations list.
                          */
@@ -1426,45 +1452,63 @@ public class DatabaseUtils {
 
         @Override
         protected Void doInBackground(final ReservationAdapterManager... params) {
-            Firebase ref = firebase.child(RESTAURANT_RESERVATIONS).child(this.restaurantName);
             params[0].getReservationList().clear();
             params[0].notifyDataSetChanged();
-            ref.addChildEventListener(new ChildEventListener() {
+            Firebase ref = firebase.child(RESTAURANT_RESERVATIONS_NB).child(this.restaurantName).child(RESERVATION_NB);
+            ref.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
-                public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                    String reservationId = dataSnapshot.getValue(String.class);
-                    Firebase ref = firebase.child(RESERVATIONS).child(reservationId);
-                    ref.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            Reservation reservation = dataSnapshot.getValue(Reservation.class);
-                            params[0].getReservationList().add(reservation);
-                            params[0].notifyDataSetChanged();
-                            if (dialog != null)
-                                dialog.dismiss();
-                        }
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    int reservationNb = dataSnapshot.getValue(Integer.class);
+                    if (reservationNb == 0) {
+                        if (dialog != null)
+                            dialog.dismiss();
+                        Toast.makeText(context, R.string.NoReservation, Toast.LENGTH_LONG).show();
+                    } else {
+                        Firebase tmp = firebase.child(RESTAURANT_RESERVATIONS).child(restaurantName);
+                        tmp.addChildEventListener(new ChildEventListener() {
+                            @Override
+                            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                                String reservationId = dataSnapshot.getValue(String.class);
+                                Firebase ref = firebase.child(RESERVATIONS).child(reservationId);
+                                ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                        Reservation reservation = dataSnapshot.getValue(Reservation.class);
+                                        params[0].getReservationList().add(reservation);
+                                        params[0].notifyDataSetChanged();
+                                        if (dialog != null)
+                                            dialog.dismiss();
+                                    }
 
-                        @Override
-                        public void onCancelled(FirebaseError firebaseError) {
+                                    @Override
+                                    public void onCancelled(FirebaseError firebaseError) {
 
-                        }
-                    });
+                                    }
+                                });
 
-                }
+                            }
 
-                @Override
-                public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                            @Override
+                            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
 
-                }
+                            }
 
-                @Override
-                public void onChildRemoved(DataSnapshot dataSnapshot) {
+                            @Override
+                            public void onChildRemoved(DataSnapshot dataSnapshot) {
 
-                }
+                            }
 
-                @Override
-                public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+                            @Override
+                            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
 
+                            }
+
+                            @Override
+                            public void onCancelled(FirebaseError firebaseError) {
+
+                            }
+                        });
+                    }
                 }
 
                 @Override
@@ -1472,6 +1516,8 @@ public class DatabaseUtils {
 
                 }
             });
+
+
             return null;
         }
     }
