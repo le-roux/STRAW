@@ -496,7 +496,92 @@ public class DatabaseUtils {
             return null;
         }
     }
+    public void sendReservationNotification(String email, String text, String restaurantName){
+        SendReservationNotificationTask task = new SendReservationNotificationTask();
+        String[] params = new String[4];
+        params[0] = email;
+        params[1] = text;
+        params[2] = restaurantName;
+        task.execute(params);
+    }
 
+    private class SendReservationNotificationTask extends AsyncTask<String, Void, Void> {
+
+        public SendReservationNotificationTask() {
+        }
+
+        @Override
+        protected Void doInBackground(final String[] params) {
+            Query ref = firebase.child(USER).orderByChild("email").equalTo(params[0]);
+            ref.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    final DataSnapshot it;
+                    if (dataSnapshot.getChildren().iterator().hasNext()) {
+                        it = dataSnapshot.getChildren().iterator().next();
+                        Logger.d("User " + params[0] + " token" + it.child("tokenGCM").getValue().toString());
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    URL object = new URL("https://gcm-http.googleapis.com/gcm/send");
+
+                                    HttpURLConnection con = (HttpURLConnection) object.openConnection();
+                                    con.setDoOutput(true);
+                                    con.setDoInput(true);
+                                    con.setRequestProperty("Content-Type", "application/json");
+                                    con.setRequestProperty("Authorization", "key=" + StrawApplication.serverAPIKey);
+                                    con.setRequestMethod("POST");
+
+                                    JSONObject jsonObject = new JSONObject();
+                                    jsonObject.put("to", it.child("tokenGCM").getValue().toString());
+                                    jsonObject.put("delay_while_idle", true);
+                                    JSONObject res = new JSONObject();
+                                    res.put("res_change", params[1]);
+                                    res.put("restaurant", params[2]);
+                                    jsonObject.put("data", res);
+                                    Logger.d("Request " + jsonObject.toString());
+                                    OutputStreamWriter wr = new OutputStreamWriter(con.getOutputStream());
+                                    wr.write(jsonObject.toString());
+                                    wr.flush();
+                                    wr.close();
+
+                                    StringBuilder sb = new StringBuilder();
+                                    int HttpResult = con.getResponseCode();
+                                    if (HttpResult == HttpURLConnection.HTTP_OK) {
+                                        BufferedReader br = new BufferedReader(
+                                                new InputStreamReader(con.getInputStream(), "utf-8"));
+                                        String line = null;
+                                        while ((line = br.readLine()) != null) {
+                                            sb.append(line + "\n");
+                                        }
+                                        br.close();
+                                        Logger.d("LOL " + sb.toString());
+                                    } else {
+                                        Logger.d("LEL " + con.getResponseMessage());
+                                    }
+
+                                } catch (MalformedURLException e) {
+                                    e.printStackTrace();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }).start();
+                    }
+
+                }
+
+                @Override
+                public void onCancelled(FirebaseError firebaseError) {
+                    Toast.makeText(context, firebaseError.getMessage(), Toast.LENGTH_LONG).show();
+                }
+            });
+            return null;
+        }
+    }
     public boolean editUser(String emailAddress,String newEmail,String oldPassword, String password, String type, ProgressDialog dialog) {
         EditUserAsyncTask task = new EditUserAsyncTask(dialog);
         String[] params = new String[5];

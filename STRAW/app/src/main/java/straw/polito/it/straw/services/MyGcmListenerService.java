@@ -31,6 +31,12 @@ public class MyGcmListenerService extends GcmListenerService {
             String restaurantName = data.getString(InviteFriendActivity.RESTAURANT);
             sendNotificationInvitation(msg, restaurantName);
         }
+        if(data.containsKey("res_change")){
+            String msg = data.getString("res_change");
+            String restaurantName = data.getString("restaurant");
+            sendNotificationReservationChange(msg, restaurantName);
+        }
+
 
     }
     private void sendNotificationReservation(String message) {
@@ -40,6 +46,32 @@ public class MyGcmListenerService extends GcmListenerService {
                         .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.pizza))
                         .setContentTitle("STRAW")
                         .setContentText("You have a new reservation!");
+
+        mBuilder.setAutoCancel(true);
+
+        Intent resultIntent = new Intent(this, DisplayReservationsActivity.class);
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+        stackBuilder.addNextIntent(resultIntent);
+        PendingIntent resultPendingIntent =
+                stackBuilder.getPendingIntent(
+                        (int) System.currentTimeMillis(),
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                );
+        mBuilder.setContentIntent(resultPendingIntent);
+        mBuilder.setLocalOnly(true);
+        NotificationManager mNotificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationManager.notify(0, mBuilder.build());
+        Logger.d("NOTIFICATION CREATED!!!!!!!!!!!!!!!" );
+    }
+    private void sendNotificationReservationChange(String message, String restaurantName) {
+
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(this)
+                        .setSmallIcon(R.drawable.pizza)
+                        .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.pizza))
+                        .setContentTitle("STRAW")
+                        .setContentText(message);
 
         mBuilder.setAutoCancel(true);
 

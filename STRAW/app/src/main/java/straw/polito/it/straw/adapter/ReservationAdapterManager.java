@@ -90,6 +90,7 @@ public class ReservationAdapterManager extends ReservationAdapter {
                                         setIconVisible(CANCEL_ICON);
                                         Toast.makeText(context, context.getString(R.string.OrderRefusedToast),
                                                 Toast.LENGTH_LONG).show();
+                                        databaseUtils.sendReservationNotification(reservationList.get(position).getCustomer(),context.getString(R.string.RefuseOrder),reservationList.get(position).getRestaurant());
                                         return;
 
                                     } else if (options[item].equals(context.getString(R.string.Cancel))) {
@@ -101,6 +102,8 @@ public class ReservationAdapterManager extends ReservationAdapter {
 
                         } else if (item == CHANGE_TIME) {
                             showTimePickerFragmentDialog(position);
+                            String date=reservationList.get(position).getDay()+"/"+reservationList.get(position).getMonth()+"/"+reservationList.get(position).getYear()+" at "+reservationList.get(position).getHourOfDay()+":"+reservationList.get(position).getMinutes();
+                            databaseUtils.sendReservationNotification(reservationList.get(position).getCustomer(),context.getString(R.string.ChangeTime)+" "+date,reservationList.get(position).getRestaurant());
                         } else if (item == CANCEL) {
                             dialog.dismiss();
                         }

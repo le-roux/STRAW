@@ -92,6 +92,9 @@
     <string name="Cancel">Cancel</string>
     <string name="RefuseOrder">Refuse this order?</string>
     <string name="Yes">Yes</string>
+    <string name="OrderAccepted">Your reservation was accepted by the restaurant</string>
+    <string name="OrderRefused">Your reservation was refused by the restaurant</string>
+    <string name="OrderTimeChanged">Your reservation has been changed to</string>
     <string name="OrderRefusedToast">This order is refused
  A notification has been sent to the customer</string>
     <string name="OrderAcceptedToast">This order is confirmed

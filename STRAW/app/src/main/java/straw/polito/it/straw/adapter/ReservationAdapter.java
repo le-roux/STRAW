@@ -131,6 +131,7 @@ public abstract class ReservationAdapter extends BaseAdapter {
                             ReservationAdapter.this.notifyDataSetChanged();
                             Toast.makeText(context, context.getString(R.string.OrderAcceptedToast),
                                     Toast.LENGTH_LONG).show();
+                            databaseUtils.sendReservationNotification(reservationList.get(position).getCustomer(),context.getString(R.string.AcceptOrder),reservationList.get(position).getRestaurant());
                             return;
 
                         } else if (options[item].equals(context.getString(R.string.Cancel))) {
