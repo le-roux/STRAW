@@ -39,8 +39,8 @@ public class DisplayMenuActivity extends AppCompatActivity {
 
         this.manager = new Manager(getIntent().getStringExtra(SearchDetailActivity.RESTAURANT));
         this.goods = new ArrayList[2];
-        this.goods[Menu.PLATES] = new ArrayList<Food>();
-        this.goods[Menu.DRINKS] = new ArrayList<Food>();
+        this.goods[Menu.PLATES] = new ArrayList<>();
+        this.goods[Menu.DRINKS] = new ArrayList<>();
 
         //Initialisation of the listView
         food_listView = (ExpandableListView)findViewById(R.id.Plate_list);
