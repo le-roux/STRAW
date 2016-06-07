@@ -40,66 +40,72 @@
             android:layout_height="wrap_content"
             android:id="@+id/id_relativeLayoutQuickSearch"
             android:background="@drawable/customborder"
-            android:orientation="vertical" android:padding="20dp"
+            android:orientation="vertical"
+            android:padding="20dp"
             android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true">
 
             <Button
-                android:layout_width="130dp"
-                android:layout_height="wrap_content"
                 android:id="@+id/addfilter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:text="@string/addfilter"
                 android:background="@drawable/customborder_buttons"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true" />
 
-            <Spinner
-                android:layout_marginTop="18dp"
-                android:id="@+id/spinner1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:entries="@array/list_sort_by"
-                android:layout_below="@+id/addfilter"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true"
-                android:layout_alignLeft="@+id/addfilter"
-                 />
-
             <TextView
+                android:id="@+id/typeFood"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/typeFood"
                 android:textColor="@color/text_list"
-                android:text="Type of food:"
+                android:text="@string/FoodType"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
-                android:layout_marginLeft="10dp"
-                android:textSize="18dp"
-                />
-
-
-            <Spinner
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/spinner2"
-                android:entries="@array/list_type"
-                android:textColor="@color/text_list"
-                android:layout_alignTop="@+id/spinner1"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true" />
+                android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                android:textSize="@dimen/Content_size"/>
 
             <TextView
+                android:id="@+id/typeOfFood"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="Every type"
-                android:id="@+id/typeOfFood"
-                android:layout_below="@+id/typeFood"
-                android:layout_alignLeft="@+id/typeFood"
-                android:layout_alignStart="@+id/typeFood" />
+                android:textSize="@dimen/Content_size"
+                android:text="Any type"
+                android:layout_below="@id/typeFood"
+                android:layout_alignLeft="@id/typeFood"
+                android:layout_alignStart="@id/typeFood" />
 
+            <LinearLayout
+                android:id="@+id/spinnerPanel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/addfilter"
+                android:orientation="horizontal"
+                android:layout_marginTop="@dimen/activity_vertical_margin">
+
+                <Spinner
+                    android:id="@+id/spinner1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:entries="@array/list_sort_by"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                    android:layout_marginRight="@dimen/activity_horizontal_margin"/>
+
+                <Spinner
+                    android:id="@+id/spinner2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:entries="@array/list_type"
+                    android:textColor="@color/text_list"
+                    android:layout_weight="1"
+                    android:layout_marginStart="@dimen/activity_horizontal_margin"
+                    android:layout_marginLeft="@dimen/activity_horizontal_margin"/>
+
+            </LinearLayout>
 
         </RelativeLayout>
 
@@ -135,20 +141,18 @@
 
         </RelativeLayout>
 
-
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:id="@+id/id_relativeLayoutQuickSearch2"
             android:background="@drawable/customborder"
-            android:orientation="vertical" android:padding="20dp"
-            android:layout_marginTop="10dp"
-            android:layout_below="@+id/mapCard"
+            android:orientation="vertical"
+            android:padding="@dimen/padding"
+            android:layout_marginTop="@dimen/padding"
+            android:layout_below="@id/mapCard"
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true">
-
-        </RelativeLayout>
+            android:layout_alignParentEnd="true"/>
 
     </RelativeLayout>
 

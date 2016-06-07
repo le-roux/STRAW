@@ -139,6 +139,7 @@
     <string name="map">Map</string>
     <string name="list">List</string>
     <string name="All">All</string>
+    <string name="FoodType">Type of food:</string>
 
     <!--Strings for the user part -->
     <string name="u_t">User Type</string>

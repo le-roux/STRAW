@@ -1,6 +1,5 @@
 package straw.polito.it.straw.activities;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ExpandableListView;
@@ -13,50 +12,49 @@ import java.util.ArrayList;
 import straw.polito.it.straw.R;
 import straw.polito.it.straw.StrawApplication;
 import straw.polito.it.straw.adapter.FoodExpandableAdapter;
-import straw.polito.it.straw.data.Food;
 import straw.polito.it.straw.data.Manager;
 import straw.polito.it.straw.data.Menu;
+import straw.polito.it.straw.utils.Logger;
 
 
 public class DisplayMenuActivity extends AppCompatActivity {
 
-    private ExpandableListView food_listView;
     private ArrayList[] goods;
-    private Context context;
-
-    private Manager manager;
-    private StrawApplication application;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_menu);
 
-        this.application = (StrawApplication)getApplication();
-
-        this.context = this;
-        this.context = getApplicationContext();
-
-        this.manager = new Manager(getIntent().getStringExtra(SearchDetailActivity.RESTAURANT));
         this.goods = new ArrayList[2];
         this.goods[Menu.PLATES] = new ArrayList<>();
         this.goods[Menu.DRINKS] = new ArrayList<>();
 
-        //Initialisation of the listView
-        food_listView = (ExpandableListView)findViewById(R.id.Plate_list);
+        // Initialisation of the listView
+        ExpandableListView food_listView = (ExpandableListView)findViewById(R.id.Plate_list);
+        if (food_listView == null) {
+            Logger.d("Impossible to find the ExpandableListView in DisplayMenuActivity");
+            finish();
+            return;
+        }
 
-        FoodExpandableAdapter adapter = new FoodExpandableAdapter(context, goods[Menu.PLATES], goods[Menu.DRINKS]);
+        // Initialisation of the adapter
+        FoodExpandableAdapter adapter = new FoodExpandableAdapter(getApplicationContext(),
+                goods[Menu.PLATES], goods[Menu.DRINKS]);
         food_listView.setAdapter(adapter);
 
-        /**
-         * If data has been temporarily stored, onRestoreInstanceState will be called and take care
-         * of their restoration.
-         */
+        // Expand the groups
+        for (int i = 0; i < adapter.getGroupCount(); i++) {
+            food_listView.expandGroup(i);
+        }
+
+        /* If data has been temporarily stored, onRestoreInstanceState will be called and take care
+           of their restoration */
         if (savedInstanceState == null) {
-            /**
-             * No data temporarily stored, retrieve the menu from the database.
-             */
-            this.application.getDatabaseUtils().retrieveMenu(this.manager.getRes_name(), adapter);
+            // No data temporarily stored, retrieve the menu from the database
+            StrawApplication application = (StrawApplication)getApplication();
+            Manager manager = new Manager(getIntent().getStringExtra(SearchDetailActivity.RESTAURANT));
+            application.getDatabaseUtils().retrieveMenu(manager.getRes_name(), adapter);
         }
     }
 
