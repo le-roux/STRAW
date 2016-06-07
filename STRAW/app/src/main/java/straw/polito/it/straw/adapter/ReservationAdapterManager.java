@@ -16,6 +16,7 @@ import straw.polito.it.straw.R;
 import straw.polito.it.straw.activities.DisplayReservationsActivity;
 import straw.polito.it.straw.data.Reservation;
 import straw.polito.it.straw.fragments.TimePickerFragment;
+import straw.polito.it.straw.utils.Logger;
 
 /**
  * Created by Sylvain on 07/04/2016.
@@ -89,6 +90,7 @@ public class ReservationAdapterManager extends ReservationAdapter {
                                         setIconVisible(CANCEL_ICON);
                                         Toast.makeText(context, context.getString(R.string.OrderRefusedToast),
                                                 Toast.LENGTH_LONG).show();
+                                        databaseUtils.sendReservationNotification(reservationList.get(position).getCustomer(),context.getString(R.string.RefuseOrder),reservationList.get(position).getRestaurant());
                                         return;
 
                                     } else if (options[item].equals(context.getString(R.string.Cancel))) {
@@ -100,6 +102,8 @@ public class ReservationAdapterManager extends ReservationAdapter {
 
                         } else if (item == CHANGE_TIME) {
                             showTimePickerFragmentDialog(position);
+                            String date=reservationList.get(position).getDay()+"/"+reservationList.get(position).getMonth()+"/"+reservationList.get(position).getYear()+" at "+reservationList.get(position).getHourOfDay()+":"+reservationList.get(position).getMinutes();
+                            databaseUtils.sendReservationNotification(reservationList.get(position).getCustomer(),context.getString(R.string.ChangeTime)+" "+date,reservationList.get(position).getRestaurant());
                         } else if (item == CANCEL) {
                             dialog.dismiss();
                         }
@@ -114,6 +118,8 @@ public class ReservationAdapterManager extends ReservationAdapter {
     @Override
     public void init(int position) {
         if (position < this.reservationList.size() && position >= 0) {
+            Logger.d("position : " + position);
+            Logger.d("res : " + this.reservationList.get(position));
             switch (this.reservationList.get(position).getStatus()) {
                 case (Reservation.PENDING): {
                     setIconVisible(null);

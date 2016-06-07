@@ -52,6 +52,10 @@ public class ReservationAdapterCustomer extends ReservationAdapter {
                     setIconVisible(null);
                     break;
                 }
+                case (Reservation.PASSED) : {
+                    setIconVisible(CANCEL_ICON);
+                    break;
+                }
             }
         }
     }

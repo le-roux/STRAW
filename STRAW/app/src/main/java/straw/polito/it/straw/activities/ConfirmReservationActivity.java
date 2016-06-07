@@ -33,6 +33,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 
+import straw.polito.it.straw.CompletionActivity;
 import straw.polito.it.straw.R;
 import straw.polito.it.straw.StrawApplication;
 import straw.polito.it.straw.adapter.FoodExpandableAdapterRemove;
@@ -47,7 +48,7 @@ import straw.polito.it.straw.utils.SharedPreferencesHandler;
 import straw.polito.it.straw.utils.TimerDisplay;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class ConfirmReservationActivity extends AppCompatActivity {
+public class ConfirmReservationActivity extends AppCompatActivity implements CompletionActivity{
 
     private TextView numberPeople;
     private TextView place;
@@ -59,6 +60,7 @@ public class ConfirmReservationActivity extends AppCompatActivity {
     private String tokenTo;
     private Reservation reservation;
     private Resources resources;
+    private ProgressDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,9 +85,9 @@ public class ConfirmReservationActivity extends AppCompatActivity {
                 .append(this.resources.getString(R.string.Persons));
         this.numberPeople.setText(builder.toString());
 
-        if (this.reservation.getPlace().equals(Reservation.Place.OUTSIDE))
+        if (this.reservation.getPlace() == Reservation.OUTSIDE)
             this.place.setText(this.resources.getString(R.string.Outside));
-        else if (this.reservation.getPlace().equals(Reservation.Place.INSIDE))
+        else if (this.reservation.getPlace()== Reservation.INSIDE)
             this.place.setText(this.resources.getString(R.string.Inside));
         else
             this.place.setText(this.getResources().getString(R.string.NoPreference));
@@ -121,13 +123,13 @@ public class ConfirmReservationActivity extends AppCompatActivity {
                 /**
                  * Store the reservation in the database (both for the customer and the restaurant).
                  */
-                ProgressDialog dialog = new ProgressDialog(ConfirmReservationActivity.this);
+                dialog = new ProgressDialog(ConfirmReservationActivity.this);
                 dialog.setIndeterminate(true);
                 dialog.setMessage(ConfirmReservationActivity.this.getString(R.string.SendingReservation));
                 dialog.setCancelable(false);
                 dialog.show();
                 DatabaseUtils databaseUtils = ((StrawApplication)getApplication()).getDatabaseUtils();
-                databaseUtils.saveReservation(reservation, dialog);
+                databaseUtils.saveReservation(reservation, ConfirmReservationActivity.this);
                 post();
              }
         });
@@ -186,5 +188,15 @@ public class ConfirmReservationActivity extends AppCompatActivity {
             }
         }).start();
 
+    }
+
+    // Called by the secondary thread once the reservation has been saved in the database
+    @Override
+    public void onComplete() {
+        if (this.dialog != null)
+            dialog.dismiss();
+        Intent intent = new Intent(this, SearchActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
     }
 }

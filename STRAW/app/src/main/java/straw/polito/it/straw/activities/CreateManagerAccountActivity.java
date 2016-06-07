@@ -31,6 +31,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -70,6 +71,10 @@ public class CreateManagerAccountActivity extends AppCompatActivity implements A
     private EditText seats;
     private Button c_acc_button;
     private PopupWindow popUp;
+    private boolean inEdit;
+    private TextView o_pwd;
+    private String old_email;
+    private TextView n_pwd;
 
     private Bitmap bitmap;
 
@@ -89,6 +94,9 @@ public class CreateManagerAccountActivity extends AppCompatActivity implements A
     private Context context;
     private BroadcastReceiver mRegistrationBroadcastReceiver;
 
+    public static final String MANAGER = "manager";
+    public static final String MANAGER_LIST = "ManagerList";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,9 +105,9 @@ public class CreateManagerAccountActivity extends AppCompatActivity implements A
         sharedPreferencesHandler = ((StrawApplication)getApplication()).getSharedPreferencesHandler();
         mShared= PreferenceManager.getDefaultSharedPreferences(this);
         this.jsonArray = new JSONArray();
-        if(mShared.contains("ManagerList")){
+        if(mShared.contains(MANAGER_LIST)){
             try{
-                String ss = mShared.getString("ManagerList", "Error");
+                String ss = mShared.getString(MANAGER_LIST, "Error");
                 jsonArray = new JSONArray(ss);
             }
             catch (Exception e) {
@@ -110,13 +118,13 @@ public class CreateManagerAccountActivity extends AppCompatActivity implements A
         initialize();
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
-        types=new ArrayList<>();
+        types = new ArrayList<>();
         types.add(getString(R.string.bar));
         types.add(getString(R.string.restaurant));
         types.add(getString(R.string.canteen));
         types.add(getString(R.string.ta));
 
-        Ftypes=new ArrayList<>();
+        Ftypes = new ArrayList<>();
         Ftypes.add(getString(R.string.italian));
         Ftypes.add(getString(R.string.jap));
         Ftypes.add(getString(R.string.pizzeria));
@@ -126,12 +134,15 @@ public class CreateManagerAccountActivity extends AppCompatActivity implements A
 
 
         setListeners();
-        if(getIntent().hasExtra("manager")){
-            Log.v(TAG,getIntent().getExtras().getString("manager"));
-            man=new Manager(getIntent().getExtras().getString("manager"));
+        if(getIntent().hasExtra(MANAGER)){
+            inEdit = true;
+            Log.v(TAG,getIntent().getExtras().getString(MANAGER));
+            man = new Manager(getIntent().getExtras().getString(MANAGER));
+            old_email = man.getEmail();
             loadPrevInfo(man);
         }else{
-            man=new Manager();
+            inEdit = false;
+            man = new Manager();
             setPhoto();
         }
         mRegistrationBroadcastReceiver = new BroadcastReceiver() {
@@ -223,25 +234,30 @@ public class CreateManagerAccountActivity extends AppCompatActivity implements A
     private void setPhoto() {
         bitmap=BitmapFactory.decodeResource(getResources(), R.drawable.no_image);
         photo.setImageBitmap(bitmap);
-        Uri uri = Uri.parse("android.resource://straw.polito.it.straw/drawable/no_image");
+        Uri uri = Uri.parse(ImageManager.URI_NO_PHOTO);
         imageString = ImageManager.getImageFromUri(getApplicationContext(), uri);
     }
 
-
     private void initialize() {
-        photo=(ImageView)findViewById(R.id.photo_imageView);
-        c_pwd=(EditText)findViewById(R.id.c_pwd_editText);
-        cc_pwd=(EditText)findViewById(R.id.cc_pwd_editText);
-        tel=(EditText)findViewById(R.id.tel_editText);
-        r_n=(EditText)findViewById(R.id.diet_editText);
-        r_t=(Spinner)findViewById(R.id.r_t_spinner);
-        addr=(EditText)findViewById(R.id.pref_t_textView);
-        seats=(EditText)findViewById(R.id.seats_editText);
-        email=(EditText)findViewById(R.id.email_editText);
-        c_acc_button=(Button)findViewById(R.id.create_button);
-        min=(EditText)findViewById(R.id.min_price_editText);
-        max=(EditText)findViewById(R.id.max_price_editText);
-        food=(Spinner)findViewById(R.id.f_t_spinner);
+        photo = (ImageView)findViewById(R.id.photo_imageView);
+        c_pwd = (EditText)findViewById(R.id.c_pwd_editText);
+        cc_pwd = (EditText)findViewById(R.id.cc_pwd_editText);
+        tel = (EditText)findViewById(R.id.tel_editText);
+        r_n = (EditText)findViewById(R.id.diet_editText);
+        r_t = (Spinner)findViewById(R.id.r_t_spinner);
+        addr = (EditText)findViewById(R.id.pref_t_textView);
+        seats = (EditText)findViewById(R.id.seats_editText);
+        email = (EditText)findViewById(R.id.email_editText);
+        c_acc_button = (Button)findViewById(R.id.create_button);
+        min = (EditText)findViewById(R.id.min_price_editText);
+        max = (EditText)findViewById(R.id.max_price_editText);
+        food = (Spinner)findViewById(R.id.f_t_spinner);
+        o_pwd = (TextView) findViewById(R.id.pwd_textView);
+        n_pwd = (TextView) findViewById(R.id.cc_pwd_textView);
+        if(inEdit){
+            o_pwd.setText(getString(R.string.o_pwd));
+            n_pwd.setText(getString(R.string.n_pwd));
+        }
         setUpPopUpWindow();
         sw=false;
 
@@ -293,15 +309,15 @@ public class CreateManagerAccountActivity extends AppCompatActivity implements A
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         Log.v(TAG, "Photo selected! " + requestCode);
-        if( data!=null && resultCode==RESULT_OK && requestCode== IMAGE_REQ){
-            sw=false;
+        if( data != null && resultCode == RESULT_OK && requestCode == IMAGE_REQ){
+            sw = false;
             Uri uri = data.getData();
             imageString = ImageManager.getImageFromUri(getApplicationContext(), uri);
             Logger.d("onActivityResult : " + imageString);
             ImageManager.setImage(getApplicationContext(), photo, imageString);
         }
-        if( requestCode== CAMERA_REQ){
-            sw=true;
+        if( requestCode == CAMERA_REQ){
+            sw = true;
             ImageManager.setImage(getApplicationContext(), photo, imageString);
         }
     }
@@ -312,7 +328,11 @@ public class CreateManagerAccountActivity extends AppCompatActivity implements A
             Address address = this.addressList.get(i);
             double latitude = address.getLatitude();
             double longitude = address.getLongitude();
-            String addressString = address.getAddressLine(0) + ' ' + address.getAddressLine(1) + ' ' + address.getAddressLine(2);
+            String addressString = address.getAddressLine(0)
+                                    + ' '
+                                    + address.getAddressLine(1)
+                                    + ' '
+                                    + address.getAddressLine(2);
             this.man.setLatitude(latitude);
             this.man.setLongitude(longitude);
             this.man.setAddress(addressString);
@@ -328,9 +348,11 @@ public class CreateManagerAccountActivity extends AppCompatActivity implements A
             showAlert(getString(R.string.m_email), getString(R.string.error), false);
             sw = true;
         }
-        if (c_pwd.getText().toString().equals("") || !c_pwd.getText().toString().equals(cc_pwd.getText().toString())) {
-            showAlert(getString(R.string.m_pwd), getString(R.string.error), false);
-            sw = true;
+        if(!inEdit) {
+            if (c_pwd.getText().toString().equals("") || !c_pwd.getText().toString().equals(cc_pwd.getText().toString())) {
+                showAlert(getString(R.string.m_pwd), getString(R.string.error), false);
+                sw = true;
+            }
         }
         if (tel.getText().toString().length() > 6) {
             man.setTelephone(tel.getText().toString());
@@ -366,37 +388,59 @@ public class CreateManagerAccountActivity extends AppCompatActivity implements A
         }
         man.setImage(imageString);
         if (!sw) {
-            ArrayList<Review> reviews = new ArrayList<>();
-            man.setReviews(reviews);
-            /**
-             * Set the new profile as the current manager.
-             */
-            sharedPreferencesHandler.storeCurrentManager(man.toJSONObject());
-            JSONObject jo = man.toJSONObjectTrans();
-            jsonArray.put(jo.toString());
-            sharedPreferencesHandler.storeListManager(jsonArray.toString());
-
-            /**
-             * Save the profile in the database, log the manager and launch the profile activity.
-             */
-            ProgressDialog dialog= new ProgressDialog(CreateManagerAccountActivity.this, ProgressDialog.STYLE_SPINNER);
-            dialog.setIndeterminate(true);
-            dialog.setMessage(getResources().getString(R.string.AccountCreation));
-            dialog.setCancelable(false);
-            dialog.show();
-            DatabaseUtils databaseUtils = ((StrawApplication)getApplication()).getDatabaseUtils();
-            String password = c_pwd.getText().toString();
-
-            if (getIntent().hasExtra(ProfileManagerActivity.MANAGER)) {
+            if(!inEdit) {
+                ArrayList<Review> reviews = new ArrayList<>();
+                man.setReviews(reviews);
                 /**
-                 * Update the existing profile
+                 * Set the new profile as the current manager.
                  */
-                databaseUtils.saveManagerProfile(man);
-            } else {
+                sharedPreferencesHandler.storeCurrentManager(man.toJSONObject());
+                JSONObject jo = man.toJSONObjectTrans();
+                jsonArray.put(jo.toString());
+                sharedPreferencesHandler.storeListManager(jsonArray.toString());
+
+                /**
+                 * Save the profile in the database, log the manager and launch the profile activity.
+                 */
+                ProgressDialog dialog = new ProgressDialog(CreateManagerAccountActivity.this,
+                        ProgressDialog.STYLE_SPINNER);
+                dialog.setIndeterminate(true);
+                dialog.setMessage(getResources().getString(R.string.AccountCreation));
+                dialog.setCancelable(false);
+                dialog.show();
+                DatabaseUtils databaseUtils = ((StrawApplication) getApplication()).getDatabaseUtils();
+                String password = c_pwd.getText().toString();
+
                 /**
                  * Create a new user and save the profile in the database
                  */
-                databaseUtils.createUser(man.getEmail(), password, SharedPreferencesHandler.MANAGER, dialog);
+                databaseUtils.createUser(man.getEmail(), password,
+                        SharedPreferencesHandler.MANAGER, dialog);
+
+            }else{
+                sharedPreferencesHandler.storeCurrentManager(man.toJSONObject());
+                JSONObject jo = man.toJSONObjectTrans();
+                jsonArray.put(jo.toString());
+                sharedPreferencesHandler.storeListManager(jsonArray.toString());
+                ProgressDialog dialog = new ProgressDialog(CreateManagerAccountActivity.this,
+                        ProgressDialog.STYLE_SPINNER);
+                dialog.setIndeterminate(true);
+                dialog.setMessage(getResources().getString(R.string.AccountEdition));
+                dialog.setCancelable(false);
+                dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                        finish();
+                    }
+                });
+                dialog.show();
+                DatabaseUtils databaseUtils = ((StrawApplication) getApplication()).getDatabaseUtils();
+                String emailAddress = email.getText().toString();
+                String oldpassword = c_pwd.getText().toString();
+                String password = cc_pwd.getText().toString();
+                databaseUtils.editUser(old_email,emailAddress, oldpassword, password,
+                        SharedPreferencesHandler.MANAGER, dialog);
+
             }
 
         } else {

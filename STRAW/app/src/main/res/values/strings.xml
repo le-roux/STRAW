@@ -17,6 +17,7 @@
     <string name="n_pwd">New Password</string>
     <string name="o_pwd">Old Password</string>
     <string name="c_pwd">New Password</string>
+    <string name="Password">Password</string>
     <string name="cc_pwd">Confirm Password</string>
     <string name="addr">Address</string>
     <string name="tel">Telephone</string>
@@ -91,6 +92,9 @@
     <string name="Cancel">Cancel</string>
     <string name="RefuseOrder">Refuse this order?</string>
     <string name="Yes">Yes</string>
+    <string name="OrderAccepted">Your reservation was accepted by the restaurant</string>
+    <string name="OrderRefused">Your reservation was refused by the restaurant</string>
+    <string name="OrderTimeChanged">Your reservation has been changed to</string>
     <string name="OrderRefusedToast">This order is refused
  A notification has been sent to the customer</string>
     <string name="OrderAcceptedToast">This order is confirmed
@@ -133,6 +137,7 @@
     </string-array>
     <string name="map">Map</string>
     <string name="list">List</string>
+    <string name="All">All</string>
 
     <!--Strings for the user part -->
     <string name="u_t">User Type</string>
@@ -153,7 +158,7 @@
     <string name="BookTable"><u>Book a table</u></string>
     <string name="HowManyPeople">How many people ?</string>
     <string name="Confirm">Confirm</string>
-    <string name="Where">Where ?</string>
+    <string name="Where">Where ? (optional)</string>
     <string name="Inside">Inside</string>
     <string name="Outside">Outside</string>
     <string name="NoPreference">No preference</string>
@@ -165,6 +170,7 @@
     <string name="ReviewSaved">Review saved</string>
     <string name="UpdatingReservation">Updating reservation</string>
     <string name="EmptyReservation">Please indicate the number of people</string>
+    <string name="Place">Place : </string>
 
     <!--Strings for the Invite Friends part-->
     <string name="InviteFriendsTitle"><u>Invite Friends</u></string>
@@ -210,6 +216,7 @@
     <string name="SavingDrinks">Saving drinks</string>
     <string name="RetrievingRestaurants">We are looking for the best results</string>
     <string name="RetrievingReservations">Let us see who want to come</string>
+    <string name="NoReservation">No reservation for now</string>
 
     <!--Strings for the search detail part-->
     <string name="s_menu">Menu</string>

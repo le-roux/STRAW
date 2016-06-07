@@ -69,17 +69,16 @@
                 android:id="@+id/mapIcon"
                 android:layout_width="@dimen/Icon_size_horizontal_big"
                 android:layout_height="0dp"
-                android:layout_alignParentEnd="true"
+                android:focusable="false"
+                android:layout_alignParentTop="true"
                 android:layout_alignParentRight="true"
-                android:layout_alignTop="@id/mapButton"
-                android:layout_alignBottom="@id/mapButton"
-                android:focusable="false"/>
+                android:layout_alignParentEnd="true" />
         </RelativeLayout>
 
         <RelativeLayout
             android:id="@+id/id_relativeLayoutQuickSearch"
             android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             android:background="@drawable/customborder"
             android:orientation="vertical" android:padding="20dp"
             android:layout_alignParentTop="true"
@@ -99,16 +98,6 @@
                 android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true" />
 
-            <Spinner
-                android:id="@+id/spinner1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:entries="@array/list_sort_by"
-                android:layout_below="@+id/addfilter"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_marginTop="35dp" />
-
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -121,17 +110,6 @@
                 android:layout_alignParentStart="true" />
 
 
-            <Spinner
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/spinner2"
-                android:entries="@array/list_type"
-                android:textColor="@color/text_list"
-                android:layout_marginTop="35dp"
-                android:layout_below="@+id/spinner1"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true" />
-
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -141,6 +119,27 @@
                 android:layout_below="@+id/typeFood"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true" />
+
+            <Spinner
+                android:id="@+id/spinner1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:entries="@array/list_sort_by"
+                android:layout_marginTop="17dp"
+                android:layout_below="@+id/addfilter"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true" />
+
+            <Spinner
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/spinner2"
+                android:entries="@array/list_type"
+                android:textColor="@color/text_list"
+                android:layout_below="@+id/spinner1"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="16dp" />
 
 
         </RelativeLayout>

@@ -196,21 +196,21 @@ public class QuickSearchActivity extends FragmentActivity implements RestaurantF
         /**
          * Initial value
          */
-        spinner2.setSelection(this.restaurantType + 1);
+        spinner2.setSelection(this.restaurantType);
         switch(this.restaurantType) {
-            case(0): {
+            case(1): {
                 PlaceFilter = "Restaurant";
                 break;
             }
-            case (1): {
+            case (2): {
                 PlaceFilter = "Canteen";
                 break;
             }
-            case (2): {
+            case (3): {
                 PlaceFilter = "Take Away";
                 break;
             }
-            case (3): {
+            case (4): {
                 PlaceFilter = "Bar";
                 break;
             } default: {
@@ -265,7 +265,6 @@ public class QuickSearchActivity extends FragmentActivity implements RestaurantF
                     FoodFilter = "Pizzeria";
                     TextView t1 = (TextView) findViewById(R.id.typeOfFood);
                     t1.setText("Pizzeria");
-                    Foodfilter();
                     filter();
                 } else if (options[item].equals("Italian")) {
                     FoodFilter = "Italian";
@@ -323,7 +322,6 @@ public class QuickSearchActivity extends FragmentActivity implements RestaurantF
     }
 
     public void Foodfilter(){
-        restaurant_list.clear();
         for (int a = 0; a < restaurant_list_tmp.size(); a++) {
             if(restaurant_list_tmp.get(a).getFood_type().equals(FoodFilter) || FoodFilter.equals("")){
                 restaurant_list.add(restaurant_list_tmp.get(a));
@@ -333,7 +331,6 @@ public class QuickSearchActivity extends FragmentActivity implements RestaurantF
     }
 
     public void Placefilter(){
-        restaurant_list.clear();
         for (int a = 0; a < restaurant_list_tmp.size(); a++) {
             if(restaurant_list_tmp.get(a).getRes_type().equals(PlaceFilter) || PlaceFilter.equals("")){
                 restaurant_list.add(restaurant_list_tmp.get(a));

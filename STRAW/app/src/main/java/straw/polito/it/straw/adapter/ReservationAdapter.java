@@ -35,6 +35,7 @@ public abstract class ReservationAdapter extends BaseAdapter {
     protected DatabaseUtils databaseUtils;
     protected Button acceptButton;
     protected ImageView statusImage;
+    protected TextView place;
 
     public static final String ADAPTER = "Adapter";
     public static final String ACCEPT_ICON = "android.resource://straw.polito.it.straw/drawable/check";
@@ -93,9 +94,24 @@ public abstract class ReservationAdapter extends BaseAdapter {
         TextView plates = (TextView) convertView.findViewById(R.id.plates);
         this.acceptButton = (Button) convertView.findViewById(R.id.AcceptButton);
         this.statusImage = (ImageView)convertView.findViewById(R.id.state);
+        this.place = (TextView)convertView.findViewById(R.id.place);
         setSpecificItems(convertView, position);
 
         init(position);
+        switch(this.reservationList.get(position).getPlace()) {
+            case (Reservation.INSIDE) : {
+                this.place.setText(R.string.Inside);
+                break;
+            }
+            case (Reservation.OUTSIDE) : {
+                this.place.setText(R.string.Outside);
+                break;
+            }
+            default : {
+                this.place.setText(R.string.NoPreference);
+                break;
+            }
+        }
 
         acceptButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -115,6 +131,7 @@ public abstract class ReservationAdapter extends BaseAdapter {
                             ReservationAdapter.this.notifyDataSetChanged();
                             Toast.makeText(context, context.getString(R.string.OrderAcceptedToast),
                                     Toast.LENGTH_LONG).show();
+                            databaseUtils.sendReservationNotification(reservationList.get(position).getCustomer(),context.getString(R.string.AcceptOrder),reservationList.get(position).getRestaurant());
                             return;
 
                         } else if (options[item].equals(context.getString(R.string.Cancel))) {

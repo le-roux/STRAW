@@ -90,12 +90,14 @@ public class CreateUserAccountActivity extends AppCompatActivity implements Time
     private boolean sw;
     private boolean onEdit;
     private String old_email;
+    private Handler handler;
     private BroadcastReceiver mRegistrationBroadcastReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_user);
+        handler=new Handler();
         sharedPreferencesHandler = ((StrawApplication)getApplication()).getSharedPreferencesHandler();
 
         StrawApplication application = (StrawApplication)getApplication();
@@ -154,6 +156,7 @@ public class CreateUserAccountActivity extends AppCompatActivity implements Time
         o_pwd= (TextView) findViewById(R.id.pwd_textView);
         n_pwd= (TextView) findViewById(R.id.c_pwd_textView);
         if(onEdit){
+            o_pwd.setText(getString(R.string.o_pwd));
             o_pwd.setText(getString(R.string.o_pwd));
             n_pwd.setText(getString(R.string.n_pwd));
         }
@@ -260,14 +263,21 @@ public class CreateUserAccountActivity extends AppCompatActivity implements Time
                         sharedPreferencesHandler.storeCurrentUser(user.toString());
                         ProgressDialog dialog = new ProgressDialog(CreateUserAccountActivity.this, ProgressDialog.STYLE_SPINNER);
                         dialog.setIndeterminate(true);
-                        dialog.setMessage(getResources().getString(R.string.AccountCreation));
+                        dialog.setMessage(getResources().getString(R.string.AccountEdition));
                         dialog.setCancelable(false);
+                        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                            @Override
+                            public void onDismiss(DialogInterface dialog) {
+                                finish();
+                            }
+                        });
                         dialog.show();
                         DatabaseUtils databaseUtils = ((StrawApplication) getApplication()).getDatabaseUtils();
                         String emailAddress = email.getText().toString();
                         String oldpassword = c_pwd.getText().toString();
                         String password = cc_pwd.getText().toString();
                         databaseUtils.editUser(old_email,emailAddress, oldpassword,password, SharedPreferencesHandler.USER, dialog);
+
                     }
                 } else {
                     return;

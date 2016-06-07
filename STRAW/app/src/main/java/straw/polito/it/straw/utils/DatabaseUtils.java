@@ -27,9 +27,12 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
+import straw.polito.it.straw.CompletionActivity;
 import straw.polito.it.straw.R;
 import straw.polito.it.straw.RestaurantFilter;
 import straw.polito.it.straw.StrawApplication;
@@ -68,12 +71,16 @@ public class DatabaseUtils {
     public static final String USER = "user";
     public static final String RESERVATIONS = "reservations";
     public static final String RESTAURANT_RESERVATIONS = "restaurantReservations";
+    public static final String RESTAURANT_RESERVATIONS_PASSED = "restaurantReservationsPassed";
+    public static final String RESTAURANT_RESERVATIONS_NB = "restaurantReservationsNumber";
     public static final String RESTAURANTS = "restaurants";
     public static final String NAMECHECK = "restaurantsName";
     public static final String PLATES = "plates";
     public static final String DRINKS = "drinks";
     public static final String REVIEWS = "reviews";
     public static final String FRIENDS = "friends";
+
+    public static final String RESERVATION_NB = "reservationNb";
 
     /**
      * A simple constructor, invoked in StrawApplication.onCreate()
@@ -491,8 +498,93 @@ public class DatabaseUtils {
             return null;
         }
     }
+    public void sendReservationNotification(String email, String text, String restaurantName){
+        SendReservationNotificationTask task = new SendReservationNotificationTask();
+        String[] params = new String[4];
+        params[0] = email;
+        params[1] = text;
+        params[2] = restaurantName;
+        task.execute(params);
+    }
 
-    public void editUser(String emailAddress,String newEmail,String oldPassword, String password, String type, ProgressDialog dialog) {
+    private class SendReservationNotificationTask extends AsyncTask<String, Void, Void> {
+
+        public SendReservationNotificationTask() {
+        }
+
+        @Override
+        protected Void doInBackground(final String[] params) {
+            Query ref = firebase.child(USER).orderByChild("email").equalTo(params[0]);
+            ref.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    final DataSnapshot it;
+                    if (dataSnapshot.getChildren().iterator().hasNext()) {
+                        it = dataSnapshot.getChildren().iterator().next();
+                        Logger.d("User " + params[0] + " token" + it.child("tokenGCM").getValue().toString());
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    URL object = new URL("https://gcm-http.googleapis.com/gcm/send");
+
+                                    HttpURLConnection con = (HttpURLConnection) object.openConnection();
+                                    con.setDoOutput(true);
+                                    con.setDoInput(true);
+                                    con.setRequestProperty("Content-Type", "application/json");
+                                    con.setRequestProperty("Authorization", "key=" + StrawApplication.serverAPIKey);
+                                    con.setRequestMethod("POST");
+
+                                    JSONObject jsonObject = new JSONObject();
+                                    jsonObject.put("to", it.child("tokenGCM").getValue().toString());
+                                    jsonObject.put("delay_while_idle", true);
+                                    JSONObject res = new JSONObject();
+                                    res.put("res_change", params[1]);
+                                    res.put("restaurant", params[2]);
+                                    jsonObject.put("data", res);
+                                    Logger.d("Request " + jsonObject.toString());
+                                    OutputStreamWriter wr = new OutputStreamWriter(con.getOutputStream());
+                                    wr.write(jsonObject.toString());
+                                    wr.flush();
+                                    wr.close();
+
+                                    StringBuilder sb = new StringBuilder();
+                                    int HttpResult = con.getResponseCode();
+                                    if (HttpResult == HttpURLConnection.HTTP_OK) {
+                                        BufferedReader br = new BufferedReader(
+                                                new InputStreamReader(con.getInputStream(), "utf-8"));
+                                        String line = null;
+                                        while ((line = br.readLine()) != null) {
+                                            sb.append(line + "\n");
+                                        }
+                                        br.close();
+                                        Logger.d("LOL " + sb.toString());
+                                    } else {
+                                        Logger.d("LEL " + con.getResponseMessage());
+                                    }
+
+                                } catch (MalformedURLException e) {
+                                    e.printStackTrace();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }).start();
+                    }
+
+                }
+
+                @Override
+                public void onCancelled(FirebaseError firebaseError) {
+                    Toast.makeText(context, firebaseError.getMessage(), Toast.LENGTH_LONG).show();
+                }
+            });
+            return null;
+        }
+    }
+    public boolean editUser(String emailAddress,String newEmail,String oldPassword, String password, String type, ProgressDialog dialog) {
         EditUserAsyncTask task = new EditUserAsyncTask(dialog);
         String[] params = new String[5];
         params[0] = emailAddress;
@@ -500,9 +592,16 @@ public class DatabaseUtils {
         params[2] = oldPassword;
         params[3] = password;
         params[4] = type;
-        task.execute(params);
+        try {
+            return task.execute(params).get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
-    private class EditUserAsyncTask extends AsyncTask<String, Void, Void> {
+    private class EditUserAsyncTask extends AsyncTask<String, Void, Boolean> {
         private ProgressDialog dialog;
 
         public EditUserAsyncTask(ProgressDialog dialog) {
@@ -510,7 +609,8 @@ public class DatabaseUtils {
         }
 
         @Override
-        protected Void doInBackground(final String[] params) {
+        protected Boolean doInBackground(final String[] params) {
+            final boolean[] sw = {true};
             firebase.changeEmail(params[0], params[2], params[1], new Firebase.ResultHandler() {
                 @Override
                 public void onSuccess() {
@@ -520,6 +620,7 @@ public class DatabaseUtils {
                 @Override
                 public void onError(FirebaseError firebaseError) {
                     Toast.makeText(context, firebaseError.getMessage(), Toast.LENGTH_LONG).show();
+                    sw[0] =false;
                 }
             });
 
@@ -532,6 +633,7 @@ public class DatabaseUtils {
                 @Override
                 public void onError(FirebaseError firebaseError) {
                     Toast.makeText(context, firebaseError.getMessage(), Toast.LENGTH_LONG).show();
+                    sw[0] =false;
                 }
             });
             if(params[4].equals(SharedPreferencesHandler.MANAGER)){
@@ -541,8 +643,9 @@ public class DatabaseUtils {
                 User user = sharedPreferencesHandler.getCurrentUser();
                 saveCustomerProfile(user, firebase.getAuth().getUid(), false, dialog);
             }
-            return null;
+            return sw[0];
         }
+
     }
     /**
      * Create a new user in the Firebase database
@@ -595,6 +698,14 @@ public class DatabaseUtils {
                             if (params[2].equals(SharedPreferencesHandler.MANAGER)) {
                                 Manager manager = sharedPreferencesHandler.getCurrentManager();
                                 saveManagerProfile(manager, uid, params[1], true, dialog);
+                                Firebase ref = firebase.child(RESTAURANT_RESERVATIONS_NB).child(manager.getRes_name()).child(RESERVATION_NB);
+                                ref.setValue(0, new Firebase.CompletionListener() {
+                                    @Override
+                                    public void onComplete(FirebaseError firebaseError, Firebase firebase) {
+                                        if (firebaseError != null)
+                                            Logger.d("reservation nb creation error : " + firebaseError.getMessage());
+                                    }
+                                });
                             } else {
                                 User user = sharedPreferencesHandler.getCurrentUser();
                                 saveCustomerProfile(user, uid, true, dialog);
@@ -1315,17 +1426,17 @@ public class DatabaseUtils {
      *
      * @param reservation : the reservation to store.
      */
-    public void saveReservation(Reservation reservation, ProgressDialog dialog) {
-        StoreReservationAsyncTask task = new StoreReservationAsyncTask(dialog);
+    public void saveReservation(Reservation reservation, CompletionActivity activity) {
+        StoreReservationAsyncTask task = new StoreReservationAsyncTask(activity);
         task.execute(reservation);
     }
 
     private class StoreReservationAsyncTask extends AsyncTask<Reservation, Void, Void> {
 
-        private ProgressDialog dialog;
+        private CompletionActivity activity;
 
-        public StoreReservationAsyncTask(ProgressDialog dialog) {
-            this.dialog = dialog;
+        public StoreReservationAsyncTask(CompletionActivity activity) {
+            this.activity = activity;
         }
 
         @Override
@@ -1345,10 +1456,25 @@ public class DatabaseUtils {
                          */
                         Firebase ref = firebase.child(RESTAURANT_RESERVATIONS).child(params[0].getRestaurant());
                         ref.push().setValue(id);
+                        ref = firebase.child(RESTAURANT_RESERVATIONS_NB).child(params[0].getRestaurant()).child(RESERVATION_NB);
+                        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                int reservationNb = dataSnapshot.getValue(Integer.class);
+                                Firebase tmp = firebase.child(RESTAURANT_RESERVATIONS_NB).child(params[0].getRestaurant()).child(RESERVATION_NB);
+                                reservationNb++;
+                                tmp.setValue(reservationNb);
+                            }
+
+                            @Override
+                            public void onCancelled(FirebaseError firebaseError) {
+
+                            }
+                        });
                         /**
                          * Store the reservation id in the customer reservations list.
                          */
-                        saveReservationIdInCustomer(id, dialog);
+                        saveReservationIdInCustomer(id, activity);
                     } else
                         Toast.makeText(context, firebaseError.getMessage(), Toast.LENGTH_LONG).show();
                 }
@@ -1357,18 +1483,14 @@ public class DatabaseUtils {
         }
     }
 
-    public void saveReservationIdInCustomer(String id, final ProgressDialog dialog) {
+    public void saveReservationIdInCustomer(String id, final CompletionActivity activity) {
         Firebase ref = firebase.child(USER).child(firebase.getAuth().getUid());
         ref.child(RESERVATIONS).push().setValue(id, new Firebase.CompletionListener() {
             @Override
             public void onComplete(FirebaseError firebaseError, Firebase firebase) {
-                if (dialog != null)
-                    dialog.dismiss();
                 if (firebaseError == null) {
                     Toast.makeText(context, R.string.ReservationSent, Toast.LENGTH_LONG).show();
-                    Intent intent = new Intent(context, SearchActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    context.startActivity(intent);
+                    activity.onComplete();
                 }
                 else
                     Toast.makeText(context, firebaseError.getMessage(), Toast.LENGTH_LONG).show();
@@ -1418,45 +1540,83 @@ public class DatabaseUtils {
 
         @Override
         protected Void doInBackground(final ReservationAdapterManager... params) {
-            Firebase ref = firebase.child(RESTAURANT_RESERVATIONS).child(this.restaurantName);
             params[0].getReservationList().clear();
             params[0].notifyDataSetChanged();
-            ref.addChildEventListener(new ChildEventListener() {
+            Firebase ref = firebase.child(RESTAURANT_RESERVATIONS_NB).child(this.restaurantName).child(RESERVATION_NB);
+            ref.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
-                public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                    String reservationId = dataSnapshot.getValue(String.class);
-                    Firebase ref = firebase.child(RESERVATIONS).child(reservationId);
-                    ref.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            Reservation reservation = dataSnapshot.getValue(Reservation.class);
-                            params[0].getReservationList().add(reservation);
-                            params[0].notifyDataSetChanged();
-                            if (dialog != null)
-                                dialog.dismiss();
-                        }
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    int reservationNb = dataSnapshot.getValue(Integer.class);
+                    if (reservationNb == 0) {
+                        if (dialog != null)
+                            dialog.dismiss();
+                        Toast.makeText(context, R.string.NoReservation, Toast.LENGTH_LONG).show();
+                    } else {
+                        Firebase tmp = firebase.child(RESTAURANT_RESERVATIONS).child(restaurantName);
+                        tmp.addChildEventListener(new ChildEventListener() {
+                            @Override
+                            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                                final String key = dataSnapshot.getKey();
+                                final String reservationId = dataSnapshot.getValue(String.class);
+                                Firebase ref = firebase.child(RESERVATIONS).child(reservationId);
+                                ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                        Reservation reservation = dataSnapshot.getValue(Reservation.class);
+                                        //Check if the reservation is passed or not
+                                        GregorianCalendar calendar = new GregorianCalendar();
+                                        if (reservation.getCalendar().before(calendar)){
+                                            /*Reservation passed --> update its status and move it
+                                              to the list of past reservations
+                                             */
+                                            reservation.setStatus(Reservation.PASSED);
+                                            updateReservationStatus(reservationId, Reservation.PASSED);
+                                            // TODO : reduce resNb in the database
+                                            Firebase ref2 = firebase.child(RESTAURANT_RESERVATIONS).child(restaurantName);
+                                            ref2.child(key).setValue(null, new Firebase.CompletionListener() {
+                                                @Override
+                                                public void onComplete(FirebaseError firebaseError, Firebase firebaseRef) {
+                                                    Firebase ref3 = firebase.child(RESTAURANT_RESERVATIONS_PASSED).child(restaurantName);
+                                                    ref3.push().setValue(reservationId);
+                                                }
+                                            });
+                                        } else { // Reservation is not passed
+                                            params[0].getReservationList().add(reservation);
+                                            params[0].notifyDataSetChanged();
+                                            if (dialog != null)
+                                                dialog.dismiss();
+                                        }
+                                    }
 
-                        @Override
-                        public void onCancelled(FirebaseError firebaseError) {
+                                    @Override
+                                    public void onCancelled(FirebaseError firebaseError) {
 
-                        }
-                    });
+                                    }
+                                });
 
-                }
+                            }
 
-                @Override
-                public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                            @Override
+                            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
 
-                }
+                            }
 
-                @Override
-                public void onChildRemoved(DataSnapshot dataSnapshot) {
+                            @Override
+                            public void onChildRemoved(DataSnapshot dataSnapshot) {
 
-                }
+                            }
 
-                @Override
-                public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+                            @Override
+                            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
 
+                            }
+
+                            @Override
+                            public void onCancelled(FirebaseError firebaseError) {
+
+                            }
+                        });
+                    }
                 }
 
                 @Override
@@ -1464,6 +1624,8 @@ public class DatabaseUtils {
 
                 }
             });
+
+
             return null;
         }
     }
@@ -1489,17 +1651,9 @@ public class DatabaseUtils {
                     ref.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            NotificationCompat.Builder builder =
-                                    new NotificationCompat.Builder(context)
-                                    .setSmallIcon(R.drawable.clock)
-                                    .setContentTitle(context.getString(R.string.ReservationUpdated))
-                                    .setContentText("");
-
                             Reservation reservation = dataSnapshot.getValue(Reservation.class);
                             params[0].getReservationList().add(reservation);
                             params[0].notifyDataSetChanged();
-                            NotificationManager notificationManager = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
-                            notificationManager.notify(1, builder.build());
                         }
 
                         @Override
