@@ -41,6 +41,7 @@ public class Reservation implements TimeDisplayer, DateDisplayer{
     public static final int ACCEPTED = 1;
     public static final int DISCARDED = 2;
     public static final int CHANGED = 3;
+    public static final int PASSED = 4;
 
     public static final String NUMBER_PEOPLE = "numberPeople";
     public static final String DAY = "day";
@@ -310,5 +311,11 @@ public class Reservation implements TimeDisplayer, DateDisplayer{
             e.printStackTrace();
             return null;
         }
+    }
+
+    @JsonIgnore
+    public GregorianCalendar getCalendar() {
+        GregorianCalendar calendar = new GregorianCalendar(this.getYear(), this.getMonth(), this.getDay(), this.getHourOfDay(), this.getMinutes());
+        return calendar;
     }
 }

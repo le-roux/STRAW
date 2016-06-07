@@ -27,6 +27,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -1553,16 +1554,23 @@ public class DatabaseUtils {
                         tmp.addChildEventListener(new ChildEventListener() {
                             @Override
                             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                                String reservationId = dataSnapshot.getValue(String.class);
+                                final String reservationId = dataSnapshot.getValue(String.class);
                                 Firebase ref = firebase.child(RESERVATIONS).child(reservationId);
                                 ref.addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(DataSnapshot dataSnapshot) {
                                         Reservation reservation = dataSnapshot.getValue(Reservation.class);
-                                        params[0].getReservationList().add(reservation);
-                                        params[0].notifyDataSetChanged();
-                                        if (dialog != null)
-                                            dialog.dismiss();
+                                        //Check if the reservation is not passed
+                                        GregorianCalendar calendar = new GregorianCalendar();
+                                        if (reservation.getCalendar().before(calendar)){
+                                            reservation.setStatus(Reservation.PASSED);
+                                            updateReservationStatus(reservationId, Reservation.PASSED);
+                                        } else {
+                                            params[0].getReservationList().add(reservation);
+                                            params[0].notifyDataSetChanged();
+                                            if (dialog != null)
+                                                dialog.dismiss();
+                                        }
                                     }
 
                                     @Override
