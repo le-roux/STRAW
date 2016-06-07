@@ -58,6 +58,7 @@
     <string name="kebap">Kebap</string>
     <string name="chinese">Chinese</string>
     <string name="other">Other</string>
+    <string name="PastReservations">- Past reservations</string>
 
 
     <!--Strings for the menu part -->

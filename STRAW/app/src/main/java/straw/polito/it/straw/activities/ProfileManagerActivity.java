@@ -2,7 +2,6 @@ package straw.polito.it.straw.activities;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
@@ -15,7 +14,6 @@ import android.widget.TextView;
 import straw.polito.it.straw.R;
 import straw.polito.it.straw.StrawApplication;
 import straw.polito.it.straw.data.Manager;
-import straw.polito.it.straw.data.User;
 import straw.polito.it.straw.utils.DatabaseUtils;
 import straw.polito.it.straw.utils.ImageManager;
 import straw.polito.it.straw.utils.SharedPreferencesHandler;
@@ -31,6 +29,7 @@ public class ProfileManagerActivity extends AppCompatActivity {
     private TextView seats;
     private TextView menu_link;
     private TextView reservations_link;
+    private TextView pastReservationsLink;
     private TextView offerts_link;
     private Button edit_button;
     private SharedPreferencesHandler sharedPreferencesHandler;
@@ -47,8 +46,8 @@ public class ProfileManagerActivity extends AppCompatActivity {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
         sharedPreferencesHandler = ((StrawApplication)getApplication()).getSharedPreferencesHandler();
         if(sharedPreferences.contains("tokenGCM")){
-            Manager man =sharedPreferencesHandler.getCurrentManager();
-            String newToken=sharedPreferences.getString("tokenGCM","Error");
+            Manager man = sharedPreferencesHandler.getCurrentManager();
+            String newToken = sharedPreferences.getString("tokenGCM","Error");
             if(!man.getTokenGCM().equals(newToken) && !newToken.equals("Error")){
                 DatabaseUtils databaseUtils =((StrawApplication)getApplication()).getDatabaseUtils();
                 databaseUtils.updateToken(man.getEmail(),newToken,DatabaseUtils.MANAGER);
@@ -92,6 +91,7 @@ public class ProfileManagerActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), DisplayReservationsActivity.class);
+                intent.putExtra(DisplayReservationsActivity.PAST_RESERVATIONS, false);
                 startActivity(intent);
             }
         });
@@ -104,6 +104,16 @@ public class ProfileManagerActivity extends AppCompatActivity {
                 startActivity(i);
             }
         });*/
+
+        this.pastReservationsLink.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), DisplayReservationsActivity.class);
+                intent.putExtra(DisplayReservationsActivity.PAST_RESERVATIONS, true);
+                startActivity(intent);
+            }
+        });
+
         log_out.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -125,8 +135,9 @@ public class ProfileManagerActivity extends AppCompatActivity {
         addr=(TextView)findViewById(R.id.pref_t_textView);
         seats=(TextView)findViewById(R.id.seats_editText);
         edit_button=(Button)findViewById(R.id.edit_button);
-        this.menu_link = (TextView)findViewById(R.id.reservation_history);
-        this.reservations_link = (TextView)findViewById(R.id.review_history);
+        this.menu_link = (TextView)findViewById(R.id.menu_link);
+        this.reservations_link = (TextView)findViewById(R.id.reservation_history);
+        this.pastReservationsLink = (TextView)findViewById(R.id.past_reservation_link);
         offerts_link=(TextView)findViewById(R.id.offers_link_textView);
         log_out=(TextView)findViewById(R.id.log_out);
     }

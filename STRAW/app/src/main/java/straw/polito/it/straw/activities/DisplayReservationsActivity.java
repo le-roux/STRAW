@@ -1,6 +1,7 @@
 package straw.polito.it.straw.activities;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ListView;
@@ -19,11 +20,17 @@ public class DisplayReservationsActivity extends AppCompatActivity implements Ba
     private ListView reservationList_View;
     private ArrayList<Reservation> reservationList;
     private Manager manager;
+    private boolean pastReservations = false;
+
+    public static final String PAST_RESERVATIONS = "pastReservations";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_reservations);
+        Intent intent = getIntent();
+
+        this.pastReservations = intent.getBooleanExtra(PAST_RESERVATIONS, false);
 
         this.reservationList = new ArrayList<>();
 
@@ -37,7 +44,10 @@ public class DisplayReservationsActivity extends AppCompatActivity implements Ba
         dialog.setMessage(this.getString(R.string.RetrievingReservations));
         dialog.setIndeterminate(true);
         dialog.show();
-        application.getDatabaseUtils().retrieveRestaurantReservations(this.manager.getRes_name(), adapter, dialog);
+        if (this.pastReservations)
+            application.getDatabaseUtils().retrieveRestaurantPastReservations(this.manager.getRes_name(), adapter, dialog);
+        else
+            application.getDatabaseUtils().retrieveRestaurantReservations(this.manager.getRes_name(), adapter, dialog);
     }
 
     @Override

@@ -73,14 +73,13 @@ public class DatabaseUtils {
     public static final String RESTAURANT_RESERVATIONS = "restaurantReservations";
     public static final String RESTAURANT_RESERVATIONS_PASSED = "restaurantReservationsPassed";
     public static final String RESTAURANT_RESERVATIONS_NB = "restaurantReservationsNumber";
+    public static final String RESTAURANT_RESERVATIONS_PASSED_NB = "restaurantPastReservationsNb";
     public static final String RESTAURANTS = "restaurants";
     public static final String NAMECHECK = "restaurantsName";
     public static final String PLATES = "plates";
     public static final String DRINKS = "drinks";
     public static final String REVIEWS = "reviews";
     public static final String FRIENDS = "friends";
-
-    public static final String RESERVATION_NB = "reservationNb";
 
     /**
      * A simple constructor, invoked in StrawApplication.onCreate()
@@ -698,12 +697,20 @@ public class DatabaseUtils {
                             if (params[2].equals(SharedPreferencesHandler.MANAGER)) {
                                 Manager manager = sharedPreferencesHandler.getCurrentManager();
                                 saveManagerProfile(manager, uid, params[1], true, dialog);
-                                Firebase ref = firebase.child(RESTAURANT_RESERVATIONS_NB).child(manager.getRes_name()).child(RESERVATION_NB);
+                                Firebase ref = firebase.child(RESTAURANT_RESERVATIONS_NB).child(manager.getRes_name());
                                 ref.setValue(0, new Firebase.CompletionListener() {
                                     @Override
                                     public void onComplete(FirebaseError firebaseError, Firebase firebase) {
                                         if (firebaseError != null)
                                             Logger.d("reservation nb creation error : " + firebaseError.getMessage());
+                                    }
+                                });
+                                Firebase ref2 = firebase.child(RESTAURANT_RESERVATIONS_PASSED_NB).child(manager.getRes_name());
+                                ref2.setValue(0, new Firebase.CompletionListener() {
+                                    @Override
+                                    public void onComplete(FirebaseError firebaseError, Firebase firebase) {
+                                        if (firebaseError != null)
+                                            Logger.d("past reservation nb creation error : " + firebaseError.getMessage());
                                     }
                                 });
                             } else {
@@ -1456,12 +1463,12 @@ public class DatabaseUtils {
                          */
                         Firebase ref = firebase.child(RESTAURANT_RESERVATIONS).child(params[0].getRestaurant());
                         ref.push().setValue(id);
-                        ref = firebase.child(RESTAURANT_RESERVATIONS_NB).child(params[0].getRestaurant()).child(RESERVATION_NB);
+                        ref = firebase.child(RESTAURANT_RESERVATIONS_NB).child(params[0].getRestaurant());
                         ref.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 int reservationNb = dataSnapshot.getValue(Integer.class);
-                                Firebase tmp = firebase.child(RESTAURANT_RESERVATIONS_NB).child(params[0].getRestaurant()).child(RESERVATION_NB);
+                                Firebase tmp = firebase.child(RESTAURANT_RESERVATIONS_NB).child(params[0].getRestaurant());
                                 reservationNb++;
                                 tmp.setValue(reservationNb);
                             }
@@ -1524,7 +1531,12 @@ public class DatabaseUtils {
      * @return : An ArrayList of Reservation or null if it's not possible to retrieve proper data.
      */
     public void retrieveRestaurantReservations(String restaurantName, ReservationAdapterManager adapter, ProgressDialog dialog) {
-        RetrieveRestaurantReservationsAsyncTask task = new RetrieveRestaurantReservationsAsyncTask(restaurantName, dialog);
+        RetrieveRestaurantReservationsAsyncTask task = new RetrieveRestaurantReservationsAsyncTask(restaurantName, dialog, false);
+        task.execute(adapter);
+    }
+
+    public void retrieveRestaurantPastReservations(String restaurantName, ReservationAdapterManager adapter, ProgressDialog dialog) {
+        RetrieveRestaurantReservationsAsyncTask task = new RetrieveRestaurantReservationsAsyncTask(restaurantName, dialog, true);
         task.execute(adapter);
     }
 
@@ -1532,17 +1544,24 @@ public class DatabaseUtils {
 
         private String restaurantName;
         private ProgressDialog dialog;
+        private boolean pastReservations;
 
-        public RetrieveRestaurantReservationsAsyncTask(String restaurantName, ProgressDialog dialog) {
+        public RetrieveRestaurantReservationsAsyncTask(String restaurantName, ProgressDialog dialog, boolean pastReservations) {
             this.restaurantName = restaurantName;
             this.dialog = dialog;
+            this.pastReservations = pastReservations;
         }
 
         @Override
         protected Void doInBackground(final ReservationAdapterManager... params) {
             params[0].getReservationList().clear();
             params[0].notifyDataSetChanged();
-            Firebase ref = firebase.child(RESTAURANT_RESERVATIONS_NB).child(this.restaurantName).child(RESERVATION_NB);
+            Firebase ref;
+            if (this.pastReservations)
+                ref = firebase.child(RESTAURANT_RESERVATIONS_PASSED_NB);
+            else
+                ref = firebase.child(RESTAURANT_RESERVATIONS_NB);
+            ref = ref.child(this.restaurantName);
             ref.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -1552,7 +1571,12 @@ public class DatabaseUtils {
                             dialog.dismiss();
                         Toast.makeText(context, R.string.NoReservation, Toast.LENGTH_LONG).show();
                     } else {
-                        Firebase tmp = firebase.child(RESTAURANT_RESERVATIONS).child(restaurantName);
+                        Firebase tmp;
+                        if (pastReservations)
+                            tmp = firebase.child(RESTAURANT_RESERVATIONS_PASSED);
+                        else
+                            tmp = firebase.child(RESTAURANT_RESERVATIONS);
+                        tmp = tmp.child(restaurantName);
                         tmp.addChildEventListener(new ChildEventListener() {
                             @Override
                             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
@@ -1565,19 +1589,50 @@ public class DatabaseUtils {
                                         Reservation reservation = dataSnapshot.getValue(Reservation.class);
                                         //Check if the reservation is passed or not
                                         GregorianCalendar calendar = new GregorianCalendar();
-                                        if (reservation.getCalendar().before(calendar)){
+                                        if (reservation.getCalendar().before(calendar) && !pastReservations){
                                             /*Reservation passed --> update its status and move it
                                               to the list of past reservations
                                              */
                                             reservation.setStatus(Reservation.PASSED);
                                             updateReservationStatus(reservationId, Reservation.PASSED);
-                                            // TODO : reduce resNb in the database
                                             Firebase ref2 = firebase.child(RESTAURANT_RESERVATIONS).child(restaurantName);
                                             ref2.child(key).setValue(null, new Firebase.CompletionListener() {
                                                 @Override
-                                                public void onComplete(FirebaseError firebaseError, Firebase firebaseRef) {
+                                                public void onComplete(FirebaseError firebaseError, final Firebase firebaseRef) {
                                                     Firebase ref3 = firebase.child(RESTAURANT_RESERVATIONS_PASSED).child(restaurantName);
-                                                    ref3.push().setValue(reservationId);
+                                                    ref3.push().setValue(reservationId, new Firebase.CompletionListener() {
+                                                        @Override
+                                                        public void onComplete(FirebaseError firebaseError, Firebase firebaseRef) {
+                                                            final Firebase ref4 = firebase.child(RESTAURANT_RESERVATIONS_PASSED_NB).child(restaurantName);
+                                                            ref4.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                                @Override
+                                                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                                                    int reservationNb = dataSnapshot.getValue(Integer.class);
+                                                                    reservationNb++;
+                                                                    ref4.setValue(reservationNb);
+                                                                }
+
+                                                                @Override
+                                                                public void onCancelled(FirebaseError firebaseError) {
+
+                                                                }
+                                                            });
+                                                            final Firebase ref5 = firebase.child(RESTAURANT_RESERVATIONS_NB).child(restaurantName);
+                                                            ref5.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                                @Override
+                                                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                                                    int reservationNb = dataSnapshot.getValue(Integer.class);
+                                                                    reservationNb--;
+                                                                    ref5.setValue(reservationNb);
+                                                                }
+
+                                                                @Override
+                                                                public void onCancelled(FirebaseError firebaseError) {
+
+                                                                }
+                                                            });
+                                                        }
+                                                    });
                                                 }
                                             });
                                         } else { // Reservation is not passed
