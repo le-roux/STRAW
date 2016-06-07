@@ -1562,11 +1562,15 @@ public class DatabaseUtils {
                                     @Override
                                     public void onDataChange(DataSnapshot dataSnapshot) {
                                         Reservation reservation = dataSnapshot.getValue(Reservation.class);
-                                        //Check if the reservation is not passed
+                                        //Check if the reservation is passed or not
                                         GregorianCalendar calendar = new GregorianCalendar();
                                         if (reservation.getCalendar().before(calendar)){
+                                            /*Reservation passed --> update its status and move it
+                                              to the list of past reservations
+                                             */
                                             reservation.setStatus(Reservation.PASSED);
                                             updateReservationStatus(reservationId, Reservation.PASSED);
+                                            // TODO : reduce resNb in the database
                                             Firebase ref2 = firebase.child(RESTAURANT_RESERVATIONS).child(restaurantName);
                                             ref2.child(key).setValue(null, new Firebase.CompletionListener() {
                                                 @Override
@@ -1575,7 +1579,7 @@ public class DatabaseUtils {
                                                     ref3.push().setValue(reservationId);
                                                 }
                                             });
-                                        } else {
+                                        } else { // Reservation is not passed
                                             params[0].getReservationList().add(reservation);
                                             params[0].notifyDataSetChanged();
                                             if (dialog != null)
@@ -1646,17 +1650,9 @@ public class DatabaseUtils {
                     ref.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            NotificationCompat.Builder builder =
-                                    new NotificationCompat.Builder(context)
-                                    .setSmallIcon(R.drawable.clock)
-                                    .setContentTitle(context.getString(R.string.ReservationUpdated))
-                                    .setContentText("");
-
                             Reservation reservation = dataSnapshot.getValue(Reservation.class);
                             params[0].getReservationList().add(reservation);
                             params[0].notifyDataSetChanged();
-                            NotificationManager notificationManager = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
-                            notificationManager.notify(1, builder.build());
                         }
 
                         @Override
