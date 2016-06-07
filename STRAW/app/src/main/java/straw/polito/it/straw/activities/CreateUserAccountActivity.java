@@ -13,6 +13,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -73,6 +74,10 @@ public class CreateUserAccountActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_user);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar); // Attaching the layout to the toolbar object
+        toolbar.setTitle("CREATE USER ACCOUNT");
+        setSupportActionBar(toolbar);
+
         sharedPreferencesHandler = ((StrawApplication)getApplication()).getSharedPreferencesHandler();
 
         StrawApplication application = (StrawApplication)getApplication();

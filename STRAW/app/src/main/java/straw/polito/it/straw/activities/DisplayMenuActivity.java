@@ -3,6 +3,7 @@ package straw.polito.it.straw.activities;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.widget.ExpandableListView;
 
 import org.json.JSONArray;
@@ -31,7 +32,9 @@ public class DisplayMenuActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_menu);
-
+        Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar); // Attaching the layout to the toolbar object
+        toolbar.setTitle("DISPLAY  MENU");
+        setSupportActionBar(toolbar);
         this.application = (StrawApplication)getApplication();
 
         this.context = this;

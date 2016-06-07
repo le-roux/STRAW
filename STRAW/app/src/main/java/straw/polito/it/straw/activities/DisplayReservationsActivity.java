@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.widget.ListView;
 
 import org.json.JSONArray;
@@ -32,6 +33,9 @@ public class DisplayReservationsActivity extends AppCompatActivity implements Ba
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_reservations);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar); // Attaching the layout to the toolbar object
+        toolbar.setTitle("DISPLAY  RESERVATIONS");
+        setSupportActionBar(toolbar);
 
         this.reservationList = new ArrayList<>();
 

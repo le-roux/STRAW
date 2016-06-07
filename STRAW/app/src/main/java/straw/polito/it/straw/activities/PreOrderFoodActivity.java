@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ExpandableListView;
@@ -45,6 +46,9 @@ public class PreOrderFoodActivity extends AppCompatActivity implements PriceCont
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pre_order_food);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar); // Attaching the layout to the toolbar object
+        toolbar.setTitle("PRE-ORDER  FOOD");
+        setSupportActionBar(toolbar);
         Intent intent = getIntent();
         if(intent!=null) {
             if(intent.getStringExtra(Reservation.RESERVATION)!=null) {

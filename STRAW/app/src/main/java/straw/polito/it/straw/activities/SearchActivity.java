@@ -3,6 +3,7 @@ package straw.polito.it.straw.activities;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 
@@ -18,6 +19,9 @@ public class SearchActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar); // Attaching the layout to the toolbar object
+        toolbar.setTitle("SEARCH OPTIONS");
+        setSupportActionBar(toolbar);
 
         this.button_edit = (Button)findViewById(R.id.profileButton);
         button_edit.setOnClickListener(new View.OnClickListener() {
