@@ -71,6 +71,7 @@ public class DatabaseUtils {
     public static final String USER = "user";
     public static final String RESERVATIONS = "reservations";
     public static final String RESTAURANT_RESERVATIONS = "restaurantReservations";
+    public static final String RESTAURANT_RESERVATIONS_PASSED = "restaurantReservationsPassed";
     public static final String RESTAURANT_RESERVATIONS_NB = "restaurantReservationsNumber";
     public static final String RESTAURANTS = "restaurants";
     public static final String NAMECHECK = "restaurantsName";
@@ -1554,6 +1555,7 @@ public class DatabaseUtils {
                         tmp.addChildEventListener(new ChildEventListener() {
                             @Override
                             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                                final String key = dataSnapshot.getKey();
                                 final String reservationId = dataSnapshot.getValue(String.class);
                                 Firebase ref = firebase.child(RESERVATIONS).child(reservationId);
                                 ref.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -1565,6 +1567,14 @@ public class DatabaseUtils {
                                         if (reservation.getCalendar().before(calendar)){
                                             reservation.setStatus(Reservation.PASSED);
                                             updateReservationStatus(reservationId, Reservation.PASSED);
+                                            Firebase ref2 = firebase.child(RESTAURANT_RESERVATIONS).child(restaurantName);
+                                            ref2.child(key).setValue(null, new Firebase.CompletionListener() {
+                                                @Override
+                                                public void onComplete(FirebaseError firebaseError, Firebase firebaseRef) {
+                                                    Firebase ref3 = firebase.child(RESTAURANT_RESERVATIONS_PASSED).child(restaurantName);
+                                                    ref3.push().setValue(reservationId);
+                                                }
+                                            });
                                         } else {
                                             params[0].getReservationList().add(reservation);
                                             params[0].notifyDataSetChanged();
