@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,22 +9,16 @@
     tools:context="straw.polito.it.straw.activities.QuickSearchActivity">
 
     <android.support.design.widget.AppBarLayout
-        android:layout_width="match_parent"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:id="@+id/addBar"
         android:theme="@style/AppTheme.AppBarOverlay">
-
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
-
+        <include
+            android:id="@+id/tool_bar"
+            layout="@layout/tool_bar"/>
     </android.support.design.widget.AppBarLayout>
 
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingBottom="@dimen/activity_vertical_margin"
@@ -68,9 +63,8 @@
             <ImageView
                 android:id="@+id/mapIcon"
                 android:layout_width="@dimen/Icon_size_horizontal_big"
-                android:layout_height="0dp"
+                android:layout_height="@dimen/Icon_size_vertical_medium"
                 android:focusable="false"
-                android:layout_alignParentTop="true"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true" />
         </RelativeLayout>
@@ -145,15 +139,19 @@
         </RelativeLayout>
 
         <RelativeLayout
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_marginLeft="5dp"
+            android:layout_marginStart="@dimen/padding_small"
+            android:layout_marginLeft="@dimen/padding_small"
             android:id="@+id/id_relativeLayoutQuickSearch2"
             android:background="@drawable/customborder"
-            android:orientation="vertical" android:padding="20dp"
-            android:layout_alignTop="@+id/id_relativeLayoutQuickSearch"
-            android:layout_toRightOf="@+id/id_relativeLayoutQuickSearch"
-            android:layout_toEndOf="@+id/id_relativeLayoutQuickSearch">
+            android:orientation="vertical"
+            android:padding="@dimen/padding"
+            android:layout_alignTop="@id/id_relativeLayoutQuickSearch"
+            android:layout_toRightOf="@id/id_relativeLayoutQuickSearch"
+            android:layout_toEndOf="@id/id_relativeLayoutQuickSearch"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true">
 
             <ListView
                 android:id="@+id/restaurant_list"

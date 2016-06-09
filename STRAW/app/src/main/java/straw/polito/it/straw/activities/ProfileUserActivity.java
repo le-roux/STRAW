@@ -118,45 +118,39 @@ public class ProfileUserActivity extends AppCompatActivity implements UserContai
     }
 
     private void initialize() {
-        photo=(ImageView)findViewById(R.id.photo_imageView);
-        email=(TextView)findViewById(R.id.email_textView);
-        user_info=(TextView)findViewById(R.id.user_textView);
-        diet=(TextView)findViewById(R.id.diet_textView);
-        pref_t=(TextView)findViewById(R.id.pref_t_textView);
-        edit_profile=(Button)findViewById(R.id.edit_button);
-        res_h=(TextView)findViewById(R.id.reservation_history);
-        rev_h=(TextView)findViewById(R.id.review_history);
-        friends=(TextView)findViewById(R.id.list_friends);
-        log_out=(TextView)findViewById(R.id.log_out);
+        photo = (ImageView)findViewById(R.id.photo_imageView);
+        email = (TextView)findViewById(R.id.email_textView);
+        user_info = (TextView)findViewById(R.id.user_textView);
+        diet = (TextView)findViewById(R.id.diet_textView);
+        pref_t = (TextView)findViewById(R.id.pref_t_textView);
+        edit_profile = (Button)findViewById(R.id.edit_button);
+        res_h = (TextView)findViewById(R.id.reservation_history);
+        rev_h = (TextView)findViewById(R.id.review_history);
+        friends = (TextView)findViewById(R.id.list_friends);
+        log_out = (TextView)findViewById(R.id.log_out);
     }
     private void loadPrevInfo(User user) {
         ImageManager.setImage(this, photo, user.getImage());
 
-        StringBuilder emailBuilder =new StringBuilder();
-        emailBuilder.append(getString(R.string.email))
-                .append(" : ")
-                .append(user.getEmail());
-        email.setText(emailBuilder.toString());
+        String mail = getString(R.string.email) + " : " + user.getEmail();
+        email.setText(mail);
 
-        StringBuilder infoBuilder = new StringBuilder();
-        infoBuilder.append(getString(R.string.u_t))
-                .append(" : ")
-                .append(user.getType())
-                .append(" , ")
-                .append(user.getUniversity());
-        user_info.setText(infoBuilder.toString());
+        String info = getString(R.string.u_t)
+                + " : "
+                + user.getType()
+                + " , "
+                + user.getUniversity();
+        user_info.setText(info);
 
-        StringBuilder dietBuilder = new StringBuilder();
-        dietBuilder.append(getString(R.string.u_d))
-                .append(" : ")
-                .append(user.getDiet());
-        diet.setText(infoBuilder.toString());
+        String dietText = getString(R.string.u_d)
+                + " : "
+                + user.getDiet();
+        diet.setText(dietText);
 
-        StringBuilder prefBuilder = new StringBuilder();
-        prefBuilder.append(getString(R.string.p_t))
-                .append(" : ")
-                .append(TimerDisplay.getTime(this.user.getPrefTimeHour(), this.user.getPrefTimeMinutes(), DateFormat.is24HourFormat(this)));
-        pref_t.setText(prefBuilder.toString());
+        String pref =  getString(R.string.p_t)
+                + " : "
+                + TimerDisplay.getTime(this.user.getPrefTimeHour(), this.user.getPrefTimeMinutes(), DateFormat.is24HourFormat(this));
+        pref_t.setText(pref);
     }
 
     @Override

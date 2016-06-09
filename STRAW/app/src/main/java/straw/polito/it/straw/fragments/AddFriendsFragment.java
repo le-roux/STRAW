@@ -33,9 +33,6 @@ public class AddFriendsFragment extends Fragment {
         this.container = (UserContainer)getActivity();
     }
 
-    private void setSupportActionBar(Toolbar toolbar) {
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
         /**
