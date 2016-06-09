@@ -7,7 +7,6 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -42,7 +41,7 @@ public class SearchDetailActivity extends AppCompatActivity {
     private double latitude;
     private double longitude;
 
-    private static int REQ_CODE_REV=1;
+    private static int REQ_CODE_REV = 1;
 
     public static final String RESTAURANT = "Restaurant";
 
@@ -55,10 +54,11 @@ public class SearchDetailActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         if (savedInstanceState == null)
             man = new Manager(getIntent().getExtras().getString(RESTAURANT));
-        else
+        else // The activity is restarting
             this.man = new Manager(savedInstanceState.getString(RESTAURANT));
         initialize();
 
+        // Prepare the elements to display
         name.setText(man.getRes_name());
         StringBuilder builder = new StringBuilder();
         builder.append(this.man.getMin_price())
@@ -106,9 +106,7 @@ public class SearchDetailActivity extends AppCompatActivity {
             }
         };
 
-        /**
-         * Acquire the current location.
-         */
+        // Acquire the current location.
         try {
             this.locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
         } catch (SecurityException e) {
@@ -116,23 +114,27 @@ public class SearchDetailActivity extends AppCompatActivity {
     }
 
     private void setListeners() {
+        // Open the menu of the restaurant
         menu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(getBaseContext(),DisplayMenuActivity.class);
-                i.putExtra("active",false);
+                Intent i = new Intent(getBaseContext(), DisplayMenuActivity.class);
                 i.putExtra(RESTAURANT, man.toJSONObject());
                 startActivity(i);
             }
         });
+
+        // Open the page to book a table in the restaurant
         book.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(getBaseContext(),BookTableActivity.class);
+                Intent i = new Intent(getBaseContext(), BookTableActivity.class);
                 i.putExtra(BookTableActivity.RESTAURANT, man.toJSONObject());
                 startActivity(i);
             }
         });
+
+        // Open the page to add a review
         add_rev.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -141,6 +143,8 @@ public class SearchDetailActivity extends AppCompatActivity {
                 startActivityForResult(i,REQ_CODE_REV);
             }
         });
+
+        // Open Google Maps and show the route from current location to the restaurant
         nav.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -152,14 +156,14 @@ public class SearchDetailActivity extends AppCompatActivity {
     }
 
     private void initialize() {
-        img=(ImageView)findViewById(R.id.img);
-        name=(TextView)findViewById(R.id.name);
-        price=(TextView)findViewById(R.id.price);
-        menu=(TextView)findViewById(R.id.menu);
-        book=(TextView)findViewById(R.id.booking);
-        add_rev=(TextView)findViewById(R.id.add_review);
-        review = (ListView) findViewById(R.id.reviews);
-        nav = (TextView)findViewById(R.id.navigate);
+        this.img = (ImageView)findViewById(R.id.img);
+        this.name = (TextView)findViewById(R.id.name);
+        this.price = (TextView)findViewById(R.id.price);
+        this.menu = (TextView)findViewById(R.id.menu);
+        this.book = (TextView)findViewById(R.id.booking);
+        this.add_rev = (TextView)findViewById(R.id.add_review);
+        this.review = (ListView) findViewById(R.id.reviews);
+        this.nav = (TextView)findViewById(R.id.navigate);
         this.ratingBar = (RatingBar)findViewById(R.id.ratingBar);
     }
 

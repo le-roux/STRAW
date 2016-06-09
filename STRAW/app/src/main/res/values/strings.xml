@@ -58,6 +58,7 @@
     <string name="kebap">Kebap</string>
     <string name="chinese">Chinese</string>
     <string name="other">Other</string>
+    <string name="PastReservations">- Past reservations</string>
 
 
     <!--Strings for the menu part -->
@@ -138,6 +139,7 @@
     <string name="map">Map</string>
     <string name="list">List</string>
     <string name="All">All</string>
+    <string name="FoodType">Type of food:</string>
 
     <!--Strings for the user part -->
     <string name="u_t">User Type</string>

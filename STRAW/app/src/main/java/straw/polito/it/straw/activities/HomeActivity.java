@@ -83,7 +83,6 @@ public class HomeActivity extends AppCompatActivity {
                 dialog.setMessage(getResources().getString(R.string.log_in));
                 dialog.setCancelable(false);
                 dialog.show();
-
                 // If the remember checkbox is ticked, save the data in the internal memory
                 if(remember.isChecked()){
                     JSONObject jo = new JSONObject();

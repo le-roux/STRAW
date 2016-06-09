@@ -15,11 +15,9 @@ public class Review {
 
     public static final String REVIEW = "review";
 
+    //Necessary for firebase to build instances of this class
     public Review() {
-        this.user = "";
-        this.restaurant="";
-        this.rate = 0;
-        this.description = "";
+        this("",0,"","");
     }
 
     public Review(String user,float rate, String description,String restaurant) {
@@ -31,11 +29,11 @@ public class Review {
 
     public Review(String review){
         try {
-            JSONObject jo=new JSONObject(review);
-            user=jo.get("user").toString();
-            restaurant=jo.get("restaurant").toString();
-            rate=Float.valueOf(String.valueOf(jo.get("rate")));
-            description=jo.getString("desc");
+            JSONObject jo = new JSONObject(review);
+            user = jo.get("user").toString();
+            restaurant = jo.get("restaurant").toString();
+            rate = Float.valueOf(String.valueOf(jo.get("rate")));
+            description = jo.getString("desc");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -43,17 +41,17 @@ public class Review {
 
     public Review(JSONObject jo){
         try {
-            user=jo.get("user").toString();
-            restaurant=jo.get("restaurant").toString();
-            rate=Float.valueOf(String.valueOf(jo.get("rate")));
-            description=jo.getString("desc");
+            user = jo.get("user").toString();
+            restaurant = jo.get("restaurant").toString();
+            rate = Float.valueOf(String.valueOf(jo.get("rate")));
+            description = jo.getString("desc");
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
     @Override
     public String toString() {
-        JSONObject jo =new JSONObject();
+        JSONObject jo = new JSONObject();
         try {
             jo.put("user",user);
             jo.put("rate",rate);

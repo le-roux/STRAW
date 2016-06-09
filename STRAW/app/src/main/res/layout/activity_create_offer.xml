@@ -45,22 +45,42 @@
             android:layout_height="0dp"
             android:layout_centerInParent="true"/>
 
-        <Button
-            android:text="@string/finish"
-            android:id="@+id/finish_button"
-            android:layout_width="0dp"
+        <LinearLayout
+            android:id="@+id/buttonPanel"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="horizontal"
             android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"
-            android:layout_toLeftOf="@id/center"
-            android:layout_margin="@dimen/activity_horizontal_margin"
-            android:background="@drawable/customborder_buttons" />
+            android:layout_margin="@dimen/activity_horizontal_margin">
+
+            <Button
+                android:text="@string/finish"
+                android:id="@+id/finish_button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/customborder_buttons"
+                android:layout_weight="1"
+                android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                android:layout_marginRight="@dimen/activity_horizontal_margin"/>
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/returnT"
+                android:id="@+id/return_button"
+                android:background="@drawable/customborder_buttons"
+                android:layout_weight="1"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_marginLeft="@dimen/activity_horizontal_margin"/>
+        </LinearLayout>
+
+
 
         <ListView
             android:id="@+id/food_listView"
             android:layout_width="fill_parent"
             android:layout_height="0dp"
-            android:layout_above="@id/finish_button"
+            android:layout_above="@id/buttonPanel"
             android:paddingTop="@dimen/padding_small"
             android:background="@color/background"
             android:layout_below="@+id/textView2"
@@ -81,7 +101,9 @@
             android:gravity="center"
             android:background="@drawable/customborder_dark"
             android:layout_alignRight="@+id/food_listView"
-            android:layout_alignEnd="@+id/food_listView" />
+            android:layout_alignEnd="@+id/food_listView"
+            android:layout_marginEnd="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"/>
 
         <ListView
             android:layout_width="wrap_content"
@@ -92,7 +114,7 @@
             android:layout_alignStart="@+id/center"
             android:background="@color/background"
             android:choiceMode="singleChoice"
-            android:layout_above="@+id/finish_button" />
+            android:layout_above="@+id/buttonPanel" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -105,17 +127,9 @@
             android:gravity="center"
             android:background="@drawable/customborder_dark"
             android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true" />
-
-        <Button
-            android:layout_width="150sp"
-            android:layout_height="wrap_content"
-            android:text="@string/returnT"
-            android:id="@+id/return_button"
-            android:layout_alignTop="@+id/finish_button"
-            android:layout_toRightOf="@+id/finish_button"
-            android:layout_toEndOf="@+id/finish_button"
-            android:background="@drawable/customborder_buttons"/>
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin" />
 
     </RelativeLayout>
 
