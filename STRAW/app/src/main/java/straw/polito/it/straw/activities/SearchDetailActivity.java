@@ -32,6 +32,7 @@ public class SearchDetailActivity extends AppCompatActivity {
     private ImageView img;
     private ListView review;
     private RatingBar ratingBar;
+    private TextView address;
     private Manager man;
 
 
@@ -63,8 +64,8 @@ public class SearchDetailActivity extends AppCompatActivity {
                 .append(this.man.getMax_price())
                 .append(" €");
         price.setText(builder.toString());
-
         this.ratingBar.setRating(this.man.getRate());
+        this.address.setText(this.man.getAddress());
 
         review.setAdapter(new ReviewAdapter(getBaseContext(),man.getReviews(),false));
 
@@ -162,6 +163,7 @@ public class SearchDetailActivity extends AppCompatActivity {
         this.review = (ListView) findViewById(R.id.reviews);
         this.nav = (TextView)findViewById(R.id.navigate);
         this.ratingBar = (RatingBar)findViewById(R.id.ratingBar);
+        this.address = (TextView)findViewById(R.id.address);
     }
 
     @Override
