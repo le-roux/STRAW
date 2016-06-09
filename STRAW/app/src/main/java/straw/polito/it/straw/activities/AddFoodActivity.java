@@ -34,7 +34,7 @@ public abstract class AddFoodActivity extends AppCompatActivity implements Price
         super.onCreate(savedInstanceState);
         setContentView();
         Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar); // Attaching the layout to the toolbar object
-        toolbar.setTitle("ADD  FOOD");
+        setTitle(toolbar);
         setSupportActionBar(toolbar);
 
         JSONArray jsonArray;
@@ -50,6 +50,7 @@ public abstract class AddFoodActivity extends AppCompatActivity implements Price
         this.addButton = (Button)findViewById(R.id.add_button);
 
         this.menu_view.setAdapter(new FoodAdapterCheckbox(this, this.menu));
+        this.updatePrice();
 
         this.addButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,4 +82,5 @@ public abstract class AddFoodActivity extends AppCompatActivity implements Price
     protected abstract void setContentView();
     protected abstract ArrayList<Food> getMenu();
     protected abstract void setResult(Intent result);
+    protected abstract void setTitle(Toolbar toolbar);
 }

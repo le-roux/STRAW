@@ -23,6 +23,7 @@ import straw.polito.it.straw.data.Food;
 import straw.polito.it.straw.data.Menu;
 import straw.polito.it.straw.data.Reservation;
 import straw.polito.it.straw.utils.DatabaseUtils;
+import straw.polito.it.straw.utils.Logger;
 import straw.polito.it.straw.utils.PriceDisplay;
 
 public class PreOrderFoodActivity extends AppCompatActivity implements PriceContainer{
@@ -41,6 +42,7 @@ public class PreOrderFoodActivity extends AppCompatActivity implements PriceCont
 
     public static final String POSITIONS = "Positions";
     public static final String COMMAND = "Command";
+    public static final String MENU = "Menu";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +52,7 @@ public class PreOrderFoodActivity extends AppCompatActivity implements PriceCont
         toolbar.setTitle("PRE-ORDER  FOOD");
         setSupportActionBar(toolbar);
         Intent intent = getIntent();
-        if(intent!=null) {
+        if(intent != null) {
             if(intent.getStringExtra(Reservation.RESERVATION)!=null) {
                 this.reservation = Reservation.create(intent.getStringExtra(Reservation.RESERVATION));
             }
@@ -118,8 +120,12 @@ public class PreOrderFoodActivity extends AppCompatActivity implements PriceCont
         this.menu = new ArrayList[2];
         this.menu[Menu.PLATES] = new ArrayList<>();
         this.menu[Menu.DRINKS] = new ArrayList<>();
-        DatabaseUtils databaseUtils = ((StrawApplication)getApplication()).getDatabaseUtils();
-        databaseUtils.retrieveMenu(this.reservation.getRestaurant(), this.menu);
+        if (savedInstanceState == null) {
+            DatabaseUtils databaseUtils = ((StrawApplication)getApplication()).getDatabaseUtils();
+            databaseUtils.retrieveMenu(this.reservation.getRestaurant(), this.menu);
+            Logger.d("database access");
+        }
+        this.updatePrice();
     }
 
     @Override
@@ -164,17 +170,25 @@ public class PreOrderFoodActivity extends AppCompatActivity implements PriceCont
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         JSONArray commandJson = Menu.saveMenu(this.command);
+        JSONArray menuJson = Menu.saveMenu(this.menu);
         outState.putString(COMMAND, commandJson.toString());
+        outState.putString(MENU, menuJson.toString());
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         JSONArray commandJson = null;
+        JSONArray menuJson = null;
         try {
             commandJson = new JSONArray(savedInstanceState.getString(COMMAND));
         } catch (JSONException e) {
             e.printStackTrace();
+        }try {
+            menuJson = new JSONArray(savedInstanceState.getString(MENU));
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
         Menu.restoreMenu(commandJson, this.command);
+        Menu.restoreMenu(menuJson, this.menu);
     }
 }

@@ -21,11 +21,6 @@ public class AddDrinkActivity extends AddFoodActivity {
     @Override
     protected void setContentView() {
         setContentView(R.layout.activity_add_food);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar); // Attaching the layout to the toolbar object
-        toolbar.setTitle("ADD  DRINK");
-        setSupportActionBar(toolbar);
-        TextView title = (TextView)findViewById(R.id.title);
-        title.setText(R.string.Add_drink);
     }
 
     @Override
@@ -43,5 +38,10 @@ public class AddDrinkActivity extends AddFoodActivity {
     @Override
     protected void setResult(Intent result) {
         setResult(PreOrderFoodActivity.ADD_DRINK_REQUEST_CODE, result);
+    }
+
+    @Override
+    protected void setTitle(Toolbar toolbar) {
+        toolbar.setTitle(getString(R.string.Add_Drink));
     }
 }

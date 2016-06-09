@@ -257,4 +257,8 @@
     <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyCf6IoppoDUF_r3jXs9yBHdwg8LpF2ETQ4</string>
 
     <string name="LogInAndReserve">Log In And Reserve</string>
+
+    <!-- Titles -->
+    <string name="Add_Plate">ADD PLATE</string>
+    <string name="Add_Drink">ADD DRINK</string>
 </resources>
