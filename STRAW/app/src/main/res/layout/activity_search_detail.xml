@@ -30,26 +30,6 @@
                 android:layout_width="110dp"
                 android:layout_height="110dp"/>
 
-            <TextView
-                android:id="@+id/name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="name"
-                android:layout_centerVertical="true"
-                android:layout_alignLeft="@+id/ratingBar"
-                android:layout_alignStart="@+id/ratingBar" />
-
-            <TextView
-                android:id="@+id/price"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="price"
-                android:layout_alignBottom="@+id/img"
-                android:layout_alignLeft="@+id/name"
-                android:layout_alignStart="@+id/name" />
-
             <RatingBar
                 android:id="@+id/ratingBar"
                 style="?android:attr/ratingBarStyleSmall"
@@ -60,6 +40,38 @@
                 android:rating="2.5"
                 android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true" />
+
+            <TextView
+                android:id="@+id/name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="name"
+                android:layout_below="@id/ratingBar"
+                android:layout_alignLeft="@id/ratingBar"
+                android:layout_alignStart="@id/ratingBar" />
+
+            <TextView
+                android:id="@+id/price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="price"
+                android:layout_below="@id/name"
+                android:layout_alignLeft="@id/name"
+                android:layout_alignStart="@id/name" />
+
+            <TextView
+                android:id="@+id/address"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/price"
+                android:text="@string/Address"
+                android:layout_alignStart="@id/name"
+                android:layout_alignLeft="@id/name"
+                android:textAppearance="?android:attr/textAppearanceMedium"/>
+
+
 
         </RelativeLayout>
 

@@ -18,49 +18,56 @@
 
         <ImageView
             android:id="@+id/img"
-            android:layout_width="110dp"
+            android:layout_width="@dimen/imageSize"
             android:layout_height="0dp"
             android:layout_alignParentTop="true"
-            android:layout_alignBottom="@id/ratingBar"/>
+            android:layout_alignBottom="@id/infoPanel"/>
 
-        <TextView
-            android:id="@+id/name"
+        <LinearLayout
+            android:id="@+id/infoPanel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Medium Text"
+            android:orientation="vertical"
             android:layout_toEndOf="@id/img"
-            android:layout_toRightOf="@id/img"
-            android:layout_marginEnd="@dimen/activity_horizontal_margin"
-            android:layout_marginRight="@dimen/activity_horizontal_margin"
-            android:layout_marginBottom="@dimen/activity_vertical_margin"/>
+            android:layout_toRightOf="@id/img">
 
-        <TextView
-            android:id="@+id/price"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Medium Text"
-            android:layout_toEndOf="@id/img"
-            android:layout_toRightOf="@id/img"
-            android:layout_below="@id/name"
-            android:layout_marginEnd="@dimen/activity_horizontal_margin"
-            android:layout_marginRight="@dimen/activity_horizontal_margin"
-            android:layout_marginBottom="@dimen/activity_vertical_margin"/>
+            <RatingBar
+                android:id="@+id/ratingBar"
+                style="?android:attr/ratingBarStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:numStars="5"
+                android:stepSize="0.5"
+                android:rating="2.5"/>
 
-        <RatingBar
-            android:id="@+id/ratingBar"
-            style="?android:attr/ratingBarStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/price"
-            android:layout_toEndOf="@id/img"
-            android:layout_toRightOf="@id/img"
-            android:numStars="5"
-            android:stepSize="0.5"
-            android:rating="2.5"
-            android:layout_marginEnd="@dimen/activity_horizontal_margin"
-            android:layout_marginRight="@dimen/activity_horizontal_margin"/>
+            <TextView
+                android:id="@+id/name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Medium Text"
+                android:layout_marginBottom="@dimen/activity_vertical_margin"/>
+
+            <TextView
+                android:id="@+id/price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Medium Text"
+                android:layout_marginBottom="@dimen/activity_vertical_margin"/>
+
+            <TextView
+                android:id="@+id/address"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/Address"
+                android:textAppearance="?android:attr/textAppearanceMedium"/>
+
+
+        </LinearLayout>
+
+
+
     </RelativeLayout>
 
     <RelativeLayout

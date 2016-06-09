@@ -19,6 +19,7 @@ import straw.polito.it.straw.AdapterFragment;
 import straw.polito.it.straw.activities.SearchDetailActivity;
 import straw.polito.it.straw.adapter.RestaurantListAdapter;
 import straw.polito.it.straw.data.Manager;
+import straw.polito.it.straw.utils.InfoWindow;
 
 /**
  * Created by Sylvain on 27/05/2016.
@@ -77,6 +78,7 @@ public class RestaurantMapFragment implements AdapterFragment, OnMapReadyCallbac
     @Override
     public void onMapReady(GoogleMap googleMap) {
         this.mMap = googleMap;
+        this.mMap.setInfoWindowAdapter(new InfoWindow());
 
         /**
          * Set a listener to launch the SearchDetail activity for the proper restaurant
@@ -112,7 +114,7 @@ public class RestaurantMapFragment implements AdapterFragment, OnMapReadyCallbac
                 builder.append(i)
                         .append(" - ")
                         .append(manager.getRes_name());
-                MarkerOptions options = new MarkerOptions().position(position).title(builder.toString());
+                MarkerOptions options = new MarkerOptions().position(position).title(builder.toString()).snippet(String.valueOf(manager.getRate()));
                 switch (manager.getType()) {
                     case (Manager.RESTAURANT):  {
                         options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));

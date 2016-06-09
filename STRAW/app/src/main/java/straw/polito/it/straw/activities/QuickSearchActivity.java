@@ -37,6 +37,7 @@ import straw.polito.it.straw.data.User;
 import straw.polito.it.straw.fragments.RestaurantMapFragment;
 import straw.polito.it.straw.fragments.RestaurantsListFragment;
 import straw.polito.it.straw.utils.Area;
+import straw.polito.it.straw.utils.InfoWindow;
 
 
 public class QuickSearchActivity extends FragmentActivity implements RestaurantFilter{
@@ -67,6 +68,9 @@ public class QuickSearchActivity extends FragmentActivity implements RestaurantF
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quick_search);
         this.application = (StrawApplication)getApplication();
+
+        // Add this value that will be used by the markers in the map
+        InfoWindow.setContext(this);
 
         Intent intent = getIntent();
         if (intent.hasExtra(Manager.LATITUDE)) {
