@@ -11,6 +11,8 @@
     <dimen name="Medium_size">26dp</dimen>
 
     <dimen name="vertical_space">20dip</dimen>
+    <dimen name="entry_size">30dp</dimen>
+    <dimen name="home_activity_panel_width">220dp</dimen>
     
     <dimen name="fab_margin">16dp</dimen>
 

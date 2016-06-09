@@ -1,170 +1,192 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:background="@color/background"
+    android:fitsSystemWindows="true"
     tools:context="straw.polito.it.straw.activities.SearchDetailActivity">
 
-    <RelativeLayout
-        android:id="@+id/restaurantCard"
-        android:layout_width="wrap_content"
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/customborder">
+        android:id="@+id/addBar"
+        android:theme="@style/AppTheme.AppBarOverlay">
+        <include
+            android:id="@+id/tool_bar"
+            layout="@layout/tool_bar"/>
+    </android.support.design.widget.AppBarLayout>
 
-        <ImageView
-            android:id="@+id/img"
-            android:layout_width="@dimen/imageSize"
-            android:layout_height="@dimen/imageSize"
-            android:layout_alignParentTop="true"/>
-
-        <LinearLayout
-            android:id="@+id/infoPanel"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:orientation="vertical"
-            android:layout_toEndOf="@id/img"
-            android:layout_toRightOf="@id/img"
-            android:layout_alignTop="@id/img"
-            android:layout_alignBottom="@id/img">
-
-            <RatingBar
-                android:id="@+id/ratingBar"
-                style="?android:attr/ratingBarStyleSmall"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:numStars="5"
-                android:stepSize="0.5"
-                android:rating="2.5"
-                android:layout_weight="1"/>
-
-            <TextView
-                android:id="@+id/name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Medium Text"
-                android:layout_weight="1"/>
-
-            <TextView
-                android:id="@+id/price"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Medium Text"
-                android:layout_weight="1"/>
-
-            <TextView
-                android:id="@+id/address"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/Address"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:layout_weight="1"/>
-
-
-        </LinearLayout>
-
-
-
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/buttonPanel"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_alignParentTop="true"
-        android:layout_alignBottom="@id/restaurantCard"
-        android:layout_toEndOf="@id/restaurantCard"
-        android:layout_toRightOf="@id/restaurantCard"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:background="@drawable/customborder"
-        android:layout_marginLeft="5dp">
-
-        <TextView
-            android:id="@+id/center"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_centerInParent="true"/>
-
-        <TextView
-            android:id="@+id/menu"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textAlignment="center"
-            android:text="@string/menu"
-            android:background="@drawable/customborder_buttons"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentLeft="true"
-            android:layout_toStartOf="@id/center"
-            android:layout_toLeftOf="@id/center"
-            android:layout_marginBottom="@dimen/padding_small"
-            android:layout_marginEnd="@dimen/padding_small"
-            android:layout_marginRight="@dimen/padding_small"/>
-
-        <TextView
-            android:id="@+id/navigate"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="@string/on_map"
-            android:textAlignment="center"
-            android:background="@drawable/customborder_buttons"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentLeft="true"
-            android:layout_toStartOf="@id/center"
-            android:layout_toLeftOf="@id/center"
-            android:layout_below="@id/menu"
-            android:layout_marginEnd="@dimen/padding_small"
-            android:layout_marginRight="@dimen/padding_small"/>
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textAlignment="center"
-            android:text="@string/s_book"
-            android:id="@+id/booking"
-            android:background="@drawable/customborder_buttons"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_toEndOf="@id/center"
-            android:layout_toRightOf="@id/center"
-            android:layout_marginBottom="@dimen/padding_small"
-            android:layout_marginStart="@dimen/padding_small"
-            android:layout_marginLeft="@dimen/padding_small"/>
-
-        <TextView
-            android:id="@+id/add_review"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textAlignment="center"
-            android:text="@string/s_add_rv"
-            android:background="@drawable/customborder_buttons"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_toEndOf="@id/center"
-            android:layout_toRightOf="@id/center"
-            android:layout_below="@id/booking"
-            android:layout_marginStart="@dimen/padding_small"
-            android:layout_marginLeft="@dimen/padding_small"/>
-
-    </RelativeLayout>
-
-    <ListView
-        android:id="@+id/reviews"
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:background="@drawable/customborder"
-        android:layout_below="@id/restaurantCard"
-        android:layout_alignParentBottom="true"
-        android:layout_marginTop="@dimen/activity_vertical_margin"/>
+        android:layout_height="match_parent"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:background="@color/background"
+        tools:context="straw.polito.it.straw.activities.SearchDetailActivity">
 
-</RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/restaurantCard"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/customborder">
+
+            <ImageView
+                android:id="@+id/img"
+                android:layout_width="@dimen/imageSize"
+                android:layout_height="@dimen/imageSize"
+                android:layout_alignParentTop="true"/>
+
+            <LinearLayout
+                android:id="@+id/infoPanel"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:orientation="vertical"
+                android:layout_toEndOf="@id/img"
+                android:layout_toRightOf="@id/img"
+                android:layout_alignTop="@id/img"
+                android:layout_alignBottom="@id/img">
+
+                <RatingBar
+                    android:id="@+id/ratingBar"
+                    style="?android:attr/ratingBarStyleSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:numStars="5"
+                    android:stepSize="0.5"
+                    android:rating="2.5"
+                    android:layout_weight="1"/>
+
+                <TextView
+                    android:id="@+id/name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="Medium Text"
+                    android:layout_weight="1"/>
+
+                <TextView
+                    android:id="@+id/price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="Medium Text"
+                    android:layout_weight="1"/>
+
+                <TextView
+                    android:id="@+id/address"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/Address"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:layout_weight="1"/>
+
+
+            </LinearLayout>
+
+
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/buttonPanel"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignBottom="@id/restaurantCard"
+            android:layout_toEndOf="@id/restaurantCard"
+            android:layout_toRightOf="@id/restaurantCard"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/customborder"
+            android:layout_marginLeft="5dp">
+
+            <TextView
+                android:id="@+id/center"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_centerInParent="true"/>
+
+            <TextView
+                android:id="@+id/menu"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textAlignment="center"
+                android:text="@string/menu"
+                android:background="@drawable/customborder_buttons"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:layout_toStartOf="@id/center"
+                android:layout_toLeftOf="@id/center"
+                android:layout_marginBottom="@dimen/padding_small"
+                android:layout_marginEnd="@dimen/padding_small"
+                android:layout_marginRight="@dimen/padding_small"/>
+
+            <TextView
+                android:id="@+id/navigate"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/on_map"
+                android:textAlignment="center"
+                android:background="@drawable/customborder_buttons"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:layout_toStartOf="@id/center"
+                android:layout_toLeftOf="@id/center"
+                android:layout_below="@id/menu"
+                android:layout_marginEnd="@dimen/padding_small"
+                android:layout_marginRight="@dimen/padding_small"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textAlignment="center"
+                android:text="@string/s_book"
+                android:id="@+id/booking"
+                android:background="@drawable/customborder_buttons"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_toEndOf="@id/center"
+                android:layout_toRightOf="@id/center"
+                android:layout_marginBottom="@dimen/padding_small"
+                android:layout_marginStart="@dimen/padding_small"
+                android:layout_marginLeft="@dimen/padding_small"/>
+
+            <TextView
+                android:id="@+id/add_review"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textAlignment="center"
+                android:text="@string/s_add_rv"
+                android:background="@drawable/customborder_buttons"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_toEndOf="@id/center"
+                android:layout_toRightOf="@id/center"
+                android:layout_below="@id/booking"
+                android:layout_marginStart="@dimen/padding_small"
+                android:layout_marginLeft="@dimen/padding_small"/>
+
+        </RelativeLayout>
+
+        <ListView
+            android:id="@+id/reviews"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="@drawable/customborder"
+            android:layout_below="@id/restaurantCard"
+            android:layout_alignParentBottom="true"
+            android:layout_marginTop="@dimen/activity_vertical_margin"/>
+
+    </RelativeLayout>
+
+</android.support.design.widget.CoordinatorLayout>
