@@ -17,8 +17,7 @@
             android:theme="@style/AppTheme.AppBarOverlay">
             <include
                 android:id="@+id/tool_bar"
-                layout="@layout/tool_bar"
-                ></include>
+                layout="@layout/tool_bar"/>
         </android.support.design.widget.AppBarLayout>
 
         <RelativeLayout
