@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -43,6 +44,13 @@ public class ProfileManagerActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_manager);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar); // Attaching the layout to the toolbar object
+        toolbar.setTitle("PROFILE  MANAGER");
+        setSupportActionBar(toolbar);
+        mShared = PreferenceManager.getDefaultSharedPreferences(this);
+
+
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
         sharedPreferencesHandler = ((StrawApplication)getApplication()).getSharedPreferencesHandler();
         if(sharedPreferences.contains("tokenGCM")){
@@ -54,6 +62,7 @@ public class ProfileManagerActivity extends AppCompatActivity {
             }
         }
         man=sharedPreferencesHandler.getCurrentManager();
+
         initialize();
         loadPrevInfo(man);
         setListeners();

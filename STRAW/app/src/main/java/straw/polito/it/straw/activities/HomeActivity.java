@@ -11,6 +11,9 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -48,7 +51,11 @@ public class HomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        this.mShared= PreferenceManager.getDefaultSharedPreferences(this);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar); // Attaching the layout to the toolbar object
+        toolbar.setTitle("HOME");
+        setSupportActionBar(toolbar);
+        mShared= PreferenceManager.getDefaultSharedPreferences(this);
+
         initialize();
         Intent intent = new Intent(this, RegistrationIntentService.class);
         startService(intent);

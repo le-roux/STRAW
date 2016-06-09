@@ -3,6 +3,7 @@ package straw.polito.it.straw.activities;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.widget.TextView;
 
 import org.json.JSONArray;
@@ -20,6 +21,9 @@ public class AddDrinkActivity extends AddFoodActivity {
     @Override
     protected void setContentView() {
         setContentView(R.layout.activity_add_food);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar); // Attaching the layout to the toolbar object
+        toolbar.setTitle("ADD  DRINK");
+        setSupportActionBar(toolbar);
         TextView title = (TextView)findViewById(R.id.title);
         title.setText(R.string.Add_drink);
     }

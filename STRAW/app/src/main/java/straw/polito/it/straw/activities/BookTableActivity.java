@@ -4,6 +4,7 @@ import android.app.DialogFragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.format.DateFormat;
 import android.view.View;
 import android.widget.Button;
@@ -49,6 +50,9 @@ public class BookTableActivity extends AppCompatActivity implements BookTableInt
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_book_table);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar); // Attaching the layout to the toolbar object
+        toolbar.setTitle("BOOK  TABLE");
+        setSupportActionBar(toolbar);
 
         this.numberPeopleNumber = (TextView)findViewById(R.id.number_people_number);
         this.calendarButton = (Button)findViewById(R.id.calendar);

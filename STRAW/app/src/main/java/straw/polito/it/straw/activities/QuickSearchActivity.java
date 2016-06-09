@@ -9,6 +9,8 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.widget.AdapterView;
@@ -67,6 +69,9 @@ public class QuickSearchActivity extends FragmentActivity implements RestaurantF
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quick_search);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar); // Attaching the layout to the toolbar object
+        toolbar.setTitle("QUICK  SEARCH");
+        setSupportActionBar(toolbar);
         this.application = (StrawApplication)getApplication();
 
         // Add this value that will be used by the markers in the map
@@ -144,6 +149,9 @@ public class QuickSearchActivity extends FragmentActivity implements RestaurantF
         this.fragmentManager = this.getSupportFragmentManager();
         this.currentFragment = MAP;
         toggleFragment();
+    }
+
+    private void setSupportActionBar(Toolbar toolbar) {
     }
 
     public void addListenerOnSpinnerItemSelection() {
@@ -366,5 +374,6 @@ public class QuickSearchActivity extends FragmentActivity implements RestaurantF
         this.fragment.setAdapter(this.adapter);
         transaction.commit();
     }
+
 }
 

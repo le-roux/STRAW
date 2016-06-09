@@ -8,6 +8,7 @@ import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -49,8 +50,10 @@ public class SearchDetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_detail);
-
-        if (savedInstanceState == null) // First launch of the activity
+        Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar); // Attaching the layout to the toolbar object
+        toolbar.setTitle("SEARCH DETAIL");
+        setSupportActionBar(toolbar);
+        if (savedInstanceState == null)
             man = new Manager(getIntent().getExtras().getString(RESTAURANT));
         else // The activity is restarting
             this.man = new Manager(savedInstanceState.getString(RESTAURANT));

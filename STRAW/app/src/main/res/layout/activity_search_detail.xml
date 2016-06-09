@@ -1,4 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context="straw.polito.it.straw.activities.SearchDetailActivity">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/addBar"
+        android:theme="@style/AppTheme.AppBarOverlay">
+        <include
+            android:id="@+id/tool_bar"
+            layout="@layout/tool_bar"
+            ></include>
+    </android.support.design.widget.AppBarLayout>
+
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,6 +27,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:background="@color/background"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="straw.polito.it.straw.activities.SearchDetailActivity">
 
     <LinearLayout
@@ -171,3 +191,4 @@
 
     </LinearLayout>
 </RelativeLayout>
+</android.support.design.widget.CoordinatorLayout>

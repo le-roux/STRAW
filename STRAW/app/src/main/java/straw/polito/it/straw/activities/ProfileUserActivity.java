@@ -4,6 +4,7 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.format.DateFormat;
 import android.view.View;
@@ -46,6 +47,9 @@ public class ProfileUserActivity extends AppCompatActivity implements UserContai
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_user);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar); // Attaching the layout to the toolbar object
+        toolbar.setTitle("PROFILE  USER");
+        setSupportActionBar(toolbar);
         sharedPreferencesHandler = ((StrawApplication)getApplication()).getSharedPreferencesHandler();
         this.fragmentManager = getFragmentManager();
 

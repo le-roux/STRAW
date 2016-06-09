@@ -4,6 +4,7 @@ import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +31,9 @@ public class AddFriendsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.container = (UserContainer)getActivity();
+    }
+
+    private void setSupportActionBar(Toolbar toolbar) {
     }
 
     @Override
@@ -77,4 +81,5 @@ public class AddFriendsFragment extends Fragment {
 
         return this.viewGroup;
     }
+
 }
