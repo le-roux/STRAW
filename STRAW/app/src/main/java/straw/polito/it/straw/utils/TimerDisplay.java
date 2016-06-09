@@ -36,6 +36,7 @@ public class TimerDisplay extends TextView implements TimeDisplayer {
 
     @Override
     public void setTime(int hourOfDay, int minute) {
+        Logger.d("set time h = " + hourOfDay);
         this.hourOfDay = hourOfDay;
         this.minute = minute;
         updateText();

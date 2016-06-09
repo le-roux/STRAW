@@ -1,10 +1,10 @@
 package straw.polito.it.straw.adapter;
 
+import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.os.Bundle;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,34 +17,48 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 import straw.polito.it.straw.R;
+import straw.polito.it.straw.StrawApplication;
 import straw.polito.it.straw.activities.DisplayReservationsActivity;
-import straw.polito.it.straw.utils.DateDisplay;
 import straw.polito.it.straw.data.Reservation;
+import straw.polito.it.straw.utils.DatabaseUtils;
+import straw.polito.it.straw.utils.DateDisplay;
 import straw.polito.it.straw.utils.TimerDisplay;
-import straw.polito.it.straw.utils.TimePickerFragment;
 
 /**
  * Created by Sylvain on 07/04/2016.
  */
-public class ReservationAdapter extends BaseAdapter {
+public abstract class ReservationAdapter extends BaseAdapter {
 
-    private ArrayList<Reservation> reservationList;
-    private static Context context;
-    private DisplayReservationsActivity parentActivity;
-    private ImageView statusImage;
+    protected ArrayList<Reservation> reservationList;
+    protected static Context context;
+    protected Activity parentActivity;
+    protected DatabaseUtils databaseUtils;
+    protected Button acceptButton;
+    protected ImageView statusImage;
+    protected TextView place;
 
     public static final String ADAPTER = "Adapter";
+    public static final String ACCEPT_ICON = "android.resource://straw.polito.it.straw/drawable/check";
+    //Created by ?? from Noun Project
+    public static final String CANCEL_ICON = "android.resource://straw.polito.it.straw/drawable/discard";
+    //Created by Herbert Spencer from Noun Project
+    public static final String WAIT_ICON = "android.resource://straw.polito.it.straw/drawable/wait";
+    //Created by Arthur Shlain from Noun Project
 
     public ReservationAdapter (Context context) {
         this.reservationList = new ArrayList<Reservation>();
         this.context = context;
+        StrawApplication application = (StrawApplication)((Activity)context).getApplication();
+        this.databaseUtils = application.getDatabaseUtils();
     }
 
     public ReservationAdapter(Context context, ArrayList<Reservation> reservationList,
-                              DisplayReservationsActivity activity) {
+                              Activity activity) {
         this.reservationList = reservationList;
         this.context = context;
         this.parentActivity = activity;
+        StrawApplication application = (StrawApplication)((Activity)context).getApplication();
+        this.databaseUtils = application.getDatabaseUtils();
     }
 
     @Override
@@ -70,73 +84,36 @@ public class ReservationAdapter extends BaseAdapter {
     public View getView(final int position, View convertView, final ViewGroup parent) {
         if (convertView == null) {
             LayoutInflater layoutInflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = layoutInflater.inflate(R.layout.reservation, null);
+            convertView = setSpecificView(layoutInflater);
         }
 
         //Get the views of the item
         TextView numberPeople = (TextView) convertView.findViewById(R.id.number_people);
-        DateDisplay dateDisplay = (DateDisplay) convertView.findViewById(R.id.Date);
+        final DateDisplay dateDisplay = (DateDisplay) convertView.findViewById(R.id.Date);
         TimerDisplay timerDisplay = (TimerDisplay)convertView.findViewById(R.id.Timer);
         TextView plates = (TextView) convertView.findViewById(R.id.plates);
-        TextView moreOptions = (TextView) convertView.findViewById(R.id.moreOptionsLink);
+        this.acceptButton = (Button) convertView.findViewById(R.id.AcceptButton);
         this.statusImage = (ImageView)convertView.findViewById(R.id.state);
-        this.statusImage.setVisibility(View.INVISIBLE);
+        this.place = (TextView)convertView.findViewById(R.id.place);
+        setSpecificItems(convertView, position);
 
-        moreOptions.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View view) {
-                final Context context = view.getRootView().getContext();
-                AlertDialog.Builder builder = new AlertDialog.Builder(context);
-
-                builder.setTitle(context.getString(R.string.MoreOptions));
-                //When modifying this array, don't forget to modify also the following identifiers
-                final CharSequence[] options = {context.getString(R.string.Discard),
-                        context.getString(R.string.ChangeTime),
-                        context.getString(R.string.Cancel)};
-
-                final int DISCARD_RESERVATION = 0;
-                final int CHANGE_TIME = 1;
-                final int CANCEL = 2;
-
-                builder.setItems(options, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int item) {
-                        if (item == DISCARD_RESERVATION) {
-                            AlertDialog.Builder builder_refuse = new AlertDialog.Builder(context);
-                            builder_refuse.setTitle(context.getString(R.string.RefuseOrder));
-                            final CharSequence[] options = {context.getString(R.string.Yes),
-                                    context.getString(R.string.Cancel)};
-
-                            builder_refuse.setItems(options, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int item) {
-                                    if (options[item].equals(context.getString(R.string.Yes))) {
-                                        reservationList.remove(position);
-                                        ReservationAdapter.this.notifyDataSetChanged();
-                                        Toast.makeText(context, context.getString(R.string.OrderRefusedToast),
-                                                Toast.LENGTH_LONG).show();
-                                        return;
-
-                                    } else if (options[item].equals(context.getString(R.string.Cancel))) {
-                                        dialog.dismiss();
-                                    }
-                                }
-                            });
-                            builder_refuse.show();
-
-                        } else if (item == CHANGE_TIME) {
-                            showTimePickerFragmentDialog(position);
-                        } else if (item == CANCEL) {
-                            dialog.dismiss();
-                        }
-                    }
-                });
-                builder.show();
+        init(position);
+        switch(this.reservationList.get(position).getPlace()) {
+            case (Reservation.INSIDE) : {
+                this.place.setText(R.string.Inside);
+                break;
             }
-        });
+            case (Reservation.OUTSIDE) : {
+                this.place.setText(R.string.Outside);
+                break;
+            }
+            default : {
+                this.place.setText(R.string.NoPreference);
+                break;
+            }
+        }
 
-        final Button accept_button = (Button) convertView.findViewById(R.id.AcceptButton);
-        accept_button.setOnClickListener(new View.OnClickListener() {
+        acceptButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 AlertDialog.Builder builder_accept = new AlertDialog.Builder(view.getRootView().getContext());
@@ -148,12 +125,13 @@ public class ReservationAdapter extends BaseAdapter {
                     @Override
                     public void onClick(DialogInterface dialog, int item) {
                         if (options[item].equals(context.getString(R.string.Yes))) {
-                            reservationList.remove(position);
-                            //accept_button.setVisibility(View.INVISIBLE);
-                            //statusImage.setVisibility(View.VISIBLE);
+                            databaseUtils.updateReservationStatus(reservationList.get(position).getId(), Reservation.ACCEPTED);
+                            reservationList.get(position).setStatus(Reservation.ACCEPTED);
+                            setIconVisible(ACCEPT_ICON);
                             ReservationAdapter.this.notifyDataSetChanged();
                             Toast.makeText(context, context.getString(R.string.OrderAcceptedToast),
                                     Toast.LENGTH_LONG).show();
+                            databaseUtils.sendReservationNotification(reservationList.get(position).getCustomer(),context.getString(R.string.AcceptOrder),reservationList.get(position).getRestaurant());
                             return;
 
                         } else if (options[item].equals(context.getString(R.string.Cancel))) {
@@ -165,8 +143,8 @@ public class ReservationAdapter extends BaseAdapter {
             }
         });
 
-        if(this.reservationList!=null) {
-            //Fill them with appropriate values
+        if(this.reservationList != null) {
+            //Fill the view with the appropriate values
             if (position < this.reservationList.size()) {
                 Reservation reservation = this.reservationList.get(position);
                 StringBuilder builder = new StringBuilder();
@@ -182,23 +160,41 @@ public class ReservationAdapter extends BaseAdapter {
         return convertView;
     }
 
-    public static void confirm_accept(View view) {
-        //TO DO : Send notification to the customer
-    }
-    public static void confirm_refuse() {
-        //TO DO :Send notification to the customer
+    /**
+     * Change the icon/button displayed on the right of the item.
+     * @param icon : null to make the "Accept" button visible,
+     *             one value among WAIT_ICON, ACCEPT_ICON and CANCEL_ICON
+     *             otherwise.
+     */
+    public void setIconVisible(String icon) {
+        if (icon == null) {
+            this.acceptButton.setVisibility(View.VISIBLE);
+            this.statusImage.setVisibility(View.INVISIBLE);
+        } else {
+            this.statusImage.setImageURI(Uri.parse(icon));
+            this.statusImage.setVisibility(View.VISIBLE);
+            this.acceptButton.setVisibility(View.INVISIBLE);
+        }
     }
 
     /**
-     * Display a time picker on top of the current activity
-     * @param position
+     * Allow the subclasses to add other View objects (provided that they
+     * are present in the layout set).
+     * @param view : The View object of the layout of the item.
+     * @param position : The position of the current item in the reservationList.
      */
-    public void showTimePickerFragmentDialog(int position) {
-        DialogFragment fragment = new TimePickerFragment();
-        Bundle bundle = new Bundle();
-        bundle.putInt(Reservation.RESERVATION, position);
-        bundle.putBoolean(ReservationAdapter.ADAPTER, true);
-        fragment.setArguments(bundle);
-        fragment.show(this.parentActivity.getFragmentManager(), "timePicker");
-    }
+    protected abstract void setSpecificItems(View view, int position);
+
+    /**
+     * Adapt the icon/button according to the status of the reservation.
+     * @param position : The position of the current item in the reservationList.
+     */
+    public abstract void init(int position);
+
+    /**
+     * Set the desired layout for the items.
+     * @param layoutInflater : A layoutInflater used to retrieve the View object from the layout.
+     * @return : the view corresponding to the layout.
+     */
+    protected abstract View setSpecificView(LayoutInflater layoutInflater);
 }

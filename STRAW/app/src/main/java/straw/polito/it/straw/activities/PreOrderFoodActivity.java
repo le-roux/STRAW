@@ -111,6 +111,9 @@ public class PreOrderFoodActivity extends AppCompatActivity implements PriceCont
 
         FoodExpandableAdapter adapter = new FoodExpandableAdapterRemove(getApplicationContext(), this.command[Menu.PLATES], this.command[Menu.DRINKS]);
         this.listView.setAdapter(adapter);
+        for (int i = 0; i < adapter.getGroupCount(); i++) {
+            this.listView.expandGroup(i);
+        }
 
         this.menu = new ArrayList[2];
         this.menu[Menu.PLATES] = new ArrayList<>();

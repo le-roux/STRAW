@@ -1,26 +1,18 @@
 package straw.polito.it.straw.activities;
 
 import android.app.ProgressDialog;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.widget.ListView;
-
-import org.json.JSONArray;
-import org.json.JSONException;
 
 import java.util.ArrayList;
 
 import straw.polito.it.straw.BaseAdapterContainer;
 import straw.polito.it.straw.R;
 import straw.polito.it.straw.StrawApplication;
-import straw.polito.it.straw.adapter.ReservationAdapter;
-import straw.polito.it.straw.data.Drink;
-import straw.polito.it.straw.data.Food;
+import straw.polito.it.straw.adapter.ReservationAdapterManager;
 import straw.polito.it.straw.data.Manager;
-import straw.polito.it.straw.data.Plate;
 import straw.polito.it.straw.data.Reservation;
 
 public class DisplayReservationsActivity extends AppCompatActivity implements BaseAdapterContainer {
@@ -40,7 +32,7 @@ public class DisplayReservationsActivity extends AppCompatActivity implements Ba
         this.reservationList = new ArrayList<>();
 
         this.reservationList_View = (ListView)findViewById(R.id.reservations_list);
-        ReservationAdapter adapter = new ReservationAdapter(getApplicationContext(),
+        ReservationAdapterManager adapter = new ReservationAdapterManager(this,
                 this.reservationList, this);
         this.reservationList_View.setAdapter(adapter);
         StrawApplication application = (StrawApplication)getApplication();
@@ -49,7 +41,7 @@ public class DisplayReservationsActivity extends AppCompatActivity implements Ba
         dialog.setMessage(this.getString(R.string.RetrievingReservations));
         dialog.setIndeterminate(true);
         dialog.show();
-        application.getDatabaseUtils().retrieveReservations(this.manager.getRes_name(), adapter, dialog);
+        application.getDatabaseUtils().retrieveRestaurantReservations(this.manager.getRes_name(), adapter, dialog);
     }
 
     @Override
@@ -66,8 +58,8 @@ public class DisplayReservationsActivity extends AppCompatActivity implements Ba
         }
     }
 
-    public ReservationAdapter getAdapter() {
-        return (ReservationAdapter)this.reservationList_View.getAdapter();
+    public ReservationAdapterManager getAdapter() {
+        return (ReservationAdapterManager)this.reservationList_View.getAdapter();
     }
 
     /**

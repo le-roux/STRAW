@@ -1,11 +1,11 @@
 package straw.polito.it.straw.utils;
 
+import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.support.v4.app.NotificationCompat;
 import android.widget.Toast;
 
 import com.firebase.client.AuthData;
@@ -13,24 +13,40 @@ import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
+import com.firebase.client.Query;
 import com.firebase.client.ValueEventListener;
 
-import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
+import straw.polito.it.straw.CompletionActivity;
 import straw.polito.it.straw.R;
 import straw.polito.it.straw.RestaurantFilter;
 import straw.polito.it.straw.StrawApplication;
+import straw.polito.it.straw.activities.InviteFriendActivity;
 import straw.polito.it.straw.activities.ProfileManagerActivity;
 import straw.polito.it.straw.activities.SearchActivity;
+import straw.polito.it.straw.activities.SearchDetailActivity;
 import straw.polito.it.straw.adapter.FoodExpandableAdapter;
 import straw.polito.it.straw.adapter.ReservationAdapter;
+import straw.polito.it.straw.adapter.ReservationAdapterManager;
 import straw.polito.it.straw.adapter.RestaurantListAdapter;
+import straw.polito.it.straw.adapter.ReviewAdapter;
 import straw.polito.it.straw.data.Drink;
 import straw.polito.it.straw.data.Food;
+import straw.polito.it.straw.data.Friend;
 import straw.polito.it.straw.data.Manager;
 import straw.polito.it.straw.data.Menu;
 import straw.polito.it.straw.data.Plate;
@@ -44,8 +60,6 @@ import straw.polito.it.straw.data.User;
 public class DatabaseUtils {
     private Firebase firebase;
     private Context context;
-    private ConnectivityManager connectivityManager;
-    private NetworkInfo networkInfo;
     private SharedPreferencesHandler sharedPreferencesHandler;
 
     /**
@@ -55,11 +69,16 @@ public class DatabaseUtils {
     public static final String MANAGER = "manager";
     public static final String USER = "user";
     public static final String RESERVATIONS = "reservations";
+    public static final String RESTAURANT_RESERVATIONS = "restaurantReservations";
+    public static final String RESTAURANT_RESERVATIONS_NB = "restaurantReservationsNumber";
     public static final String RESTAURANTS = "restaurants";
     public static final String NAMECHECK = "restaurantsName";
     public static final String PLATES = "plates";
     public static final String DRINKS = "drinks";
     public static final String REVIEWS = "reviews";
+    public static final String FRIENDS = "friends";
+
+    public static final String RESERVATION_NB = "reservationNb";
 
     /**
      * A simple constructor, invoked in StrawApplication.onCreate()
@@ -68,8 +87,6 @@ public class DatabaseUtils {
      */
     public DatabaseUtils(Context context, SharedPreferencesHandler sharedPreferencesHandler) {
         this.context = context;
-        this.connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        this.networkInfo = connectivityManager.getActiveNetworkInfo();
         this.sharedPreferencesHandler = sharedPreferencesHandler;
         this.firebase = new Firebase(StrawApplication.FIREBASEURL);
     }
@@ -325,8 +342,19 @@ public class DatabaseUtils {
                 public void onComplete(FirebaseError firebaseError, Firebase firebase) {
                     if (firebaseError == null) {
                         /**
-                         * Everything worked well
+                         * Everything worked well : main profile succesfully stored
                          */
+                        //Store the friend list
+                        for (Friend friend : params[0].getFriends())
+                            addFriend(friend);
+                        //Store the reservations ids
+                        for (Reservation reservation : params[0].getReservations()) {
+                            saveReservationIdInCustomer(reservation.getId(), null);
+                        }
+                        //Store the reviews
+                        for (Review review : params[0].getReviews()) {
+                            saveReviewInCustomer(review, null);
+                        }
                         if (dialog != null)
                             dialog.dismiss();
                         if (changeActivity) {
@@ -351,6 +379,272 @@ public class DatabaseUtils {
         }
     }
 
+
+    public void updateToken(String uEmail, String newToken, String type ) {
+        UpdateTokenTask task = new UpdateTokenTask();
+        String[] params = new String[3];
+        params[0] = uEmail;
+        params[1] = newToken;
+        params[2] = type;
+        task.execute(params);
+    }
+    private class UpdateTokenTask extends AsyncTask<String, Void, Void> {
+
+        public UpdateTokenTask() {
+        }
+
+        @Override
+        protected Void doInBackground(final String[] params) {
+            if(params[2].equals(USER)) {
+                User u = sharedPreferencesHandler.getCurrentUser();
+                u.setTokenGCM(params[1]);
+                saveCustomerProfile(u, firebase.getAuth().getUid(), false, null);
+                sharedPreferencesHandler.storeCurrentUser(u.toString());
+            }else{
+                Manager man=sharedPreferencesHandler.getCurrentManager();
+                man.setTokenGCM(params[1]);
+                saveManagerProfile(man);
+                sharedPreferencesHandler.storeCurrentManager(man.toString());
+            }
+            return null;
+        }
+    }
+
+    public void sendFriendNotification(String email, String text, String restaurantName){
+        SendFriendNotificationTask task = new SendFriendNotificationTask();
+        String[] params = new String[3];
+        params[0] = email;
+        params[1] = text;
+        params[2] = restaurantName;
+        task.execute(params);
+    }
+
+    private class SendFriendNotificationTask extends AsyncTask<String, Void, Void> {
+
+        public SendFriendNotificationTask() {
+        }
+
+        @Override
+        protected Void doInBackground(final String[] params) {
+            Query ref = firebase.child(USER).orderByChild("email").equalTo(params[0]);
+            ref.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    final DataSnapshot it;
+                    if (dataSnapshot.getChildren().iterator().hasNext()) {
+                        it = dataSnapshot.getChildren().iterator().next();
+                        Logger.d("User " + params[0] + " token" + it.child("tokenGCM").getValue().toString());
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    URL object = new URL("https://gcm-http.googleapis.com/gcm/send");
+
+                                    HttpURLConnection con = (HttpURLConnection) object.openConnection();
+                                    con.setDoOutput(true);
+                                    con.setDoInput(true);
+                                    con.setRequestProperty("Content-Type", "application/json");
+                                    con.setRequestProperty("Authorization", "key=" + StrawApplication.serverAPIKey);
+                                    con.setRequestMethod("POST");
+
+                                    JSONObject jsonObject = new JSONObject();
+                                    jsonObject.put("to", it.child("tokenGCM").getValue().toString());
+                                    jsonObject.put("delay_while_idle", true);
+                                    JSONObject res = new JSONObject();
+                                    res.put("invitation", params[1]);
+                                    res.put(InviteFriendActivity.RESTAURANT, params[2]);
+                                    jsonObject.put("data", res);
+                                    Logger.d("Request " + jsonObject.toString());
+                                    OutputStreamWriter wr = new OutputStreamWriter(con.getOutputStream());
+                                    wr.write(jsonObject.toString());
+                                    wr.flush();
+                                    wr.close();
+
+                                    StringBuilder sb = new StringBuilder();
+                                    int HttpResult = con.getResponseCode();
+                                    if (HttpResult == HttpURLConnection.HTTP_OK) {
+                                        BufferedReader br = new BufferedReader(
+                                                new InputStreamReader(con.getInputStream(), "utf-8"));
+                                        String line = null;
+                                        while ((line = br.readLine()) != null) {
+                                            sb.append(line + "\n");
+                                        }
+                                        br.close();
+                                        Logger.d("LOL " + sb.toString());
+                                    } else {
+                                        Logger.d("LEL " + con.getResponseMessage());
+                                    }
+
+                                } catch (MalformedURLException e) {
+                                    e.printStackTrace();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }).start();
+                    }
+
+                }
+
+                @Override
+                public void onCancelled(FirebaseError firebaseError) {
+                    Toast.makeText(context, firebaseError.getMessage(), Toast.LENGTH_LONG).show();
+                }
+            });
+            return null;
+        }
+    }
+    public void sendReservationNotification(String email, String text, String restaurantName){
+        SendReservationNotificationTask task = new SendReservationNotificationTask();
+        String[] params = new String[4];
+        params[0] = email;
+        params[1] = text;
+        params[2] = restaurantName;
+        task.execute(params);
+    }
+
+    private class SendReservationNotificationTask extends AsyncTask<String, Void, Void> {
+
+        public SendReservationNotificationTask() {
+        }
+
+        @Override
+        protected Void doInBackground(final String[] params) {
+            Query ref = firebase.child(USER).orderByChild("email").equalTo(params[0]);
+            ref.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    final DataSnapshot it;
+                    if (dataSnapshot.getChildren().iterator().hasNext()) {
+                        it = dataSnapshot.getChildren().iterator().next();
+                        Logger.d("User " + params[0] + " token" + it.child("tokenGCM").getValue().toString());
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    URL object = new URL("https://gcm-http.googleapis.com/gcm/send");
+
+                                    HttpURLConnection con = (HttpURLConnection) object.openConnection();
+                                    con.setDoOutput(true);
+                                    con.setDoInput(true);
+                                    con.setRequestProperty("Content-Type", "application/json");
+                                    con.setRequestProperty("Authorization", "key=" + StrawApplication.serverAPIKey);
+                                    con.setRequestMethod("POST");
+
+                                    JSONObject jsonObject = new JSONObject();
+                                    jsonObject.put("to", it.child("tokenGCM").getValue().toString());
+                                    jsonObject.put("delay_while_idle", true);
+                                    JSONObject res = new JSONObject();
+                                    res.put("res_change", params[1]);
+                                    res.put("restaurant", params[2]);
+                                    jsonObject.put("data", res);
+                                    Logger.d("Request " + jsonObject.toString());
+                                    OutputStreamWriter wr = new OutputStreamWriter(con.getOutputStream());
+                                    wr.write(jsonObject.toString());
+                                    wr.flush();
+                                    wr.close();
+
+                                    StringBuilder sb = new StringBuilder();
+                                    int HttpResult = con.getResponseCode();
+                                    if (HttpResult == HttpURLConnection.HTTP_OK) {
+                                        BufferedReader br = new BufferedReader(
+                                                new InputStreamReader(con.getInputStream(), "utf-8"));
+                                        String line = null;
+                                        while ((line = br.readLine()) != null) {
+                                            sb.append(line + "\n");
+                                        }
+                                        br.close();
+                                        Logger.d("LOL " + sb.toString());
+                                    } else {
+                                        Logger.d("LEL " + con.getResponseMessage());
+                                    }
+
+                                } catch (MalformedURLException e) {
+                                    e.printStackTrace();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }).start();
+                    }
+
+                }
+
+                @Override
+                public void onCancelled(FirebaseError firebaseError) {
+                    Toast.makeText(context, firebaseError.getMessage(), Toast.LENGTH_LONG).show();
+                }
+            });
+            return null;
+        }
+    }
+    public boolean editUser(String emailAddress,String newEmail,String oldPassword, String password, String type, ProgressDialog dialog) {
+        EditUserAsyncTask task = new EditUserAsyncTask(dialog);
+        String[] params = new String[5];
+        params[0] = emailAddress;
+        params[1] = newEmail;
+        params[2] = oldPassword;
+        params[3] = password;
+        params[4] = type;
+        try {
+            return task.execute(params).get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+    private class EditUserAsyncTask extends AsyncTask<String, Void, Boolean> {
+        private ProgressDialog dialog;
+
+        public EditUserAsyncTask(ProgressDialog dialog) {
+            this.dialog = dialog;
+        }
+
+        @Override
+        protected Boolean doInBackground(final String[] params) {
+            final boolean[] sw = {true};
+            firebase.changeEmail(params[0], params[2], params[1], new Firebase.ResultHandler() {
+                @Override
+                public void onSuccess() {
+                    Logger.d("Mail changed!");
+                }
+
+                @Override
+                public void onError(FirebaseError firebaseError) {
+                    Toast.makeText(context, firebaseError.getMessage(), Toast.LENGTH_LONG).show();
+                    sw[0] =false;
+                }
+            });
+
+            firebase.changePassword(params[0], params[2], params[3], new Firebase.ResultHandler() {
+                @Override
+                public void onSuccess() {
+                    Logger.d("Password changed!");
+                }
+
+                @Override
+                public void onError(FirebaseError firebaseError) {
+                    Toast.makeText(context, firebaseError.getMessage(), Toast.LENGTH_LONG).show();
+                    sw[0] =false;
+                }
+            });
+            if(params[4].equals(SharedPreferencesHandler.MANAGER)){
+                Manager manager = sharedPreferencesHandler.getCurrentManager();
+                saveManagerProfile(manager, firebase.getAuth().getUid(), params[1], false, dialog);
+            }else{
+                User user = sharedPreferencesHandler.getCurrentUser();
+                saveCustomerProfile(user, firebase.getAuth().getUid(), false, dialog);
+            }
+            return sw[0];
+        }
+
+    }
     /**
      * Create a new user in the Firebase database
      *
@@ -402,6 +696,14 @@ public class DatabaseUtils {
                             if (params[2].equals(SharedPreferencesHandler.MANAGER)) {
                                 Manager manager = sharedPreferencesHandler.getCurrentManager();
                                 saveManagerProfile(manager, uid, params[1], true, dialog);
+                                Firebase ref = firebase.child(RESTAURANT_RESERVATIONS_NB).child(manager.getRes_name()).child(RESERVATION_NB);
+                                ref.setValue(0, new Firebase.CompletionListener() {
+                                    @Override
+                                    public void onComplete(FirebaseError firebaseError, Firebase firebase) {
+                                        if (firebaseError != null)
+                                            Logger.d("reservation nb creation error : " + firebaseError.getMessage());
+                                    }
+                                });
                             } else {
                                 User user = sharedPreferencesHandler.getCurrentUser();
                                 saveCustomerProfile(user, uid, true, dialog);
@@ -470,7 +772,6 @@ public class DatabaseUtils {
             firebase.authWithPassword(params[0], params[1], new Firebase.AuthResultHandler() {
                 @Override
                 public void onAuthenticated(AuthData authData) {
-                    Logger.d("Login successfull");
                     String text = context.getString(R.string.log_in) + " - " + context.getString(R.string.RetrievingData);
                     dialog.setMessage(text);
                     if (!retrieveProfile) {
@@ -509,12 +810,30 @@ public class DatabaseUtils {
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             if (dataSnapshot.exists()) {
                                 /**
-                                 * It's a customer (and not a manager). Retrieve the profile, store
-                                 * it in the sharedPreferences for future access and launch
-                                 * the proper activity.
+                                 * It's a customer (and not a manager). Retrieve the profile.
+                                 * Friends lists will be retrieved manually just after for
+                                 * simplicity.
                                  */
                                 User user = dataSnapshot.getValue(User.class);
+                                /**
+                                 * Retrieve the friends list
+                                 */
+                                for (DataSnapshot data : dataSnapshot.child(FRIENDS).getChildren()) {
+                                    Friend friend = data.getValue(Friend.class);
+                                    user.addFriend(friend);
+                                }
+
+                                for(DataSnapshot data : dataSnapshot.child(REVIEWS).getChildren()){
+                                    Review rev = data.getValue(Review.class);
+                                    user.addReview(rev);
+                                }
+                                /**
+                                 * Store the retrieved profile in sharedPreferences for next accesses
+                                 */
                                 sharedPreferencesHandler.storeCurrentUser(user.toString());
+                                /**
+                                 * Launch the next activity : SearchActivity
+                                 */
                                 Intent intent = new Intent(context, SearchActivity.class);
                                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                 dialog.dismiss();
@@ -564,6 +883,99 @@ public class DatabaseUtils {
                     Logger.d("error log in : " + firebaseError.getMessage());
                     dialog.dismiss();
                     Toast.makeText(context, R.string.error_log_in, Toast.LENGTH_SHORT).show();
+                }
+            });
+            return null;
+        }
+    }
+
+    public void logInAndReserve(String email, String password, String restaurantName, ProgressDialog dialog) {
+        String[] params = new String[3];
+        params[0] = email;
+        params[1] = password;
+        params[2] = restaurantName;
+        LogInAndReserveAsyncTask task = new LogInAndReserveAsyncTask(dialog);
+        task.execute(params);
+    }
+
+    public class LogInAndReserveAsyncTask extends AsyncTask <String, Void, Void> {
+
+        private ProgressDialog dialog;
+
+        public LogInAndReserveAsyncTask(ProgressDialog dialog) {
+            this.dialog = dialog;
+        }
+
+        @Override
+        protected Void doInBackground(final String... params) {
+            firebase.authWithPassword(params[0], params[1], new Firebase.AuthResultHandler() {
+                @Override
+                public void onAuthenticated(AuthData authData) {
+                    if (dialog != null)
+                        dialog.setMessage(context.getString(R.string.RetrievingData));
+                    Firebase ref = firebase.child(USER).child(authData.getUid());
+                    ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            /**
+                             * It's a customer (and not a manager). Retrieve the profile.
+                             * Friends lists will be retrieved manually just after for
+                             * simplicity.
+                             */
+                            User user = dataSnapshot.getValue(User.class);
+                            /**
+                             * Retrieve the friends list
+                             */
+                            for (DataSnapshot data : dataSnapshot.child(FRIENDS).getChildren()) {
+                                Friend friend = data.getValue(Friend.class);
+                                user.addFriend(friend);
+                            }
+
+                            for(DataSnapshot data : dataSnapshot.child(REVIEWS).getChildren()){
+                                Review rev = data.getValue(Review.class);
+                                user.addReview(rev);
+                            }
+                            /**
+                             * Store the retrieved profile in sharedPreferences for next accesses
+                             */
+                            sharedPreferencesHandler.storeCurrentUser(user.toString());
+                            Firebase ref2 = firebase.child(RESTAURANTS).child(params[2]);
+                            ref2.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    Manager manager = dataSnapshot.getValue(Manager.class);
+                                    Intent intent = new Intent(context, SearchDetailActivity.class);
+                                    intent.putExtra(SearchDetailActivity.RESTAURANT, manager.toString());
+                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    if (dialog != null)
+                                        dialog.dismiss();
+                                    context.startActivity(intent);
+                                }
+
+                                @Override
+                                public void onCancelled(FirebaseError firebaseError) {
+                                    if (dialog != null)
+                                        dialog.dismiss();
+                                    Toast.makeText(context, firebaseError.getMessage(), Toast.LENGTH_LONG).show();
+                                }
+                            });
+
+                        }
+
+                        @Override
+                        public void onCancelled(FirebaseError firebaseError) {
+                            if (dialog != null)
+                                dialog.dismiss();
+                            Toast.makeText(context, firebaseError.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
+
+                @Override
+                public void onAuthenticationError(FirebaseError firebaseError) {
+                    if (dialog != null)
+                        dialog.dismiss();
+                    Toast.makeText(context, firebaseError.getMessage(), Toast.LENGTH_LONG).show();
                 }
             });
             return null;
@@ -820,9 +1232,9 @@ public class DatabaseUtils {
      * @
      * @return : An ArrayList of Manager or null if it's not possible to retrieve proper data.
      */
-    public void retrieveRestaurantList(RestaurantListAdapter adapter, ProgressDialog dialog, RestaurantFilter filter) {
+    public void retrieveRestaurantList(RestaurantListAdapter adapter, RestaurantListAdapter adapterForFilter, ProgressDialog dialog, RestaurantFilter filter) {
         RetrieveRestaurantsAsyncTask task = new RetrieveRestaurantsAsyncTask(dialog, filter);
-        task.execute(adapter);
+        task.execute(adapter,adapterForFilter);
     }
 
     private class RetrieveRestaurantsAsyncTask extends AsyncTask<RestaurantListAdapter, Void, Void> {
@@ -849,21 +1261,28 @@ public class DatabaseUtils {
                         restaurant.addReview(review.getValue(Review.class));
                     }
                     params[0].getList().add(restaurant);
+                    params[1].getList().add(restaurant);
                     params[0].notifyDataSetChanged();
+                    params[1].notifyDataSetChanged();
                     filter.filter();
                 }
 
                 @Override
                 public void onChildChanged(DataSnapshot dataSnapshot, String s) {
                     params[0].getList().remove(dataSnapshot.getValue(Manager.class));
+                    params[1].getList().remove(dataSnapshot.getValue(Manager.class));
                     params[0].getList().add(dataSnapshot.getValue(Manager.class));
+                    params[1].getList().add(dataSnapshot.getValue(Manager.class));
                     params[0].notifyDataSetChanged();
+                    params[1].notifyDataSetChanged();
                 }
 
                 @Override
                 public void onChildRemoved(DataSnapshot dataSnapshot) {
                     params[0].getList().remove(dataSnapshot.getValue(Manager.class));
+                    params[1].getList().remove(dataSnapshot.getValue(Manager.class));
                     params[0].notifyDataSetChanged();
+                    params[1].notifyDataSetChanged();
                 }
 
                 @Override
@@ -885,8 +1304,8 @@ public class DatabaseUtils {
      * @param restaurantName : the name of the restaurant
      * @param review : the review to add
      */
-    public void addReview(String restaurantName, Review review) {
-        AddReviewAsyncTask task = new AddReviewAsyncTask(restaurantName);
+    public void addReview(String restaurantName,String userEmail, Review review) {
+        AddReviewAsyncTask task = new AddReviewAsyncTask(restaurantName,userEmail);
         task.execute(review);
     }
 
@@ -896,22 +1315,37 @@ public class DatabaseUtils {
     private class AddReviewAsyncTask extends AsyncTask<Review, Void, Void> {
 
         private String restaurantName;
+        private String userEmail;
 
-        public AddReviewAsyncTask(String restaurantName) {
+        public AddReviewAsyncTask(String restaurantName,String userEmail) {
             this.restaurantName = restaurantName;
+            this.userEmail = userEmail;
         }
 
         @Override
-        protected Void doInBackground(Review... params) {
+        protected Void doInBackground(final Review... params) {
             Firebase ref = firebase.child(RESTAURANTS).child(this.restaurantName).child(REVIEWS);
             ref.push().setValue(params[0], new Firebase.CompletionListener() {
                 @Override
                 public void onComplete(FirebaseError firebaseError, Firebase firebase) {
                     if (firebaseError != null) {
                         Toast.makeText(context, firebaseError.getMessage(), Toast.LENGTH_LONG).show();
+                    }else{
+
                     }
                 }
             });
+
+            ref = firebase.child(USER).child(firebase.getAuth().getUid()).child(REVIEWS);
+            ref.push().setValue(params[0], new Firebase.CompletionListener() {
+                @Override
+                public void onComplete(FirebaseError firebaseError, Firebase firebaseRef) {
+                    if (firebaseError != null) {
+                        Toast.makeText(context, firebaseError.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                }
+            });
+
             return null;
         }
     }
@@ -919,121 +1353,126 @@ public class DatabaseUtils {
     /**
      * Allows to retrieve a String from the Firebase database in a secondary thread.
      */
-    private class RetrieveAsyncTask extends AsyncTask<String, Void, String> {
+    private class RetrieveAsyncTask extends AsyncTask<String, Void, User> {
+
         @Override
-        protected String doInBackground(String... params) {
+        protected User doInBackground(String... params) {
             Firebase ref = firebase;
             for (String string : params)
                 ref = ref.child(string);
-            String data = "";
-            ref.addValueEventListener(new RetrieverListener(data));
-            return data;
+            ref.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    /**
+                     * It's a customer (and not a manager). Retrieve the profile.
+                     * Friends lists will be retrieved manually just after for
+                     * simplicity.
+                     */
+                    User user = dataSnapshot.getValue(User.class);
+                    /**
+                     * Retrieve the friends list
+                     */
+                    for (DataSnapshot data : dataSnapshot.child(FRIENDS).getChildren()) {
+                        Friend friend = data.getValue(Friend.class);
+                        user.addFriend(friend);
+                    }
+
+                    for(DataSnapshot data : dataSnapshot.child(REVIEWS).getChildren()){
+                        Review rev = data.getValue(Review.class);
+                        user.addReview(rev);
+                    }
+                    /**
+                     * Store the retrieved profile in sharedPreferences for next accesses
+                     */
+                    sharedPreferencesHandler.storeCurrentUser(user.toString());
+                }
+
+                @Override
+                public void onCancelled(FirebaseError firebaseError) {
+
+                }
+            });
+            return sharedPreferencesHandler.getCurrentUser();
         }
     }
-
-    /**
-     * A simple class used to retrieve a String from the Firebase database.
-     */
-    private class RetrieverListener implements ValueEventListener {
-
-        private String data;
-
-        public RetrieverListener(String data) {
-            this.data = data;
-        }
-
-        @Override
-        public void onDataChange(DataSnapshot dataSnapshot) {
-            if (dataSnapshot != null && dataSnapshot.getValue() != null) {
-                data = dataSnapshot.getValue(String.class);
-            }
-        }
-
-        @Override
-        public void onCancelled(FirebaseError firebaseError) {
-
-        }
-    }
-
-
-
-
-
-
-
-
-    /**
-     * Retrieve the full profile of a manager (identified by the manager email address) from
-     * Firebase database.
-     *
-     * @param managerEmail : used as the key to find the manager profile.
-     * @return : The manager profile retrieved from the database, or null if it's not possible
-     * to retrieve proper data.
-     */
-    public Manager retrieveManagerProfile(String managerEmail) {
-        String children[] = new String[2];
-        children[0] = MANAGER;
-        children[1] = managerEmail;
-        RetrieveAsyncTask task = new RetrieveAsyncTask();
-        task.execute(children);
-        String data;
-        try {
-            data = task.get();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-        return new Manager(data);
-    }
-
 
 
     /**
      * Retrieve the full profile of a user (identified by the user email address) from the
      * Firebase database.
      *
-     * @param userEmail : used as the key to find the profile.
      * @return : the profile, or null if it's not possible to retrieve proper data.
      */
-    public User retrieveUserProfile(String userEmail) {
+    public User retrieveUserProfile() {
         String[] children = new String[2];
         children[0] = USER;
-        children[1] = userEmail;
+        children[1] = firebase.getAuth().getUid();
         RetrieveAsyncTask task = new RetrieveAsyncTask();
         task.execute(children);
-        String data;
+        User data;
         try {
             data = task.get();
         } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
-        return new User(data);
+        return data;
     }
-
     /**
      * Store a reservation in the database.
      *
      * @param reservation : the reservation to store.
      */
-    public void saveReservation(Reservation reservation) {
-        Logger.d("save reservation : " + reservation.getRestaurant());
-        StoreReservationAsyncTask task = new StoreReservationAsyncTask();
+    public void saveReservation(Reservation reservation, CompletionActivity activity) {
+        StoreReservationAsyncTask task = new StoreReservationAsyncTask(activity);
         task.execute(reservation);
     }
 
     private class StoreReservationAsyncTask extends AsyncTask<Reservation, Void, Void> {
 
+        private CompletionActivity activity;
+
+        public StoreReservationAsyncTask(CompletionActivity activity) {
+            this.activity = activity;
+        }
+
         @Override
-        protected Void doInBackground(Reservation... params) {
-            Firebase ref = firebase.child(RESERVATIONS).child(params[0].getRestaurant());
-            String id = ref.push().getKey();
+        protected Void doInBackground(final Reservation... params) {
+            /**
+             * Store the reservation in global reservations list.
+             */
+            Firebase ref = firebase.child(RESERVATIONS);
+            final String id = ref.push().getKey();
+            params[0].setId(id);
             ref.child(id).setValue(params[0], new Firebase.CompletionListener() {
                 @Override
-                public void onComplete(FirebaseError firebaseError, Firebase firebase) {
-                    if (firebaseError == null)
-                        Toast.makeText(context, R.string.ReservationSent, Toast.LENGTH_LONG).show();
-                    else
+                public void onComplete(FirebaseError firebaseError, Firebase firebaseRef) {
+                    if (firebaseError == null) {
+                        /**
+                         * Store the reservation id in the restaurant reservations list.
+                         */
+                        Firebase ref = firebase.child(RESTAURANT_RESERVATIONS).child(params[0].getRestaurant());
+                        ref.push().setValue(id);
+                        ref = firebase.child(RESTAURANT_RESERVATIONS_NB).child(params[0].getRestaurant()).child(RESERVATION_NB);
+                        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                int reservationNb = dataSnapshot.getValue(Integer.class);
+                                Firebase tmp = firebase.child(RESTAURANT_RESERVATIONS_NB).child(params[0].getRestaurant()).child(RESERVATION_NB);
+                                reservationNb++;
+                                tmp.setValue(reservationNb);
+                            }
+
+                            @Override
+                            public void onCancelled(FirebaseError firebaseError) {
+
+                            }
+                        });
+                        /**
+                         * Store the reservation id in the customer reservations list.
+                         */
+                        saveReservationIdInCustomer(id, activity);
+                    } else
                         Toast.makeText(context, firebaseError.getMessage(), Toast.LENGTH_LONG).show();
                 }
             });
@@ -1041,27 +1480,38 @@ public class DatabaseUtils {
         }
     }
 
-    /**
-     * Retrieve a reservation from the Firebase database.
-     *
-     * @param restaurantName : the name of the restaurant in which the reservation has been done.
-     * @return : the reservation retrieved or null if it's not possible to retrieve proper data.
-     */
-    public Reservation retrieveReservation(String restaurantName, String customerEmail) {
-        String[] children = new String[3];
-        children[0] = RESERVATIONS;
-        children[1] = restaurantName;
-        children[2] = customerEmail;
-        RetrieveAsyncTask task = new RetrieveAsyncTask();
-        task.execute(children);
-        String data;
-        try {
-            data = task.get();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-        return Reservation.create(data);
+    public void saveReservationIdInCustomer(String id, final CompletionActivity activity) {
+        Firebase ref = firebase.child(USER).child(firebase.getAuth().getUid());
+        ref.child(RESERVATIONS).push().setValue(id, new Firebase.CompletionListener() {
+            @Override
+            public void onComplete(FirebaseError firebaseError, Firebase firebase) {
+                if (firebaseError == null) {
+                    Toast.makeText(context, R.string.ReservationSent, Toast.LENGTH_LONG).show();
+                    activity.onComplete();
+                }
+                else
+                    Toast.makeText(context, firebaseError.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    public void saveReviewInCustomer(Review review, final ProgressDialog dialog) {
+        Firebase ref = firebase.child(USER).child(firebase.getAuth().getUid());
+        ref.child(REVIEWS).push().setValue(review, new Firebase.CompletionListener() {
+            @Override
+            public void onComplete(FirebaseError firebaseError, Firebase firebase) {
+                if (dialog != null)
+                    dialog.dismiss();
+                if (firebaseError == null) {
+                    Toast.makeText(context, R.string.ReviewSaved, Toast.LENGTH_LONG).show();
+                    Intent intent = new Intent(context, SearchActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.startActivity(intent);
+                }
+                else
+                    Toast.makeText(context, firebaseError.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     /**
@@ -1070,34 +1520,132 @@ public class DatabaseUtils {
      * @param restaurantName : the name of the restaurant.
      * @return : An ArrayList of Reservation or null if it's not possible to retrieve proper data.
      */
-    public void retrieveReservations(String restaurantName, ReservationAdapter adapter, ProgressDialog dialog) {
-        RetrieveReservationsAsyncTask task = new RetrieveReservationsAsyncTask(restaurantName, dialog);
+    public void retrieveRestaurantReservations(String restaurantName, ReservationAdapterManager adapter, ProgressDialog dialog) {
+        RetrieveRestaurantReservationsAsyncTask task = new RetrieveRestaurantReservationsAsyncTask(restaurantName, dialog);
         task.execute(adapter);
     }
 
-    private class RetrieveReservationsAsyncTask extends AsyncTask<ReservationAdapter, Void, Void> {
+    private class RetrieveRestaurantReservationsAsyncTask extends AsyncTask<ReservationAdapterManager, Void, Void> {
 
         private String restaurantName;
         private ProgressDialog dialog;
 
-        public RetrieveReservationsAsyncTask(String restaurantName, ProgressDialog dialog) {
+        public RetrieveRestaurantReservationsAsyncTask(String restaurantName, ProgressDialog dialog) {
             this.restaurantName = restaurantName;
             this.dialog = dialog;
         }
 
         @Override
-        protected Void doInBackground(final ReservationAdapter... params) {
-            Firebase ref = firebase.child(RESERVATIONS).child(this.restaurantName);
+        protected Void doInBackground(final ReservationAdapterManager... params) {
             params[0].getReservationList().clear();
             params[0].notifyDataSetChanged();
+            Firebase ref = firebase.child(RESTAURANT_RESERVATIONS_NB).child(this.restaurantName).child(RESERVATION_NB);
+            ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    int reservationNb = dataSnapshot.getValue(Integer.class);
+                    if (reservationNb == 0) {
+                        if (dialog != null)
+                            dialog.dismiss();
+                        Toast.makeText(context, R.string.NoReservation, Toast.LENGTH_LONG).show();
+                    } else {
+                        Firebase tmp = firebase.child(RESTAURANT_RESERVATIONS).child(restaurantName);
+                        tmp.addChildEventListener(new ChildEventListener() {
+                            @Override
+                            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                                String reservationId = dataSnapshot.getValue(String.class);
+                                Firebase ref = firebase.child(RESERVATIONS).child(reservationId);
+                                ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                        Reservation reservation = dataSnapshot.getValue(Reservation.class);
+                                        params[0].getReservationList().add(reservation);
+                                        params[0].notifyDataSetChanged();
+                                        if (dialog != null)
+                                            dialog.dismiss();
+                                    }
+
+                                    @Override
+                                    public void onCancelled(FirebaseError firebaseError) {
+
+                                    }
+                                });
+
+                            }
+
+                            @Override
+                            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+                            }
+
+                            @Override
+                            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+                            }
+
+                            @Override
+                            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+                            }
+
+                            @Override
+                            public void onCancelled(FirebaseError firebaseError) {
+
+                            }
+                        });
+                    }
+                }
+
+                @Override
+                public void onCancelled(FirebaseError firebaseError) {
+
+                }
+            });
+
+
+            return null;
+        }
+    }
+
+    public void retrieveCurrentCustomerReservations(ReservationAdapter adapter) {
+        RetrieveCustomerReservationAsyncTask task = new RetrieveCustomerReservationAsyncTask();
+        task.execute(adapter);
+    }
+
+    private class RetrieveCustomerReservationAsyncTask extends AsyncTask<ReservationAdapter, Void, Void> {
+
+        @Override
+        protected Void doInBackground(final ReservationAdapter... params) {
+            String uId = firebase.getAuth().getUid();
+            Firebase ref = firebase.child(USER).child(uId).child(RESERVATIONS);
             ref.addChildEventListener(new ChildEventListener() {
                 @Override
                 public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                    Reservation reservation = dataSnapshot.getValue(Reservation.class);
-                    params[0].getReservationList().add(reservation);
+                    String reservationId = dataSnapshot.getValue(String.class);
+                    params[0].getReservationList().clear();
                     params[0].notifyDataSetChanged();
-                    if (dialog != null)
-                        dialog.dismiss();
+                    Firebase ref = firebase.child(RESERVATIONS).child(reservationId);
+                    ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            NotificationCompat.Builder builder =
+                                    new NotificationCompat.Builder(context)
+                                    .setSmallIcon(R.drawable.clock)
+                                    .setContentTitle(context.getString(R.string.ReservationUpdated))
+                                    .setContentText("");
+
+                            Reservation reservation = dataSnapshot.getValue(Reservation.class);
+                            params[0].getReservationList().add(reservation);
+                            params[0].notifyDataSetChanged();
+                            NotificationManager notificationManager = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
+                            notificationManager.notify(1, builder.build());
+                        }
+
+                        @Override
+                        public void onCancelled(FirebaseError firebaseError) {
+
+                        }
+                    });
                 }
 
                 @Override
@@ -1124,4 +1672,124 @@ public class DatabaseUtils {
         }
     }
 
+    public void retrieveCurrentCustomerReviews(ReviewAdapter adapter) {
+        RetrieveCustomerReviewAsyncTask task = new RetrieveCustomerReviewAsyncTask();
+        task.execute(adapter);
+    }
+
+    private class RetrieveCustomerReviewAsyncTask extends AsyncTask<ReviewAdapter, Void, Void> {
+
+        @Override
+        protected Void doInBackground(final ReviewAdapter... params) {
+            String uId = firebase.getAuth().getUid();
+            params[0].getReviewList().clear();
+            params[0].notifyDataSetChanged();
+            Firebase ref = firebase.child(USER).child(uId).child(REVIEWS);
+            ref.addChildEventListener(new ChildEventListener() {
+                @Override
+                public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                    Review review = dataSnapshot.getValue(Review.class);
+                    params[0].getReviewList().add(review);
+                    params[0].notifyDataSetChanged();
+                }
+
+                @Override
+                public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+                }
+
+                @Override
+                public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+                }
+
+                @Override
+                public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+                }
+
+                @Override
+                public void onCancelled(FirebaseError firebaseError) {
+
+                }
+            });
+            return null;
+        }
+    }
+
+    public void updateReservation(Map<String, Object> attributes) {
+        UpdateReservationAsyncTask task = new UpdateReservationAsyncTask();
+        task.execute(attributes);
+    }
+
+    public void updateReservation(Map<String, Object> attributes, ProgressDialog dialog) {
+        UpdateReservationAsyncTask task = new UpdateReservationAsyncTask(dialog);
+        task.execute(attributes);
+    }
+
+    public void updateReservationStatus(String id, int status) {
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put(Reservation.ID, id);
+        map.put(Reservation.STATUS, status);
+        updateReservation(map);
+    }
+
+    private class UpdateReservationAsyncTask extends AsyncTask<Map<String, Object>, Void, Void> {
+
+        private ProgressDialog dialog;
+
+        public UpdateReservationAsyncTask() {
+            this.dialog = null;
+        }
+
+        public UpdateReservationAsyncTask(ProgressDialog dialog) {
+            this.dialog = dialog;
+        }
+
+        @Override
+        protected Void doInBackground(Map<String, Object>... params) {
+            String id = (String)params[0].get(Reservation.ID);
+            if (id == null || id.equals("")) {
+                if (dialog != null)
+                    dialog.dismiss();
+                return null;
+            }
+            Firebase ref = firebase.child(RESERVATIONS).child(id);
+            ref.updateChildren(params[0], new Firebase.CompletionListener() {
+                @Override
+                public void onComplete(FirebaseError firebaseError, Firebase firebase) {
+                    if (dialog != null)
+                        dialog.dismiss();
+                    if (firebaseError != null)
+                        Toast.makeText(context, firebaseError.getMessage(), Toast.LENGTH_LONG).show();
+                }
+            });
+            return null;
+        }
+    }
+
+    public void addFriend(Friend friend) {
+        String id = firebase.getAuth().getUid();
+        Firebase ref = firebase.child(USER).child(id).child(FRIENDS);
+        ref.push().setValue(friend, new Firebase.CompletionListener() {
+            @Override
+            public void onComplete(FirebaseError firebaseError, Firebase firebase) {
+                if (firebaseError != null)
+                    Toast.makeText(context, firebaseError.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+    public void sendResetRequest(String email){
+        firebase.resetPassword(email, new Firebase.ResultHandler() {
+            @Override
+            public void onSuccess() {
+                Toast.makeText(context, context.getResources().getString(R.string.forget_mail), Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onError(FirebaseError firebaseError) {
+                Toast.makeText(context, firebaseError.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+    }
 }

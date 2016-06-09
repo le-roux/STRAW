@@ -41,10 +41,7 @@ public abstract class AddFoodActivity extends AppCompatActivity implements Price
         try {
             jsonArray = new JSONArray(getIntent().getStringExtra(Menu.MENU));
             this.menu = Menu.convertFood(jsonArray);
-            Logger.d("size = " + this.menu.size());
-            Logger.d(jsonArray.toString());
         } catch (JSONException e) {
-            Logger.d("error");
             this.menu = new ArrayList<>();
         }
 
@@ -52,7 +49,6 @@ public abstract class AddFoodActivity extends AppCompatActivity implements Price
         this.price = (PriceDisplay)findViewById(R.id.Price);
         this.addButton = (Button)findViewById(R.id.add_button);
 
-        Logger.d("menu size : " + this.menu.size());
         this.menu_view.setAdapter(new FoodAdapterCheckbox(this, this.menu));
 
         this.addButton.setOnClickListener(new View.OnClickListener() {

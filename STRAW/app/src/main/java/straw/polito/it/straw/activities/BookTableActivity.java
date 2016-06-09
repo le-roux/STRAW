@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import straw.polito.it.straw.BookTableInterface;
 import straw.polito.it.straw.DateContainer;
@@ -18,15 +19,14 @@ import straw.polito.it.straw.R;
 import straw.polito.it.straw.StrawApplication;
 import straw.polito.it.straw.TimeContainer;
 import straw.polito.it.straw.TimeDisplayer;
-import straw.polito.it.straw.adapter.ReservationAdapter;
+import straw.polito.it.straw.adapter.ReservationAdapterManager;
 import straw.polito.it.straw.data.Manager;
 import straw.polito.it.straw.data.Reservation;
-import straw.polito.it.straw.data.Reservation.Place;
-import straw.polito.it.straw.utils.DatePickerFragment;
-import straw.polito.it.straw.utils.Logger;
-import straw.polito.it.straw.utils.NumberPickerFragment;
+import straw.polito.it.straw.data.User;
+import straw.polito.it.straw.fragments.DatePickerFragment;
+import straw.polito.it.straw.fragments.NumberPickerFragment;
 import straw.polito.it.straw.utils.SharedPreferencesHandler;
-import straw.polito.it.straw.utils.TimePickerFragment;
+import straw.polito.it.straw.fragments.TimePickerFragment;
 import straw.polito.it.straw.utils.TimerDisplay;
 
 public class BookTableActivity extends AppCompatActivity implements BookTableInterface, DateContainer, TimeContainer{
@@ -65,8 +65,8 @@ public class BookTableActivity extends AppCompatActivity implements BookTableInt
         this.confirmButton = (Button)findViewById(R.id.confirm_button);
         this.inviteFriendsButton = (Button)findViewById(R.id.InviteFriendsButton);
 
+        //Prepare the clock
         this.clock.setIs24HFormat(DateFormat.is24HourFormat(this));
-
 
         //Date creation/restoration
         final Manager restaurant = new Manager(getIntent().getStringExtra(RESTAURANT));
@@ -76,6 +76,11 @@ public class BookTableActivity extends AppCompatActivity implements BookTableInt
         } else {
             this.reservation = Reservation.create(savedInstanceState.getString(Reservation.RESERVATION));
         }
+
+        //Updating the time of the reservation
+        SharedPreferencesHandler handler = ((StrawApplication)this.getApplication()).getSharedPreferencesHandler();
+        User user = handler.getCurrentUser();
+        this.reservation.setTime(user.getPrefTimeHour(), user.getPrefTimeMinutes());
 
         //Add a listener to launch the NumberPicker dialog to select the number of people in the reservation
         this.numberPeopleNumber.setOnClickListener(new View.OnClickListener() {
@@ -94,7 +99,7 @@ public class BookTableActivity extends AppCompatActivity implements BookTableInt
             public void onClick(View view) {
                 DialogFragment fragment = new TimePickerFragment();
                 Bundle bundle = new Bundle();
-                bundle.putBoolean(ReservationAdapter.ADAPTER, false);
+                bundle.putBoolean(ReservationAdapterManager.ADAPTER, false);
                 fragment.setArguments(bundle);
                 fragment.show(getFragmentManager(), "timePicker");
             }
@@ -113,9 +118,13 @@ public class BookTableActivity extends AppCompatActivity implements BookTableInt
             @Override
             public void onClick(View v) {
                 updateData();
-                Intent intent = new Intent(getApplicationContext(), PreOrderFoodActivity.class);
-                intent.putExtra(Reservation.RESERVATION, reservation.toString());
-                startActivity(intent);
+                if (reservation.getNumberPeople() == 0) {
+                    Toast.makeText(BookTableActivity.this, R.string.EmptyReservation, Toast.LENGTH_LONG).show();
+                } else {
+                    Intent intent = new Intent(getApplicationContext(), PreOrderFoodActivity.class);
+                    intent.putExtra(Reservation.RESERVATION, reservation.toString());
+                    startActivity(intent);
+                }
             }
         });
 
@@ -123,9 +132,14 @@ public class BookTableActivity extends AppCompatActivity implements BookTableInt
             @Override
             public void onClick(View view) {
                 updateData();
-                Intent intent = new Intent(getApplicationContext(), ConfirmReservationActivity.class);
-                intent.putExtra(Reservation.RESERVATION, reservation.toString());
-                startActivity(intent);
+                if (reservation.getNumberPeople() == 0) {
+                    Toast.makeText(BookTableActivity.this, R.string.EmptyReservation, Toast.LENGTH_LONG).show();
+                } else {
+                    Intent intent = new Intent(getApplicationContext(), ConfirmReservationActivity.class);
+                    intent.putExtra(Reservation.RESERVATION, reservation.toString());
+                    intent.putExtra("tokenGCM", restaurant.getTokenGCM());
+                    startActivity(intent);
+                }
             }
         });
 
@@ -164,10 +178,10 @@ public class BookTableActivity extends AppCompatActivity implements BookTableInt
         boolean inside = false;
         boolean outside = false;
         switch(this.reservation.getPlace()) {
-            case INSIDE:
+            case Reservation.INSIDE:
                 inside = true;
                 break;
-            case OUTSIDE:
+            case Reservation.OUTSIDE:
                 outside = true;
                 break;
         }
@@ -183,13 +197,13 @@ public class BookTableActivity extends AppCompatActivity implements BookTableInt
         this.reservation.setTime(this.calendar.getYear(), this.calendar.getMonth(), this.calendar.getDay(), this.clock.getHourOfDay(), this.clock.getMinutes());
         if (this.insideCheckbox.isChecked()) {
             if (this.outsideCheckbox.isChecked())
-                this.reservation.setPlace(Place.NO_PREFERENCE);
+                this.reservation.setPlace(Reservation.NO_PREFERENCE);
             else
-                this.reservation.setPlace(Place.INSIDE);
+                this.reservation.setPlace(Reservation.INSIDE);
         } else if (this.outsideCheckbox.isChecked()) {
-            this.reservation.setPlace(Place.OUTSIDE);
+            this.reservation.setPlace(Reservation.OUTSIDE);
         } else
-            this.reservation.setPlace(Place.NO_PREFERENCE);
+            this.reservation.setPlace(Reservation.NO_PREFERENCE);
         SharedPreferencesHandler handler = ((StrawApplication)getApplication()).getSharedPreferencesHandler();
         this.reservation.setCustomer(handler.getCurrentUser().getEmail());
     }

@@ -1,18 +1,13 @@
 package straw.polito.it.straw.data;
 
-import android.location.Geocoder;
-import android.location.Location;
-import android.location.LocationListener;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import java.util.Comparator;
+
 import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.Exchanger;
+import java.util.Comparator;
 
 import straw.polito.it.straw.utils.DistanceComparator;
 import straw.polito.it.straw.utils.Logger;
@@ -28,6 +23,7 @@ public class Manager {
     private double longitude;
     private String res_name;
     private String res_type;
+    private String tokenGCM;
     private int seats;
     private double min_price;
     private double max_price;
@@ -36,11 +32,23 @@ public class Manager {
     private String email;
     private ArrayList<Review> reviews;
 
+    /**
+     * Strings used as keys when storing a Manager object in the sharedPreferences.
+     */
     public static final String SEATS_AVAILABLE = "SeatsAvailable";
     public static final String LATITUDE = "latitude";
     public static final String LONGITUDE = "longitude";
+    public static final String TELEPHONE = "telephone";
+    public static final String ADDRESS = "address";
+    public static final String RESTAURANT_NAME = "restaurantName";
+    public static final String TYPE = "restaurantType";
+    public static final String PHOTO = "photo";
+    public static final String EMAIL_ADDRESS = "email";
+    public static final String PRICE_MIN = "min";
+    public static final String PRICE_MAX = "max";
+    public static final String FOOD_TYPE = "foodType";
+    public static final String TOKEN_GCM = "token_gcm";
 
-    public static final String TYPE = "Type";
     public static final int BAR = 0;
     public static final int RESTAURANT = 1;
     public static final int CANTEEN = 2;
@@ -54,31 +62,38 @@ public class Manager {
         this.reviews = new ArrayList<>();
         try {
             JSONObject oj = new JSONObject(man);
-            telephone = (String) oj.get("tel");
-            address = (String) oj.get("addr");
-            res_name = (String) oj.get("r_n");
-            res_type = (String) oj.get("r_t");
-            seats = (int) oj.get("seats");
-            image = (String) oj.get("photo");
-            email = (String) oj.get("email");
-            min_price =oj.getDouble("min");
-            max_price =oj.getDouble("max");
-            food_type =oj.getString("food");
+            this.telephone = oj.getString(TELEPHONE);
+            this.address = oj.getString(ADDRESS);
+            this.res_name = oj.getString(RESTAURANT_NAME);
+            this.res_type = oj.getString(TYPE);
+            this.seats = oj.getInt(SEATS_AVAILABLE);
+            this.image = oj.getString(PHOTO);
+            this.email = oj.getString(EMAIL_ADDRESS);
+            this.min_price = oj.getDouble(PRICE_MIN);
+            this.max_price = oj.getDouble(PRICE_MAX);
+            this.tokenGCM = oj.getString(TOKEN_GCM);
+            this.food_type = oj.getString(FOOD_TYPE);
             this.latitude = oj.getDouble(LATITUDE);
             this.longitude = oj.getDouble(LONGITUDE);
             try {
                 JSONArray jarr = new JSONArray(oj.getString("reviews"));
                 for(int i=0;i<jarr.length();i++){
-                    reviews.add(new Review(jarr.getJSONObject(i).toString()));
+                    this.reviews.add(new Review(jarr.getJSONObject(i).toString()));
                 }
             } catch (Exception e){
-                reviews = new ArrayList<>();
+                this.reviews = new ArrayList<>();
             }
-
-            Logger.d("reviews");
         } catch (JSONException e) {
             Logger.d("Error creating the manager");
         }
+    }
+
+    public String getTokenGCM() {
+        return tokenGCM;
+    }
+
+    public void setTokenGCM(String tokenGCM) {
+        this.tokenGCM = tokenGCM;
     }
 
     @JsonIgnore
@@ -159,6 +174,19 @@ public class Manager {
         this.res_type = res_type;
     }
 
+    @JsonIgnore
+    public int getType() {
+        if (this.res_type.equals("Restaurant"))
+            return RESTAURANT;
+        if (this.res_type.equals("Canteen"))
+            return CANTEEN;
+        if (this.res_type.equals("Take Away"))
+            return TAKEAWAY;
+        if (this.res_type.equals("Bar"))
+            return BAR;
+        return -1;
+    }
+
     public int getSeats() {
         return seats;
     }
@@ -191,6 +219,10 @@ public class Manager {
         this.food_type = food_type;
     }
 
+    /**
+     * Compute the rate of the restaurant as the average of all the reviews rate.
+     * @return : the rate of the restaurant.
+     */
     @JsonIgnore
     public float getRate() {
         if (this.reviews.size() != 0) {
@@ -206,16 +238,17 @@ public class Manager {
     public String toJSONObject() {
         JSONObject oj = new JSONObject();
         try {
-            oj.put("tel", telephone);
-            oj.put("addr", address);
-            oj.put("r_n", res_name);
-            oj.put("r_t", res_type);
-            oj.put("seats", seats);
-            oj.put("photo", image);
-            oj.put("email", email);
-            oj.put("min",min_price);
-            oj.put("max",max_price);
-            oj.put("food",food_type);
+            oj.put(TELEPHONE, telephone);
+            oj.put(ADDRESS, address);
+            oj.put(RESTAURANT_NAME, res_name);
+            oj.put(TYPE, res_type);
+            oj.put(SEATS_AVAILABLE, seats);
+            oj.put(PHOTO, image);
+            oj.put(EMAIL_ADDRESS, email);
+            oj.put(PRICE_MIN,min_price);
+            oj.put(PRICE_MAX,max_price);
+            oj.put(FOOD_TYPE,food_type);
+            oj.put(TOKEN_GCM,tokenGCM);
             oj.put(LATITUDE, this.latitude);
             oj.put(LONGITUDE, this.longitude);
             JSONArray jarr = new JSONArray();
@@ -233,20 +266,25 @@ public class Manager {
         return null;
     }
 
+    @Override
+    public String toString() {
+        return this.toJSONObject();
+    }
 
     public JSONObject toJSONObjectTrans() {
         JSONObject oj = new JSONObject();
         try {
-            oj.put("tel", telephone);
-            oj.put("addr", address);
-            oj.put("r_n", res_name);
-            oj.put("r_t", res_type);
-            oj.put("seats", seats);
-            oj.put("photo", image);
-            oj.put("email", email);
-            oj.put("min",min_price);
-            oj.put("max",max_price);
-            oj.put("food",food_type);
+            oj.put(TELEPHONE, telephone);
+            oj.put(ADDRESS, address);
+            oj.put(RESTAURANT_NAME, res_name);
+            oj.put(TYPE, res_type);
+            oj.put(SEATS_AVAILABLE, seats);
+            oj.put(PHOTO, image);
+            oj.put(EMAIL_ADDRESS, email);
+            oj.put(PRICE_MIN,min_price);
+            oj.put(PRICE_MAX,max_price);
+            oj.put(FOOD_TYPE,food_type);
+            oj.put(TOKEN_GCM,tokenGCM);
             oj.put(LATITUDE, this.latitude);
             oj.put(LONGITUDE, this.longitude);
             JSONArray jarr = new JSONArray();
@@ -290,4 +328,3 @@ public class Manager {
     }
 
 }
-

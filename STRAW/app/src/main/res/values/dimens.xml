@@ -4,18 +4,25 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="Title_size">32dp</dimen>
     <dimen name="Content_size">20dp</dimen>
+    <dimen name="Date_size">22dp</dimen>
     <dimen name="padding">10dp</dimen>
     <dimen name="padding_small">5dp</dimen>
     <dimen name="padding_big">40dp</dimen>
     <dimen name="Medium_size">26dp</dimen>
 
+    <dimen name="vertical_space">20dip</dimen>
+    
     <dimen name="fab_margin">16dp</dimen>
 
     <dimen name="Icon_size_vertical">40dp</dimen>
     <dimen name="Icon_size_horizontal">50dp</dimen>
 
+    <dimen name="Icon_size_vertical_medium">60dp</dimen>
+
     <dimen name="Icon_size_vertical_big">80dp</dimen>
-    <dimen name="Icon_size_horizontal_big">100dp</dimen>
+    <dimen name="Icon_size_horizontal_big">80dp</dimen>
+
+    <dimen name="LogoSize">150dp</dimen>
 
     <dimen name="ProgressWheelSize">80dp</dimen>
     <dimen name="AddressSlot">70dp</dimen>

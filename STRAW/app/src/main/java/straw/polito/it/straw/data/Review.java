@@ -9,6 +9,7 @@ import org.json.JSONObject;
 public class Review {
 
     private String user;
+    private String restaurant;
     private float rate;
     private String description;
 
@@ -16,13 +17,15 @@ public class Review {
 
     public Review() {
         this.user = "";
+        this.restaurant="";
         this.rate = 0;
         this.description = "";
     }
 
-    public Review(String user,float rate, String description) {
+    public Review(String user,float rate, String description,String restaurant) {
         this.user = user;
         this.rate = rate;
+        this.restaurant = restaurant;
         this.description = description;
     }
 
@@ -30,6 +33,7 @@ public class Review {
         try {
             JSONObject jo=new JSONObject(review);
             user=jo.get("user").toString();
+            restaurant=jo.get("restaurant").toString();
             rate=Float.valueOf(String.valueOf(jo.get("rate")));
             description=jo.getString("desc");
         } catch (JSONException e) {
@@ -37,12 +41,23 @@ public class Review {
         }
     }
 
+    public Review(JSONObject jo){
+        try {
+            user=jo.get("user").toString();
+            restaurant=jo.get("restaurant").toString();
+            rate=Float.valueOf(String.valueOf(jo.get("rate")));
+            description=jo.getString("desc");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
     @Override
     public String toString() {
         JSONObject jo =new JSONObject();
         try {
             jo.put("user",user);
             jo.put("rate",rate);
+            jo.put("restaurant",restaurant);
             jo.put("desc",description);
             return jo.toString();
         } catch (JSONException e) {
@@ -56,6 +71,7 @@ public class Review {
         try {
             jo.put("user",user);
             jo.put("rate",rate);
+            jo.put("restaurant",restaurant);
             jo.put("desc",description);
             return jo;
         } catch (JSONException e) {
@@ -63,6 +79,14 @@ public class Review {
         }
 
         return null;
+    }
+
+    public String getRestaurant() {
+        return restaurant;
+    }
+
+    public void setRestaurant(String restaurant) {
+        this.restaurant = restaurant;
     }
 
     public String getUser() {
@@ -88,4 +112,5 @@ public class Review {
     public void setDescription(String description) {
         this.description = description;
     }
+
 }

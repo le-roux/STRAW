@@ -2,18 +2,14 @@ package straw.polito.it.straw.activities;
 
 import android.app.DialogFragment;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.Resources;
-import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.view.View;
-import android.widget.ArrayAdapter;
+import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,14 +18,19 @@ import java.util.ArrayList;
 
 import straw.polito.it.straw.MessageSender;
 import straw.polito.it.straw.R;
-import straw.polito.it.straw.adapter.UserAdapter;
+import straw.polito.it.straw.StrawApplication;
+import straw.polito.it.straw.UserContainer;
+import straw.polito.it.straw.adapter.FriendAdapter;
+import straw.polito.it.straw.data.Friend;
 import straw.polito.it.straw.data.Reservation;
 import straw.polito.it.straw.data.User;
+import straw.polito.it.straw.fragments.FriendCreationFragment;
 import straw.polito.it.straw.utils.DateDisplay;
-import straw.polito.it.straw.utils.InvitationSenderFragment;
+import straw.polito.it.straw.fragments.InvitationSenderFragment;
+import straw.polito.it.straw.utils.SharedPreferencesHandler;
 import straw.polito.it.straw.utils.TimerDisplay;
 
-public class InviteFriendActivity extends AppCompatActivity implements MessageSender{
+public class InviteFriendActivity extends AppCompatActivity implements MessageSender, UserContainer{
 
     private TextView restaurantName;
     private DateDisplay calendar;
@@ -38,13 +39,16 @@ public class InviteFriendActivity extends AppCompatActivity implements MessageSe
     private Button sendInvitationsButton;
     private Reservation reservation;
     private User user;
-    private SharedPreferences sharedPreferences;
-    private UserAdapter userAdapter;
+    private FriendAdapter friendAdapter;
     private Button addButton;
-    private EditText addressInput;
     private ArrayList<String> addresses;
+    private int singleAddress;
+    private static final int INVALID = -1;
 
+    public static final String INVITATION = "Invitation";
+    public static final String RESTAURANT = "Restaurant";
     private static final String ADDRESSES = "addresses";
+    private static final String USER = "user";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,8 +61,13 @@ public class InviteFriendActivity extends AppCompatActivity implements MessageSe
         Intent intent = getIntent();
         this.reservation = Reservation.create(intent.getStringExtra(Reservation.RESERVATION));
 
-        this.sharedPreferences  = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        this.user = new User(this.sharedPreferences.getString("User", "Error"));
+        StrawApplication application = (StrawApplication)getApplication();
+        SharedPreferencesHandler sharedPreferencesHandler = application.getSharedPreferencesHandler();
+        if (savedInstanceState == null)
+            this.user = sharedPreferencesHandler.getCurrentUser();
+        else
+            this.user = new User(savedInstanceState.getString(USER));
+        this.singleAddress = INVALID;
 
         this.restaurantName = (TextView)findViewById(R.id.RestaurantName);
         this.calendar = (DateDisplay)findViewById(R.id.Date);
@@ -66,8 +75,6 @@ public class InviteFriendActivity extends AppCompatActivity implements MessageSe
         this.friendsList = (ListView)findViewById(R.id.list_friends);
         this.sendInvitationsButton = (Button)findViewById(R.id.SendInvitationButton);
         this.addButton = (Button)findViewById(R.id.add_button);
-        this.addressInput = (EditText)findViewById(R.id.new_friend);
-        this.addressInput.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
 
         this.restaurantName.setText(this.reservation.getRestaurant());
         this.calendar.setDate(this.reservation.getYear(), this.reservation.getMonth(), this.reservation.getDay());
@@ -78,36 +85,29 @@ public class InviteFriendActivity extends AppCompatActivity implements MessageSe
         else
             this.addresses = savedInstanceState.getStringArrayList(ADDRESSES);
 
-        final ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, this.addresses);
-        this.friendsList.setAdapter(adapter);
+        this.friendAdapter = new FriendAdapter(this.getApplicationContext(), this.user.getFriends());
+        this.friendsList.setAdapter(this.friendAdapter);
+        this.friendsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                singleAddress = position;
+                DialogFragment fragment = new InvitationSenderFragment();
+                fragment.show(getFragmentManager(), "messagePicker");
+            }
+        });
         this.addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String address = addressInput.getText().toString();
-                if (!address.equals("")) {
-                    addresses.add(address);
-                    addressInput.setText("");
-                    adapter.notifyDataSetChanged();
-                }
+                DialogFragment dialog = new FriendCreationFragment();
+                dialog.show(getFragmentManager(), "FriendCreation");
             }
         });
-
-        //this.userAdapter = new UserAdapter(this.getApplicationContext(), this.user.getFriends());
-        //this.friendsList.setAdapter(this.userAdapter);
 
         this.sendInvitationsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //DialogFragment fragment = new InvitationSenderFragment();
-                //fragment.show(getFragmentManager(), "messagePicker");
-                Intent intent = new Intent(Intent.ACTION_SEND);
-                intent.setData(Uri.parse("mailto:"));
-                intent.setType("text/html");
-                String[] dest = new String[addresses.size()];
-                intent.putExtra(Intent.EXTRA_EMAIL, addresses.toArray(dest));
-                intent.putExtra(Intent.EXTRA_SUBJECT, getResources().getString(R.string.STRAWInvitation));
-                intent.putExtra(Intent.EXTRA_TEXT, getMessage());
-                startActivity(intent);
+                DialogFragment fragment = new InvitationSenderFragment();
+                fragment.show(getFragmentManager(), "messagePicker");
             }
         });
     }
@@ -132,20 +132,38 @@ public class InviteFriendActivity extends AppCompatActivity implements MessageSe
     }
 
     @Override
-    public String[] getAddresses() {
-        ArrayList<String> addresses = new ArrayList<>();
-        for (int i = 0; i < userAdapter.getCount(); i++) {
-            if (userAdapter.getCheckboxes().get(i).isChecked()) {
-                addresses.add(((User)userAdapter.getItem(i)).getEmail());
+    public String[] getAddresses(boolean email) {
+        if (this.singleAddress == INVALID) {
+            ArrayList<String> addresses = new ArrayList<>();
+            for (int i = 0; i < friendAdapter.getCount(); i++) {
+                if (friendAdapter.getCheckboxes().get(i).isChecked()) {
+                    if (email)
+                        addresses.add(((Friend) friendAdapter.getItem(i)).getEmailAddress());
+                    else
+                        addresses.add(((Friend) friendAdapter.getItem(i)).getPhoneNumber());
+                }
             }
+            String[] result = new String[addresses.size()];
+            return addresses.toArray(result);
+        } else {
+            String[] result = new String[1];
+            if (email)
+                result[0] = ((Friend) this.friendAdapter.getItem(this.singleAddress)).getEmailAddress();
+            else
+                result[0] = ((Friend) this.friendAdapter.getItem(this.singleAddress)).getPhoneNumber();
+            singleAddress = INVALID;
+            return result;
         }
-        String[] result = new String[addresses.size()];
-        return addresses.toArray(result);
     }
 
     @Override
     public String getMessage() {
         return getInvitationMessage();
+    }
+
+    @Override
+    public String getSubject() {
+        return reservation.getRestaurant();
     }
 
     @Override
@@ -160,6 +178,12 @@ public class InviteFriendActivity extends AppCompatActivity implements MessageSe
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
+        outState.putString(USER, this.user.toString());
         outState.putStringArrayList(ADDRESSES, addresses);
+    }
+
+    @Override
+    public User getUser() {
+        return this.user;
     }
 }

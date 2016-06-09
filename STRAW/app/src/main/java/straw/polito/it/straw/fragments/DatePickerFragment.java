@@ -1,4 +1,4 @@
-package straw.polito.it.straw.utils;
+package straw.polito.it.straw.fragments;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;

@@ -1,40 +1,52 @@
 package straw.polito.it.straw.activities;
 
 import android.app.AlertDialog;
+import android.net.Uri;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Button;
-import android.widget.ListView;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+
 import java.util.ArrayList;
 import java.util.Collections;
 
+import straw.polito.it.straw.AdapterFragment;
 import straw.polito.it.straw.R;
 import straw.polito.it.straw.RestaurantFilter;
 import straw.polito.it.straw.StrawApplication;
 import straw.polito.it.straw.adapter.RestaurantListAdapter;
 import straw.polito.it.straw.data.Manager;
 import straw.polito.it.straw.data.User;
+import straw.polito.it.straw.fragments.RestaurantMapFragment;
+import straw.polito.it.straw.fragments.RestaurantsListFragment;
 import straw.polito.it.straw.utils.Area;
 
 
-public class QuickSearchActivity extends AppCompatActivity implements RestaurantFilter{
+public class QuickSearchActivity extends FragmentActivity implements RestaurantFilter{
 
     private ArrayList<Manager> restaurant_list;
     private ArrayList<Manager> restaurant_list_tmp;
     private Spinner spinner1;
     private Spinner spinner2;
-    private ListView restaurant_listView;
     private StrawApplication application;
     private Button filtersButton;
     public String FoodFilter;
@@ -42,6 +54,15 @@ public class QuickSearchActivity extends AppCompatActivity implements Restaurant
     private double latitude;
     private double longitude;
     private int restaurantType;
+    private AdapterFragment fragment;
+    private FragmentManager fragmentManager;
+    private RestaurantListAdapter adapter;
+    private int currentFragment;
+    private Button fragmentButton;
+    private ImageView fragmentIcon;
+
+    private static final int LIST = 0;
+    private static final int MAP = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +72,7 @@ public class QuickSearchActivity extends AppCompatActivity implements Restaurant
         toolbar.setTitle("QUICK  SEARCH");
         setSupportActionBar(toolbar);
         this.application = (StrawApplication)getApplication();
+
         Intent intent = getIntent();
         if (intent.hasExtra(Manager.LATITUDE)) {
             /**
@@ -81,45 +103,51 @@ public class QuickSearchActivity extends AppCompatActivity implements Restaurant
         restaurant_list_tmp = new ArrayList<>();
         this.FoodFilter = "";
         this.PlaceFilter = "";
-        init_list();
-        restaurant_list = new ArrayList<>();
-        restaurant_list_tmp = new ArrayList<>();
         ProgressDialog dialog = new ProgressDialog(this);
         dialog.setMessage(this.getString(R.string.RetrievingRestaurants));
         dialog.setIndeterminate(true);
         dialog.setCancelable(false);
         dialog.show();
-        RestaurantListAdapter adapter = new RestaurantListAdapter(getApplicationContext(), restaurant_list);
-        RestaurantListAdapter adapter2 = new RestaurantListAdapter(getApplicationContext(), restaurant_list_tmp);
-        this.application.getDatabaseUtils().retrieveRestaurantList(adapter, dialog, this);
-        this.application.getDatabaseUtils().retrieveRestaurantList(adapter2, dialog, this);
-        restaurant_listView.setAdapter(adapter);
-        this.restaurant_listView = (ListView) findViewById(R.id.restaurant_list);
+        this.adapter = new RestaurantListAdapter(getApplicationContext(), restaurant_list);
+        RestaurantListAdapter adapterForFilter = new RestaurantListAdapter(getApplicationContext(), restaurant_list_tmp);
+        this.application.getDatabaseUtils().retrieveRestaurantList(this.adapter, adapterForFilter, dialog, this);
 
         addListenerOnButton();
         addListenerOnSpinnerItemSelection();
 
-        restaurant_listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent i = new Intent(getBaseContext(), SearchDetailActivity.class);
-                i.putExtra(SearchDetailActivity.RESTAURANT, restaurant_list.get(position).toJSONObject());
-                startActivity(i);
-            }
-        });
         filtersButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 selectImage();
             }
         });
+
+        this.fragmentButton = (Button)findViewById(R.id.mapButton);
+        this.fragmentButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                toggleFragment();
+            }
+        });
+        this.fragmentIcon = (ImageView)findViewById(R.id.mapIcon);
+
+        RelativeLayout fragmentCard = (RelativeLayout) findViewById(R.id.mapCard);
+        fragmentCard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                toggleFragment();
+            }
+        });
+
+        /**
+         * Prepare the fragment to display
+         */
+        this.fragmentManager = this.getSupportFragmentManager();
+        this.currentFragment = MAP;
+        toggleFragment();
     }
 
-    public RestaurantListAdapter getAdapter() {
-        return (RestaurantListAdapter)this.restaurant_listView.getAdapter();
-    }
-    private void init_list() {
-        this.restaurant_listView = (ListView) findViewById(R.id.restaurant_list);
+    private void setSupportActionBar(Toolbar toolbar) {
     }
 
     public void addListenerOnSpinnerItemSelection() {
@@ -170,26 +198,27 @@ public class QuickSearchActivity extends AppCompatActivity implements Restaurant
             public void onNothingSelected(AdapterView<?> parent) {
 
             }
+
         });
 
         /**
          * Initial value
          */
-        spinner2.setSelection(this.restaurantType + 1);
+        spinner2.setSelection(this.restaurantType);
         switch(this.restaurantType) {
-            case(0): {
+            case(1): {
                 PlaceFilter = "Restaurant";
                 break;
             }
-            case (1): {
+            case (2): {
                 PlaceFilter = "Canteen";
                 break;
             }
-            case (2): {
+            case (3): {
                 PlaceFilter = "Take Away";
                 break;
             }
-            case (3): {
+            case (4): {
                 PlaceFilter = "Bar";
                 break;
             } default: {
@@ -204,7 +233,7 @@ public class QuickSearchActivity extends AppCompatActivity implements Restaurant
                 "List of restaurant sort by rating",
                 Toast.LENGTH_SHORT).show();
         Collections.sort(restaurant_list, Manager.RatingComparator);
-        ((RestaurantListAdapter) restaurant_listView.getAdapter()).notifyDataSetChanged();
+        fragment.notifyDataSetChanged();
     }
     public void SortByLocation(AdapterView<?> parent, View view,long id){
         Toast.makeText(parent.getContext(),
@@ -212,14 +241,14 @@ public class QuickSearchActivity extends AppCompatActivity implements Restaurant
                 Toast.LENGTH_SHORT).show();
 
         Collections.sort(restaurant_list,Manager.getDistanceComparator(latitude, longitude));
-        ((RestaurantListAdapter) restaurant_listView.getAdapter()).notifyDataSetChanged();
+        fragment.notifyDataSetChanged();
     }
     public void SortByPrice(AdapterView<?> parent, View view,long id){
         Toast.makeText(parent.getContext(),
                 "List of restaurant sort by price",
                 Toast.LENGTH_SHORT).show();
         Collections.sort(restaurant_list, Manager.PriceComparator);
-        ((RestaurantListAdapter) restaurant_listView.getAdapter()).notifyDataSetChanged();
+        fragment.notifyDataSetChanged();
     }
 
     public void addListenerOnButton() {
@@ -240,12 +269,10 @@ public class QuickSearchActivity extends AppCompatActivity implements Restaurant
                     TextView t1 = (TextView) findViewById(R.id.typeOfFood);
                     t1.setText("Every type");
                     filter();
-                    ((RestaurantListAdapter) restaurant_listView.getAdapter()).notifyDataSetChanged();
                 } else if (options[item].equals("Pizzeria")) {
                     FoodFilter = "Pizzeria";
                     TextView t1 = (TextView) findViewById(R.id.typeOfFood);
                     t1.setText("Pizzeria");
-                    Foodfilter();
                     filter();
                 } else if (options[item].equals("Italian")) {
                     FoodFilter = "Italian";
@@ -299,27 +326,50 @@ public class QuickSearchActivity extends AppCompatActivity implements Restaurant
                 }
             }
         }
-        ((RestaurantListAdapter) restaurant_listView.getAdapter()).notifyDataSetChanged();
+        fragment.notifyDataSetChanged();
     }
 
     public void Foodfilter(){
-        restaurant_list.clear();
         for (int a = 0; a < restaurant_list_tmp.size(); a++) {
             if(restaurant_list_tmp.get(a).getFood_type().equals(FoodFilter) || FoodFilter.equals("")){
                 restaurant_list.add(restaurant_list_tmp.get(a));
             }
         }
-        ((RestaurantListAdapter) restaurant_listView.getAdapter()).notifyDataSetChanged();
+        fragment.notifyDataSetChanged();
     }
 
     public void Placefilter(){
-        restaurant_list.clear();
         for (int a = 0; a < restaurant_list_tmp.size(); a++) {
             if(restaurant_list_tmp.get(a).getRes_type().equals(PlaceFilter) || PlaceFilter.equals("")){
                 restaurant_list.add(restaurant_list_tmp.get(a));
             }
         }
-        ((RestaurantListAdapter) restaurant_listView.getAdapter()).notifyDataSetChanged();
+        fragment.notifyDataSetChanged();
     }
+
+    /**
+     * Change the currently displayed fragment to a RestaurantListFragment
+     * or to a RestaurantMapFragment
+     */
+    public void toggleFragment() {
+        FragmentTransaction transaction = this.fragmentManager.beginTransaction();
+        if (this.currentFragment == MAP) {
+            this.fragment = new RestaurantsListFragment();
+            transaction.replace(R.id.id_relativeLayoutQuickSearch2, (Fragment)this.fragment);
+            this.currentFragment = LIST;
+            this.fragmentButton.setText(R.string.map);
+            this.fragmentIcon.setImageURI(Uri.parse("android.resource://straw.polito.it.straw/drawable/map"));
+        } else {
+            this.fragment = RestaurantMapFragment.createInstance(this.latitude, this.longitude, this);
+            transaction.replace(R.id.id_relativeLayoutQuickSearch2, ((RestaurantMapFragment)this.fragment).getFragment());
+            this.currentFragment = MAP;
+            this.fragmentButton.setText(R.string.list);
+            this.fragmentIcon.setImageURI(Uri.parse("android.resource://straw.polito.it.straw/drawable/list"));
+            //Created by Viktor Vorobyev for Noun Project
+        }
+        this.fragment.setAdapter(this.adapter);
+        transaction.commit();
+    }
+
 }
 

@@ -9,15 +9,27 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:background="@color/background"
     tools:context=".activities.HomeActivity">
-
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textAlignment="center"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:text="@string/title"
+        android:id="@+id/title"
+        android:paddingBottom="16dp"
+        android:layout_above="@+id/notyet_textView"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
     <RelativeLayout
-        android:layout_width="300sp"
+        android:layout_width="220sp"
         android:layout_height="270sp"
         android:id="@+id/create_relativeLayout"
         android:background="@drawable/customborder"
-        android:layout_centerVertical="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true">
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/notyet_textView">
 
         <Button
             android:layout_width="wrap_content"
@@ -25,21 +37,19 @@
             android:text="@string/c_user"
             android:id="@+id/c_user_button"
             android:background="@drawable/customborder_buttons"
-            android:layout_centerVertical="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="68dp" />
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/c_man"
             android:id="@+id/c_man_button"
-            android:layout_alignBottom="@+id/c_user_button"
-            android:layout_toRightOf="@+id/c_user_button"
-            android:layout_toEndOf="@+id/c_user_button"
-            android:layout_marginLeft="27dp"
-            android:layout_marginStart="27dp"
-            android:background="@drawable/customborder_buttons"/>
+            android:background="@drawable/customborder_buttons"
+            android:layout_marginTop="22dp"
+            android:layout_below="@+id/c_user_button"
+            android:layout_centerHorizontal="true" />
     </RelativeLayout>
 
     <TextView
@@ -50,21 +60,21 @@
         android:text="@string/notyet"
         android:id="@+id/notyet_textView"
         android:background="@drawable/customborder_dark"
-        android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_toLeftOf="@+id/id_relativeLayout"
-        android:layout_toStartOf="@+id/id_relativeLayout" />
+        android:layout_toStartOf="@+id/id_relativeLayout"
+        android:layout_toLeftOf="@+id/id_relativeLayout" />
 
     <RelativeLayout
         android:id="@+id/id_relativeLayout"
         android:background="@drawable/customborder"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignTop="@+id/create_relativeLayout"
         android:layout_toRightOf="@+id/create_relativeLayout"
         android:layout_toEndOf="@+id/create_relativeLayout"
-        android:layout_alignBottom="@+id/create_relativeLayout">
+        android:layout_alignBottom="@+id/create_relativeLayout"
+        android:layout_marginLeft="5dp"
+        android:layout_below="@+id/notyet_textView">
 
         <EditText
             android:layout_width="wrap_content"
@@ -85,7 +95,9 @@
             android:id="@+id/pwd_editText"
             android:layout_below="@+id/user_name_editText"
             android:layout_alignLeft="@+id/user_name_editText"
-            android:layout_alignStart="@+id/user_name_editText" />
+            android:layout_alignStart="@+id/user_name_editText"
+            android:layout_alignRight="@+id/user_name_editText"
+            android:layout_alignEnd="@+id/user_name_editText" />
 
         <Button
             android:layout_width="wrap_content"
@@ -101,9 +113,11 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="@string/forgot"
-            android:id="@+id/textView"
+            android:id="@+id/forgot"
             android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true" />
+            android:layout_centerHorizontal="true"
+
+            android:textColor="@color/link_color"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -132,9 +146,8 @@
             android:text="@string/remember"
             android:id="@+id/remember_checkBox"
             android:checked="false"
-            android:layout_above="@+id/textView"
-            android:layout_toRightOf="@+id/user_n_textView"
-            android:layout_toEndOf="@+id/user_n_textView" />
+            android:layout_above="@+id/forgot"
+            android:layout_centerHorizontal="true" />
     </RelativeLayout>
     <TextView
         android:layout_width="match_parent"

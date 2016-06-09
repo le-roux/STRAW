@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -94,5 +95,11 @@ public class SharedPreferencesHandler {
         areas[0] = new Area("Polito", 45.0345, 7.3942);
         areas[1] = new Area("Polimi", 45.2840, 9.1338);
         return areas;
+    }
+    public void removeMemory(){
+        if(this.sharedPreferences.contains("remember")){
+            this.sharedPreferences.edit().remove("remember").apply();
+        }
+
     }
 }

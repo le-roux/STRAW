@@ -1,43 +1,41 @@
 package straw.polito.it.straw.adapter;
 
 import android.content.Context;
-import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 
 import straw.polito.it.straw.R;
-import straw.polito.it.straw.data.User;
-import straw.polito.it.straw.utils.ImageManager;
+import straw.polito.it.straw.data.Friend;
 
 /**
  * Created by Sylvain on 25/04/2016.
  */
-public class UserAdapter extends BaseAdapter {
+public class FriendAdapter extends BaseAdapter {
 
-    private ArrayList<User> users;
+    private ArrayList<Friend> friends;
     private Context context;
     private ArrayList<CheckBox> checkBoxes;
 
-    public UserAdapter(Context context, ArrayList<User> users) {
+    public FriendAdapter(Context context, ArrayList<Friend> friends) {
         this.context = context;
-        this.users = users;
+        this.friends = friends;
+        this.checkBoxes = new ArrayList<>();
     }
 
     @Override
     public int getCount() {
-        return this.users.size();
+        return this.friends.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return this.users.get(position);
+        return this.friends.get(position);
     }
 
     @Override
@@ -49,14 +47,14 @@ public class UserAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater)this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = inflater.inflate(R.layout.user, null);
+            convertView = inflater.inflate(R.layout.friend, null);
             CheckBox checkBox = (CheckBox)convertView.findViewById(R.id.checkbox);
             this.checkBoxes.add(checkBox);
         }
-        ImageView imageView = (ImageView)convertView.findViewById(R.id.photo_imageView);
-        ImageManager.setImage(context, imageView, this.users.get(position).getImage());
         TextView userName = (TextView)convertView.findViewById(R.id.User_name);
-        userName.setText(this.users.get(position).getEmail());
+        userName.setText(this.friends.get(position).getName());
+        TextView address = (TextView)convertView.findViewById(R.id.address);
+        address.setText(this.friends.get(position).getAddresses());
         return convertView;
     }
 

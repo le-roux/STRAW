@@ -1,6 +1,11 @@
 package straw.polito.it.straw.activities;
 
+import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
@@ -16,6 +21,7 @@ import straw.polito.it.straw.adapter.ReviewAdapter;
 import straw.polito.it.straw.data.Manager;
 import straw.polito.it.straw.data.Review;
 import straw.polito.it.straw.utils.ImageManager;
+import straw.polito.it.straw.utils.Logger;
 
 public class SearchDetailActivity extends AppCompatActivity {
 
@@ -24,10 +30,17 @@ public class SearchDetailActivity extends AppCompatActivity {
     private TextView menu;
     private TextView book;
     private TextView add_rev;
+    private TextView nav;
     private ImageView img;
     private ListView review;
     private RatingBar ratingBar;
     private Manager man;
+
+
+    private LocationManager locationManager;
+    private LocationListener locationListener;
+    private double latitude;
+    private double longitude;
 
     private static int REQ_CODE_REV=1;
 
@@ -56,11 +69,50 @@ public class SearchDetailActivity extends AppCompatActivity {
 
         this.ratingBar.setRating(this.man.getRate());
 
-        review.setAdapter(new ReviewAdapter(getBaseContext(),man.getReviews()));
+        review.setAdapter(new ReviewAdapter(getBaseContext(),man.getReviews(),false));
 
         ImageManager.setImage(this, img, man.getImage());
 
         setListeners();
+        this.locationManager = (LocationManager)this.getSystemService(Context.LOCATION_SERVICE);
+        /**
+         * Set a listener that will acquire the current location once.
+         */
+        this.locationListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+                latitude = location.getLatitude();
+                longitude = location.getLongitude();
+                try {
+                    locationManager.removeUpdates(locationListener);
+                } catch (SecurityException e) {
+                    Logger.d("Location rights have been removed");
+                }
+            }
+
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+
+            }
+
+            @Override
+            public void onProviderEnabled(String provider) {
+
+            }
+
+            @Override
+            public void onProviderDisabled(String provider) {
+
+            }
+        };
+
+        /**
+         * Acquire the current location.
+         */
+        try {
+            this.locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+        } catch (SecurityException e) {
+        }
     }
 
     private void setListeners() {
@@ -89,6 +141,14 @@ public class SearchDetailActivity extends AppCompatActivity {
                 startActivityForResult(i,REQ_CODE_REV);
             }
         });
+        nav.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
+                        Uri.parse("http://maps.google.com/maps?saddr="+latitude+","+longitude+"&daddr="+man.getLatitude()+","+man.getLongitude()));
+                startActivity(intent);
+            }
+        });
     }
 
     private void initialize() {
@@ -99,15 +159,22 @@ public class SearchDetailActivity extends AppCompatActivity {
         book=(TextView)findViewById(R.id.booking);
         add_rev=(TextView)findViewById(R.id.add_review);
         review = (ListView) findViewById(R.id.reviews);
+        nav = (TextView)findViewById(R.id.navigate);
         this.ratingBar = (RatingBar)findViewById(R.id.ratingBar);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        this.man.addReview(new Review(data.getStringExtra(Review.REVIEW)));
-        ((ReviewAdapter)this.review.getAdapter()).notifyDataSetChanged();
-        this.ratingBar.setRating(this.man.getRate());
+        if(requestCode==REQ_CODE_REV) {
+            if(data!=null) {
+                if (data.getExtras().containsKey(Review.REVIEW)) {
+                    this.man.addReview(new Review(data.getStringExtra(Review.REVIEW)));
+                    ((ReviewAdapter) this.review.getAdapter()).notifyDataSetChanged();
+                    this.ratingBar.setRating(this.man.getRate());
+                }
+            }
+        }
     }
 
     @Override

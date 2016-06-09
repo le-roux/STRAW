@@ -1,7 +1,10 @@
 <resources>
     <!--Strings for the manager account management part-->
     <string name="app_name">STRAW</string>
+    <string name="title">Discover the best place to eat. Booking your table. Order your food, Stay with friends</string>
     <string name="error_log_in">Error Logging In</string>
+    <string name="log_out">- Log out</string>
+    <string name="forget_mail">A mail was sent to you with the new password!</string>
     <string name="ident">Identification</string>
     <string name="notyet">Not yet a member?</string>
     <string name="user_n">User Name</string>
@@ -11,7 +14,10 @@
     <string name="c_user">Create user</string>
     <string name="c_man">Create manager</string>
     <string name="email">Email</string>
+    <string name="n_pwd">New Password</string>
+    <string name="o_pwd">Old Password</string>
     <string name="c_pwd">New Password</string>
+    <string name="Password">Password</string>
     <string name="cc_pwd">Confirm Password</string>
     <string name="addr">Address</string>
     <string name="tel">Telephone</string>
@@ -63,6 +69,7 @@
     <string name="Price">Price</string>
     <string name="Vegan">Vegan</string>
     <string name="Gluten_free">Gluten Free</string>
+    <string name="Nothing">No particular diet</string>
     <string name="Choose_photo">Choose photo</string>
     <string name="Take_photo">Take photo</string>
     <string name="Ingredients">Ingredients</string>
@@ -85,6 +92,9 @@
     <string name="Cancel">Cancel</string>
     <string name="RefuseOrder">Refuse this order?</string>
     <string name="Yes">Yes</string>
+    <string name="OrderAccepted">Your reservation was accepted by the restaurant</string>
+    <string name="OrderRefused">Your reservation was refused by the restaurant</string>
+    <string name="OrderTimeChanged">Your reservation has been changed to</string>
     <string name="OrderRefusedToast">This order is refused
  A notification has been sent to the customer</string>
     <string name="OrderAcceptedToast">This order is confirmed
@@ -125,8 +135,11 @@
         <item>Take Away</item>
         <item>Bar</item>
     </string-array>
+    <string name="map">Map</string>
+    <string name="list">List</string>
+    <string name="All">All</string>
 
-    <!--Strings for the user creation part -->
+    <!--Strings for the user part -->
     <string name="u_t">User Type</string>
     <string name="uni">University</string>
     <string name="u_d">User diet</string>
@@ -134,25 +147,35 @@
     <string name="student">Student</string>
     <string name="professor">Professor</string>
     <string name="worker">Worker</string>
+    <string name="AddFriends"><u>Add new friends to your friend-list</u></string>
+    <string name="Done">Done</string>
+    <string name="PhoneNumber">Phone Number</string>
+    <string name="Create">Create</string>
+    <string name="ReservationUpdated">Reservation updated</string>
+
 
     <!--Strings for the Book Table part-->
     <string name="BookTable"><u>Book a table</u></string>
     <string name="HowManyPeople">How many people ?</string>
     <string name="Confirm">Confirm</string>
-    <string name="Where">Where ?</string>
+    <string name="Where">Where ? (optional)</string>
     <string name="Inside">Inside</string>
     <string name="Outside">Outside</string>
     <string name="NoPreference">No preference</string>
     <string name="When">When ?</string>
     <string name="InviteFriends">Invite Friend(s)</string>
+    <string name="Invite">Invite</string>
     <string name="PreOrder">Pre-Order</string>
     <string name="ReservationSent">Reservation sent to the restaurant</string>
+    <string name="ReviewSaved">Review saved</string>
+    <string name="UpdatingReservation">Updating reservation</string>
+    <string name="EmptyReservation">Please indicate the number of people</string>
+    <string name="Place">Place : </string>
 
     <!--Strings for the Invite Friends part-->
     <string name="InviteFriendsTitle"><u>Invite Friends</u></string>
     <string name="SendInvitation">Send Invitation(s)</string>
     <string name="InvitationsSent">Invitation(s) sent</string>
-    <string name="Invite">Invite</string>
     <string name="InvitationMessage"> invites you to come at </string>
     <string name="at">at</string>
     <string name="on">on</string>
@@ -168,14 +191,17 @@
 
     <!--Strings for the Confirm Reservation part-->
     <string name="Confirm_title"><u>Confirm</u></string>
+    <string name="SendingReservation">Sending reservation</string>
 
     <string name="rev_h">- Review History</string>
     <string name="res_h">- Reservation History</string>
     <string name="friends">- Friend List</string>
+    <string name="saving">Saving data</string>
 
     <!--Strings for the database part-->
     <string name="NoNetwork">Network is not available\nPlease check your connection</string>
     <string name="AccountCreation">Account creation</string>
+    <string name="AccountEdition">Account edition</string>
     <string name="ProfileCreationSuccessful">Profile created successfully</string>
     <string name="LoggingIn">Logging In</string>
     <string name="NoAuth">No user authenticated, please login</string>
@@ -190,6 +216,7 @@
     <string name="SavingDrinks">Saving drinks</string>
     <string name="RetrievingRestaurants">We are looking for the best results</string>
     <string name="RetrievingReservations">Let us see who want to come</string>
+    <string name="NoReservation">No reservation for now</string>
 
     <!--Strings for the search detail part-->
     <string name="s_menu">Menu</string>
@@ -200,6 +227,8 @@
     <string name="write_rev">Rate and write a brief description</string>
     <string name="WriteReview">Write your review here...</string>
     <string name="submit">Submit</string>
+    <string name="nav">Navigate</string>
+    <string name="on_map">On map</string>
 
     <!--Strings for the advanced search part-->
     <string name="AdvancedSearch"><u>Advanced Search</u></string>
@@ -219,4 +248,11 @@
     <string name="LocationRefused">Location rights not granted</string>
     <string name="InvalidAddress">Invalid address</string>
     <string name="OK">OK</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyCf6IoppoDUF_r3jXs9yBHdwg8LpF2ETQ4</string>
+
+    <string name="LogInAndReserve">Log In And Reserve</string>
 </resources>

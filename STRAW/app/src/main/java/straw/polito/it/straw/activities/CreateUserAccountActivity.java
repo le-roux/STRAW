@@ -1,16 +1,24 @@
 package straw.polito.it.straw.activities;
 
 import android.app.AlertDialog;
+import android.app.DialogFragment;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Environment;
+import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -25,6 +33,10 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.Spinner;
+import android.widget.TextView;
+
+import com.google.android.gms.gcm.GoogleCloudMessaging;
+import com.google.android.gms.iid.InstanceID;
 
 import java.io.File;
 import java.io.IOException;
@@ -35,40 +47,52 @@ import java.util.List;
 
 import straw.polito.it.straw.R;
 import straw.polito.it.straw.StrawApplication;
+import straw.polito.it.straw.TimeContainer;
+import straw.polito.it.straw.TimeDisplayer;
+import straw.polito.it.straw.adapter.ReservationAdapterManager;
 import straw.polito.it.straw.data.User;
+import straw.polito.it.straw.fragments.TimePickerFragment;
+import straw.polito.it.straw.services.RegistrationIntentService;
 import straw.polito.it.straw.utils.DatabaseUtils;
 import straw.polito.it.straw.utils.ImageManager;
 import straw.polito.it.straw.utils.Logger;
 import straw.polito.it.straw.utils.SharedPreferencesHandler;
 import straw.polito.it.straw.utils.Area;
+import straw.polito.it.straw.utils.TimerDisplay;
 
-public class CreateUserAccountActivity extends AppCompatActivity {
+public class CreateUserAccountActivity extends AppCompatActivity implements TimeContainer {
 
-    ImageView photo;
-    EditText c_pwd;
-    EditText cc_pwd;
-    EditText email;
-    Spinner areaSpinner;
-    Spinner u_d;
-    Spinner u_t;
-    Spinner p_t;
-    Button c_acc_button;
-    PopupWindow popUp;
+    private ImageView photo;
+    private EditText c_pwd;
+    private EditText cc_pwd;
+    private EditText email;
+    private Spinner areaSpinner;
+    private Spinner u_d;
+    private Spinner u_t;
+    private TimerDisplay prefTime;
+    private Button c_acc_button;
+    private TextView n_pwd;
+    private TextView o_pwd;
+    private PopupWindow popUp;
 
-    Bitmap bitmap;
-    Area[] areas;
+    private Bitmap bitmap;
+    private Area[] areas;
 
-    Uri photo_uri;
+    private Uri photo_uri;
 
-    List<String> u_t_list;
-    List<String> u_d_list;
-    List<String> p_t_list;
+    private List<String> u_t_list;
+    private List<String> u_d_list;
+    private List<String> p_t_list;
     private String TAG = "CreateUserAccountActivity";
     private SharedPreferencesHandler sharedPreferencesHandler;
     private static final int IMAGE_REQ = 1;
     private static final int CAMERA_REQ = 2;
-    User user;
-    boolean sw;
+    private User user;
+    private boolean sw;
+    private boolean onEdit;
+    private String old_email;
+    private Handler handler;
+    private BroadcastReceiver mRegistrationBroadcastReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,16 +109,25 @@ public class CreateUserAccountActivity extends AppCompatActivity {
         this.areas = sharedPreferencesHandler.getAreaList();
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
-        initialize();
-        setListeners();
+
         if(getIntent().hasExtra("user")){
             Log.v(TAG,getIntent().getExtras().getString("user"));
             user=new User(getIntent().getExtras().getString("user"));
+            onEdit=true;
+            old_email=user.getEmail();
+            initialize();
+            setListeners();
             loadPrevInfo(user);
+
         }else{
             user=new User();
+            onEdit=false;
+            initialize();
+            setListeners();
             setPhoto();
         }
+        Intent intent = new Intent(this, RegistrationIntentService.class);
+        startService(intent);
 
     }
 
@@ -109,7 +142,6 @@ public class CreateUserAccountActivity extends AppCompatActivity {
         }
         u_d.setSelection(u_d_list.indexOf(user.getDiet()));
         u_t.setSelection(u_t_list.indexOf(user.getDiet()));
-        p_t.setSelection(p_t_list.indexOf(user.getDiet()));
         c_acc_button.setText(getString(R.string.save));
     }
 
@@ -121,11 +153,17 @@ public class CreateUserAccountActivity extends AppCompatActivity {
 
         u_t=(Spinner)findViewById(R.id.u_t_spinner);
         u_d=(Spinner)findViewById(R.id.u_d_spinner);
-        p_t=(Spinner)findViewById(R.id.p_t_spinner);
+        prefTime = (TimerDisplay)findViewById(R.id.prefTime);
         email=(EditText)findViewById(R.id.email_editText);
         c_acc_button=(Button)findViewById(R.id.create_button);
         setUpPopUpWindow();
-
+        o_pwd= (TextView) findViewById(R.id.pwd_textView);
+        n_pwd= (TextView) findViewById(R.id.c_pwd_textView);
+        if(onEdit){
+            o_pwd.setText(getString(R.string.o_pwd));
+            o_pwd.setText(getString(R.string.o_pwd));
+            n_pwd.setText(getString(R.string.n_pwd));
+        }
         u_t_list=new ArrayList<>();
         u_d_list=new ArrayList<>();
         p_t_list=new ArrayList<>();
@@ -136,6 +174,7 @@ public class CreateUserAccountActivity extends AppCompatActivity {
 
         u_d_list.add(getString(R.string.Vegan));
         u_d_list.add(getString(R.string.Gluten_free));
+        u_d_list.add(getString(R.string.Nothing));
 
         for(int i=0;i<5;i++){
             p_t_list.add((11+i)+":00");
@@ -143,11 +182,31 @@ public class CreateUserAccountActivity extends AppCompatActivity {
         }
         u_t.setAdapter(new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_list_item_1, u_t_list));
         u_d.setAdapter(new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_list_item_1, u_d_list));
-        p_t.setAdapter(new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_list_item_1, p_t_list));
         areaSpinner.setAdapter(new ArrayAdapter<>(getBaseContext(), android.R.layout.simple_list_item_1, areas));
-
+        mRegistrationBroadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+                boolean sentToken = sharedPreferences.getBoolean("tokenSW", false);
+                if (sentToken) {
+                   user.setTokenGCM(sharedPreferences.getString("tokenGCM","Error"));
+                }
+            }
+        };
+        LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,new IntentFilter("complete"));
     }
     private void setListeners() {
+
+        this.prefTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DialogFragment fragment = new TimePickerFragment();
+                Bundle args = new Bundle();
+                args.putBoolean(ReservationAdapterManager.ADAPTER, false);
+                fragment.setArguments(args);
+                fragment.show(getFragmentManager(), "TimePicker");
+            }
+        });
 
         photo.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -166,40 +225,64 @@ public class CreateUserAccountActivity extends AppCompatActivity {
                     showAlert(getString(R.string.m_email), getString(R.string.error), false);
                     sw = true;
                 }
-                if (c_pwd.getText().toString().equals("") || !c_pwd.getText().toString().equals(cc_pwd.getText().toString())) {
-                    showAlert(getString(R.string.m_pwd), getString(R.string.error), false);
-                    sw = true;
+                if(!onEdit) {
+                    if (c_pwd.getText().toString().equals("") || !c_pwd.getText().toString().equals(cc_pwd.getText().toString())) {
+                        showAlert(getString(R.string.m_pwd), getString(R.string.error), false);
+                        sw = true;
+                    }
                 }
-                /*if (!uni.getText().toString().equals("")) {
-                    user.setUniversity(uni.getText().toString());
-                } else {
-                    showAlert(getString(R.string.uni), getString(R.string.error), false);
-                    sw = true;
-                }*/
                 user.setUniversity(areas[areaSpinner.getSelectedItemPosition()].getName());
                 user.setDiet(u_d_list.get(u_d.getSelectedItemPosition()));
                 user.setType(u_t_list.get(u_t.getSelectedItemPosition()));
-                user.setPref_time(p_t_list.get(p_t.getSelectedItemPosition()));
-                user.setImage(ImageManager.getImageFromUri(getApplicationContext(), photo_uri));
+                user.setPrefTimeHour(prefTime.getHourOfDay());
+                Logger.d("pref hour = " + user.getPrefTimeHour() + " vs " + prefTime.getHourOfDay());
+                user.setPrefTimeMinutes(prefTime.getMinutes());
+                if (photo_uri != null)
+                    user.setImage(ImageManager.getImageFromUri(getApplicationContext(), photo_uri));
 
                 if (!sw) {
-                    /**
-                     * Save the new profile as the current user
-                     */
-                    sharedPreferencesHandler.storeCurrentUser(user.toString());
-                    /**
-                     * Create the new user account in the database, store the profile, log in and
-                     * launch the proper activity.
-                     */
-                    ProgressDialog dialog = new ProgressDialog(CreateUserAccountActivity.this, ProgressDialog.STYLE_SPINNER);
-                    dialog.setIndeterminate(true);
-                    dialog.setMessage(getResources().getString(R.string.AccountCreation));
-                    dialog.setCancelable(false);
-                    dialog.show();
-                    DatabaseUtils databaseUtils = ((StrawApplication)getApplication()).getDatabaseUtils();
-                    String emailAddress = email.getText().toString();
-                    String password = c_pwd.getText().toString();
-                    databaseUtils.createUser(emailAddress, password, SharedPreferencesHandler.USER, dialog);
+                    if(!onEdit) {
+                        /**
+                         * Save the new profile as the current user
+                         */
+                        sharedPreferencesHandler.storeCurrentUser(user.toString());
+                        /**
+                         * Create the new user account in the database, store the profile, log in and
+                         * launch the proper activity.
+                         */
+                        ProgressDialog dialog = new ProgressDialog(CreateUserAccountActivity.this, ProgressDialog.STYLE_SPINNER);
+                        dialog.setIndeterminate(true);
+                        dialog.setMessage(getResources().getString(R.string.AccountCreation));
+                        dialog.setCancelable(false);
+                        dialog.show();
+                        DatabaseUtils databaseUtils = ((StrawApplication) getApplication()).getDatabaseUtils();
+                        String emailAddress = email.getText().toString();
+                        String password = c_pwd.getText().toString();
+                        databaseUtils.createUser(emailAddress, password, SharedPreferencesHandler.USER, dialog);
+                    }else{
+                        /**
+                         * Save the new profile as the current user
+                         */
+
+                        sharedPreferencesHandler.storeCurrentUser(user.toString());
+                        ProgressDialog dialog = new ProgressDialog(CreateUserAccountActivity.this, ProgressDialog.STYLE_SPINNER);
+                        dialog.setIndeterminate(true);
+                        dialog.setMessage(getResources().getString(R.string.AccountEdition));
+                        dialog.setCancelable(false);
+                        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                            @Override
+                            public void onDismiss(DialogInterface dialog) {
+                                finish();
+                            }
+                        });
+                        dialog.show();
+                        DatabaseUtils databaseUtils = ((StrawApplication) getApplication()).getDatabaseUtils();
+                        String emailAddress = email.getText().toString();
+                        String oldpassword = c_pwd.getText().toString();
+                        String password = cc_pwd.getText().toString();
+                        databaseUtils.editUser(old_email,emailAddress, oldpassword,password, SharedPreferencesHandler.USER, dialog);
+
+                    }
                 } else {
                     return;
                 }
@@ -209,7 +292,13 @@ public class CreateUserAccountActivity extends AppCompatActivity {
 
     }
 
-    private void showAlert(String message,String title, final boolean ex){
+    @Override
+    protected void onPause() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mRegistrationBroadcastReceiver);
+        super.onPause();
+    }
+
+    private void showAlert(String message, String title, final boolean ex){
         AlertDialog alertDialog = new AlertDialog.Builder(CreateUserAccountActivity.this).create();
         alertDialog.setTitle(title);
         alertDialog.setMessage(message);
@@ -301,5 +390,10 @@ public class CreateUserAccountActivity extends AppCompatActivity {
                 Logger.d("Error on Activity result! " + e.getMessage());
             }
         }
+    }
+
+    @Override
+    public TimeDisplayer getTimeDisplayer() {
+        return this.prefTime;
     }
 }
