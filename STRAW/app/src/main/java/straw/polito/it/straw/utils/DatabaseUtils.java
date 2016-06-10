@@ -1270,21 +1270,21 @@ public class DatabaseUtils {
                         dialog.dismiss();
                     Manager restaurant = dataSnapshot.getValue(Manager.class);
                     DataSnapshot reviews = dataSnapshot.child(REVIEWS);
-                  /*  for (DataSnapshot review : reviews.getChildren()) {
+                    for (DataSnapshot review : reviews.getChildren()) {
                         restaurant.addReview(review.getValue(Review.class));
                     }
-                    for(int i=0;i<params[0].getList().size();i++){
+                    for(int i = 0; i < params[0].getList().size(); i++){
                         if(params[0].getList().get(i).getRes_name().equals(restaurant.getRes_name())){
                             params[0].getList().remove(i);
                             params[0].getList().add(restaurant);
                         }
                     }
-                    for(int i=0;i<params[1].getList().size();i++){
+                    for(int i = 0; i < params[1].getList().size(); i++){
                         if(params[1].getList().get(i).getRes_name().equals(restaurant.getRes_name())){
                             params[1].getList().remove(i);
                             params[1].getList().add(restaurant);
                         }
-                    }*/
+                    }
                     params[0].getList().add(restaurant);
                     params[1].getList().add(restaurant);
                     params[0].notifyDataSetChanged();
