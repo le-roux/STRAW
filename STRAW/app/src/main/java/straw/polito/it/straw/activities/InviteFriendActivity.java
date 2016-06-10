@@ -6,7 +6,6 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.InputType;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -25,8 +24,8 @@ import straw.polito.it.straw.data.Friend;
 import straw.polito.it.straw.data.Reservation;
 import straw.polito.it.straw.data.User;
 import straw.polito.it.straw.fragments.FriendCreationFragment;
-import straw.polito.it.straw.utils.DateDisplay;
 import straw.polito.it.straw.fragments.InvitationSenderFragment;
+import straw.polito.it.straw.utils.DateDisplay;
 import straw.polito.it.straw.utils.SharedPreferencesHandler;
 import straw.polito.it.straw.utils.TimerDisplay;
 

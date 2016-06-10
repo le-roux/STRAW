@@ -1,7 +1,6 @@
 package straw.polito.it.straw.data;
 
 import android.content.SharedPreferences;
-import android.net.Uri;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 

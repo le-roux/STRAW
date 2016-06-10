@@ -53,7 +53,6 @@ import straw.polito.it.straw.fragments.AddressChooserFragment;
 import straw.polito.it.straw.services.RegistrationIntentService;
 import straw.polito.it.straw.utils.DatabaseUtils;
 import straw.polito.it.straw.utils.ImageManager;
-import straw.polito.it.straw.utils.Logger;
 import straw.polito.it.straw.utils.SharedPreferencesHandler;
 
 public class CreateManagerAccountActivity extends AppCompatActivity implements AddressContainer {
@@ -84,7 +83,6 @@ public class CreateManagerAccountActivity extends AppCompatActivity implements A
 
     private List<String> types;
     private List<String> Ftypes;
-    private String TAG = "CreateManagerAccountActivity";
     private SharedPreferencesHandler sharedPreferencesHandler;
     private SharedPreferences mShared;
     private static final int IMAGE_REQ = 1;
@@ -139,13 +137,12 @@ public class CreateManagerAccountActivity extends AppCompatActivity implements A
 
 
         setListeners();
-        if(getIntent().hasExtra(MANAGER)){
+        if (getIntent().hasExtra(MANAGER)) {
             inEdit = true;
-            Log.v(TAG,getIntent().getExtras().getString(MANAGER));
             man = new Manager(getIntent().getExtras().getString(MANAGER));
             old_email = man.getEmail();
             loadPrevInfo(man);
-        }else{
+        } else {
             inEdit = false;
             man = new Manager();
             setPhoto();
@@ -313,12 +310,10 @@ public class CreateManagerAccountActivity extends AppCompatActivity implements A
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.v(TAG, "Photo selected! " + requestCode);
         if( data != null && resultCode == RESULT_OK && requestCode == IMAGE_REQ){
             sw = false;
             Uri uri = data.getData();
             imageString = ImageManager.getImageFromUri(getApplicationContext(), uri);
-            Logger.d("onActivityResult : " + imageString);
             ImageManager.setImage(getApplicationContext(), photo, imageString);
         }
         if( requestCode == CAMERA_REQ){

@@ -12,7 +12,6 @@ import android.telephony.SmsManager;
 import straw.polito.it.straw.MessageSender;
 import straw.polito.it.straw.R;
 import straw.polito.it.straw.StrawApplication;
-import straw.polito.it.straw.data.User;
 import straw.polito.it.straw.utils.DatabaseUtils;
 
 /**

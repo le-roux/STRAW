@@ -23,7 +23,6 @@ import straw.polito.it.straw.data.Food;
 import straw.polito.it.straw.data.Menu;
 import straw.polito.it.straw.data.Reservation;
 import straw.polito.it.straw.utils.DatabaseUtils;
-import straw.polito.it.straw.utils.Logger;
 import straw.polito.it.straw.utils.PriceDisplay;
 
 public class PreOrderFoodActivity extends AppCompatActivity implements PriceContainer{
@@ -123,7 +122,6 @@ public class PreOrderFoodActivity extends AppCompatActivity implements PriceCont
         if (savedInstanceState == null) {
             DatabaseUtils databaseUtils = ((StrawApplication)getApplication()).getDatabaseUtils();
             databaseUtils.retrieveMenu(this.reservation.getRestaurant(), this.menu);
-            Logger.d("database access");
         }
         this.updatePrice();
     }

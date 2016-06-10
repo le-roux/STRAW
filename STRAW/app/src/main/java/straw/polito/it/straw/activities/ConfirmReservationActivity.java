@@ -3,8 +3,6 @@ package straw.polito.it.straw.activities;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -12,27 +10,17 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.android.gms.gcm.GoogleCloudMessaging;
-
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLEncoder;
 
 import straw.polito.it.straw.CompletionActivity;
 import straw.polito.it.straw.R;
@@ -43,11 +31,9 @@ import straw.polito.it.straw.data.Reservation;
 import straw.polito.it.straw.data.User;
 import straw.polito.it.straw.utils.DatabaseUtils;
 import straw.polito.it.straw.utils.DateDisplay;
-import straw.polito.it.straw.utils.Logger;
 import straw.polito.it.straw.utils.PriceDisplay;
 import straw.polito.it.straw.utils.SharedPreferencesHandler;
 import straw.polito.it.straw.utils.TimerDisplay;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class ConfirmReservationActivity extends AppCompatActivity implements CompletionActivity{
 
@@ -159,7 +145,6 @@ public class ConfirmReservationActivity extends AppCompatActivity implements Com
                     JSONObject res = new JSONObject();
                     res.put("reservation",reservation.toString());
                     jsonObject.put("data",res);
-                    Logger.d("Request "+jsonObject.toString());
                     OutputStreamWriter wr = new OutputStreamWriter(con.getOutputStream());
                     wr.write(jsonObject.toString());
                     wr.flush();
@@ -175,9 +160,6 @@ public class ConfirmReservationActivity extends AppCompatActivity implements Com
                             sb.append(line + "\n");
                         }
                         br.close();
-                        Logger.d("LOL " + sb.toString());
-                    } else {
-                        Logger.d("LEL " +con.getResponseMessage());
                     }
 
                 } catch (MalformedURLException e) {

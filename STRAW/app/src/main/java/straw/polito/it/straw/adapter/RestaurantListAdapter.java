@@ -1,7 +1,6 @@
 package straw.polito.it.straw.adapter;
 
 import android.content.Context;
-import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +15,6 @@ import straw.polito.it.straw.R;
 import straw.polito.it.straw.activities.QuickSearchActivity;
 import straw.polito.it.straw.data.Manager;
 import straw.polito.it.straw.utils.ImageManager;
-import straw.polito.it.straw.utils.Logger;
 
 /**
  * Created by tibo on 16/04/2016.

@@ -100,7 +100,7 @@ public class User {
                     this.reviews.add(new Review(rev.get(i).toString()));
             }
         } catch (JSONException e) {
-            Logger.d("Creating user error "+e.getMessage());
+            Logger.d("Creating user error " + e.getMessage());
         }
     }
 
@@ -144,7 +144,6 @@ public class User {
 
             return jo.toString();
         } catch (JSONException e) {
-            Logger.d("Error when converting user into string");
             return null;
         }
     }

@@ -1,7 +1,6 @@
 package straw.polito.it.straw.adapter;
 
 import android.content.Context;
-import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +15,6 @@ import java.util.ArrayList;
 import straw.polito.it.straw.R;
 import straw.polito.it.straw.data.Food;
 import straw.polito.it.straw.utils.ImageManager;
-import straw.polito.it.straw.utils.Logger;
 
 /**
  * Created by Sylvain on 01/04/2016.
@@ -55,7 +53,6 @@ public class FoodExpandableAdapter extends BaseExpandableListAdapter implements 
         if (groupPosition < 2)
             return groups[groupPosition].size();
         else {
-            Logger.d("group position " + groupPosition);
             return 0;
         }
 

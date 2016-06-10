@@ -16,7 +16,6 @@ import straw.polito.it.straw.R;
 import straw.polito.it.straw.activities.DisplayReservationsActivity;
 import straw.polito.it.straw.data.Reservation;
 import straw.polito.it.straw.fragments.TimePickerFragment;
-import straw.polito.it.straw.utils.Logger;
 
 /**
  * Created by Sylvain on 07/04/2016.
@@ -117,7 +116,6 @@ public class ReservationAdapterManager extends ReservationAdapter {
     @Override
     public void init(int position) {
         if (position < this.reservationList.size() && position >= 0) {
-            Logger.d("reservation " + position + " status " + this.reservationList.get(position).getStatus());
             switch (this.reservationList.get(position).getStatus()) {
                 case (Reservation.PENDING): {
                     setIconVisible(null);

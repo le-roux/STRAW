@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import straw.polito.it.straw.PriceContainer;
 import straw.polito.it.straw.R;
 import straw.polito.it.straw.data.Food;
-import straw.polito.it.straw.utils.Logger;
 
 /**
  * Created by Sylvain on 19/04/2016.

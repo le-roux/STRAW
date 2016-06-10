@@ -5,8 +5,6 @@ import android.content.SharedPreferences;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-
 /**
  * Created by Sylvain on 01/04/2016.
  */

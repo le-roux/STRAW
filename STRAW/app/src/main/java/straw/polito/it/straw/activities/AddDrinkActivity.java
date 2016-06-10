@@ -1,10 +1,7 @@
 package straw.polito.it.straw.activities;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -12,7 +9,6 @@ import org.json.JSONException;
 import java.util.ArrayList;
 
 import straw.polito.it.straw.R;
-import straw.polito.it.straw.data.Drink;
 import straw.polito.it.straw.data.Food;
 import straw.polito.it.straw.data.Menu;
 

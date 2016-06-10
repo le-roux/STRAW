@@ -14,15 +14,13 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
@@ -34,9 +32,6 @@ import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.Spinner;
 import android.widget.TextView;
-
-import com.google.android.gms.gcm.GoogleCloudMessaging;
-import com.google.android.gms.iid.InstanceID;
 
 import java.io.File;
 import java.io.IOException;
@@ -53,11 +48,11 @@ import straw.polito.it.straw.adapter.ReservationAdapterManager;
 import straw.polito.it.straw.data.User;
 import straw.polito.it.straw.fragments.TimePickerFragment;
 import straw.polito.it.straw.services.RegistrationIntentService;
+import straw.polito.it.straw.utils.Area;
 import straw.polito.it.straw.utils.DatabaseUtils;
 import straw.polito.it.straw.utils.ImageManager;
 import straw.polito.it.straw.utils.Logger;
 import straw.polito.it.straw.utils.SharedPreferencesHandler;
-import straw.polito.it.straw.utils.Area;
 import straw.polito.it.straw.utils.TimerDisplay;
 
 public class CreateUserAccountActivity extends AppCompatActivity implements TimeContainer {
@@ -83,7 +78,6 @@ public class CreateUserAccountActivity extends AppCompatActivity implements Time
     private List<String> u_t_list;
     private List<String> u_d_list;
     private List<String> p_t_list;
-    private String TAG = "CreateUserAccountActivity";
     private SharedPreferencesHandler sharedPreferencesHandler;
     private static final int IMAGE_REQ = 1;
     private static final int CAMERA_REQ = 2;
@@ -91,7 +85,6 @@ public class CreateUserAccountActivity extends AppCompatActivity implements Time
     private boolean sw;
     private boolean onEdit;
     private String old_email;
-    private Handler handler;
     private BroadcastReceiver mRegistrationBroadcastReceiver;
 
     @Override
@@ -111,7 +104,6 @@ public class CreateUserAccountActivity extends AppCompatActivity implements Time
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
         if(getIntent().hasExtra("user")){
-            Log.v(TAG,getIntent().getExtras().getString("user"));
             user=new User(getIntent().getExtras().getString("user"));
             onEdit=true;
             old_email=user.getEmail();
@@ -235,7 +227,6 @@ public class CreateUserAccountActivity extends AppCompatActivity implements Time
                 user.setDiet(u_d_list.get(u_d.getSelectedItemPosition()));
                 user.setType(u_t_list.get(u_t.getSelectedItemPosition()));
                 user.setPrefTimeHour(prefTime.getHourOfDay());
-                Logger.d("pref hour = " + user.getPrefTimeHour() + " vs " + prefTime.getHourOfDay());
                 user.setPrefTimeMinutes(prefTime.getMinutes());
                 if (photo_uri != null)
                     user.setImage(ImageManager.getImageFromUri(getApplicationContext(), photo_uri));
@@ -350,7 +341,7 @@ public class CreateUserAccountActivity extends AppCompatActivity implements Time
 
                     File image = new File(imagesFolder, "QR_" + timeStamp + ".png");
                     Uri uriSavedImage = Uri.fromFile(image);
-                    photo_uri=uriSavedImage;
+                    photo_uri = uriSavedImage;
                     imageIntent.putExtra(MediaStore.EXTRA_OUTPUT, uriSavedImage);
                     startActivityForResult(imageIntent, CAMERA_REQ);
 
@@ -367,26 +358,25 @@ public class CreateUserAccountActivity extends AppCompatActivity implements Time
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.v(TAG, "Photo selected! " + requestCode);
-        if( data!=null && resultCode==RESULT_OK && requestCode== IMAGE_REQ){
-            sw=false;
-            Uri image =data.getData();
-            photo_uri=data.getData();
+        if(data != null && resultCode == RESULT_OK && requestCode == IMAGE_REQ){
+            sw = false;
+            Uri image = data.getData();
+            photo_uri = data.getData();
             try{
                 bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(),image);
-                bitmap=Bitmap.createScaledBitmap(bitmap,photo.getHeight(),photo.getWidth(),true);
+                bitmap = Bitmap.createScaledBitmap(bitmap,photo.getHeight(),photo.getWidth(),true);
                 photo.setImageBitmap(bitmap);
             }catch(IOException e){
-                Log.v(TAG,"Error on Activity result! "+e.getMessage());
+                Logger.d("Error on Activity result! " + e.getMessage());
             }
         }
         if( requestCode== CAMERA_REQ){
-            sw=true;
+            sw = true;
             try{
                 bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(),photo_uri);
                 bitmap=Bitmap.createScaledBitmap(bitmap, photo.getHeight(), photo.getWidth(), true);
                 photo.setImageBitmap(bitmap);
-            }catch(Exception e){
+            } catch(Exception e){
                 Logger.d("Error on Activity result! " + e.getMessage());
             }
         }

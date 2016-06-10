@@ -5,7 +5,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * Created by Andres Camilo Jimenez on 13/04/2016.
@@ -15,18 +14,18 @@ public class Offer {
     double price;
 
     public Offer() {
-        this.combo=new ArrayList<>();
-        this.price=0;
+        this.combo = new ArrayList<>();
+        this.price = 0;
     }
 
     public Offer(String offer){
         try {
-            JSONObject oj=new JSONObject(offer);
-            this.price= new Double(String.valueOf(oj.get("price")));
-            String c= (String) oj.get("combo");
-            JSONArray jarr=new JSONArray(c);
-            this.combo=new ArrayList<>();
-            for(int i=0;i<jarr.length();i++){
+            JSONObject oj = new JSONObject(offer);
+            this.price = new Double(String.valueOf(oj.get("price")));
+            String c = (String) oj.get("combo");
+            JSONArray jarr = new JSONArray(c);
+            this.combo = new ArrayList<>();
+            for(int i = 0; i < jarr.length(); i++){
                 this.combo.add(Food.create(jarr.getJSONObject(i)));
             }
         } catch (JSONException e) {

@@ -40,15 +40,14 @@ public class OfferActivity extends AppCompatActivity {
         mShared= PreferenceManager.getDefaultSharedPreferences(this);
         offerts = new ArrayList<>();
         if(mShared.contains("Offerts")) {
-            Logger.d("Offerts "+mShared.getString("Offerts","Error") );
            try{
-               JSONArray jarr =new JSONArray(mShared.getString("Offerts","Error"));
-               offerts=new ArrayList<>();
-               for(int i=0;i<jarr.length();i++){
+               JSONArray jarr = new JSONArray(mShared.getString("Offerts","Error"));
+               offerts = new ArrayList<>();
+               for(int i = 0; i<jarr.length(); i++){
                    offerts.add(new Offer(jarr.get(i).toString()));
                }
 
-           }catch(Exception ex){
+           } catch(Exception ex){
                Logger.d(ex.getMessage());
            }
 
@@ -79,7 +78,6 @@ public class OfferActivity extends AppCompatActivity {
             if(data.hasExtra("new_combo")) {
                 offerts.add(new Offer(mShared.getString("Combo","Error")));
                 ((OffersListAdapter)this.offerts_listView.getAdapter()).notifyDataSetChanged();
-                Logger.d("New Combo created! ");
             }
         }
     }

@@ -1,24 +1,18 @@
 package straw.polito.it.straw.activities;
 
+import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
-import java.util.ArrayList;
-
 import straw.polito.it.straw.R;
 import straw.polito.it.straw.StrawApplication;
 import straw.polito.it.straw.adapter.ReviewAdapter;
-import straw.polito.it.straw.data.Review;
 import straw.polito.it.straw.data.User;
 import straw.polito.it.straw.utils.DatabaseUtils;
-import straw.polito.it.straw.utils.Logger;
-import straw.polito.it.straw.utils.SharedPreferencesHandler;
 
 /**
  * Created by Andres Camilo Jimenez on 22/05/2016.

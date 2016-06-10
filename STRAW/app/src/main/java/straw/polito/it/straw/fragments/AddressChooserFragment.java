@@ -82,7 +82,6 @@ public class AddressChooserFragment extends DialogFragment {
                 return addressList;
             } catch (IOException e) {
                 e.printStackTrace();
-                Logger.d("error geocoder");
                 Toast.makeText(activity, R.string.ErrorGeocoder, Toast.LENGTH_LONG).show();
                 return new ArrayList<>();
             }

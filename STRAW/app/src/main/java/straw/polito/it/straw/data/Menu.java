@@ -2,18 +2,12 @@ package straw.polito.it.straw.data;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.net.ConnectivityManager;
 import android.preference.PreferenceManager;
-
-import com.firebase.client.Firebase;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.util.ArrayList;
-
-import straw.polito.it.straw.StrawApplication;
-import straw.polito.it.straw.utils.Logger;
 
 /**
  * Created by Sylvain on 22/04/2016.

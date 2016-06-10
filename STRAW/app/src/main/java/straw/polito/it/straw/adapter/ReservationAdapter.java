@@ -18,7 +18,6 @@ import java.util.ArrayList;
 
 import straw.polito.it.straw.R;
 import straw.polito.it.straw.StrawApplication;
-import straw.polito.it.straw.activities.DisplayReservationsActivity;
 import straw.polito.it.straw.data.Reservation;
 import straw.polito.it.straw.utils.DatabaseUtils;
 import straw.polito.it.straw.utils.DateDisplay;

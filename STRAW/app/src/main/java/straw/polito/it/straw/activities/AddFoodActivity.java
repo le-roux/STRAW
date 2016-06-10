@@ -19,7 +19,6 @@ import straw.polito.it.straw.R;
 import straw.polito.it.straw.adapter.FoodAdapterCheckbox;
 import straw.polito.it.straw.data.Food;
 import straw.polito.it.straw.data.Menu;
-import straw.polito.it.straw.utils.Logger;
 import straw.polito.it.straw.utils.PriceDisplay;
 
 public abstract class AddFoodActivity extends AppCompatActivity implements PriceContainer {

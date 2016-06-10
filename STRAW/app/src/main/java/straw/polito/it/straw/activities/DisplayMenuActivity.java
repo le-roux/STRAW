@@ -15,7 +15,6 @@ import straw.polito.it.straw.StrawApplication;
 import straw.polito.it.straw.adapter.FoodExpandableAdapter;
 import straw.polito.it.straw.data.Manager;
 import straw.polito.it.straw.data.Menu;
-import straw.polito.it.straw.utils.Logger;
 
 
 public class DisplayMenuActivity extends AppCompatActivity {
@@ -36,7 +35,6 @@ public class DisplayMenuActivity extends AppCompatActivity {
         // Initialisation of the listView
         ExpandableListView food_listView = (ExpandableListView)findViewById(R.id.Plate_list);
         if (food_listView == null) {
-            Logger.d("Impossible to find the ExpandableListView in DisplayMenuActivity");
             finish();
             return;
         }
