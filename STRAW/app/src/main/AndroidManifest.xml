@@ -112,7 +112,8 @@
             android:name=".services.RegistrationIntentService"
             android:exported="false"/>
 
-        <activity android:name=".activities.DisplayInvitationActivity"/>
+        <activity android:name=".activities.DisplayInvitationActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 
 </manifest>

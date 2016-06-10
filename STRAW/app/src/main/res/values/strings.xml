@@ -261,4 +261,5 @@
     <!-- Titles -->
     <string name="Add_Plate">ADD PLATE</string>
     <string name="Add_Drink">ADD DRINK</string>
+    <string name="Display_Invitations">DISPLAY INVITATIONS</string>
 </resources>
