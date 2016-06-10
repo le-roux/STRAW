@@ -44,6 +44,8 @@ public abstract class ReservationAdapter extends BaseAdapter {
     //Created by Herbert Spencer from Noun Project
     public static final String WAIT_ICON = "android.resource://straw.polito.it.straw/drawable/wait";
     //Created by Arthur Shlain from Noun Project
+    public static final String PAST_ICON = "android.resource://straw.polito.it.straw/drawable/past";
+    //Created by Creative Stall from Noun Project
 
     public ReservationAdapter (Context context) {
         this.reservationList = new ArrayList<Reservation>();

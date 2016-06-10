@@ -41,18 +41,16 @@
             android:layout_height="0dp"
             android:layout_above="@id/edit_button"
             android:layout_alignParentTop="true"
-            android:id="@+id/scrollView">
+            android:id="@+id/scrollView"
+            android:background="@drawable/customborder"
+            android:layout_margin="@dimen/padding">
 
             <RelativeLayout
                 android:id="@+id/Relativelayout03"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:orientation="vertical"
-                android:weightSum="1"
-                android:background="@drawable/customborder"
-                android:layout_marginLeft="10sp"
-                android:layout_marginRight="10sp"
-                android:layout_marginTop="10sp">
+                android:weightSum="1">
 
                 <ImageView
                     android:layout_width="@dimen/imageSizeBig"

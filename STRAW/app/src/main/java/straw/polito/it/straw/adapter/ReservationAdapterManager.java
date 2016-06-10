@@ -135,6 +135,10 @@ public class ReservationAdapterManager extends ReservationAdapter {
                     setIconVisible(WAIT_ICON);
                     break;
                 }
+                case (Reservation.PASSED) : {
+                    setIconVisible(PAST_ICON);
+                    break;
+                }
             }
         }
     }
