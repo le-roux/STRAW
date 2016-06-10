@@ -51,8 +51,10 @@ public class BookTableActivity extends AppCompatActivity implements BookTableInt
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_book_table);
         Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar); // Attaching the layout to the toolbar object
-        toolbar.setTitle("BOOK  TABLE");
-        setSupportActionBar(toolbar);
+        if (toolbar != null) {
+            toolbar.setTitle(getString(R.string.Book_Table));
+            setSupportActionBar(toolbar);
+        }
 
         this.numberPeopleNumber = (TextView)findViewById(R.id.number_people_number);
         this.calendarButton = (Button)findViewById(R.id.calendar);

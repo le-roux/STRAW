@@ -30,8 +30,10 @@ public class CreateReviewActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_review);
         Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar); // Attaching the layout to the toolbar object
-        toolbar.setTitle("ADD  REVIEW");
-        setSupportActionBar(toolbar);
+        if (toolbar != null) {
+            toolbar.setTitle(getString(R.string.Add_Review));
+            setSupportActionBar(toolbar);
+        }
         man = new Manager(getIntent().getExtras().getString(SearchDetailActivity.RESTAURANT));
 
         final StrawApplication application = (StrawApplication)getApplication();

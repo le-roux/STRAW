@@ -54,8 +54,10 @@ public class InviteFriendActivity extends AppCompatActivity implements MessageSe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_invite_friend);
         Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar); // Attaching the layout to the toolbar object
-        toolbar.setTitle("INVITE  FRIENDS");
-        setSupportActionBar(toolbar);
+        if (toolbar != null) {
+            toolbar.setTitle(getString(R.string.Invite_Friends));
+            setSupportActionBar(toolbar);
+        }
 
         Intent intent = getIntent();
         this.reservation = Reservation.create(intent.getStringExtra(Reservation.RESERVATION));

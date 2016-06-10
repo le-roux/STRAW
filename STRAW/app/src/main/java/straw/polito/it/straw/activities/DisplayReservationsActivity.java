@@ -30,8 +30,10 @@ public class DisplayReservationsActivity extends AppCompatActivity implements Ba
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_reservations);
         Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar); // Attaching the layout to the toolbar object
-        toolbar.setTitle("DISPLAY  RESERVATIONS");
-        setSupportActionBar(toolbar);
+        if (toolbar != null) {
+            toolbar.setTitle(getString(R.string.Display_Reservations));
+            setSupportActionBar(toolbar);
+        }
         Intent intent = getIntent();
 
         this.pastReservations = intent.getBooleanExtra(PAST_RESERVATIONS, false);

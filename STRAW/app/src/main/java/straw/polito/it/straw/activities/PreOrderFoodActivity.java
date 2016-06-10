@@ -48,8 +48,10 @@ public class PreOrderFoodActivity extends AppCompatActivity implements PriceCont
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pre_order_food);
         Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar); // Attaching the layout to the toolbar object
-        toolbar.setTitle("PRE-ORDER  FOOD");
-        setSupportActionBar(toolbar);
+        if (toolbar != null) {
+            toolbar.setTitle(getString(R.string.Pre_Order_Food));
+            setSupportActionBar(toolbar);
+        }
         Intent intent = getIntent();
         if(intent != null) {
             if(intent.getStringExtra(Reservation.RESERVATION)!=null) {

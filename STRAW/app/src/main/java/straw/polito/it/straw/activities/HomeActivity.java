@@ -50,8 +50,10 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar); // Attaching the layout to the toolbar object
-        toolbar.setTitle("HOME");
-        setSupportActionBar(toolbar);
+        if (toolbar != null) {
+            toolbar.setTitle(getString(R.string.Home));
+            setSupportActionBar(toolbar);
+        }
         mShared= PreferenceManager.getDefaultSharedPreferences(this);
 
         initialize();

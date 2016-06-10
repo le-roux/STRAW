@@ -261,5 +261,24 @@
     <!-- Titles -->
     <string name="Add_Plate">ADD PLATE</string>
     <string name="Add_Drink">ADD DRINK</string>
+    <string name="Advanced_Search">ADVANCED SEARCH</string>
+    <string name="Book_Table">BOOK TABLE</string>
+    <string name="Confirm_Reservation">CONFIRM RESERVATION</string>
+    <string name="Create_Drink">CREATE DRINK</string>
+    <string name="Create_Manager_Account">CREATE MANAGER ACCOUNT</string>
+    <string name="Create_Menu">CREATE MENU</string>
+    <string name="Create_Plate">CREATE PLATE</string>
+    <string name="Add_Review">ADD REVIEW</string>
+    <string name="Create_User_Account">CREATE USER ACCOUNT</string>
     <string name="Display_Invitations">DISPLAY INVITATIONS</string>
+    <string name="Display_Menu">DISPLAY MENU</string>
+    <string name="Display_Reservations">DISPLAY RESERVATIONS</string>
+    <string name="Home">HOME</string>
+    <string name="Invite_Friends">INVITE FRIENDS</string>
+    <string name="Pre_Order_Food">PRE-ORDER FOOD</string>
+    <string name="Profile_Manager">PROFILE MANAGER</string>
+    <string name="Profile_User">PROFILE USER</string>
+    <string name="Quick_Search">QUICK SEARCH</string>
+    <string name="Search_Options">SEARCH OPTIONS</string>
+    <string name="Search_Detail">SEARCH DETAIL</string>
 </resources>

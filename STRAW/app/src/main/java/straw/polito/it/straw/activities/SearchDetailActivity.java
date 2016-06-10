@@ -51,8 +51,10 @@ public class SearchDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_detail);
         Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar); // Attaching the layout to the toolbar object
-        toolbar.setTitle("SEARCH DETAIL");
-        setSupportActionBar(toolbar);
+        if (toolbar != null) {
+            toolbar.setTitle(getString(R.string.Search_Detail));
+            setSupportActionBar(toolbar);
+        }
         if (savedInstanceState == null)
             man = new Manager(getIntent().getExtras().getString(RESTAURANT));
         else // The activity is restarting

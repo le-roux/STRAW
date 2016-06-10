@@ -92,8 +92,10 @@ public class CreateUserAccountActivity extends AppCompatActivity implements Time
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_user);
         Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar); // Attaching the layout to the toolbar object
-        toolbar.setTitle("CREATE USER ACCOUNT");
-        setSupportActionBar(toolbar);
+        if (toolbar != null) {
+            toolbar.setTitle(getString(R.string.Create_User_Account));
+            setSupportActionBar(toolbar);
+        }
 
         sharedPreferencesHandler = ((StrawApplication)getApplication()).getSharedPreferencesHandler();
 

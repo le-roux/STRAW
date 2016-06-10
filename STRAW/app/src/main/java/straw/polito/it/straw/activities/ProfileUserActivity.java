@@ -48,8 +48,10 @@ public class ProfileUserActivity extends AppCompatActivity implements UserContai
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_user);
         Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar); // Attaching the layout to the toolbar object
-        toolbar.setTitle("PROFILE  USER");
-        setSupportActionBar(toolbar);
+        if (toolbar != null) {
+            toolbar.setTitle(getString(R.string.Profile_User));
+            setSupportActionBar(toolbar);
+        }
         sharedPreferencesHandler = ((StrawApplication)getApplication()).getSharedPreferencesHandler();
         this.fragmentManager = getFragmentManager();
 

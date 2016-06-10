@@ -101,8 +101,10 @@ public class CreateManagerAccountActivity extends AppCompatActivity implements A
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_account);
         Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar); // Attaching the layout to the toolbar object
-        toolbar.setTitle("CREATE MANAGER ACCOUNT");
-        setSupportActionBar(toolbar);
+        if (toolbar != null) {
+            toolbar.setTitle(getString(R.string.Create_Manager_Account));
+            setSupportActionBar(toolbar);
+        }
 
         this.context = this;
         sharedPreferencesHandler = ((StrawApplication)getApplication()).getSharedPreferencesHandler();

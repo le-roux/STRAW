@@ -67,8 +67,10 @@ public class CreateDrinkActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_drink);
         Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar); // Attaching the layout to the toolbar object
-        toolbar.setTitle("CREATE  DRINK");
-        setSupportActionBar(toolbar);
+        if (toolbar != null) {
+            toolbar.setTitle(getString(R.string.Create_Drink));
+            setSupportActionBar(toolbar);
+        }
         this.intent = getIntent();
 
         setPopupWindow();

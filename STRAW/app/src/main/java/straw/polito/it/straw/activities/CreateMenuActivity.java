@@ -56,8 +56,10 @@ public class CreateMenuActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_menu);
         Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar); // Attaching the layout to the toolbar object
-        toolbar.setTitle("CREATE  MENU");
-        setSupportActionBar(toolbar);
+        if (toolbar != null) {
+            toolbar.setTitle(getString(R.string.Create_Menu));
+            setSupportActionBar(toolbar);
+        }
         this.application = (StrawApplication)getApplication();
 
         this.context = this;

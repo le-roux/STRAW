@@ -58,8 +58,10 @@ public class CreatePlateActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_plate);
         Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar); // Attaching the layout to the toolbar object
-        toolbar.setTitle("CREATE  PLATE");
-        setSupportActionBar(toolbar);
+        if (toolbar != null) {
+            toolbar.setTitle(getString(R.string.Create_Plate));
+            setSupportActionBar(toolbar);
+        }
         this.setPopupWindow();
         this.getViews();
         this.intent = getIntent();

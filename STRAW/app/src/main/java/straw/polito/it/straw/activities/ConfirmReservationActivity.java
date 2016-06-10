@@ -54,8 +54,10 @@ public class ConfirmReservationActivity extends AppCompatActivity implements Com
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_confirm_reservation);
         Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar); // Attaching the layout to the toolbar object
-        toolbar.setTitle("CONFIRM  RESERVATION");
-        setSupportActionBar(toolbar);
+        if (toolbar != null) {
+            toolbar.setTitle(getString(R.string.Confirm_Reservation));
+            setSupportActionBar(toolbar);
+        }
         Intent intent = getIntent();
         this.tokenTo=intent.getExtras().getString("tokenGCM");
         this.resources = getResources();

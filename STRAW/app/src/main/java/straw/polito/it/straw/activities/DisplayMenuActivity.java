@@ -26,8 +26,10 @@ public class DisplayMenuActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_menu);
         Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar); // Attaching the layout to the toolbar object
-        toolbar.setTitle("DISPLAY  MENU");
-        setSupportActionBar(toolbar);
+        if (toolbar != null) {
+            toolbar.setTitle(getString(R.string.Display_Menu));
+            setSupportActionBar(toolbar);
+        }
         this.goods = new ArrayList[2];
         this.goods[Menu.PLATES] = new ArrayList<>();
         this.goods[Menu.DRINKS] = new ArrayList<>();

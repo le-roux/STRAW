@@ -62,8 +62,10 @@ public class AdvancedSearchActivity extends AppCompatActivity implements Address
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_advanced_search);
         Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar); // Attaching the layout to the toolbar object
-        toolbar.setTitle("ADVANCED SEARCH");
-        setSupportActionBar(toolbar);
+        if (toolbar != null) {
+            toolbar.setTitle(getString(R.string.Advanced_Search));
+            setSupportActionBar(toolbar);
+        }
 
         this.locationManager = (LocationManager)this.getSystemService(Context.LOCATION_SERVICE);
 

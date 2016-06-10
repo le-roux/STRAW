@@ -65,8 +65,10 @@ public class QuickSearchActivity extends FragmentActivity implements RestaurantF
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quick_search);
         Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar); // Attaching the layout to the toolbar object
-        toolbar.setTitle("QUICK  SEARCH");
-        setSupportActionBar(toolbar);
+        if (toolbar != null) {
+            toolbar.setTitle(getString(R.string.Quick_Search));
+            setSupportActionBar(toolbar);
+        }
         this.application = (StrawApplication)getApplication();
 
         // Add this value that will be used by the markers in the map

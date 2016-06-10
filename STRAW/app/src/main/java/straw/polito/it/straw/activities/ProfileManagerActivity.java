@@ -46,8 +46,10 @@ public class ProfileManagerActivity extends AppCompatActivity {
         setContentView(R.layout.activity_profile_manager);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar); // Attaching the layout to the toolbar object
-        toolbar.setTitle("PROFILE  MANAGER");
-        setSupportActionBar(toolbar);
+        if (toolbar != null) {
+            toolbar.setTitle(getString(R.string.Profile_Manager));
+            setSupportActionBar(toolbar);
+        }
         mShared = PreferenceManager.getDefaultSharedPreferences(this);
 
 

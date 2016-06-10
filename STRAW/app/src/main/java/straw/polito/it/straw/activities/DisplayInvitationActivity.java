@@ -21,8 +21,10 @@ public class DisplayInvitationActivity extends AppCompatActivity {
         setContentView(R.layout.activity_display_invitation);
 
         Toolbar toolbar = (Toolbar)findViewById(R.id.tool_bar); // Attaching the layout to the toolbar object
-        toolbar.setTitle(getString(R.string.Display_Invitations));
-        setSupportActionBar(toolbar);
+        if (toolbar != null) {
+            toolbar.setTitle(getString(R.string.Display_Invitations));
+            setSupportActionBar(toolbar);
+        }
 
         String message = getIntent().getStringExtra(InviteFriendActivity.INVITATION);
         this.restaurantName = getIntent().getStringExtra(InviteFriendActivity.RESTAURANT);
