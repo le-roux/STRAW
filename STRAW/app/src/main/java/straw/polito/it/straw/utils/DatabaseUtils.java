@@ -891,7 +891,9 @@ public class DatabaseUtils {
                 @Override
                 public void onAuthenticationError(FirebaseError firebaseError) {
                     Logger.d("error log in : " + firebaseError.getMessage());
-                    dialog.dismiss();
+                    if(dialog!=null) {
+                        dialog.dismiss();
+                    }
                     Toast.makeText(context, R.string.error_log_in, Toast.LENGTH_SHORT).show();
                 }
             });
