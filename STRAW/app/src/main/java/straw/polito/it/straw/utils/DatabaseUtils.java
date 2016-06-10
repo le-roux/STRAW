@@ -1265,13 +1265,26 @@ public class DatabaseUtils {
             ref.addChildEventListener(new ChildEventListener() {
                 @Override
                 public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                    Logger.d("ON CHILD ADDED");
                     if (dialog != null)
                         dialog.dismiss();
                     Manager restaurant = dataSnapshot.getValue(Manager.class);
                     DataSnapshot reviews = dataSnapshot.child(REVIEWS);
-                    for (DataSnapshot review : reviews.getChildren()) {
+                  /*  for (DataSnapshot review : reviews.getChildren()) {
                         restaurant.addReview(review.getValue(Review.class));
                     }
+                    for(int i=0;i<params[0].getList().size();i++){
+                        if(params[0].getList().get(i).getRes_name().equals(restaurant.getRes_name())){
+                            params[0].getList().remove(i);
+                            params[0].getList().add(restaurant);
+                        }
+                    }
+                    for(int i=0;i<params[1].getList().size();i++){
+                        if(params[1].getList().get(i).getRes_name().equals(restaurant.getRes_name())){
+                            params[1].getList().remove(i);
+                            params[1].getList().add(restaurant);
+                        }
+                    }*/
                     params[0].getList().add(restaurant);
                     params[1].getList().add(restaurant);
                     params[0].notifyDataSetChanged();
@@ -1281,6 +1294,7 @@ public class DatabaseUtils {
 
                 @Override
                 public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                    Logger.d("ON CHILD CHANGED");
                     params[0].getList().remove(dataSnapshot.getValue(Manager.class));
                     params[1].getList().remove(dataSnapshot.getValue(Manager.class));
                     params[0].getList().add(dataSnapshot.getValue(Manager.class));
@@ -1291,6 +1305,7 @@ public class DatabaseUtils {
 
                 @Override
                 public void onChildRemoved(DataSnapshot dataSnapshot) {
+                    Logger.d("ON CHILD ADDED");
                     params[0].getList().remove(dataSnapshot.getValue(Manager.class));
                     params[1].getList().remove(dataSnapshot.getValue(Manager.class));
                     params[0].notifyDataSetChanged();

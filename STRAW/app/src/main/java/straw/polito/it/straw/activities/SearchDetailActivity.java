@@ -16,9 +16,11 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import straw.polito.it.straw.R;
+import straw.polito.it.straw.StrawApplication;
 import straw.polito.it.straw.adapter.ReviewAdapter;
 import straw.polito.it.straw.data.Manager;
 import straw.polito.it.straw.data.Review;
+import straw.polito.it.straw.utils.DatabaseUtils;
 import straw.polito.it.straw.utils.ImageManager;
 import straw.polito.it.straw.utils.Logger;
 
@@ -60,7 +62,6 @@ public class SearchDetailActivity extends AppCompatActivity {
         else // The activity is restarting
             this.man = new Manager(savedInstanceState.getString(RESTAURANT));
         initialize();
-
         // Prepare the elements to display
         name.setText(man.getRes_name());
         StringBuilder builder = new StringBuilder();

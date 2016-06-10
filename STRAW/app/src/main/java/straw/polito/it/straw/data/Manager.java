@@ -71,8 +71,12 @@ public class Manager {
             this.email = oj.getString(EMAIL_ADDRESS);
             this.min_price = oj.getDouble(PRICE_MIN);
             this.max_price = oj.getDouble(PRICE_MAX);
-            this.tokenGCM = oj.getString(TOKEN_GCM);
-            this.food_type = oj.getString(FOOD_TYPE);
+            if(oj.has(TOKEN_GCM)) {
+                this.tokenGCM = oj.getString(TOKEN_GCM);
+            }
+            if(oj.has(FOOD_TYPE)) {
+                this.food_type = oj.getString(FOOD_TYPE);
+            }
             this.latitude = oj.getDouble(LATITUDE);
             this.longitude = oj.getDouble(LONGITUDE);
             try {
@@ -84,7 +88,7 @@ public class Manager {
                 this.reviews = new ArrayList<>();
             }
         } catch (JSONException e) {
-            Logger.d("Error creating the manager");
+           e.printStackTrace();
         }
     }
 
