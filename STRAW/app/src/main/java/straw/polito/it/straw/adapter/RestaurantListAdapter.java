@@ -23,7 +23,6 @@ public class RestaurantListAdapter extends BaseAdapter {
 
     private ArrayList<Manager> list;
     private static Context context;
-    private QuickSearchActivity parentActivity;
 
     public RestaurantListAdapter(Context context) {
         this.list = new ArrayList<Manager>();

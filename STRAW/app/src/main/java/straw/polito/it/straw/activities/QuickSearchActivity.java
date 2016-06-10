@@ -98,20 +98,14 @@ public class QuickSearchActivity extends FragmentActivity implements RestaurantF
             }
         }
 
-
         this.filtersButton = (Button) findViewById(R.id.addfilter);
         restaurant_list = new ArrayList<>();
         restaurant_list_tmp = new ArrayList<>();
         this.FoodFilter = "";
         this.PlaceFilter = "";
-        ProgressDialog dialog = new ProgressDialog(this);
-        dialog.setMessage(this.getString(R.string.RetrievingRestaurants));
-        dialog.setIndeterminate(true);
-        dialog.setCancelable(false);
-        dialog.show();
+
         this.adapter = new RestaurantListAdapter(getApplicationContext(), restaurant_list);
-        RestaurantListAdapter adapterForFilter = new RestaurantListAdapter(getApplicationContext(), restaurant_list_tmp);
-        this.application.getDatabaseUtils().retrieveRestaurantList(this.adapter, adapterForFilter, dialog, this);
+
 
         addListenerOnButton();
         addListenerOnSpinnerItemSelection();
@@ -146,6 +140,20 @@ public class QuickSearchActivity extends FragmentActivity implements RestaurantF
         this.fragmentManager = this.getSupportFragmentManager();
         this.currentFragment = MAP;
         toggleFragment();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        this.restaurant_list.clear();
+        this.restaurant_list_tmp.clear();
+        ProgressDialog dialog = new ProgressDialog(this);
+        dialog.setMessage(this.getString(R.string.RetrievingRestaurants));
+        dialog.setIndeterminate(true);
+        dialog.setCancelable(false);
+        dialog.show();
+        RestaurantListAdapter adapterForFilter = new RestaurantListAdapter(getApplicationContext(), restaurant_list_tmp);
+        this.application.getDatabaseUtils().retrieveRestaurantList(this.adapter, adapterForFilter, dialog, this);
     }
 
     private void setSupportActionBar(Toolbar toolbar) {
