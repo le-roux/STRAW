@@ -260,6 +260,7 @@ public class Reservation implements TimeDisplayer, DateDisplayer{
             jsonObject.put(PLACE, this.getPlace());
             jsonObject.put(RESTAURANT, this.getRestaurant());
             jsonObject.put(CUSTOMER, this.getCustomer());
+            jsonObject.put(STATUS, this.getStatus());
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -292,13 +293,11 @@ public class Reservation implements TimeDisplayer, DateDisplayer{
             int minutes = jsonObject.getInt(MINUTES);
             reservation.setTime(year, month, day, hour, minutes);
             reservation.setPlace(jsonObject.getInt(PLACE));
-            Logger.d("create : " + jsonObject.getString(RESTAURANT));
             reservation.setRestaurant(jsonObject.getString(RESTAURANT));
-            Logger.d("create : " + reservation.getRestaurant());
             reservation.setCustomer(jsonObject.getString(CUSTOMER));
+            reservation.setStatus(jsonObject.getInt(STATUS));
         } catch (JSONException e) {
             e.printStackTrace();
-            Logger.d("null");
             return null;
         }
         return reservation;

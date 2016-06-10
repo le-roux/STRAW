@@ -166,9 +166,16 @@ public class CreateDrinkActivity extends AppCompatActivity {
      */
     private void restoreValues(String drink_descriptor) {
         this.drink = (Drink) Food.create(drink_descriptor);
-        this.name_field.setText(this.drink.getName());
-        this.price_field.setText(String.valueOf(this.drink.getPrice()));
-        this.volume_field.setText(String.valueOf(this.drink.getVolume()));
+
+        if (this.drink == null)
+            return;
+
+        if (!this.drink.getName().equals(Food.DEFAULT_NAME))
+            this.name_field.setText(this.drink.getName());
+        if (this.drink.getPrice() != Food.DEFAULT_PRICE)
+            this.price_field.setText(String.valueOf(this.drink.getPrice()));
+        if (this.drink.getVolume() != Food.DEFAULT_PRICE)
+            this.volume_field.setText(String.valueOf(this.drink.getVolume()));
         String image = this.drink.getImage();
         ImageManager.setImage(this.context, this.image, image);
     }

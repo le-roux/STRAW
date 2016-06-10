@@ -27,8 +27,8 @@ public abstract class Food {
     public static final String IMAGE = "IMAGE";
 
     //Default values
-    private static final String DEFAULT_NAME ="Default";
-    private static final double DEFAULT_PRICE = 0d;
+    public static final String DEFAULT_NAME ="Default";
+    public static final double DEFAULT_PRICE = 0d;
 
     /**
      * Complete constructor

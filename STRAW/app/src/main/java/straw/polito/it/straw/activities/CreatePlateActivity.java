@@ -141,8 +141,14 @@ public class CreatePlateActivity extends AppCompatActivity {
     private void restoreValues(String drink_descriptor) {
         this.plate = (Plate) Food.create(drink_descriptor);
 
-        this.name_field.setText(this.plate.getName());
-        this.price_field.setText(String.valueOf(this.plate.getPrice()));
+        // In case of error
+        if (this.plate == null)
+            return;
+
+        if (!this.plate.getName().equals(Food.DEFAULT_NAME))
+            this.name_field.setText(this.plate.getName());
+        if (this.plate.getPrice() != Food.DEFAULT_PRICE)
+            this.price_field.setText(String.valueOf(this.plate.getPrice()));
         this.ingredients_field.setText(String.valueOf(this.plate.getIngredients()));
         this.vegan_checkbox.setActivated(this.plate.isVegan());
         this.glutenfree_checkbox.setActivated(this.plate.isGlutenFree());

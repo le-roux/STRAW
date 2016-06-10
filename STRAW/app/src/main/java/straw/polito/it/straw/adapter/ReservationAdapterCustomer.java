@@ -27,7 +27,7 @@ public class ReservationAdapterCustomer extends ReservationAdapter {
 
 
     @Override
-    protected void setSpecificItems(View view, int position) {
+    protected void setSpecificItems(View view, int position, boolean modifiable) {
         TextView restaurantName = (TextView)view.findViewById(R.id.RestaurantName);
         restaurantName.setText(((Reservation)this.getItem(position)).getRestaurant());
     }

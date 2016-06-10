@@ -40,18 +40,20 @@ public class DisplayReservationsActivity extends AppCompatActivity implements Ba
 
         this.reservationList_View = (ListView)findViewById(R.id.reservations_list);
         ReservationAdapterManager adapter = new ReservationAdapterManager(this,
-                this.reservationList, this);
+                this.reservationList, this, this.pastReservations);
         this.reservationList_View.setAdapter(adapter);
         StrawApplication application = (StrawApplication)getApplication();
         this.manager = application.getSharedPreferencesHandler().getCurrentManager();
-        ProgressDialog dialog = new ProgressDialog(this);
-        dialog.setMessage(this.getString(R.string.RetrievingReservations));
-        dialog.setIndeterminate(true);
-        dialog.show();
-        if (this.pastReservations)
-            application.getDatabaseUtils().retrieveRestaurantPastReservations(this.manager.getRes_name(), adapter, dialog);
-        else
-            application.getDatabaseUtils().retrieveRestaurantReservations(this.manager.getRes_name(), adapter, dialog);
+        if (savedInstanceState == null) {
+            ProgressDialog dialog = new ProgressDialog(this);
+            dialog.setMessage(this.getString(R.string.RetrievingReservations));
+            dialog.setIndeterminate(true);
+            dialog.show();
+            if (this.pastReservations)
+                application.getDatabaseUtils().retrieveRestaurantPastReservations(this.manager.getRes_name(), adapter, dialog);
+            else
+                application.getDatabaseUtils().retrieveRestaurantReservations(this.manager.getRes_name(), adapter, dialog);
+        }
     }
 
     @Override
@@ -70,24 +72,5 @@ public class DisplayReservationsActivity extends AppCompatActivity implements Ba
 
     public ReservationAdapterManager getAdapter() {
         return (ReservationAdapterManager)this.reservationList_View.getAdapter();
-    }
-
-    /**
-     * Save data (reservations) in sharedPreference for permanent storage
-     */
-    @Override
-    public void onStop() {
-        super.onStop();
-        /*SharedPreferences.Editor editor = this.sharedPreferences.edit();
-        JSONArray jsonArray = new JSONArray();
-        for (int i = 0; i < this.reservationList.size(); i++) {
-            try {
-                jsonArray.put(i, this.reservationList.get(i).toString());
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-        editor.putString(Reservation.RESERVATION, jsonArray.toString());
-        editor.commit();*/
     }
 }

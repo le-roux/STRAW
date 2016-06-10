@@ -21,7 +21,7 @@ public class Drink extends Food {
         this.volume = 1f;
     }
 
-    public Drink(String name, double price, String imageUri, double Volume) {
+    public Drink(String name, double price, String imageUri, double volume) {
         super(name, price, imageUri);
         this.volume = volume;
     }

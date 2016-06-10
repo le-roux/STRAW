@@ -1,126 +1,137 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:background="@color/background"
-    tools:context=".activities.CreateDrinkActivity">
+    android:fitsSystemWindows="true"
+    tools:context="straw.polito.it.straw.activities.CreateDrinkActivity">
 
-
-    <TextView
-        android:id="@+id/center"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_centerInParent="true"/>
-
-    <TextView
-        android:id="@+id/title"
-        android:layout_width="match_parent"
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/Add_drink"
-        android:textAlignment="center"
-        android:textSize="@dimen/Title_size"
-        android:background="@color/colorPrimaryDark"
-        android:padding="@dimen/padding"/>
+        android:id="@+id/addBar"
+        android:theme="@style/AppTheme.AppBarOverlay">
+        <include
+            android:id="@+id/tool_bar"
+            layout="@layout/tool_bar"/>
+    </android.support.design.widget.AppBarLayout>
 
-    <RelativeLayout
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_below="@id/title"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
-        android:layout_toStartOf="@id/center"
-        android:layout_toLeftOf="@id/center"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:background="@drawable/customborder">
-
-        <EditText
-            android:id="@+id/name_field"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/Name"
-            android:layout_marginTop="@dimen/activity_vertical_margin"/>
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:background="@color/background"
+        tools:context=".activities.CreateDrinkActivity"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <TextView
-            android:id="@+id/currency_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/Currency"
-            android:textSize="@dimen/Title_size"
-            android:layout_below="@id/name_field"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_marginTop="@dimen/activity_vertical_margin"/>
-
-        <EditText
-            android:id="@+id/price_field"
+            android:id="@+id/center"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:layout_centerInParent="true"/>
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentStart="true"
             android:layout_alignParentLeft="true"
-            android:layout_toLeftOf="@id/currency_text"
-            android:layout_below="@id/name_field"
-            android:hint="@string/Price"
-            android:inputType="numberDecimal"
+            android:layout_toStartOf="@id/center"
+            android:layout_toLeftOf="@id/center"
             android:layout_marginTop="@dimen/activity_vertical_margin"
-            android:layout_marginBottom="@dimen/activity_vertical_margin"/>
+            android:background="@drawable/customborder">
 
-        <TextView
-            android:id="@+id/volume_unit_text"
+            <EditText
+                android:id="@+id/name_field"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/Name"
+                android:layout_marginTop="@dimen/activity_vertical_margin"/>
+
+            <TextView
+                android:id="@+id/currency_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/Currency"
+                android:textSize="@dimen/Title_size"
+                android:layout_below="@id/name_field"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="@dimen/activity_vertical_margin"/>
+
+            <EditText
+                android:id="@+id/price_field"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_toLeftOf="@id/currency_text"
+                android:layout_below="@id/name_field"
+                android:hint="@string/Price"
+                android:inputType="numberDecimal"
+                android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:layout_marginBottom="@dimen/activity_vertical_margin"/>
+
+            <TextView
+                android:id="@+id/volume_unit_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/Volume_unit"
+                android:textSize="@dimen/Title_size"
+                android:layout_below="@id/currency_text"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="@dimen/activity_vertical_margin"/>
+
+            <EditText
+                android:id="@+id/volume_field"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_toLeftOf="@id/volume_unit_text"
+                android:layout_below="@id/price_field"
+                android:inputType="numberDecimal"
+                android:hint="@string/Volume"/>
+
+        </RelativeLayout>
+
+
+
+        <Button
+            android:id="@+id/confirm_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/Volume_unit"
-            android:textSize="@dimen/Title_size"
-            android:layout_below="@id/currency_text"
+            android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:layout_marginTop="@dimen/activity_vertical_margin"/>
+            android:layout_toEndOf="@id/center"
+            android:layout_toRightOf="@id/center"
+            android:text="@string/Add"
+            android:background="@drawable/customborder_buttons"
+            android:padding="@dimen/padding"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            />
 
-        <EditText
-            android:id="@+id/volume_field"
+        <ImageView
+            android:id="@+id/photo_imageView"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_toLeftOf="@id/volume_unit_text"
-            android:layout_below="@id/price_field"
-            android:inputType="numberDecimal"
-            android:hint="@string/Volume"/>
-
+            android:layout_height="0dp"
+            android:layout_above="@id/confirm_button"
+            android:layout_toRightOf="@id/center"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:background="@drawable/customborder" />
     </RelativeLayout>
 
-
-
-    <Button
-        android:id="@+id/confirm_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_toEndOf="@id/center"
-        android:layout_toRightOf="@id/center"
-        android:text="@string/Add"
-        android:background="@drawable/customborder_buttons"
-        android:padding="@dimen/padding"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:layout_marginStart="@dimen/activity_horizontal_margin"
-        android:layout_marginLeft="@dimen/activity_horizontal_margin"
-        />
-
-    <ImageView
-        android:id="@+id/photo_imageView"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_above="@id/confirm_button"
-        android:layout_toRightOf="@id/center"
-        android:layout_alignParentRight="true"
-        android:layout_below="@id/title"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:layout_marginStart="@dimen/activity_horizontal_margin"
-        android:layout_marginLeft="@dimen/activity_horizontal_margin"
-        android:background="@color/beige" />
-</RelativeLayout>
+</android.support.design.widget.CoordinatorLayout>

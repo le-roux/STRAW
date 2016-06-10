@@ -95,7 +95,10 @@ public abstract class ReservationAdapter extends BaseAdapter {
         this.acceptButton = (Button) convertView.findViewById(R.id.AcceptButton);
         this.statusImage = (ImageView)convertView.findViewById(R.id.state);
         this.place = (TextView)convertView.findViewById(R.id.place);
-        setSpecificItems(convertView, position);
+        if (this.reservationList.get(position).getStatus() == Reservation.DISCARDED)
+            setSpecificItems(convertView, position, false);
+        else
+            setSpecificItems(convertView, position, true);
 
         init(position);
         switch(this.reservationList.get(position).getPlace()) {
@@ -183,7 +186,7 @@ public abstract class ReservationAdapter extends BaseAdapter {
      * @param view : The View object of the layout of the item.
      * @param position : The position of the current item in the reservationList.
      */
-    protected abstract void setSpecificItems(View view, int position);
+    protected abstract void setSpecificItems(View view, int position, boolean modifiable);
 
     /**
      * Adapt the icon/button according to the status of the reservation.

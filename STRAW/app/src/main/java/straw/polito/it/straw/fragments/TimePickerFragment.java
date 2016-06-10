@@ -31,16 +31,17 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
     private Activity activity;
     private BaseAdapter adapter;
     private boolean notifyAdapter;
+    private int position;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         Bundle bundle = getArguments();
-        int position = bundle.getInt(Reservation.RESERVATION);
+        this.position = bundle.getInt(Reservation.RESERVATION);
         this.activity = getActivity();
         this.notifyAdapter = bundle.getBoolean(ReservationAdapterManager.ADAPTER);
         if (this.notifyAdapter) {
             this.adapter = ((BaseAdapterContainer)this.activity).getAdapter();
-            this.timeDisplayer = (TimeDisplayer) this.adapter.getItem(position);
+            this.timeDisplayer = (TimeDisplayer) this.adapter.getItem(this.position);
         } else {
             this.timeDisplayer = ((TimeContainer)this.activity).getTimeDisplayer();
         }
