@@ -40,16 +40,16 @@ public class OfferActivity extends AppCompatActivity {
         mShared= PreferenceManager.getDefaultSharedPreferences(this);
         offerts = new ArrayList<>();
         if(mShared.contains("Offerts")) {
-           try{
-               JSONArray jarr = new JSONArray(mShared.getString("Offerts","Error"));
-               offerts = new ArrayList<>();
-               for(int i = 0; i<jarr.length(); i++){
-                   offerts.add(new Offer(jarr.get(i).toString()));
-               }
+            try{
+                JSONArray jarr = new JSONArray(mShared.getString("Offerts","Error"));
+                offerts = new ArrayList<>();
+                for(int i = 0; i<jarr.length(); i++){
+                    offerts.add(new Offer(jarr.get(i).toString()));
+                }
 
-           } catch(Exception ex){
-               Logger.d(ex.getMessage());
-           }
+            } catch(Exception ex){
+                Logger.d(ex.getMessage());
+            }
 
         }
 

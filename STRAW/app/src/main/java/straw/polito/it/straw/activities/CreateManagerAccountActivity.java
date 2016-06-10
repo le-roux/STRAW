@@ -331,10 +331,10 @@ public class CreateManagerAccountActivity extends AppCompatActivity implements A
             double latitude = address.getLatitude();
             double longitude = address.getLongitude();
             String addressString = address.getAddressLine(0)
-                                    + ' '
-                                    + address.getAddressLine(1)
-                                    + ' '
-                                    + address.getAddressLine(2);
+                    + ' '
+                    + address.getAddressLine(1)
+                    + ' '
+                    + address.getAddressLine(2);
             this.man.setLatitude(latitude);
             this.man.setLongitude(longitude);
             this.man.setAddress(addressString);

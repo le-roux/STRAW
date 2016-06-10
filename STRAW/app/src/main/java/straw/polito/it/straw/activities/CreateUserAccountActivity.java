@@ -183,7 +183,7 @@ public class CreateUserAccountActivity extends AppCompatActivity implements Time
                 SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
                 boolean sentToken = sharedPreferences.getBoolean("tokenSW", false);
                 if (sentToken) {
-                   user.setTokenGCM(sharedPreferences.getString("tokenGCM","Error"));
+                    user.setTokenGCM(sharedPreferences.getString("tokenGCM","Error"));
                 }
             }
         };

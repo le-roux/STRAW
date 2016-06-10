@@ -36,7 +36,7 @@ public class CreateOfferActivity extends AppCompatActivity {
     ArrayList<Food> menu;
     SharedPreferences mShared;
     ArrayList<Food> combo;
-    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

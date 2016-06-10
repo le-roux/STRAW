@@ -123,7 +123,7 @@ public class ConfirmReservationActivity extends AppCompatActivity implements Com
                 DatabaseUtils databaseUtils = ((StrawApplication)getApplication()).getDatabaseUtils();
                 databaseUtils.saveReservation(reservation, ConfirmReservationActivity.this);
                 post();
-             }
+            }
         });
     }
 

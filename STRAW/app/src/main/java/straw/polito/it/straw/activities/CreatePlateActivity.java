@@ -82,7 +82,7 @@ public class CreatePlateActivity extends AppCompatActivity {
                 restoreValues(description);
                 this.title.setText(getText(R.string.Edit_plate));
             }
-    }
+        }
 
         //Add a listener to the imageView which displays the popup window
         this.image.setFocusable(true);
